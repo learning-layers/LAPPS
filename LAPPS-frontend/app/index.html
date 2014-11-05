@@ -1,0 +1,27 @@
+﻿<!doctype html>
+<html lang="en" ng-app="lappsApp">
+<head>
+  <meta charset="utf-8">
+  <title>Layers Application Store</title>
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/angular-resource/angular-resource.js"></script>
+  <script src="core/appModule.js"></script>
+  <script src="components/appList/appListCtrl.js"></script>
+  <script src="components/appDetail/appDetailCtrl.js"></script>
+  <script src="shared/header/headerDirective.js"></script>
+
+  <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <lapps-header></lapps-header>
+    <div class="container">
+      <div ng-view class="view-frame"></div>
+    </div>
+  </div>
+</body>
+</html>
