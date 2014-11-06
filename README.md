@@ -22,7 +22,7 @@ Configure Eclipse:
   * Enable "Perform the selected actions on save"
   * Enable "Format source code"
   * Enable "Orginaze imports"
-* Import https://github.com/jokeyrhyme/eclipse-formatter-profiles/blob/master/google-style-guide-javascript-eclipse.xml as Eclipse Javascript format (Preferences -> Javascript -> Code Style -> Formatter)
+* Import https://raw.githubusercontent.com/jokeyrhyme/eclipse-formatter-profiles/master/google-style-guide-javascript-eclipse.xml as Eclipse Javascript format (Preferences -> Javascript -> Code Style -> Formatter)
 * Configurate the Javascript ->Editor -> Save Actions (rest is Eclipse default):
   * Enable "Perform the selected actions on save"
   * Enable "Format source code"
