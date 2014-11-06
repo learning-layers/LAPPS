@@ -29,10 +29,11 @@ Configure Eclipse:
 
 ##Build##
 LAPPS Backend (run these commands from your project folder):
-* mvn clean         --- clean
-* mvn test          --- test backend
-* mvn exec:java     --- compile and start on jetty server (port 8080)
-* This commands works also inside Eclipse (Run -> Maven build ...)
+* mvn clean           --- clean
+* mvn test            --- test backend
+* mvn exec:java       --- compile and start on jetty server (port 8080)
+* mvn javadoc:javadoc --- generates JavaDoc documentation
+* This commands works also inside Eclipse (Run -> Maven build..), then leave the mvn prefix.
 
 LAPPS Frontend (run these commands from your project folder):
 * npm install        --- install dependencies (will be done automatically when running the start command)
