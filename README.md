@@ -5,7 +5,7 @@ The Layers App Store (LAPPS) is a web-based application showcasing all apps and 
 
 ##Environment##
 * Java SDK 7
-* Eclipse (Mars) Java EE (http://www.eclipse.org/downloads/packages/release/Mars/M2)
+* Eclipse (Luna) Java EE (https://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/lunasr1)
 * Maven 3.2.3 (if you want to use maven from command line; http://maven.apache.org/download.cgi)
 * Git 2.1.3 (http://git-scm.com/)
 * Node.js 0.10.33 (http://nodejs.org/)
@@ -21,9 +21,9 @@ Configure Eclipse:
 * Configurate the Java -> Editor -> Save Actions (rest is Eclipse default):
   * Enable "Perform the selected actions on save"
   * Enable "Format source code"
-  * Enable "Orginaze imports"
-* Import https://raw.githubusercontent.com/jokeyrhyme/eclipse-formatter-profiles/master/google-style-guide-javascript-eclipse.xml as Eclipse Javascript format (Preferences -> Javascript -> Code Style -> Formatter)
-* Configurate the Javascript ->Editor -> Save Actions (rest is Eclipse default):
+  * Enable "Organize imports"
+* Import https://raw.githubusercontent.com/jokeyrhyme/eclipse-formatter-profiles/master/google-style-guide-javascript-eclipse.xml as Eclipse JavaScript format (Preferences -> Javascript -> Code Style -> Formatter)
+* Configurate the JavaScript ->Editor -> Save Actions (rest is Eclipse default):
   * Enable "Perform the selected actions on save"
   * Enable "Format source code"
 
@@ -35,14 +35,18 @@ LAPPS Backend (run these commands from your project folder):
 * This commands works also inside Eclipse (Run -> Maven build ...)
 
 LAPPS Frontend (run these commands from your project folder):
-* npm install       --- install dependencies
-* npm test          --- test frontend
-* npm start         --- start on node server (port 8000)
+* npm install        --- install dependencies (will be done automatically when running the start command)
+* npm test           --- test frontend
+* npm start          --- start on node server (port 8000)
+* npm run protractor --- start e2e tests (start the server with npm start first in another console)  
 
 ##Links##
-Project Links:
-* https://www3.elearning.rwth-aachen.de/ws14/14ws-29924/Dashboard.aspx
-* http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS%20Backend/
+
+Build Status:
+* Backend: [![Build Status](http://layers.dbis.rwth-aachen.de/jenkins/buildStatus/icon?job=LAPPS Backend)](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS%20Backend/)
+
+Learning Room (authentification required):  
+* [Shared Documents](https://www3.elearning.rwth-aachen.de/ws14/14ws-29924/collaboration/Lists/SharedDocuments/Forms/AllItems.aspx?RootFolder=%2Fws14%2F14ws-29924%2Fcollaboration%2FLists%2FSharedDocuments%2FLAPPS&FolderCTID=0x0120005A033B78570B2D45A235DFFEE8383BD0&View=%7B31481E6C-CB5F-4BD5-9CC5-643AF904FC96%7D&InitialTabId=Ribbon%2EDocument&VisibilityContext=WSSTabPersistence)
 
 Technology:
 * https://jersey.java.net/documentation/latest/index.html
