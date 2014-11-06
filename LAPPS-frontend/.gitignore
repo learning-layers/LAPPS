@@ -4,3 +4,5 @@ node_modules/
 tmp
 .log
 bower_components/
+.project
+.settings
