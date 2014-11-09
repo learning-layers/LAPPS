@@ -9,7 +9,7 @@
          <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
          <property name="javax.persistence.jdbc.user" value="java_user"/>
          <property name="javax.persistence.jdbc.password" value="A6XwKeLFVCadZh2t"/>
-         <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/lapps"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:mysql://delange.diskstation.me:3306/lapps"/>
          <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
          <property name="hibernate.hbm2ddl.auto" value="none"/>
       </properties>
