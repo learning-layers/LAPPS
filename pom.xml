@@ -9,6 +9,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>LAPPS-Backend</module>
+        <module>LAPPS-backend</module>
     </modules>
 </project>
