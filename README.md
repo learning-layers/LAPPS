@@ -22,7 +22,7 @@ Configure Eclipse:
   * Enable "Perform the selected actions on save"
   * Enable "Format source code"
   * Enable "Organize imports"
-* Import https://raw.githubusercontent.com/jokeyrhyme/eclipse-formatter-profiles/master/google-style-guide-javascript-eclipse.xml as Eclipse JavaScript format (Preferences -> Javascript -> Code Style -> Formatter)
+* Import https://raw.githubusercontent.com/jokeyrhyme/eclipse-formatter-profiles/master/google-style-guide-javascript-eclipse.xml as Eclipse JavaScript format (Preferences -> JavasSript -> Code Style -> Formatter)
 * Configurate the JavaScript ->Editor -> Save Actions (rest is Eclipse default):
   * Enable "Perform the selected actions on save"
   * Enable "Format source code"
@@ -44,9 +44,9 @@ LAPPS Frontend (run these commands from your project folder):
 ##Links##
 
 Build Status:
-* Backend: [![Build Status](http://layers.dbis.rwth-aachen.de/jenkins/buildStatus/icon?job=LAPPS Backend)](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS%20Backend/)
+* [![Build Status](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/badge/icon)](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/)(http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/)
 
-Learning Room (authentification required):  
+Learning Room (authentication required):  
 * [Shared Documents](https://www3.elearning.rwth-aachen.de/ws14/14ws-29924/collaboration/Lists/SharedDocuments/Forms/AllItems.aspx?RootFolder=%2Fws14%2F14ws-29924%2Fcollaboration%2FLists%2FSharedDocuments%2FLAPPS&FolderCTID=0x0120005A033B78570B2D45A235DFFEE8383BD0&View=%7B31481E6C-CB5F-4BD5-9CC5-643AF904FC96%7D&InitialTabId=Ribbon%2EDocument&VisibilityContext=WSSTabPersistence)
 
 Technology:
