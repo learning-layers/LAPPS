@@ -83,19 +83,6 @@
         </plugins>
     </build>
 
-	<distributionManagement>
-		<repository>
-			<id>archiva.internal</id>
-			<name>acis-internal</name>
-			<url>http://role.dbis.rwth-aachen.de:9911/archiva/repository/internal/</url>
-		</repository>
-		<snapshotRepository>
-			<id>archiva.snapshots</id>
-			<name>acis-snapshots</name>
-			<url>http://role.dbis.rwth-aachen.de:9911/archiva/repository/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
-
     <properties>
         <jersey.version>2.13</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
