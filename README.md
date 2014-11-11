@@ -18,12 +18,12 @@ Configure Eclipse:
 * Configurate the Java -> Code Style (rest is Eclipse default):
   * Enable "Format source code"
   * Enable "Remove unused imports"
-* Configurate the Java -> Editor -> Save Actions (rest is Eclipse default):
+* Configure the Java -> Editor -> Save Actions (rest is Eclipse default):
   * Enable "Perform the selected actions on save"
   * Enable "Format source code"
   * Enable "Organize imports"
 * Import https://raw.githubusercontent.com/jokeyrhyme/eclipse-formatter-profiles/master/google-style-guide-javascript-eclipse.xml as Eclipse JavaScript format (Preferences -> JavasSript -> Code Style -> Formatter)
-* Configurate the JavaScript ->Editor -> Save Actions (rest is Eclipse default):
+* Configure the JavaScript -> Editor -> Save Actions (rest is Eclipse default):
   * Enable "Perform the selected actions on save"
   * Enable "Format source code"
 
@@ -31,9 +31,9 @@ Configure Eclipse:
 LAPPS Backend (run these commands from your project folder):
 * mvn clean           --- clean
 * mvn test            --- test backend
-* mvn exec:java       --- compile and start on jetty server (port 8080)
+* mvn exec:java       --- compile and start on jetty server (port 8080, please execute in LAPPS-backend folder)
 * mvn javadoc:javadoc --- generates JavaDoc documentation
-* This commands works also inside Eclipse (Run -> Maven build..), then leave the mvn prefix.
+* This commands also work inside Eclipse (Run -> Maven build..), then leave the mvn prefix.
 
 LAPPS Frontend (run these commands from your project folder):
 * npm install        --- install dependencies (will be done automatically when running the start command)
@@ -44,7 +44,10 @@ LAPPS Frontend (run these commands from your project folder):
 ##Links##
 
 Build Status:
-* [![Build Status](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/badge/icon)](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/)(http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/)
+* [![Build Status](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/badge/icon)](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/)
+* [Jenkins Home Directory](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/)
+* [Backend Java Docs](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/de.rwth.dbis.layers.lapps$LAPPS-backend/javadoc/)
+* [Backend War Files in Archiva](http://role.dbis.rwth-aachen.de:9911/archiva/browse/de.rwth.dbis.layers.lapps)
 
 Learning Room (authentication required):  
 * [Shared Documents](https://www3.elearning.rwth-aachen.de/ws14/14ws-29924/collaboration/Lists/SharedDocuments/Forms/AllItems.aspx?RootFolder=%2Fws14%2F14ws-29924%2Fcollaboration%2FLists%2FSharedDocuments%2FLAPPS&FolderCTID=0x0120005A033B78570B2D45A235DFFEE8383BD0&View=%7B31481E6C-CB5F-4BD5-9CC5-643AF904FC96%7D&InitialTabId=Ribbon%2EDocument&VisibilityContext=WSSTabPersistence)
@@ -61,5 +64,3 @@ Code Style:
 * http://google-styleguide.googlecode.com/svn/trunk/htmlcssguide.xml
 * http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
 * http://google-styleguide.googlecode.com/svn/trunk/angularjs-google-style.html
-
-#Happy Coding!#
