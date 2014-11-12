@@ -1,0 +1,17 @@
+﻿<div class="container-fluid">
+  <div class="row">
+    <div ng-repeat="app in apps" class="col-sm-6 col-md-3">
+      <div class="app-list-item">
+        <a href="#/apps/{{app.id}}"></a>
+        <div class="thumbnail">
+          <img src="http://lorempixel.com/250/150/cats"
+               alt="cats">
+        </div>
+        <div class="caption">
+          <h3>{{app.name}}</h3>
+          <p>{{app.description}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

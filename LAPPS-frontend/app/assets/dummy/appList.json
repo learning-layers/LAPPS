@@ -1,0 +1,35 @@
+﻿[
+  {
+    "id": "1",
+    "name": "HelpApp",
+    "description": "Automatically asks experts in the community for help."
+  }, {
+    "id": "2",
+    "name": "ExpertApp",
+    "description": "Registers the user as an expert in the community."
+  }, {
+    "id": "3",
+    "name": "ChessApp",
+    "description": "Teaches the rules of chess."
+  }, {
+    "id": "4",
+    "name": "DanceApp",
+    "description": "Teaches you fancy dancing moves."
+  }, {
+    "id": "5",
+    "name": "DriveApp",
+    "description": "Teaches you how to drive."
+  }, {
+    "id": "6",
+    "name": "DiveApp",
+    "description": "Teaches you diving."
+  }, {
+    "id": "7",
+    "name": "π App",
+    "description": "Teaches you the number π."
+  }, {
+    "id": "8",
+    "name": "功夫 App",
+    "description": "Teaches you fancy martial arts moves."
+  }
+]
