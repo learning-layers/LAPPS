@@ -48,7 +48,6 @@ Build Status:
 * [Jenkins Home Directory](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/)
 * [Backend Documentation](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/de.rwth.dbis.layers.lapps$LAPPS-backend/javadoc/)
 * [Frontend Documentation](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/JavaScript_Documentation/)
-* http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/JavaScript_Documentation/
 * [Backend War Files in Archiva](http://role.dbis.rwth-aachen.de:9911/archiva/browse/de.rwth.dbis.layers.lapps)
 
 Learning Room (authentication required):  
