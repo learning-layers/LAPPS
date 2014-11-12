@@ -40,6 +40,8 @@ LAPPS Frontend (run these commands from your project folder):
 * npm test           --- test frontend
 * npm start          --- start on node server (port 8000)
 * npm run protractor --- start e2e tests (start the server with npm start first in another console)  
+* npm run doc 		 --- create jsdoc documentation in out/
+* npm run deploy	 --- create a deployable containing minified files in deploy/
 
 ##Links##
 
