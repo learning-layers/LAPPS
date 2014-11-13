@@ -1,0 +1,10 @@
+logs/*
+!.gitkeep
+node_modules/
+tmp
+.log
+bower_components/
+.project
+.settings
+out/
+deploy/
