@@ -8,7 +8,7 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
 /**
- * Main class.
+ * Creates and starts a new instance of {@link HttpServer} waiting for an user input.
  * 
  */
 public class Main {
@@ -22,7 +22,7 @@ public class Main {
    */
   public static HttpServer startServer() {
     // create a resource config that scans for JAX-RS resources and providers
-    // in com.example package
+    // in de.rwth.dbis.layers.lapps package
     final ResourceConfig rc = new ResourceConfig().packages("de.rwth.dbis.layers.lapps");
 
     // create and start a new instance of grizzly http server
@@ -31,7 +31,7 @@ public class Main {
   }
 
   /**
-   * Main method.
+   * Starts the server.
    * 
    * @param args
    * @throws IOException
