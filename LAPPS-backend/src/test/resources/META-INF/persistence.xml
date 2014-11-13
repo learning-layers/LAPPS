@@ -6,6 +6,8 @@
    <persistence-unit name="lappsPU" transaction-type="RESOURCE_LOCAL">
       <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
       <class>de.rwth.dbis.layers.lapps.entity.UserEntity</class>
+      <class>de.rwth.dbis.layers.lapps.entity.AppCommentEntity</class>
+      <class>de.rwth.dbis.layers.lapps.entity.AppEntity</class>
       <properties>
          <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
          <property name="javax.persistence.jdbc.user" value="java_user"/>
