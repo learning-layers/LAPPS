@@ -13,8 +13,6 @@ import de.rwth.dbis.layers.lapps.entity.Entity;
  * by all business service implementations (facades). The term 'business service' is used as to
  * represent the functionality of an EJB, since the environment does not allow for the usage of the
  * latter.
- * 
- * @author vatov
  *
  * @param <T> Entity type
  * @param <I> Identity type
