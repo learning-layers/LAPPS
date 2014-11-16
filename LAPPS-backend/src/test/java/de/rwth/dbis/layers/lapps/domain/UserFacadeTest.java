@@ -14,8 +14,6 @@ import de.rwth.dbis.layers.lapps.entity.UserEntity;
 /**
  * Test class for User Facade business objects.
  * 
- * @author vatov
- *
  */
 public class UserFacadeTest {
   private UserFacade userFacade = new UserFacade();

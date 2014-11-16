@@ -20,8 +20,7 @@ import de.rwth.dbis.layers.lapps.entity.Entity;
 public abstract class AbstractFacade<T extends Entity, I> {
 
   /**
-   * The type (class) of the concrete {@link Entity} extending this abstract business service. (Do
-   * we comment on private fields?!)
+   * The type (class) of the concrete {@link Entity} extending this abstract business service.
    */
   private final transient Class<T> entityClass;
 
