@@ -1,5 +1,7 @@
 package de.rwth.dbis.layers.lapps.resource;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -35,8 +37,9 @@ public class UserResourceTest {
    * Tries to get the user with the id 1.
    */
   @Test
-  public void testSimpleGet() {
-    // String responseMsg = target.path("users/1").request().get(String.class);
-
+  public void testGetUser() {
+    String responseMsg = target.path("users/1").request().get(String.class);
+    assertEquals(new String("{\"id\":1,\"oidcId\":\"1\",\"email\":\"test@lapps.com\"}"),
+        responseMsg);
   }
 }

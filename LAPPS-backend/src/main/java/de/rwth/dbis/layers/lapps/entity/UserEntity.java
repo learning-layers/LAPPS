@@ -11,9 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * User domain object.
- *
+ * 
  */
 @javax.persistence.Entity
 @Table(name = "user")
@@ -25,6 +27,10 @@ public class UserEntity implements Entity {
   @Column(name = "oidc_id")
   private String oidcId = "";
   private String email = null;
+
+  // TODO: remove this @JsonIgnore, we need it because their is a recursive loop between author
+  // (user) <-> appcomment <-> author (user) <-> appcomment
+  @JsonIgnore
   @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppCommentEntity> comments = new ArrayList<AppCommentEntity>();
 
