@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `app` (
 INSERT INTO `app` (`id`, `name`, `rating`) VALUES
 (1, 'First App', 0),
 (2, 'Second App', 0),
-(3, 'Third App', 0),
+(3, 'Thirs App', 0),
 (4, 'Fourth App', 0);
 
 -- --------------------------------------------------------
@@ -160,17 +160,11 @@ CREATE TABLE IF NOT EXISTS `comment` (
   `app_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `text` text COLLATE utf8_unicode_ci NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `app_id` (`app_id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
-
---
--- Dumping data for table `comment`
---
-
-INSERT INTO `comment` (`id`, `app_id`, `user_id`, `text`) VALUES
-(1, 4, 9, 'Comment 1');
 
 -- --------------------------------------------------------
 
@@ -263,7 +257,7 @@ ALTER TABLE `comment`
 --
 ALTER TABLE `tag`
   ADD CONSTRAINT `tag_ibfk_1` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-  
+
 CREATE USER `java_user`@`localhost` IDENTIFIED BY 'A6XwKeLFVCadZh2t';
 GRANT ALL PRIVILEGES ON `lapps`.* TO `java_user`@`localhost`;
 
