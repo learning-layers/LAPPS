@@ -23,7 +23,7 @@ public class UserEntity implements Entity {
   @GeneratedValue
   private Integer id = 0;
   @Column(name = "oidc_id")
-  private String oidcId = null;
+  private String oidcId = "";
   private String email = null;
   @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppCommentEntity> comments = new ArrayList<AppCommentEntity>();
