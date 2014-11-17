@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import de.rwth.dbis.layers.lapps.Main;
 
-public class MyResourceTest {
+public class UserResourceTest {
 
   private HttpServer server;
   private WebTarget target;
@@ -34,11 +34,12 @@ public class MyResourceTest {
   }
 
   /**
-   * Test to see that the message "Got it!" is sent in the response.
+   * Tries to get the user with the id 1.
    */
   @Test
-  public void testGetIt() {
-    String responseMsg = target.path("myresource").request().get(String.class);
-    assertEquals("Got it!", responseMsg);
+  public void testGetUser() {
+    String responseMsg = target.path("users/1").request().get(String.class);
+    assertEquals(new String("{\"id\":1,\"oidcId\":\"1\",\"email\":\"test@lapps.com\"}"),
+        responseMsg);
   }
 }

@@ -28,6 +28,10 @@
 
     <dependencies>
 		<dependency>
+		    <groupId>org.glassfish.jersey.media</groupId>
+		    <artifactId>jersey-media-json-jackson</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>4.3.7.Final</version>
@@ -45,6 +49,11 @@
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet-core</artifactId>
         </dependency>
+		<dependency>
+		    <groupId>org.glassfish</groupId>
+		    <artifactId>javax.json</artifactId>
+		    <version>1.0.4</version>
+		</dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
