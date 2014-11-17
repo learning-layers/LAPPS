@@ -3,7 +3,9 @@ package de.rwth.dbis.layers.lapps.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -21,23 +23,23 @@ public class UserEntity implements Entity {
   @GeneratedValue
   private Integer id = 0;
   @Column(name = "oidc_id")
-  private Integer oidcId = 0;
+  private String oidcId = "";
   private String email = null;
-  @OneToMany(mappedBy = "author")
+  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppCommentEntity> comments = new ArrayList<AppCommentEntity>();
 
   public UserEntity() {}
 
-  public UserEntity(Integer oidcId, String email) {
+  public UserEntity(String oidcId, String email) {
     this.setOidcId(oidcId);
     this.setEmail(email);
   }
 
-  public Integer getOidcId() {
+  public String getOidcId() {
     return oidcId;
   }
 
-  public void setOidcId(Integer oidcId) {
+  public void setOidcId(String oidcId) {
     this.oidcId = oidcId;
   }
 
