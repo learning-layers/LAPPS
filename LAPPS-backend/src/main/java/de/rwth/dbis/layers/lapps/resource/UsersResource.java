@@ -7,6 +7,7 @@ import javax.persistence.Query;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
@@ -24,18 +25,15 @@ public class UsersResource {
    */
   @SuppressWarnings("unchecked")
   @GET
-  @Produces("text/plain")
-  public String getAllUsers() {
+  @Produces(MediaType.APPLICATION_JSON)
+  public ArrayList<UserEntity> getAllUsers() {
     final EntityManager em = EMF.getEm();
     em.getTransaction().begin();
     Query query = em.createQuery("select u from UserEntity u");
     ArrayList<UserEntity> entities = (ArrayList<UserEntity>) query.getResultList();
     em.getTransaction().commit();
     em.close();
-    String str = "";
-    for (UserEntity e : entities) {
-      str += "user: " + e.toString() + "\r\n";
-    }
-    return str;
+
+    return entities;
   }
 }
