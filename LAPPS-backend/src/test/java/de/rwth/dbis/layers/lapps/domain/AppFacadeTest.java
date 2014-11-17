@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import org.junit.Test;
 
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
+import de.rwth.dbis.layers.lapps.entity.AppTagEntity;
 
 /**
  * Test class for App Facade business ojects.
@@ -18,11 +19,18 @@ public class AppFacadeTest {
 
   @Test
   public void save() {
-    String appName = "app" + this.generateRandom(500);
+    final String appName = "app" + this.generateRandom(500);
     AppEntity app = new AppEntity(appName);
+    app.addTag(new AppTagEntity("tag_" + appName));
     app = this.appFacade.save(app);
     assertTrue(app.getId() > 0);
     LOGGER.info("Application saved: " + app);
+  }
+
+  @Test
+  public void find() {
+    AppEntity app = appFacade.find(2);
+    LOGGER.info("app loaded: " + app.toString());
   }
 
   private long generateRandom(long max) {

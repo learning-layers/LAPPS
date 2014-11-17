@@ -25,6 +25,8 @@ public class AppEntity implements Entity {
   private String name = null;
   @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppCommentEntity> comments = new ArrayList<AppCommentEntity>();
+  @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private List<AppTagEntity> tags = new ArrayList<AppTagEntity>();
 
   public AppEntity() {}
 
@@ -63,9 +65,21 @@ public class AppEntity implements Entity {
     }
   }
 
+  public List<AppTagEntity> getTags() {
+    return tags;
+  }
+
+  public void addTag(AppTagEntity tag) {
+    this.tags.add(tag);
+    if (tag.getApp() != this) {
+      tag.setApp(this);
+    }
+  }
+
   @Override
   public String toString() {
     return "[" + this.getClass().getName() + "] id: " + this.getId() + ", name: " + this.getName()
-        + ", rating: " + this.getRating();
+        + ", rating: " + this.getRating() + ", comments: " + this.getComments().size() + ", tags: "
+        + this.getTags().size();
   }
 }
