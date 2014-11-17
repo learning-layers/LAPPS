@@ -3,6 +3,8 @@ package de.rwth.dbis.layers.lapps.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -21,7 +23,7 @@ public class AppEntity implements Entity {
   private int id = 0;
   private double rating = 0D;
   private String name = null;
-  @OneToMany(mappedBy = "app")
+  @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppCommentEntity> comments = new ArrayList<AppCommentEntity>();
 
   public AppEntity() {}
@@ -52,5 +54,18 @@ public class AppEntity implements Entity {
 
   public List<AppCommentEntity> getComments() {
     return comments;
+  }
+
+  public void addComment(AppCommentEntity comment) {
+    this.comments.add(comment);
+    if (comment.getApp() != this) {
+      comment.setApp(this);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "[" + this.getClass().getName() + "] id: " + this.getId() + ", name: " + this.getName()
+        + ", rating: " + this.getRating();
   }
 }

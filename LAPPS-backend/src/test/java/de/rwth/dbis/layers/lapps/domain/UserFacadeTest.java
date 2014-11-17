@@ -1,5 +1,7 @@
 package de.rwth.dbis.layers.lapps.domain;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -9,6 +11,8 @@ import org.junit.After;
 import org.junit.Test;
 
 import de.rwth.dbis.layers.lapps.data.EntityManagerTest;
+import de.rwth.dbis.layers.lapps.entity.AppCommentEntity;
+import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 
 /**
@@ -29,6 +33,16 @@ public class UserFacadeTest {
   public void findAll() {
     ArrayList<UserEntity> users = (ArrayList<UserEntity>) userFacade.findAll();
     LOGGER.info(users.size() + " users loaded");
+  }
+
+  @Test
+  public void comment() {
+    UserEntity user = userFacade.findAll().get(0);
+    AppFacade appFacade = AppFacade.getFacade();
+    AppEntity app = appFacade.findAll().get(0);
+    AppCommentEntity comment = userFacade.comment("Aaaaand... another one!", user, app);
+    assertTrue(comment != null && comment.getId() > 0);
+    LOGGER.info(comment.toString());
   }
 
   @After
