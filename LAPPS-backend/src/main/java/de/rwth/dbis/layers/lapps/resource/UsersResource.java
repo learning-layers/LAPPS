@@ -12,10 +12,10 @@ import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 
 /**
- * User resource (exposed at "users" path).
+ * Users resource (exposed at "users" path).
  */
 @Path("users")
-public class UserResource {
+public class UsersResource {
 
   /**
    * Provides a plain text list of all user emails.
