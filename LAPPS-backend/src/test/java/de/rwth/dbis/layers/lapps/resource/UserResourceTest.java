@@ -1,7 +1,5 @@
 package de.rwth.dbis.layers.lapps.resource;
 
-import static org.junit.Assert.assertEquals;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -13,7 +11,7 @@ import org.junit.Test;
 
 import de.rwth.dbis.layers.lapps.Main;
 
-public class MyResourceTest {
+public class UserResourceTest {
 
   private HttpServer server;
   private WebTarget target;
@@ -34,11 +32,11 @@ public class MyResourceTest {
   }
 
   /**
-   * Test to see that the message "Got it!" is sent in the response.
+   * Tries to get the user with the id 1.
    */
   @Test
-  public void testGetIt() {
-    String responseMsg = target.path("myresource").request().get(String.class);
-    assertEquals("Got it!", responseMsg);
+  public void testSimpleGet() {
+    // String responseMsg = target.path("users/1").request().get(String.class);
+
   }
 }
