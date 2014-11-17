@@ -36,16 +36,25 @@ public abstract class AbstractFacade<T extends Entity, I> {
   protected abstract EntityManager getEntityManager();
 
   /**
-   * Persists an {@link Entity} state and (possibly) the state of inner Entities.
+   * Persists an {@link Entity} (possibly) together with child entities. Note that merge returns
+   * managed Entity, while the entity used as argument for the merge method stays unmanaged. When
+   * using persist, however, the entity stays managed. On the other hand, persist is not possible
+   * for cascading insert when the father entity exists and a child must be inserted - e.g. set
+   * comment to user and save the user. This is why we use merge and return the duplicated (managed)
+   * entity.
    * 
-   * @param entity
+   * @param entity The Entity to save
+   * @return Managed copy of the Entity to save
    */
-  public void save(final T entity) {
+  public T save(final T entity) {
     final EntityManager em = getEntityManager();
     em.getTransaction().begin();
-    em.persist(entity);
+    // em.persist(entity);
+    T managed = em.merge(entity);
+    em.flush();
     em.getTransaction().commit();
     em.close();
+    return managed;
   }
 
   /**
