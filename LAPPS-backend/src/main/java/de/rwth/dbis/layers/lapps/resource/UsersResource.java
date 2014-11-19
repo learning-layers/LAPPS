@@ -28,7 +28,7 @@ public class UsersResource {
   /**
    * Provides a plain text list of all user emails.
    * 
-   * @return String with all user emails.
+   * @return Response with all users as a JSON array.
    */
   @SuppressWarnings("unchecked")
   @GET
