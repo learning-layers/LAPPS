@@ -11,6 +11,7 @@ import java.util.Iterator;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -50,7 +51,16 @@ public class UsersResource {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getAllUsers() {
+  public Response getAllUsers(@HeaderParam("access_token") String accessToken) {
+    if (accessToken != null) {
+      try {
+        System.out.println(accessToken);
+        int userId = authenticate(accessToken);
+      } catch (OIDCException e) {
+        e.printStackTrace();
+        return Response.status(401).build();
+      }
+    }
     userFacade.findAll();
     ArrayList<UserEntity> entities = (ArrayList<UserEntity>) userFacade.findAll();
     ArrayList<Integer> userIds = new ArrayList<Integer>();
