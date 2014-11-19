@@ -16,13 +16,13 @@
    * @class lapps.lappsApp
    * @memberOf lapps
    */
-  var lappsApp = angular.module('lappsApp', ['ngRoute', 'lappsControllers',
-      'lappsDirectives']);
+  var lappsApp = angular.module('lappsApp', ['ngRoute', 'ui.bootstrap',
+      'lappsControllers', 'lappsDirectives']);
 
   lappsApp.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/apps', {
-      templateUrl: 'components/appList/appListView.html',
-      controller: 'appListCtrl'
+      templateUrl: 'components/welcomePage/welcomePageView.html',
+      controller: 'welcomePageCtrl'
     }).when('/apps/:appId', {
       templateUrl: 'components/appDetail/appDetailView.html',
       controller: 'appDetailCtrl'

@@ -1,22 +1,42 @@
 body {
-  padding-top: 20px;
-  padding-bottom: 20px;
+	padding-top: 20px;
+	padding-bottom: 20px;
 }
 
 .app-list-item {
-  position: relative;
-  height: 275px;
+	position: relative;
+	height: 275px;
 }
 
 .app-list-item a {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  text-decoration: none; /* No underlines on the link */
-  z-index: 10; /* Places the link above everything else in the div */
-  background-color: #FFF; /* Fix to make div clickable in IE */
-  opacity: 0; /* Fix to make div clickable in IE */
-  filter: alpha(opacity=1); /* Fix to make div clickable in IE */
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	text-decoration: none; /* No underlines on the link */
+	z-index: 10; /* Places the link above everything else in the div */
+	background-color: #FFF; /* Fix to make div clickable in IE */
+	opacity: 0; /* Fix to make div clickable in IE */
+	filter: alpha(opacity = 1); /* Fix to make div clickable in IE */
+}
+
+.hspacer1 {
+	padding: 0 10px;
+}
+
+.hspacer2 {
+	padding: 0 20px;
+}
+
+.vbar:before {
+	color: #aaa;
+	content: "|";
+	padding: 0 5px;
+}
+
+.carousel-caption {
+	text-shadow: 0 4px 3px rgba(0, 0, 0, 0.4), 0 8px 13px rgba(0, 0, 0, 0.1),
+		0 18px 23px rgba(0, 0, 0, 0.1);
+	font-size: large;
 }

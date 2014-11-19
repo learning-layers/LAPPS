@@ -2,34 +2,42 @@
   {
     "id": "1",
     "name": "HelpApp",
-    "description": "Automatically asks experts in the community for help."
+    "description": "Automatically asks experts in the community for help.",
+    "image": "http://lorempixel.com/500/225/"
   }, {
     "id": "2",
     "name": "ExpertApp",
-    "description": "Registers the user as an expert in the community."
+    "description": "Registers the user as an expert in the community.",
+    "image": "http://lorempixel.com/500/225/cats"
   }, {
     "id": "3",
     "name": "ChessApp",
-    "description": "Teaches the rules of chess."
+    "description": "Teaches the rules of chess.",
+    "image": "http://lorempixel.com/500/225/nature"
   }, {
     "id": "4",
     "name": "DanceApp",
-    "description": "Teaches you fancy dancing moves."
+    "description": "Teaches you fancy dancing moves.",
+    "image": "http://lorempixel.com/500/225/food"
   }, {
     "id": "5",
     "name": "DriveApp",
-    "description": "Teaches you how to drive."
+    "description": "Teaches you how to drive.",
+    "image": "http://lorempixel.com/500/225/people"
   }, {
     "id": "6",
     "name": "DiveApp",
-    "description": "Teaches you diving."
+    "description": "Teaches you diving.",
+    "image": "http://lorempixel.com/500/225/"
   }, {
     "id": "7",
     "name": "π App",
-    "description": "Teaches you the number π."
+    "description": "Teaches you the number π.",
+    "image": "http://lorempixel.com/500/225/cats"
   }, {
     "id": "8",
     "name": "功夫 App",
-    "description": "Teaches you fancy martial arts moves."
+    "description": "Teaches you fancy martial arts moves.",
+    "image": "http://lorempixel.com/500/225/nature"
   }
 ]
