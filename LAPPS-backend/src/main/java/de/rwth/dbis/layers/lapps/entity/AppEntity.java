@@ -32,8 +32,8 @@ public class AppEntity implements Entity {
 
   // @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   // private List<AppDetailEntity> details = new ArrayList<AppDetailEntity>();
-  // @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  // private List<AppArtifactEntity> artifacts = new ArrayList<AppArtifactEntity>();
+  @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private List<AppArtifactEntity> artifacts = new ArrayList<AppArtifactEntity>();
 
   public AppEntity() {}
 
@@ -94,10 +94,22 @@ public class AppEntity implements Entity {
     }
   }
 
+  public List<AppArtifactEntity> getArtifacts() {
+    return artifacts;
+  }
+
+  public void addArtifacts(AppArtifactEntity artifact) {
+    this.artifacts.add(artifact);
+    if (artifact.getApp() != this) {
+      artifact.setApp(this);
+    }
+  }
+
   @Override
   public String toString() {
     return "[" + this.getClass().getName() + "] id: " + this.getId() + ", name: " + this.getName()
         + ", rating: " + this.getRating() + ", comments: " + this.getComments().size() + ", tags: "
-        + this.getTags().size() + ", available on: " + this.getInstances().size() + " platforms";
+        + this.getTags().size() + ", available on: " + this.getInstances().size() + " platforms"
+        + ", with artifacts: " + this.getArtifacts().size();
   }
 }

@@ -10,6 +10,7 @@ import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
 import de.rwth.dbis.layers.lapps.entity.AppPlatformEntity;
 import de.rwth.dbis.layers.lapps.entity.AppTagEntity;
+import de.rwth.dbis.layers.lapps.entity.ArtifactTypeEntity;
 
 /**
  * Test class for App Facade business ojects.
@@ -34,7 +35,7 @@ public class AppFacadeTest {
     LOGGER.info("Application saved: " + app);
   }
 
-  @Test
+  // @Test
   public void saveInstance() {
     // Load app platform:
     AppPlatformFacade platformFacade = AppPlatformFacade.getFacade();
@@ -62,6 +63,15 @@ public class AppFacadeTest {
     AppPlatformFacade platformFacade = AppPlatformFacade.getFacade();
     platform = platformFacade.save(platform);
     LOGGER.info("platform saved: " + platform.toString());
+  }
+
+  @Test
+  public void addArtifactType() {
+    final String artifactType = "jpg";
+    ArtifactTypeEntity artifact = new ArtifactTypeEntity(artifactType);
+    ArtifactFacade artifactFacade = ArtifactFacade.getFacade();
+    artifact = artifactFacade.save(artifact);
+    LOGGER.info("artifact type saved: " + artifact.toString());
   }
 
   private long generateRandom(long max) {
