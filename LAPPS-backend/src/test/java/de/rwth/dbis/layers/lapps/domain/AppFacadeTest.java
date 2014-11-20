@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import org.junit.Test;
 
+import de.rwth.dbis.layers.lapps.entity.AppArtifactEntity;
 import de.rwth.dbis.layers.lapps.entity.AppDetailEntity;
 import de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
@@ -30,12 +31,16 @@ public class AppFacadeTest {
     // Load app detail type:
     AppDetailTypeFacade detailTypeFacade = AppDetailTypeFacade.getFacade();
     AppDetailTypeEntity detailType = detailTypeFacade.find(1);
+    // Load an artifact type:
+    ArtifactFacade artifactTypeFacade = ArtifactFacade.getFacade();
+    ArtifactTypeEntity artifact = artifactTypeFacade.find(1);
     // Save new app with a tag, an instance, a platform and a detail.
     final String appName = "app" + this.generateRandom(5000);
     AppEntity app = new AppEntity(appName);
     app.addTag(new AppTagEntity("tag_" + appName));
     app.addInstance(new AppInstanceEntity(platform, "http://ok.com/turboApp"));
     app.addDetail(new AppDetailEntity(detailType, "Nazdrave!"));
+    app.addArtifacts(new AppArtifactEntity(artifact, "http://artifact.net/1"));
     app = this.appFacade.save(app);
     assertTrue(app.getId() > 0);
     LOGGER.info("Application saved: " + app);
@@ -72,7 +77,7 @@ public class AppFacadeTest {
   }
 
 
-  //@Test
+  // @Test
   public void addArtifactType() {
     final String artifactType = "jpg";
     ArtifactTypeEntity artifact = new ArtifactTypeEntity(artifactType);

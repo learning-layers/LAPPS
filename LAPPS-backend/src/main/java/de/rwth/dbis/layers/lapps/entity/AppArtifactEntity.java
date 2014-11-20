@@ -24,7 +24,7 @@ public class AppArtifactEntity implements Entity {
   @JoinColumn(name = "app_id")
   private AppEntity app = null;
   @OneToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "platform_id")
+  @JoinColumn(name = "app_artifact_type_id")
   private ArtifactTypeEntity artifactType = null;
 
   private String url = null;
