@@ -13,6 +13,8 @@
       <class>de.rwth.dbis.layers.lapps.entity.AppPlatformEntity</class>
       <class>de.rwth.dbis.layers.lapps.entity.AppArtifactEntity</class>
       <class>de.rwth.dbis.layers.lapps.entity.ArtifactTypeEntity</class>
+      <class>de.rwth.dbis.layers.lapps.entity.AppDetailEntity</class>
+      <class>de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity</class>
       <properties>
          <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
          <property name="javax.persistence.jdbc.user" value="java_user"/>
