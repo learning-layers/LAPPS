@@ -30,6 +30,11 @@ public class AppEntity implements Entity {
   @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppInstanceEntity> instances = new ArrayList<AppInstanceEntity>();
 
+  // @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  // private List<AppDetailEntity> details = new ArrayList<AppDetailEntity>();
+  // @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  // private List<AppArtifactEntity> artifacts = new ArrayList<AppArtifactEntity>();
+
   public AppEntity() {}
 
   public AppEntity(String name) {
