@@ -9,6 +9,8 @@
       <class>de.rwth.dbis.layers.lapps.entity.AppCommentEntity</class>
       <class>de.rwth.dbis.layers.lapps.entity.AppEntity</class>
       <class>de.rwth.dbis.layers.lapps.entity.AppTagEntity</class>
+      <class>de.rwth.dbis.layers.lapps.entity.AppInstanceEntity</class>
+      <class>de.rwth.dbis.layers.lapps.entity.AppPlatformEntity</class>
       <properties>
          <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
          <property name="javax.persistence.jdbc.user" value="java_user"/>

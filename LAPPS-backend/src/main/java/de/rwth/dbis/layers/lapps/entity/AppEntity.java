@@ -93,6 +93,6 @@ public class AppEntity implements Entity {
   public String toString() {
     return "[" + this.getClass().getName() + "] id: " + this.getId() + ", name: " + this.getName()
         + ", rating: " + this.getRating() + ", comments: " + this.getComments().size() + ", tags: "
-        + this.getTags().size();
+        + this.getTags().size() + ", available on: " + this.getInstances().size() + " platforms";
   }
 }
