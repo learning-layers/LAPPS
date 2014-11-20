@@ -52,10 +52,11 @@ public class UsersResource {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response getAllUsers(@HeaderParam("access_token") String accessToken) {
+    // TODO Currently authentication is optional for the tests to still run through..
     if (accessToken != null) {
       try {
         System.out.println(accessToken);
-        int userId = authenticate(accessToken);
+        authenticate(accessToken);
       } catch (OIDCException e) {
         e.printStackTrace();
         return Response.status(401).build();
@@ -154,11 +155,20 @@ public class UsersResource {
     ArrayList<UserEntity> entities = (ArrayList<UserEntity>) query.getResultList();
     em.getTransaction().commit();
     em.close();
-    // more than one means something bad happend, one means user is already known..
+    // more than one means something bad happened, one means user is already known..
     if (entities.size() > 1)
       throw new OIDCException("Exception during Open Id Authentication occured.");
-    else if (entities.size() == 1)
+    else if (entities.size() == 1) {
+      // quick check, if mail of OIDC server account differs (has changed) to our database entry; if
+      // so, update our user
+      if (!entities.get(0).getEmail().equals(mail)) {
+        UserEntity user = entities.get(0);
+        user.setEmail(mail);
+        userFacade.save(user);
+      }
       return entities.get(0).getId();
+
+    }
 
     // user is unknown, has to be created
     userId = createNewUser(sub, mail);
