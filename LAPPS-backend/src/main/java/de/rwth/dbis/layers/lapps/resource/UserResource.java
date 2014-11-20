@@ -19,6 +19,8 @@ import de.rwth.dbis.layers.lapps.entity.UserEntity;
 @Path("users/{id}")
 public class UserResource {
 
+  private UserFacade userFacade = new UserFacade();
+
   /**
    * 
    * Gets the user for a given id.
@@ -28,7 +30,6 @@ public class UserResource {
    * @return Response with user as a JSON object.
    * 
    */
-  @SuppressWarnings("unchecked")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response getUser(@PathParam("id") int id) {
@@ -48,9 +49,8 @@ public class UserResource {
     // em.close();
     UserFacade userFacade = new UserFacade();
     UserEntity user = userFacade.find(id);
-    if (user == null) {
+    if (user == null)
       return Response.status(404).build();
-    }
     // if (entities.size() == 0)
     // return Response.status(404).build();
     // if (entities.size() != 1)

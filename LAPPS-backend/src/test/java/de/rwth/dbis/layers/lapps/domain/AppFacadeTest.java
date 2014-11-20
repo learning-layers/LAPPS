@@ -19,7 +19,7 @@ public class AppFacadeTest {
 
   @Test
   public void save() {
-    final String appName = "app" + this.generateRandom(500);
+    final String appName = "app" + this.generateRandom(5000);
     AppEntity app = new AppEntity(appName);
     app.addTag(new AppTagEntity("tag_" + appName));
     app = this.appFacade.save(app);

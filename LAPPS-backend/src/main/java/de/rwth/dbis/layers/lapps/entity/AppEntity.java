@@ -27,6 +27,8 @@ public class AppEntity implements Entity {
   private List<AppCommentEntity> comments = new ArrayList<AppCommentEntity>();
   @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppTagEntity> tags = new ArrayList<AppTagEntity>();
+  @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private List<AppInstanceEntity> instances = new ArrayList<AppInstanceEntity>();
 
   public AppEntity() {}
 
@@ -73,6 +75,17 @@ public class AppEntity implements Entity {
     this.tags.add(tag);
     if (tag.getApp() != this) {
       tag.setApp(this);
+    }
+  }
+
+  public List<AppInstanceEntity> getInstances() {
+    return instances;
+  }
+
+  public void addInstance(AppInstanceEntity instance) {
+    this.instances.add(instance);
+    if (instance.getApp() != this) {
+      instance.setApp(this);
     }
   }
 
