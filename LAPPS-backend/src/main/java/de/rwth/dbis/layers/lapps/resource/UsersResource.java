@@ -28,6 +28,8 @@ import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.domain.UserFacade;
@@ -38,6 +40,7 @@ import de.rwth.dbis.layers.lapps.exception.OIDCException;
  * Users resource (exposed at "users" path).
  */
 @Path("users")
+@Api(value = "users", description = "Example")
 public class UsersResource {
 
   private static final String OPEN_ID_PROVIDER = "http://api.learning-layers.eu/o/oauth2";
@@ -51,6 +54,7 @@ public class UsersResource {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @ApiOperation("A test operation")
   public Response getAllUsers(@HeaderParam("access_token") String accessToken) {
     if (accessToken != null) {
       try {
