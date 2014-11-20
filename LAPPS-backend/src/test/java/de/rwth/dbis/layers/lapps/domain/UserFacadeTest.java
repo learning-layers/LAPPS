@@ -45,6 +45,15 @@ public class UserFacadeTest {
     LOGGER.info(comment.toString());
   }
 
+  @Test
+  public void update() {
+    UserFacade userFacade = new UserFacade();
+    UserEntity user = userFacade.find(1);
+    user.setEmail("new@email.com");
+    user = userFacade.save(user);
+    LOGGER.info("updated user: " + user);
+  }
+
   @After
   public void releaseResources() {
     EntityManager em = userFacade.getEntityManager();
