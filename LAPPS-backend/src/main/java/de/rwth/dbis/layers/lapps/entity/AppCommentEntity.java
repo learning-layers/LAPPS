@@ -1,10 +1,15 @@
 package de.rwth.dbis.layers.lapps.entity;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Comment domain object.
@@ -25,6 +30,8 @@ public class AppCommentEntity implements Entity {
   @ManyToOne
   @JoinColumn(name = "app_id")
   AppEntity app = null;
+  @Temporal(TemporalType.TIMESTAMP)
+  Date date = new Date();
 
   public AppCommentEntity() {}
 
@@ -64,7 +71,22 @@ public class AppCommentEntity implements Entity {
     }
   }
 
+  public Date getDate() {
+    return date;
+  }
+
+  public void setDate(Date date) {
+    this.date = date;
+  }
+
   public int getId() {
     return id;
+  }
+
+  @Override
+  public String toString() {
+    return "[" + this.getClass().getName() + "] id: " + this.getId() + ", contents: "
+        + this.getText() + ", from user: " + this.getAuthor().getEmail() + " regarding app: "
+        + this.getApp().getName() + ", on: " + DateFormat.getInstance().format(this.getDate());
   }
 }
