@@ -40,3 +40,43 @@ body {
 		0 18px 23px rgba(0, 0, 0, 0.1);
 	font-size: large;
 }
+
+/* header start*/
+.search-bar {
+	left: 230px;
+	right: 230px;
+	position: absolute;
+}
+
+.search-bar-xs {
+	left: 60px;
+	right: 80px;
+	top: 8px;
+	position: absolute;
+}
+
+.search-bar .input-group, search-bar-xs .input-group {
+	width: 100%;
+}
+
+.search-bar .input-group .input-group-btn, search-bar-xs .input-group .input-group-btn
+	{
+	width: 40px;
+}
+
+#sign-in-button {
+	margin-left: 20px;
+	margin-right: 20px;
+}
+/* header end*/
+.featured-info-panel .description {
+	overflow: hidden;
+	-ms-text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 10;
+	line-height: 20px;
+	max-height: 200px;
+}

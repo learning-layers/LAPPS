@@ -20,6 +20,7 @@
                  */
                 $scope.apps = [];
 
+                $scope.interval = 4000;
                 $scope.currentSlide = 0;
                 $scope.onSlideChanged = function(nextSlide, direction) {
 

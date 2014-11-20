@@ -1,22 +1,21 @@
 ﻿<div class="row">
 	<div class="col-md-9">
-
 		<div id="featured-carousel">
-			<carousel interval="3000"
+			<carousel interval="interval"
 				on-carousel-change="onSlideChanged(nextSlide, direction)">
 			<slide ng-repeat="app in apps" active="app.active"> <img
 				ng-src="{{app.image}}" width="1000" height="550">
 			<div class="carousel-caption">
 				<h1>{{app.name}}</h1>
-				<p>{{app.description}}</p>
+				<p>{{app.shortDescription}}</p>
 			</div>
 			</slide> </carousel>
 		</div>
 	</div>
-	<div class="col-md-3">
+	<div class="col-md-3 featured-info-panel">
 		<h2>{{apps[currentSlide].name}}</h2>
-		<p>{{apps[currentSlide].description}}</p>
-		<p draggable="true">
+		<p class="description">{{apps[currentSlide].description}}</p>
+		<p>
 			<button class="btn btn-success btn-small">Details</button>
 		</p>
 	</div>
