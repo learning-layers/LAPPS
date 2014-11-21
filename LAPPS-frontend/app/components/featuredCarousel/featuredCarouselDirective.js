@@ -7,6 +7,7 @@
 (function() {
   angular.module('lappsDirectives').directive('featuredCarousel', function() {
     return {
+      scope: true,
       restrict: 'E',
       templateUrl: 'components/featuredCarousel/featuredCarouselView.html',
       controller: 'featuredCarouselCtr'

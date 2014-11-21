@@ -14,9 +14,10 @@
              * @description This array stores a list of available apps with a
              *              short description to display.
              */
-            $scope.apps = [];
-            $http.get('assets/dummy/appList.json').success(function(data) {
-              $scope.apps = data;
-            });
+            /*
+             * $scope.apps = [];
+             * $http.get('assets/dummy/appList.json').success(function(data) {
+             * $scope.apps = data; });
+             */
           }]);
 }).call(this);

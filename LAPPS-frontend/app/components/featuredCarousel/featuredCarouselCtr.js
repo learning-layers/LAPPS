@@ -1,8 +1,8 @@
 ﻿/**
- * @class appListCtrl
+ * @class featuredCarouselCtr
  * @memberOf lapps.lappsControllers
- * @description This controller is responsible for displaying a list of
- *              available apps.
+ * @description This controller is responsible for displaying a carousel with
+ *              slides for featured apps
  */
 (function() {
   angular.module('lappsControllers').controller(
@@ -11,19 +11,13 @@
               '$scope',
               '$http',
               function($scope, $http) {
-                /**
-                 * @field
-                 * @type {appListItem[]}
-                 * @memberOf lapps.lappsControllers.appListCtrl
-                 * @description This array stores a list of available apps with
-                 *              a short description to display.
-                 */
+
                 $scope.apps = [];
 
                 $scope.interval = 4000;
                 $scope.currentSlide = 0;
-                $scope.onSlideChanged = function(nextSlide, direction) {
 
+                $scope.onSlideChanged = function(nextSlide, direction) {
                   if (direction == 'next') {
                     $scope.currentSlide = ($scope.currentSlide + 1)
                             % $scope.apps.length;
@@ -34,7 +28,7 @@
                 };
 
                 $http.get('assets/dummy/appList.json').success(function(data) {
-                  $scope.apps = data;
+                  $scope.apps = data.slice(0, 3);
                 });
               }]);
 }).call(this);

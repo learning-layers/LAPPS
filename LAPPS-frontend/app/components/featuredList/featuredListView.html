@@ -1,0 +1,35 @@
+﻿<div class="row" style="margin-top: 30px">
+	<div class="col-md-12">
+		<ul class="lead nav nav-justified nav-tabs">
+			<li class="active"><a href="#"><span
+					class="glyphicon glyphicon-fire text-color-firered"></span> New</a></li>
+			<li><a href="#"><span
+					class="glyphicon glyphicon glyphicon-star text-color-staryellow"></span>
+					Top Rated</a></li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane row active" id="info-tab">
+				<div ng-repeat="app in apps" class="col-sm-6 col-md-4 col-lg-3">
+					<div class="featured-list-item">
+						<a href="#/apps/{{app.id}}"></a>
+						<div class="thumbnail">
+							<img ng-src="{{app.thumbnail}}" alt="cats">
+							<div class="caption">
+								<h3>{{app.name}}</h3>
+								<div class="rating-stars">
+									<span ng-repeat="n in [] | rangeFilter:app.rating"
+										class="glyphicon glyphicon-star text-color-staryellow">
+									</span><span ng-repeat="n in [] | rangeFilter:(5-app.rating)"
+										class="glyphicon glyphicon-star-empty text-color-staryellow"></span>
+
+									<span class="hspacer05 text-color-paleblack">({{app.commentsCount}})</span>
+								</div>
+								<p>{{app.description}}</p>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
