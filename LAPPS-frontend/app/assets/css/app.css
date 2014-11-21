@@ -24,7 +24,7 @@ body {
 	transition: none;
 }
 
-@media ( min-width : 992px) {
+@media ( min-width : 768px) {
 	.featured-list-item:hover .thumbnail {
 		-moz-box-shadow: 4px 4px 15px #999;
 		-webkit-box-shadow: 4px 4px 15px #999;
@@ -40,6 +40,26 @@ body {
 		-o-transition: padding .2s linear;
 		-webkit-transition: padding .2s linear;
 		transition: padding .2s linear;
+	}
+	.featured-list-item .thumbnail .image-container {
+		position: relative;
+		background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%,
+			rgba(160, 160, 160, 0.5) 10%, rgba(160, 160, 160, 1) 50%,
+			rgba(160, 160, 160, 0.5) 90%, rgba(255, 255, 255, 1) 100%);
+	}
+	.featured-list-item .thumbnail .image-container>img {
+		margin-left: auto;
+		margin-right: auto;
+		display: block;
+		width: 244px;
+	}
+}
+
+@media ( min-width : 768px ) and ( max-width : 1200px ) {
+	.featured-list-item .thumbnail .image-container>img {
+		/*border-left: 1px solid #646464;
+      border-right: 1px solid #646464;*/
+		
 	}
 }
 
@@ -202,6 +222,7 @@ h1, h2, h3, h4, h5 {
 	}
 }
 
+/*tabs end*/
 @media ( max-width : 768px) {
 	.featured-list-item .thumbnail .caption {
 		padding: 0 19px !important;
@@ -222,6 +243,7 @@ h1, h2, h3, h4, h5 {
 	.thumbnail>img, .thumbnail a>img {
 		float: left;
 	}
+	.featured-list-item .thumbnail .image-container {
+		float: left;
+	}
 }
-
-/*tabs end*/
