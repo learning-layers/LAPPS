@@ -1,5 +1,7 @@
 package de.rwth.dbis.layers.lapps.domain;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import de.rwth.dbis.layers.lapps.data.EMF;
@@ -22,6 +24,16 @@ public class AppFacade extends AbstractFacade<AppEntity, Integer> {
       instance = new AppFacade();
     }
     return instance;
+  }
+
+  /**
+   * Finds an application by its name or part of the name.
+   * 
+   * @param name (part of ) The name of the app
+   * @return List of matched AppEntities
+   */
+  public List<AppEntity> findByName(String name) {
+    return super.findByParameter("name", name);
   }
 
 }

@@ -106,6 +106,7 @@ public class AppEntity implements Entity {
       artifact.setApp(this);
     }
   }
+
   public List<AppDetailEntity> getDetails() {
     return details;
   }
@@ -121,9 +122,9 @@ public class AppEntity implements Entity {
   @Override
   public String toString() {
     return "[" + this.getClass().getName() + "] id: " + this.getId() + ", name: " + this.getName()
-        + ", rating: " + this.getRating() + ", comments: " + this.getComments().size() + ", tags: "
-        + this.getTags().size() + ", available on: " + this.getInstances().size() + " platforms"
-        + ", with artifacts: " + this.getArtifacts().size() + "having: " + this.getDetails().size() + " descriptions(s)";
-
+        + ", rating: " + this.getRating() + ", comment(s): " + this.getComments().size()
+        + ", tag(s): " + this.getTags().size() + ", available on: " + this.getInstances().size()
+        + " platform(s) with " + this.getArtifacts().size() + " artifact(s), having: "
+        + this.getDetails().size() + " descriptions(s)";
   }
 }
