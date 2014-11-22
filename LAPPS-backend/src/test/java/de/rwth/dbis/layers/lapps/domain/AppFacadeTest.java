@@ -58,7 +58,7 @@ public class AppFacadeTest {
 
   public AppEntity createApp() {
     // Load a random app platform:
-    AppPlatformEntity platform = this.getRandomPlatform();
+    AppPlatformEntity platform = getRandomPlatform();
     // Load a random app detail type:
     AppDetailTypeEntity detailType = this.getRandomDetailType();
     // Load a random app artifact type:
@@ -77,7 +77,7 @@ public class AppFacadeTest {
   public void addInstance() {
     LOGGER.info("Creating a random instance to add to " + app);
     // Load a random app platform:
-    AppPlatformEntity platform = this.getRandomPlatform();
+    AppPlatformEntity platform = getRandomPlatform();
     // Create another app instance and add it to this existing app:
     AppInstanceEntity appInstance =
         new AppInstanceEntity(platform, "http://test.com/second_dummy_instance");
@@ -141,18 +141,27 @@ public class AppFacadeTest {
     LOGGER.info("App found.");
   }
 
-  public AppPlatformEntity getRandomPlatform() {
+  public static AppPlatformEntity getRandomPlatform() {
     List<AppPlatformEntity> platforms = AppPlatformFacade.getFacade().findAll();
+    if (platforms.size() < 1) {
+      LOGGER.severe("No Platforms available!");
+    }
     return platforms.get(Utils.generateRandomInt(0, platforms.size()));
   }
 
   public AppDetailTypeEntity getRandomDetailType() {
     List<AppDetailTypeEntity> detailTypes = AppDetailTypeFacade.getFacade().findAll();
+    if (detailTypes.size() < 1) {
+      LOGGER.severe("No Detail types available!");
+    }
     return detailTypes.get(Utils.generateRandomInt(0, detailTypes.size()));
   }
 
   public ArtifactTypeEntity getRandomArtifactType() {
     List<ArtifactTypeEntity> artifactTypes = ArtifactFacade.getFacade().findAll();
+    if (artifactTypes.size() < 1) {
+      LOGGER.severe("No Artifact types available!");
+    }
     return artifactTypes.get(Utils.generateRandomInt(0, artifactTypes.size()));
   }
 

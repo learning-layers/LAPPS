@@ -8,20 +8,45 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import de.rwth.dbis.layers.lapps.Utils;
+import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.data.EntityManagerTest;
 import de.rwth.dbis.layers.lapps.entity.AppCommentEntity;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 
 /**
- * Test class for User Facade business objects.
+ * Test class for User Facade business objects. <b>Do not delete or modify user with id of 1!</b>
  * 
  */
 public class UserFacadeTest {
   private UserFacade userFacade = new UserFacade();
+  private UserEntity user = null;
   private final static Logger LOGGER = Logger.getLogger(EntityManagerTest.class.getName());
+
+  @Before
+  public void init() {
+    LOGGER.info("Deleting user data...");
+    final EntityManager em = EMF.getEm();
+    em.getTransaction().begin();
+    em.createQuery("delete from UserEntity user where user.id > 1").executeUpdate();
+    em.getTransaction().commit();
+    em.close();
+    LOGGER.info("User data deleted.");
+    LOGGER.info("Creating a new user...");
+    user = this.createUser();
+    user = userFacade.save(user);
+    assertTrue(user.getId() > 0);
+    LOGGER.info("User created: " + user);
+  }
+
+  private UserEntity createUser() {
+    return new UserEntity(Utils.generateRandomInt(0, 5000) + "", "test"
+        + Utils.generateRandomInt(0, 5000) + "@lapps.com");
+  }
 
   @Test
   public void find() {
@@ -37,15 +62,18 @@ public class UserFacadeTest {
 
   @Test
   public void comment() {
-    UserEntity user = userFacade.findAll().get(0);
-    AppFacade appFacade = AppFacade.getFacade();
-    AppEntity app = appFacade.findAll().get(0);
-    AppCommentEntity comment = userFacade.comment("Aaaaand... another one!", user, app);
-    assertTrue(comment != null && comment.getId() > 0);
-    LOGGER.info(comment.toString());
+    LOGGER.info("Creating a test comment...");
+    AppEntity app = new AppEntity("Test app " + Utils.generateRandomInt(0, 5000));
+    app = AppFacade.getFacade().save(app);
+    AppCommentEntity comment = userFacade.comment("Test comment", user, app);
+    assertTrue(comment != null /*
+                                * && comment.getId() == app.getComments().get(0).getId() &&
+                                * comment.getId() == user.getComments().get(0).getId()
+                                */);
+    LOGGER.info("Dummy app created, comment added: " + comment.toString());
   }
 
-  @Test
+  // @Test
   public void update() {
     UserFacade userFacade = new UserFacade();
     UserEntity user = userFacade.find(1);
@@ -56,9 +84,10 @@ public class UserFacadeTest {
 
   @After
   public void releaseResources() {
-    EntityManager em = userFacade.getEntityManager();
-    if (em != null && em.isOpen()) {
-      em.close();
-    }
+    final EntityManager em = EMF.getEm();
+    em.getTransaction().begin();
+    em.createQuery("delete from AppEntity").executeUpdate();
+    em.getTransaction().commit();
+    em.close();
   }
 }

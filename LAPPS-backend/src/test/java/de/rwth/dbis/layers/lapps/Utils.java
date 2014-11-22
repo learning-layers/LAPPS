@@ -3,6 +3,10 @@ package de.rwth.dbis.layers.lapps;
 import java.math.BigInteger;
 import java.util.Random;
 
+import de.rwth.dbis.layers.lapps.entity.AppEntity;
+import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
+import de.rwth.dbis.layers.lapps.entity.AppPlatformEntity;
+
 public class Utils {
   /**
    * Generates a random integer in a range (min-max)
@@ -18,5 +22,12 @@ public class Utils {
   public static String generateRandomString() {
     final Random random = new Random();
     return new BigInteger(80, random).toString();
+  }
+
+  public static AppEntity createDummyAppWithInstance(AppPlatformEntity onPlatform) {
+    AppInstanceEntity instance = new AppInstanceEntity(onPlatform, "dummy app instance");
+    AppEntity app = new AppEntity("dummy app");
+    app.addInstance(instance);
+    return app;
   }
 }
