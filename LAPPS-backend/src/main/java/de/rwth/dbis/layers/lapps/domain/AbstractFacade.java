@@ -1,6 +1,5 @@
 package de.rwth.dbis.layers.lapps.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -81,8 +80,30 @@ public abstract class AbstractFacade<T extends Entity, I> {
   public final List<T> findAll() {
     final EntityManager em = getEntityManager();
     em.getTransaction().begin();
+    // u parameter is the entity class itself
     Query query = em.createQuery("select u from " + entityClass.getSimpleName() + " u");
-    ArrayList<T> entities = (ArrayList<T>) query.getResultList();
+    List<T> entities = query.getResultList();
+    em.getTransaction().commit();
+    em.close();
+    return entities;
+  }
+
+  /**
+   * Lists all {@link Entity} instances filtered by a certain parameter.
+   * 
+   * @param param The field to filter on
+   * @param value The value of the field filtering on
+   * @return List of Entities
+   */
+  @SuppressWarnings("unchecked")
+  public final List<T> findByParameter(String param, String value) {
+    final EntityManager em = getEntityManager();
+    em.getTransaction().begin();
+    Query query =
+        em.createQuery(
+            "select entity from " + entityClass.getSimpleName() + " entity where entity." + param
+                + " like :value").setParameter("value", "%" + value + "%");
+    List<T> entities = query.getResultList();
     em.getTransaction().commit();
     em.close();
     return entities;

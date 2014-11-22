@@ -66,4 +66,14 @@ public class UserFacade extends AbstractFacade<UserEntity, Integer> {
     return comments.get(comments.size() - 1);
   }
 
+  /**
+   * Finds a user by its email or part of it.
+   * 
+   * @param email (part of) The email of the user
+   * @return List of matched users
+   */
+  public List<UserEntity> findByEmail(String email) {
+    return super.findByParameter("email", email);
+  }
+
 }

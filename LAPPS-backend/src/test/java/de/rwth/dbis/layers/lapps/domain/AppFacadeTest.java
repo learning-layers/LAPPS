@@ -2,69 +2,191 @@ package de.rwth.dbis.layers.lapps.domain;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.logging.Logger;
 
+import javax.persistence.EntityManager;
+
+import org.junit.Before;
 import org.junit.Test;
 
+import de.rwth.dbis.layers.lapps.Utils;
+import de.rwth.dbis.layers.lapps.data.EMF;
+import de.rwth.dbis.layers.lapps.entity.AppArtifactEntity;
+import de.rwth.dbis.layers.lapps.entity.AppDetailEntity;
+import de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
 import de.rwth.dbis.layers.lapps.entity.AppPlatformEntity;
 import de.rwth.dbis.layers.lapps.entity.AppTagEntity;
+import de.rwth.dbis.layers.lapps.entity.ArtifactTypeEntity;
 
 /**
- * Test class for App Facade business ojects.
+ * Test class for App Facade business objects.
  *
  */
 public class AppFacadeTest {
   private AppFacade appFacade = AppFacade.getFacade();
+  private AppEntity app = null;
   private final static Logger LOGGER = Logger.getLogger(AppFacadeTest.class.getName());
 
-  // @Test
-  public void save() {
-    // Load app platform:
-    AppPlatformFacade platformFacade = AppPlatformFacade.getFacade();
-    AppPlatformEntity platform = platformFacade.find(1);
-    // Save new app with a tag, an instance and a platform.
-    final String appName = "app" + this.generateRandom(5000);
+  @Before
+  public void beforeTest() {
+    LOGGER.info("Deleting app data...");
+    // Clear data
+    final EntityManager em = EMF.getEm();
+    em.getTransaction().begin();
+    // em.createQuery("delete from AppTagEntity").executeUpdate();
+    // em.createQuery("delete from AppCommentEntity").executeUpdate();
+    // em.createQuery("delete from AppArtifactEntity").executeUpdate();
+    // em.createQuery("delete from AppDetailEntity").executeUpdate();
+    // em.createQuery("delete from AppInstanceEntity").executeUpdate();
+    // Cascading delete on foreign keys seems to be doing the trick, so do delete just the 'root'
+    // entity.
+    em.createQuery("delete from AppEntity").executeUpdate();
+    em.getTransaction().commit();
+    em.close();
+    LOGGER.info("App data deleted.");
+    LOGGER.info("Creating dummy app: ");
+    app = this.createApp();
+    LOGGER.info("Persisting dummy app: ");
+    app = this.appFacade.save(app);
+    assertTrue(app.getId() > 0 && app.getTags().size() > 0 && app.getDetails().size() > 0
+        && app.getArtifacts().size() > 0 && app.getInstances().size() > 0);
+    LOGGER.info("App created: " + app);
+  }
+
+  public AppEntity createApp() {
+    // Load a random app platform:
+    AppPlatformEntity platform = this.getRandomPlatform();
+    // Load a random app detail type:
+    AppDetailTypeEntity detailType = this.getRandomDetailType();
+    // Load a random app artifact type:
+    ArtifactTypeEntity artifactType = this.getRandomArtifactType();
+    // Save a new app with all its properties.
+    final String appName = "Test app";// Utils.generateRandomString();
     AppEntity app = new AppEntity(appName);
     app.addTag(new AppTagEntity("tag_" + appName));
-    app.addInstance(new AppInstanceEntity(platform, "http://ok.com/turboApp"));
-    app = this.appFacade.save(app);
-    assertTrue(app.getId() > 0);
-    LOGGER.info("Application saved: " + app);
+    app.addDetail(new AppDetailEntity(detailType, "detail_" + appName));
+    app.addArtifacts(new AppArtifactEntity(artifactType, "url_" + appName));
+    app.addInstance(new AppInstanceEntity(platform, "url_" + appName));
+    return app;
   }
 
   @Test
-  public void saveInstance() {
-    // Load app platform:
-    AppPlatformFacade platformFacade = AppPlatformFacade.getFacade();
-    AppPlatformEntity platform = platformFacade.find(2);
-    // Load app:
-    AppEntity app = appFacade.find(47);
+  public void addInstance() {
+    LOGGER.info("Creating a random instance to add to " + app);
+    // Load a random app platform:
+    AppPlatformEntity platform = this.getRandomPlatform();
     // Create another app instance and add it to this existing app:
-    AppInstanceEntity appInstance = new AppInstanceEntity(platform, "http://turbo.com/app");
+    AppInstanceEntity appInstance =
+        new AppInstanceEntity(platform, "http://test.com/second_dummy_instance");
     appInstance.setApp(app);
-    app = appFacade.save(app);
+    this.app = appFacade.save(app);
     assertTrue(app.getInstances().size() > 1);
     LOGGER.info("Instance created, application now: " + app);
   }
 
-  // @Test
-  public void find() {
-    AppEntity app = appFacade.find(2);
-    LOGGER.info("app loaded: " + app.toString());
+  @Test
+  public void addDetail() {
+    LOGGER.info("Creating a random detail to add to " + app);
+    // Load a random app detail type:
+    AppDetailTypeEntity detailType = this.getRandomDetailType();
+    // Create another app detail and add it to this existing app:
+    AppDetailEntity appDetail = new AppDetailEntity(detailType, "Test app description");
+    app.addDetail(appDetail);
+    app = appFacade.save(app);
+    assertTrue(app.getDetails().size() > 1);
+    LOGGER.info("Detail created, application now: " + app);
   }
 
+  @Test
+  public void addTag() {
+    LOGGER.info("Creating a random tag to add to " + app);
+    AppTagEntity tag = new AppTagEntity("tag_" + app.getName());
+    app.addTag(tag);
+    app = appFacade.save(app);
+    assertTrue(app.getTags().size() > 1);
+    LOGGER.info("Tag created, application now: " + app);
+  }
+
+  @Test
+  public void addArtifact() {
+    LOGGER.info("Creating a random artifact to add to " + app);
+    // Load a random app artifact type:
+    ArtifactTypeEntity artifactType = this.getRandomArtifactType();
+    // Create another app artifact and add it to this existing app:
+    AppArtifactEntity appArtifact =
+        new AppArtifactEntity(artifactType, "artifact_" + app.getName());
+    app.addArtifacts(appArtifact);
+    app = appFacade.save(app);
+    assertTrue(app.getArtifacts().size() > 1);
+    LOGGER.info("Artifact created, application now: " + app);
+  }
+
+  @Test
+  public void load() {
+    LOGGER.info("Loading a random app...");
+    AppEntity app = this.getRandomApp();
+    assertTrue(app.getId() > 0);
+    LOGGER.info("App loaded: " + app);
+  }
+
+  @Test
+  public void findByName() {
+    String name = app.getName().substring(4); // error-prone!
+    LOGGER.info("Searching for \"" + name + "\" with existing \"" + app.getName() + "\"");
+    AppEntity found = appFacade.findByName(name).get(0);
+    assertTrue(found.getId() == app.getId());
+    LOGGER.info("App found.");
+  }
+
+  public AppPlatformEntity getRandomPlatform() {
+    List<AppPlatformEntity> platforms = AppPlatformFacade.getFacade().findAll();
+    return platforms.get(Utils.generateRandomInt(0, platforms.size()));
+  }
+
+  public AppDetailTypeEntity getRandomDetailType() {
+    List<AppDetailTypeEntity> detailTypes = AppDetailTypeFacade.getFacade().findAll();
+    return detailTypes.get(Utils.generateRandomInt(0, detailTypes.size()));
+  }
+
+  public ArtifactTypeEntity getRandomArtifactType() {
+    List<ArtifactTypeEntity> artifactTypes = ArtifactFacade.getFacade().findAll();
+    return artifactTypes.get(Utils.generateRandomInt(0, artifactTypes.size()));
+  }
+
+  public AppEntity getRandomApp() {
+    List<AppEntity> apps = appFacade.findAll();
+    return apps.get(Utils.generateRandomInt(0, apps.size()));
+  }
+
+  // One-time tests. TODO: Either remove, or drop and create random in @Before.
   // @Test
   public void addPlatform() {
-    final String platformName = "iOS";
+    final String platformName = "Github";
     AppPlatformEntity platform = new AppPlatformEntity(platformName);
     AppPlatformFacade platformFacade = AppPlatformFacade.getFacade();
     platform = platformFacade.save(platform);
     LOGGER.info("platform saved: " + platform.toString());
   }
 
-  private long generateRandom(long max) {
-    return Math.round(Math.random() * max);
+
+  // @Test
+  public void addArtifactType() {
+    final String artifactType = "png";
+    ArtifactTypeEntity artifact = new ArtifactTypeEntity(artifactType);
+    ArtifactFacade artifactFacade = ArtifactFacade.getFacade();
+    artifact = artifactFacade.save(artifact);
+    LOGGER.info("artifact type saved: " + artifact.toString());
+  }
+
+  // @Test
+  public void addDetailType() {
+    final String detailTypeName = "General description";
+    AppDetailTypeEntity detailType = new AppDetailTypeEntity(detailTypeName);
+    AppDetailTypeFacade detailTypeFacade = AppDetailTypeFacade.getFacade();
+    detailType = detailTypeFacade.save(detailType);
+    LOGGER.info("detail type saved: " + detailType.toString());
   }
 }
