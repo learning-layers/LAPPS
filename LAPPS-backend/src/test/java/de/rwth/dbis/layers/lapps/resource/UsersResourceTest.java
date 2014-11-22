@@ -64,9 +64,10 @@ public class UsersResourceTest {
    */
   @Test
   public void testAuthentication() {
-    int returnValue = -1;
+    // int returnValue = -1;
     try {
-      returnValue = UsersResource.authenticate("here has to be a valid token in the future");
+      // returnValue =
+      UsersResource.authenticate("here has to be a valid token in the future");
     } catch (OIDCException e) {
       // e.printStackTrace();
       // Currently, this is desired TODO
