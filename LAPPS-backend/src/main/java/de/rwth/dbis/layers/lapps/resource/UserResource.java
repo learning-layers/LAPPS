@@ -19,7 +19,7 @@ import de.rwth.dbis.layers.lapps.entity.UserEntity;
 @Path("users/{id}")
 public class UserResource {
 
-  private UserFacade userFacade = new UserFacade();
+  private static UserFacade userFacade = new UserFacade();
 
   /**
    * 
