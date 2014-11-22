@@ -7,9 +7,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -31,7 +30,6 @@ import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
-import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.domain.UserFacade;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
@@ -44,6 +42,8 @@ import de.rwth.dbis.layers.lapps.exception.OIDCException;
 public class UsersResource {
 
   private static final String OPEN_ID_PROVIDER = "http://api.learning-layers.eu/o/oauth2";
+  private static final String OPEN_ID_PROVIDER_CONFIGURATION_URI = OPEN_ID_PROVIDER.trim()
+      + "/.well-known/openid-configuration";
   private static UserFacade userFacade = new UserFacade();
 
 
@@ -59,7 +59,6 @@ public class UsersResource {
     // TODO Currently authentication is optional for the tests to still run through..
     if (accessToken != null) {
       try {
-        System.out.println(accessToken);
         authenticate(accessToken);
       } catch (OIDCException e) {
         e.printStackTrace();
@@ -67,7 +66,7 @@ public class UsersResource {
       }
     }
     userFacade.findAll();
-    ArrayList<UserEntity> entities = (ArrayList<UserEntity>) userFacade.findAll();
+    List<UserEntity> entities = (List<UserEntity>) userFacade.findAll();
     ArrayList<Integer> userIds = new ArrayList<Integer>();
     Iterator<UserEntity> userIt = entities.iterator();
     while (userIt.hasNext())
@@ -101,32 +100,31 @@ public class UsersResource {
     // get provider configuration
     URL providerConfigurationUri;
     try {
-      providerConfigurationUri =
-          new URL(OPEN_ID_PROVIDER.trim() + "/.well-known/openid-configuration");
+      providerConfigurationUri = new URL(OPEN_ID_PROVIDER_CONFIGURATION_URI);
     } catch (MalformedURLException e) {
       throw new OIDCException("Exception during Open Id Connect authentication occured: "
           + e.getMessage());
     }
-    HTTPRequest pConfigRequest = new HTTPRequest(Method.GET, providerConfigurationUri);
+    HTTPRequest providerConfigRequest = new HTTPRequest(Method.GET, providerConfigurationUri);
 
     // parse JSON result from configuration request
     try {
-      String configStr = pConfigRequest.send().getContent();
+      String configStr = providerConfigRequest.send().getContent();
       serverConfig = mapper.readTree(configStr);
     } catch (Exception e) {
       throw new OIDCException("Exception during Open Id Connect authentication occured: "
           + e.getMessage());
     }
 
-    // Send access token, get user info
-    HTTPRequest hrq;
-    HTTPResponse hrs;
+    // send access token, get user info
+    HTTPRequest httpRequest;
+    HTTPResponse httpResponse;
 
     try {
       URI userinfoEndpointUri = new URI(serverConfig.get("userinfo_endpoint").textValue());
-      hrq = new HTTPRequest(Method.GET, userinfoEndpointUri.toURL());
-      hrq.setAuthorization("Bearer " + openIdToken);
-      hrs = hrq.send();
+      httpRequest = new HTTPRequest(Method.GET, userinfoEndpointUri.toURL());
+      httpRequest.setAuthorization("Bearer " + openIdToken);
+      httpResponse = httpRequest.send();
     } catch (IOException | URISyntaxException e) {
       throw new OIDCException("Exception during Open Id Connect authentication occured: "
           + e.getMessage());
@@ -135,30 +133,24 @@ public class UsersResource {
     // ..and process the response
     UserInfoResponse userInfoResponse;
     try {
-      userInfoResponse = UserInfoResponse.parse(hrs);
+      userInfoResponse = UserInfoResponse.parse(httpResponse);
     } catch (ParseException e) {
       throw new OIDCException("Exception during Open Id Authentication occured: " + e.getMessage());
     }
-    // Request failed (unauthorized)
+    // request failed (unauthorized)
     if (userInfoResponse instanceof UserInfoErrorResponse) {
       UserInfoErrorResponse uier = (UserInfoErrorResponse) userInfoResponse;
       throw new OIDCException("Exception during Open Id Authentication occured: "
           + uier.getClass().toString());
     }
-    // Successful, now get the user info and start extracting content
+    // successful, now get the user info and start extracting content
     UserInfo userInfo = ((UserInfoSuccessResponse) userInfoResponse).getUserInfo();
     String sub = userInfo.getSubject().toString();
     String mail = userInfo.getEmail().toString();
 
     // search for existing user
-    // TODO: Check if this can be somehow put into the Facade classes
-    final EntityManager em = EMF.getEm();
-    em.getTransaction().begin();
-    Query query = em.createQuery("select u from UserEntity u where u.oidcId=" + sub);
-    @SuppressWarnings("unchecked")
-    ArrayList<UserEntity> entities = (ArrayList<UserEntity>) query.getResultList();
-    em.getTransaction().commit();
-    em.close();
+    List<UserEntity> entities = userFacade.findByParameter("oidcId", sub);
+
     // more than one means something bad happened, one means user is already known..
     if (entities.size() > 1)
       throw new OIDCException("Exception during Open Id Authentication occured.");
