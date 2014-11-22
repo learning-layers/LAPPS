@@ -43,7 +43,7 @@ public class AppFacadeTest {
     // em.createQuery("delete from AppInstanceEntity").executeUpdate();
     // Cascading delete on foreign keys seems to be doing the trick, so do delete just the 'root'
     // entity.
-    em.createQuery("delete from AppEntity").executeUpdate();
+    em.createQuery(Utils.DELETE_APPS_QUERY).executeUpdate();
     em.getTransaction().commit();
     em.close();
     LOGGER.info("App data deleted.");

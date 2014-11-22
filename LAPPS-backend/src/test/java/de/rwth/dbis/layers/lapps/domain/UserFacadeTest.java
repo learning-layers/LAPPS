@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import de.rwth.dbis.layers.lapps.Utils;
 import de.rwth.dbis.layers.lapps.data.EMF;
-import de.rwth.dbis.layers.lapps.data.EntityManagerTest;
 import de.rwth.dbis.layers.lapps.entity.AppCommentEntity;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
@@ -25,14 +24,14 @@ import de.rwth.dbis.layers.lapps.entity.UserEntity;
 public class UserFacadeTest {
   private UserFacade userFacade = new UserFacade();
   private UserEntity user = null;
-  private final static Logger LOGGER = Logger.getLogger(EntityManagerTest.class.getName());
+  private final static Logger LOGGER = Logger.getLogger(UserFacadeTest.class.getName());
 
   @Before
   public void init() {
     LOGGER.info("Deleting user data...");
     final EntityManager em = EMF.getEm();
     em.getTransaction().begin();
-    em.createQuery("delete from UserEntity user where user.id > 1").executeUpdate();
+    em.createQuery(Utils.DELETE_USERS_QUERY).executeUpdate();
     em.getTransaction().commit();
     em.close();
     LOGGER.info("User data deleted.");
@@ -66,11 +65,16 @@ public class UserFacadeTest {
     AppEntity app = new AppEntity("Test app " + Utils.generateRandomInt(0, 5000));
     app = AppFacade.getFacade().save(app);
     AppCommentEntity comment = userFacade.comment("Test comment", user, app);
-    assertTrue(comment != null /*
-                                * && comment.getId() == app.getComments().get(0).getId() &&
-                                * comment.getId() == user.getComments().get(0).getId()
-                                */);
+    assertTrue(comment != null && comment.getId() > 0);
+    // LOGGER.info("user's comment: " + comment.getAuthor().getComments().get(0).toString());
+    // LOGGER.info("app's comment: " + app.getComments().get(0).toString());
     LOGGER.info("Dummy app created, comment added: " + comment.toString());
+  }
+
+  // TODO: Implement
+  @Test
+  public void grandRights() {
+
   }
 
   // @Test
