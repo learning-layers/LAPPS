@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -59,7 +60,7 @@ public class UsersResource {
    * @return Response with all users as a JSON array.
    */
   @GET
-  @ApiOperation(value = "List all users")
+  @ApiOperation(value = "Get list of all users")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Invalid authentication")})
   public Response getAllUsers(@HeaderParam("access_token") String accessToken) {
     // TODO Currently authentication is optional for the tests to still run through
@@ -98,12 +99,13 @@ public class UsersResource {
    */
   @GET
   @Path("/{id}")
-  @ApiOperation(value = "Find user by ID", response = UserEntity.class)
+  @ApiOperation(value = "Get user by ID", response = UserEntity.class)
   @ApiResponses(value = {@ApiResponse(code = 404, message = "User not found")})
   public Response getUser(@PathParam("id") int id) {
     UserEntity user = userFacade.find(id);
-    if (user == null)
+    if (user == null) {
       return Response.status(404).build();
+    }
     try {
       ObjectMapper mapper = new ObjectMapper();
       return Response.status(200).entity(mapper.writeValueAsBytes(user)).build();
@@ -113,6 +115,39 @@ public class UsersResource {
     }
   }
 
+  /**
+   * 
+   * Remove the user with the given id.
+   * 
+   * @param id
+   * 
+   * @return Response
+   */
+  // TODO: Think about success token (instead of only a 200 response)
+  // TODO: Write test case
+  @DELETE
+  @Path("/{id}")
+  @ApiOperation(value = "Delete user by ID")
+  @ApiResponses(value = {@ApiResponse(code = 401, message = "Invalid authentication"),
+      @ApiResponse(code = 404, message = "User not found")})
+  public Response removeUser(@HeaderParam("access_token") String accessToken,
+      @PathParam("id") int id) {
+    if (accessToken != null) {
+      try {
+        // TODO: authenticate only the user himself and the admin
+        authenticate(accessToken);
+      } catch (OIDCException e) {
+        LOGGER.warning(e.getMessage());
+        return Response.status(401).build();
+      }
+    }
+    UserEntity user = userFacade.find(id);
+    if (user == null) {
+      return Response.status(404).build();
+    }
+    // TODO: delete user with help of userFacade
+    return Response.status(200).build();
+  }
 
   /**
    * Tries to authenticate a user for a given OpenIdToken. If the user is not yet registered, it
