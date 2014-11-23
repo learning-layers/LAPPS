@@ -122,7 +122,7 @@ public class UsersResource {
 
   /**
    * 
-   * Remove the user with the given id.
+   * Delete the user with the given id.
    * 
    * @param id
    * 
