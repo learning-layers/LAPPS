@@ -63,6 +63,7 @@ public class UsersResource {
    * @return Response with all users as a JSON array.
    */
   @GET
+  @Path("/")
   @ApiOperation(value = "Get list of all users")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Invalid authentication")})
   public Response getAllUsers(@HeaderParam("access_token") String accessToken) {
