@@ -20,18 +20,18 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>Layers App Store</servlet-name>
-        <url-pattern>/lapps/*</url-pattern>
+        <url-pattern>/lapps/v1/*</url-pattern>
     </servlet-mapping>
     <servlet>
 	  <servlet-name>JerseyJaxrsConfig</servlet-name>
 	  <servlet-class>com.wordnik.swagger.jersey.config.JerseyJaxrsConfig</servlet-class>
 	  <init-param>
 	    <param-name>api.version</param-name>
-	    <param-value>1.0.0</param-value>
+	    <param-value>1</param-value>
 	  </init-param>
 	  <init-param>
 	    <param-name>swagger.api.basepath</param-name>
-	    <param-value>http://localhost:8080/lapps/api-docs</param-value>
+	    <param-value>http://localhost:8080/lapps/v1/api-docs</param-value>
 	  </init-param>
 	  <load-on-startup>2</load-on-startup>
 	</servlet>

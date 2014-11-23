@@ -8,10 +8,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -29,6 +34,9 @@ import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 
 import de.rwth.dbis.layers.lapps.domain.UserFacade;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
@@ -37,14 +45,15 @@ import de.rwth.dbis.layers.lapps.exception.OIDCException;
 /**
  * Users resource (exposed at "users" path).
  */
-@Path("users")
-@Api(value = "users", description = "Example")
+@Path("/users")
+@Api(value = "/users", description = "User ressource")
 public class UsersResource {
 
   private static final String OPEN_ID_PROVIDER = "http://api.learning-layers.eu/o/oauth2";
   private static final String OPEN_ID_PROVIDER_CONFIGURATION_URI = OPEN_ID_PROVIDER.trim()
       + "/.well-known/openid-configuration";
   private static UserFacade userFacade = new UserFacade();
+  private final static Logger LOGGER = Logger.getLogger(UsersResource.class.getName());
 
 
   /**
@@ -53,15 +62,17 @@ public class UsersResource {
    * @return Response with all users as a JSON array.
    */
   @GET
+  @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation("A test operation")
+  @ApiOperation(value = "Get list of all users")
+  @ApiResponses(value = {@ApiResponse(code = 401, message = "Invalid authentication")})
   public Response getAllUsers(@HeaderParam("access_token") String accessToken) {
-    // TODO Currently authentication is optional for the tests to still run through..
+    // TODO Currently authentication is optional for the tests to still run through
     if (accessToken != null) {
       try {
         authenticate(accessToken);
       } catch (OIDCException e) {
-        e.printStackTrace();
+        LOGGER.warning(e.getMessage());
         return Response.status(401).build();
       }
     }
@@ -69,18 +80,124 @@ public class UsersResource {
     List<UserEntity> entities = (List<UserEntity>) userFacade.findAll();
     ArrayList<Integer> userIds = new ArrayList<Integer>();
     Iterator<UserEntity> userIt = entities.iterator();
-    while (userIt.hasNext())
+    while (userIt.hasNext()) {
       userIds.add(userIt.next().getId());
-
+    }
     try {
       ObjectMapper mapper = new ObjectMapper();
       return Response.status(200).entity(mapper.writeValueAsBytes(userIds)).build();
     } catch (JsonProcessingException e) {
-      // e.printStackTrace(); // TODO have a look at the exception handling
+      LOGGER.warning(e.getMessage());
       return Response.status(500).build();
     }
   }
 
+  /**
+   * 
+   * Gets the user for a given id.
+   * 
+   * @param id
+   * 
+   * @return Response with user as a JSON object.
+   * 
+   */
+  @GET
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiOperation(value = "Get user by ID", response = UserEntity.class)
+  @ApiResponses(value = {@ApiResponse(code = 404, message = "User not found")})
+  public Response getUser(@PathParam("id") int id) {
+    UserEntity user = userFacade.find(id);
+    if (user == null) {
+      return Response.status(404).build();
+    }
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      return Response.status(200).entity(mapper.writeValueAsBytes(user)).build();
+    } catch (JsonProcessingException e) {
+      LOGGER.warning(e.getMessage());
+      return Response.status(500).build();
+    }
+  }
+
+  /**
+   * 
+   * Delete the user with the given id.
+   * 
+   * @param id
+   * 
+   * @return Response
+   */
+  // TODO: Think about success token (instead of only a 200 response)
+  // TODO: Write test case
+  @DELETE
+  @Path("/{id}")
+  @ApiOperation(value = "Delete user by ID")
+  @ApiResponses(value = {@ApiResponse(code = 401, message = "Invalid authentication"),
+      @ApiResponse(code = 404, message = "User not found")})
+  public Response deleteUser(@HeaderParam("access_token") String accessToken,
+      @PathParam("id") int id) {
+    if (accessToken != null) {
+      try {
+        // TODO: authenticate only the user himself and the admin
+        authenticate(accessToken);
+      } catch (OIDCException e) {
+        LOGGER.warning(e.getMessage());
+        return Response.status(401).build();
+      }
+    }
+    UserEntity user = userFacade.find(id);
+    if (user == null) {
+      return Response.status(404).build();
+    }
+    // TODO: delete user with help of userFacade
+    return Response.status(200).build();
+  }
+
+  /**
+   * 
+   * Update the user with the given id.
+   * 
+   * @param id
+   * @param UserEntity as JSON
+   * 
+   * @return Response
+   */
+  // TODO: Think about success token (instead of only a 200 response)
+  // TODO: Write test case
+  @PUT
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ApiOperation(value = "Update user by ID", response = UserEntity.class)
+  @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid user entity"),
+      @ApiResponse(code = 401, message = "Invalid authentication"),
+      @ApiResponse(code = 404, message = "User not found")})
+  public Response updateUser(@HeaderParam("access_token") String accessToken,
+      @PathParam("id") int id,
+      @ApiParam(value = "User entity as JSON", required = true) UserEntity updatedUser) {
+    if (accessToken != null) {
+      try {
+        // TODO: authenticate only the user himself and the admin
+        authenticate(accessToken);
+      } catch (OIDCException e) {
+        LOGGER.warning(e.getMessage());
+        return Response.status(401).build();
+      }
+    }
+    UserEntity user = userFacade.find(id);
+    if (user == null) {
+      return Response.status(404).build();
+    }
+    // TODO: update user with help of userFacade
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      return Response.status(200).entity(mapper.writeValueAsBytes(updatedUser)).build();
+    } catch (JsonProcessingException e) {
+      LOGGER.warning(e.getMessage());
+      return Response.status(500).build();
+    }
+  }
 
   /**
    * Tries to authenticate a user for a given OpenIdToken. If the user is not yet registered, it
