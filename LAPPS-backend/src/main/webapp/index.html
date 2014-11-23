@@ -25,10 +25,11 @@
   <script type="text/javascript">
     $(function () {
       var url = window.location.search.match(/url=([^&]+)/);
+      // TODO: check url, at the moment we use the static url from the where path
       if (url && url.length > 1) {
         url = url[1];
       } else {
-        url = "http://localhost:8080/lapps/api-docs";
+        url = "http://localhost:8080/lapps/v1/api-docs";
       }
       window.swaggerUi = new SwaggerUi({
         url: url,
