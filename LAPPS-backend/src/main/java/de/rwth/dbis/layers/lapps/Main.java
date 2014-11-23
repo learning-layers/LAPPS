@@ -16,7 +16,7 @@ import com.wordnik.swagger.jaxrs.config.BeanConfig;
  */
 public class Main {
   // Base URI the Grizzly HTTP server will listen on
-  public static final String BASE_URI = "http://localhost:8080/lapps/";
+  public static final String BASE_URI = "http://localhost:8080/lapps/v1/";
 
   /**
    * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
@@ -33,7 +33,7 @@ public class Main {
     // Configure swagger
     BeanConfig config = new BeanConfig();
     config.setResourcePackage("de.rwth.dbis.layers.lapps");
-    config.setVersion("1.0.0");
+    config.setVersion("1");
     config.setScan(true);
     // create and start a new instance of grizzly http server
     // exposing the Jersey application at BASE_URI
