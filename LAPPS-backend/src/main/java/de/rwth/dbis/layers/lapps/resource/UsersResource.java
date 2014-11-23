@@ -46,7 +46,6 @@ import de.rwth.dbis.layers.lapps.exception.OIDCException;
  * Users resource (exposed at "users" path).
  */
 @Path("/users")
-@Produces(MediaType.APPLICATION_JSON)
 @Api(value = "/users", description = "User ressource")
 public class UsersResource {
 
@@ -64,6 +63,7 @@ public class UsersResource {
    */
   @GET
   @Path("/")
+  @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Get list of all users")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Invalid authentication")})
   public Response getAllUsers(@HeaderParam("access_token") String accessToken) {
@@ -103,6 +103,7 @@ public class UsersResource {
    */
   @GET
   @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Get user by ID", response = UserEntity.class)
   @ApiResponses(value = {@ApiResponse(code = 404, message = "User not found")})
   public Response getUser(@PathParam("id") int id) {
@@ -166,6 +167,7 @@ public class UsersResource {
   // TODO: Write test case
   @PUT
   @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Update user by ID", response = UserEntity.class)
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid user entity"),
