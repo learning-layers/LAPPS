@@ -62,7 +62,6 @@ public class UsersResource {
    * @return Response with all users as a JSON array.
    */
   @GET
-  @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Get list of all users")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Invalid authentication")})
