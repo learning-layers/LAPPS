@@ -218,29 +218,43 @@ ALTER TABLE `comment`
 ALTER TABLE `tag`
   ADD CONSTRAINT `tag_ibfk_1` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
-
---
--- Dumping data for table `app`
---
-
-INSERT INTO `app` (`id`, `name`, `rating`) VALUES
-(1, 'First App', 0),
-(2, 'Second App', 0),
-(3, 'Third App', 0),
-(4, 'Fourth App', 0);
-
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`id`, `oidc_id`, `email`) VALUES
-(1, '1', 'test@lapps.com'),
-(3, '3', 'author_test@ok.com'),
-(5, '2', 'comment_test@ok.com'),
-(6, '4', 'comment_test2@ok.com'),
-(8, '5', 'comment_test3@ok.com'),
-(9, '6', 'comment_test4@ok.com');
-
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+--
+-- Dumping data; fully optional, remove if not needed
+--
+
+INSERT INTO `user` (`id`, `oidc_id`, `email`) VALUES
+(1, '1', 'test@lapps.com');
+
+INSERT INTO `app` (`id`, `name`, `rating`) VALUES
+(1, 'First App', 0);
+
+INSERT INTO `app_platform` (`id`, `name`) VALUES
+(1, 'IOS');
+
+INSERT INTO `tag` (`id`, `app_id`, `name`) VALUES
+(1, 1, 'Some Tag');
+
+INSERT INTO `comment` (`id`, `app_id`, `user_id`, `text`) VALUES
+(1, 1, 1, 'Great App');
+
+INSERT INTO `app_instance` (`id`, `app_id`, `platform_id`, `url`) VALUES
+(1, 1, 1, 'www.apple.something');
+
+INSERT INTO `app_instance_management` (`id`, `user_id`, `app_instance_id`, `rights`) VALUES
+(1, 1, 1, 0);
+
+INSERT INTO `app_detail_type` (`id`, `type`) VALUES
+(1, 'Some Detail Type');
+
+INSERT INTO `app_detail` (`id`, `app_detail_type_id`, `app_id`, `contents`) VALUES
+(1, 1, 1, 'Some Content');
+
+INSERT INTO `app_artifact_type` (`id`, `type`) VALUES
+(1, 'Some Artifact Type');
+
+INSERT INTO `app_artifact` (`id`, `app_artifact_type_id`, `app_id`, `url`) VALUES
+(1, 1, 1, 'www.some.url');
