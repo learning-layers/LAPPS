@@ -103,7 +103,7 @@ public class AppFacadeTest {
   @Test
   public void addTag() {
     LOGGER.info("Creating a random tag to add to " + app);
-    AppTagEntity tag = new AppTagEntity("tag_" + app.getName());
+    AppTagEntity tag = new AppTagEntity("New_tag_" + app.getName());
     app.addTag(tag);
     app = appFacade.save(app);
     assertTrue(app.getTags().size() > 1);
