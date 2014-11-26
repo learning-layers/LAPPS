@@ -33,14 +33,9 @@ public class AppFacadeTest {
   @Before
   public void beforeTest() {
     LOGGER.info("Deleting app data...");
-    // Clear data
+    // Clear data (TODO: beware that this will fail, if the database is already empty)
     final EntityManager em = EMF.getEm();
     em.getTransaction().begin();
-    // em.createQuery("delete from AppTagEntity").executeUpdate();
-    // em.createQuery("delete from AppCommentEntity").executeUpdate();
-    // em.createQuery("delete from AppArtifactEntity").executeUpdate();
-    // em.createQuery("delete from AppDetailEntity").executeUpdate();
-    // em.createQuery("delete from AppInstanceEntity").executeUpdate();
     // Cascading delete on foreign keys seems to be doing the trick, so do delete just the 'root'
     // entity.
     em.createQuery("delete from AppEntity").executeUpdate();

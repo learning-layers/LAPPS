@@ -2,9 +2,11 @@ package de.rwth.dbis.layers.lapps;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.logging.Logger;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.StaticHttpHandler;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -29,6 +31,7 @@ public class Main {
     // add com.wordnik.swagger.jersey.listing for swagger support
     String[] packages = {"de.rwth.dbis.layers.lapps", "com.wordnik.swagger.jersey.listing"};
     final ResourceConfig rc = new ResourceConfig().packages(packages);
+    rc.register(new LoggingFilter(Logger.getLogger(Main.class.getName()), true));
 
     // Configure swagger
     BeanConfig config = new BeanConfig();
@@ -39,7 +42,8 @@ public class Main {
     // exposing the Jersey application at BASE_URI
     HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     // Host static web page for swagger ui
-    server.getServerConfiguration().addHttpHandler(new StaticHttpHandler("src/main/webapp/"), "/");
+    server.getServerConfiguration().addHttpHandler(
+        new StaticHttpHandler("src/main/webapp/swagger-documentation"), "/");
     return server;
   }
 
