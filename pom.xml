@@ -46,12 +46,11 @@
 	            <executions>
 	                <execution>
 	                    <id>copy-resources</id>
-	                    <phase>compile</phase>
+	                    <phase>package</phase>
 	                    <goals>
 	                        <goal>copy-resources</goal>
 	                    </goals>
 	                    <configuration>
-	                        <overwrite>true</overwrite>
 	                        <outputDirectory>${basedir}/LAPPS-backend/target/LAPPS-backend-${project.version}/</outputDirectory>
 	                        <resources>
 	                            <resource>
