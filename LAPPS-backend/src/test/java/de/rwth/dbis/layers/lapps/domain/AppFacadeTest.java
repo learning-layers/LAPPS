@@ -28,6 +28,8 @@ import de.rwth.dbis.layers.lapps.entity.ArtifactTypeEntity;
 public class AppFacadeTest {
   private AppFacade appFacade = AppFacade.getFacade();
   private AppEntity app = null;
+  // Recreate This specific app (i.e. do not delete all apps, they are not your concern...).
+  private String appName = "Test app";// Utils.generateRandomString();
   private final static Logger LOGGER = Logger.getLogger(AppFacadeTest.class.getName());
 
   @Before
@@ -38,7 +40,8 @@ public class AppFacadeTest {
     em.getTransaction().begin();
     // Cascading delete on foreign keys seems to be doing the trick, so do delete just the 'root'
     // entity.
-    em.createQuery(Utils.DELETE_APPS_QUERY).executeUpdate();
+    em.createQuery("delete AppEntity app where app.name like :value")
+        .setParameter("value", "%" + appName + "%").executeUpdate();
     em.getTransaction().commit();
     em.close();
     LOGGER.info("App data deleted.");
@@ -59,7 +62,6 @@ public class AppFacadeTest {
     // Load a random app artifact type:
     ArtifactTypeEntity artifactType = this.getRandomArtifactType();
     // Save a new app with all its properties.
-    final String appName = "Test app";// Utils.generateRandomString();
     AppEntity app = new AppEntity(appName);
     app.addTag(new AppTagEntity("tag_" + appName));
     app.addDetail(new AppDetailEntity(detailType, "detail_" + appName));
