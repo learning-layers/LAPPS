@@ -33,14 +33,9 @@ public class AppFacadeTest {
   @Before
   public void beforeTest() {
     LOGGER.info("Deleting app data...");
-    // Clear data
+    // Clear data (TODO: beware that this will fail, if the database is already empty)
     final EntityManager em = EMF.getEm();
     em.getTransaction().begin();
-    // em.createQuery("delete from AppTagEntity").executeUpdate();
-    // em.createQuery("delete from AppCommentEntity").executeUpdate();
-    // em.createQuery("delete from AppArtifactEntity").executeUpdate();
-    // em.createQuery("delete from AppDetailEntity").executeUpdate();
-    // em.createQuery("delete from AppInstanceEntity").executeUpdate();
     // Cascading delete on foreign keys seems to be doing the trick, so do delete just the 'root'
     // entity.
     em.createQuery(Utils.DELETE_APPS_QUERY).executeUpdate();
@@ -103,7 +98,7 @@ public class AppFacadeTest {
   @Test
   public void addTag() {
     LOGGER.info("Creating a random tag to add to " + app);
-    AppTagEntity tag = new AppTagEntity("tag_" + app.getName());
+    AppTagEntity tag = new AppTagEntity("New_tag_" + app.getName());
     app.addTag(tag);
     app = appFacade.save(app);
     assertTrue(app.getTags().size() > 1);
