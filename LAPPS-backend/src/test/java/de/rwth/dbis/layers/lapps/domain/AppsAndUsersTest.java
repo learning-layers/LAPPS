@@ -19,6 +19,7 @@ import de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
 import de.rwth.dbis.layers.lapps.entity.AppPlatformEntity;
+import de.rwth.dbis.layers.lapps.entity.AppUserRightsEntity;
 import de.rwth.dbis.layers.lapps.entity.ArtifactTypeEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 
@@ -48,8 +49,7 @@ public class AppsAndUsersTest {
     this.addComments();
     this.addDescriptions();
     this.addArtifacts();
-    this.addInstances();
-    // TODO: Grand the first user rights for some apps!
+    this.grantRights();
 
     for (AppEntity app : apps) {
       appFacade.save(app);
@@ -70,6 +70,7 @@ public class AppsAndUsersTest {
     }
     for (AppEntity a : apps) {
       assertTrue(a.getId() > 0);
+      assertTrue(a.getInstances().get(0).getId() > 0);
     }
   }
 
@@ -102,8 +103,10 @@ public class AppsAndUsersTest {
     appNames.add("Yeah");
 
     LOGGER.info("Creating data...");
+    AppPlatformEntity appPlatform = AppPlatformFacade.getFacade().find(1);
     for (int i = 0; i < APP_COUNT; i++) {
       AppEntity app = new AppEntity(appNames.remove(Utils.generateRandomInt(0, appNames.size())));
+      app.addInstance(new AppInstanceEntity(appPlatform, "http://store.apple.com/" + app.getName()));
       apps.add(appFacade.save(app));
     }
     for (int i = 0; i < USER_COUNT; i++) {
@@ -149,12 +152,9 @@ public class AppsAndUsersTest {
     }
   }
 
-  private void addInstances() {
-    // Platform are not to be deleted => use them with hard-coded ids
-    AppPlatformEntity appPlatform = AppPlatformFacade.getFacade().find(1);
-    assertTrue(appPlatform != null);
-    for (AppEntity app : apps) {
-      app.addInstance(new AppInstanceEntity(appPlatform, "http://store.apple.com/" + app.getName()));
-    }
+  private void grantRights() {
+    assertTrue(apps.get(0).getInstances().get(0).getId() > 0);
+    userFacade.grant(AppUserRightsEntity.MODIFY,
+        users.get(Utils.generateRandomInt(0, users.size())), apps.get(0).getInstances().get(0));
   }
 }

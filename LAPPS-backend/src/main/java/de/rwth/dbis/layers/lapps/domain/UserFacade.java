@@ -7,6 +7,8 @@ import javax.persistence.EntityManager;
 import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.entity.AppCommentEntity;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
+import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
+import de.rwth.dbis.layers.lapps.entity.AppUserRightsEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 
 /**
@@ -63,6 +65,18 @@ public class UserFacade extends AbstractFacade<UserEntity, Integer> {
     UserEntity u = this.save(user);
     List<AppCommentEntity> comments = u.getComments();
     return comments.get(comments.size() - 1);
+  }
+
+  public AppUserRightsEntity grant(int rights, UserEntity toWhom, AppInstanceEntity forWhat) {
+    new AppUserRightsEntity(rights, toWhom, forWhat);
+    UserEntity u = this.save(toWhom);
+    List<AppUserRightsEntity> allUserRights = u.getRights();
+    if (allUserRights.size() < 1) {
+      // TODO: throw an exception!
+      // throw new Exception("Error granting rights to user " + u.getEmail() + " for app " +
+      // forWhat.getApp().getName());
+    }
+    return allUserRights.get(allUserRights.size() - 1);
   }
 
   /**

@@ -1,10 +1,14 @@
 package de.rwth.dbis.layers.lapps.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -27,6 +31,8 @@ public class AppInstanceEntity implements Entity {
   @JoinColumn(name = "platform_id")
   private AppPlatformEntity platform = null;
   private String url = null;
+  @OneToMany(mappedBy = "appInstance", fetch = FetchType.EAGER)
+  private List<AppUserRightsEntity> rights = new ArrayList<AppUserRightsEntity>();
 
   public AppInstanceEntity() {}
 
@@ -64,6 +70,17 @@ public class AppInstanceEntity implements Entity {
 
   public void setUrl(String url) {
     this.url = url;
+  }
+
+  public List<AppUserRightsEntity> getRights() {
+    return rights;
+  }
+
+  public void addRights(AppUserRightsEntity rights) {
+    this.rights.add(rights);
+    if (rights.getAppInstance() != this) {
+      rights.setAppInstance(this);
+    }
   }
 
   @Override

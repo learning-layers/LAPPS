@@ -15,6 +15,7 @@
       <class>de.rwth.dbis.layers.lapps.entity.ArtifactTypeEntity</class>
       <class>de.rwth.dbis.layers.lapps.entity.AppDetailEntity</class>
       <class>de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity</class>
+      <class>de.rwth.dbis.layers.lapps.entity.AppUserRightsEntity</class>
       <properties>
          <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
          <property name="javax.persistence.jdbc.user" value="henm1415g1"/>

@@ -164,6 +164,9 @@ public class AppFacadeTest {
 
   public AppEntity getRandomApp() {
     List<AppEntity> apps = appFacade.findAll();
+    for (AppEntity app : apps) {
+      LOGGER.info(app.toString());
+    }
     return apps.get(Utils.generateRandomInt(0, apps.size()));
   }
 
