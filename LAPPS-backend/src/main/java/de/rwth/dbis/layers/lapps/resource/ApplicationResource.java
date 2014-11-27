@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -20,6 +21,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
 
 import de.rwth.dbis.layers.lapps.domain.AppFacade;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
+import de.rwth.dbis.layers.lapps.entity.UserEntity;
 
 /**
  * Application resource (exposed at "apps" path).
@@ -59,4 +61,38 @@ public class ApplicationResource {
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
     }
   }
+
+  /**
+   * 
+   * Gets the app for a given id.
+   * 
+   * @param id
+   * 
+   * @return Response with an app as a JSON object.
+   * 
+   */
+  @GET
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiOperation(value = "Get app by ID", response = UserEntity.class)
+  @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
+      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
+          message = "Internal server problems"),
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message")})
+  public Response getApp(@PathParam("id") int id) {
+
+    AppEntity app = appFacade.find(id);
+    if (app == null) {
+      return Response.status(HttpStatusCode.NOT_FOUND).build();
+    }
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(app)).build();
+    } catch (JsonProcessingException e) {
+      LOGGER.warning(e.getMessage());
+      return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
 }
