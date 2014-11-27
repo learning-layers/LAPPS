@@ -9,6 +9,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
@@ -45,8 +47,14 @@ public class ApplicationResource {
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems"),
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message")})
-  public Response getAllApps() {
-    List<AppEntity> entities = (List<AppEntity>) appFacade.findAll();
+  public Response getAllApps(
+      @ApiParam(value = "A query parameter", required = false) @QueryParam("search") String search) {
+    List<AppEntity> entities;
+    if (search == null) {
+      entities = (List<AppEntity>) appFacade.findAll();
+    } else {
+      entities = (List<AppEntity>) appFacade.findByName(search);
+    }
     ArrayList<Integer> appIds = new ArrayList<Integer>();
     Iterator<AppEntity> appIt = entities.iterator();
     while (appIt.hasNext()) {
