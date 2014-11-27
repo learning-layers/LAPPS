@@ -3,7 +3,8 @@ package de.rwth.dbis.layers.lapps.resource;
 /**
  * Helper class that contains a list of HTTP status codes that can be used by the ressource classes.
  */
-public class HttpStatusCode {
+public final class HttpStatusCode {
+
   // Taken from: http://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 
   // 1xx Informational

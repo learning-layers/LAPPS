@@ -63,7 +63,7 @@ public class UsersResource {
   /**
    * Provides a list of user Ids known to this server.
    * 
-   * @return Response with all users as a JSON array.
+   * @return Response with all user Ids as a JSON array.
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
@@ -176,7 +176,8 @@ public class UsersResource {
    * @return Response
    */
   // TODO: Think about success token (instead of only a 200 response)
-  // TODO: Write test case
+  // TODO: Think if really needed (since we only create users via OIDC authenticate, and also update
+  // via this functionality. Would make sense if we had more user attributes.)
   @PUT
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
@@ -187,7 +188,8 @@ public class UsersResource {
           message = "Internal server problems"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default response message")})
+      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
+          message = "Currently, this method is not implemented")})
   public Response updateUser(@HeaderParam("access_token") String accessToken,
       @PathParam("id") int id,
       @ApiParam(value = "User entity as JSON", required = true) UserEntity updatedUser) {
@@ -206,8 +208,8 @@ public class UsersResource {
     // TODO: update user with help of userFacade
     try {
       ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(updatedUser))
-          .build();
+      return Response.status(HttpStatusCode.NOT_IMPLEMENTED)
+          .entity(mapper.writeValueAsBytes(updatedUser)).build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
