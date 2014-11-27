@@ -8,7 +8,7 @@ import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
 import de.rwth.dbis.layers.lapps.entity.AppPlatformEntity;
 
 public class Utils {
-  public static final String DELETE_USERS_QUERY = "delete UserEntity user where user.id > 1";
+  public static final String DELETE_USERS_QUERY = "delete UserEntity";
   public static final String DELETE_APPS_QUERY = "delete AppEntity";
 
   /**

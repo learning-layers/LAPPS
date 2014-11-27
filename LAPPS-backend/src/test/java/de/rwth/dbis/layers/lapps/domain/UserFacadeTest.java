@@ -49,8 +49,8 @@ public class UserFacadeTest {
 
   @Test
   public void find() {
-    UserEntity user = userFacade.find(1);
-    LOGGER.info("user loaded: " + user.toString());
+    UserEntity foundUser = userFacade.find(user.getId());
+    LOGGER.info("user loaded: " + foundUser.toString());
   }
 
   @Test
@@ -80,10 +80,10 @@ public class UserFacadeTest {
   // @Test
   public void update() {
     UserFacade userFacade = new UserFacade();
-    UserEntity user = userFacade.find(1);
-    user.setEmail("new@email.com");
-    user = userFacade.save(user);
-    LOGGER.info("updated user: " + user);
+    UserEntity foundUser = userFacade.find(user.getId());
+    foundUser.setEmail("new@email.com");
+    foundUser = userFacade.save(foundUser);
+    LOGGER.info("updated user: " + foundUser);
   }
 
   @After

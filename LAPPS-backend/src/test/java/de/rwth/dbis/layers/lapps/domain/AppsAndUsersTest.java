@@ -4,7 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 
@@ -22,7 +21,7 @@ import de.rwth.dbis.layers.lapps.entity.UserEntity;
  *
  */
 public class AppsAndUsersTest {
-  private final static Logger LOGGER = Logger.getLogger(AppsAndUsersTest.class.getName());
+  // private final static Logger LOGGER = Logger.getLogger(AppsAndUsersTest.class.getName());
   private AppFacade appFacade = AppFacade.getFacade();
   private UserFacade userFacade = new UserFacade();
 
