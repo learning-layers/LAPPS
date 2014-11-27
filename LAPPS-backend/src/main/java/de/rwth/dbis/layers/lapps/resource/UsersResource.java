@@ -68,8 +68,11 @@ public class UsersResource {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Get list of all users")
-  @ApiResponses(value = {@ApiResponse(code = HttpStatusCode.UNAUTHORIZED,
-      message = "Invalid authentication")})
+  @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
+      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
+          message = "Internal server problems"),
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message")})
   public Response getAllUsers(@HeaderParam("access_token") String accessToken) {
     try {
       authenticate(accessToken);
@@ -107,7 +110,11 @@ public class UsersResource {
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Get user by ID", response = UserEntity.class)
-  @ApiResponses(value = {@ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found")})
+  @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
+      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
+          message = "Internal server problems"),
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message")})
   public Response getUser(@PathParam("id") int id) {
 
     UserEntity user = userFacade.find(id);
@@ -175,9 +182,12 @@ public class UsersResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Update user by ID", response = UserEntity.class)
-  @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid user entity"),
+  @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
+          message = "Internal server problems"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
-      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found")})
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default response message")})
   public Response updateUser(@HeaderParam("access_token") String accessToken,
       @PathParam("id") int id,
       @ApiParam(value = "User entity as JSON", required = true) UserEntity updatedUser) {
