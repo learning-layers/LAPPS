@@ -19,7 +19,7 @@ public class Utils {
    * @return an int in the range (min-max)
    */
   public static int generateRandomInt(int min, int max) {
-    return (int) (Math.random() * (max - min - 1));
+    return (int) (min + Math.random() * (max - min - 1));
   }
 
   public static String generateRandomString() {

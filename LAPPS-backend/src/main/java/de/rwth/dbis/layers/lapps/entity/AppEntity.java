@@ -23,7 +23,7 @@ public class AppEntity implements Entity {
   private int id = 0;
   private double rating = 0D;
   private String name = null;
-  @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "app", fetch = FetchType.EAGER)
   private List<AppCommentEntity> comments = new ArrayList<AppCommentEntity>();
   @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppTagEntity> tags = new ArrayList<AppTagEntity>();

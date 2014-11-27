@@ -26,10 +26,11 @@ public class UserFacade extends AbstractFacade<UserEntity, Integer> {
   }
 
   /**
-   * Publishes a comment given author's id and the id of the app the comment refers to. Note that
-   * this method first loads user and app with the given IDs so that they are attached to the
-   * current {@link EntityManager}. If user and app instances are already available better user
-   * {@link UserFacade#comment(String, UserEntity, AppEntity)}.
+   * @deprecated Publishes a comment given author's id and the id of the app the comment refers to.
+   *             Note that this method first loads user and app with the given IDs so that they are
+   *             attached to the current {@link EntityManager}. If user and app instances are
+   *             already available better user
+   *             {@link UserFacade#comment(String, UserEntity, AppEntity)}.
    * 
    * @param comment The comment contents
    * @param userId The id of the author
@@ -42,8 +43,8 @@ public class UserFacade extends AbstractFacade<UserEntity, Integer> {
     UserEntity user = em.find(UserEntity.class, userId);
     AppEntity app = em.find(AppEntity.class, appId);
     AppCommentEntity c = new AppCommentEntity(comment, user, app);
-    user.addComment(c);
-    app.addComment(c);
+    // user.addComment(c);
+    // app.addComment(c);
     em.persist(user);
     em.getTransaction().commit();
     return c;
@@ -58,9 +59,7 @@ public class UserFacade extends AbstractFacade<UserEntity, Integer> {
    * @return The newly created {@link AppCommentEntity}
    */
   public AppCommentEntity comment(String comment, UserEntity user, AppEntity app) {
-    AppCommentEntity c = new AppCommentEntity(comment, user, app);
-    user.addComment(c);
-    app.addComment(c);
+    new AppCommentEntity(comment, user, app);
     UserEntity u = this.save(user);
     List<AppCommentEntity> comments = u.getComments();
     return comments.get(comments.size() - 1);
