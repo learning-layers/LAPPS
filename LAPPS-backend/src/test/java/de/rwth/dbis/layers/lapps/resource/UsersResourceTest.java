@@ -1,5 +1,6 @@
 package de.rwth.dbis.layers.lapps.resource;
 
+import static javax.ws.rs.client.Entity.entity;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -129,6 +130,21 @@ public class UsersResourceTest {
     Response response =
         target.path("users/" + user.getId().toString()).request()
             .header("access_token", UsersResource.OPEN_ID_TEST_TOKEN).delete();
+    assertEquals(HttpStatusCode.NOT_IMPLEMENTED, response.getStatus());
+  }
+
+  /**
+   * Tries to update the previously created user. Currently should result in a not implemented
+   * return.
+   */
+  @Test
+  public void testUpdateUser() {
+    UserEntity updatedUser = user;
+    updatedUser.setEmail("new@mail.com");
+    Response response =
+        target.path("users/" + user.getId().toString()).request()
+            .header("access_token", UsersResource.OPEN_ID_TEST_TOKEN)
+            .put(entity(updatedUser, MediaType.APPLICATION_JSON));
     assertEquals(HttpStatusCode.NOT_IMPLEMENTED, response.getStatus());
   }
 
