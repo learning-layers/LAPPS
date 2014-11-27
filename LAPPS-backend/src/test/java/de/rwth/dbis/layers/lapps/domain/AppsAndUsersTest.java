@@ -17,13 +17,13 @@ import de.rwth.dbis.layers.lapps.entity.AppArtifactEntity;
 import de.rwth.dbis.layers.lapps.entity.AppDetailEntity;
 import de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
+import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
+import de.rwth.dbis.layers.lapps.entity.AppPlatformEntity;
 import de.rwth.dbis.layers.lapps.entity.ArtifactTypeEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 
 /**
- * A test class suited for tests on set of mockup apps and users and their respective comments and
- * rights.
- *
+ * A class for tests on set of mockup apps and users and their respective attributes.
  */
 public class AppsAndUsersTest {
   private final static Logger LOGGER = Logger.getLogger(AppsAndUsersTest.class.getName());
@@ -48,6 +48,7 @@ public class AppsAndUsersTest {
     this.addComments();
     this.addDescriptions();
     this.addArtifacts();
+    this.addInstances();
     // TODO: Grand the first user rights for some apps!
 
     for (AppEntity app : apps) {
@@ -114,8 +115,8 @@ public class AppsAndUsersTest {
   }
 
   private void addComments() {
-    userFacade.comment("Test Comment", users.get(0), apps.get(0));
-    userFacade.comment("Another test comment", users.get(users.size() - 1), apps.get(0));
+    userFacade.comment("I really love this app!", users.get(0), apps.get(0));
+    userFacade.comment("Aaah.. that's a crap...", users.get(users.size() - 1), apps.get(0));
     // new AppCommentEntity("Test Comment", users.get(Utils.generateRandomInt(0, users.size())),
     // apps.get(0));
     // new AppCommentEntity("Another Test Comment",
@@ -132,7 +133,7 @@ public class AppsAndUsersTest {
   }
 
   private void addArtifacts() {
-    // Artifact types are not to be deleted => use them with ahrd-coded ids
+    // Artifact types are not to be deleted => use them with hard-coded ids
     ArtifactTypeEntity artifactType = ArtifactFacade.getFacade().find(2);
     assertTrue(artifactType != null);
     for (AppEntity app : apps) {
@@ -145,6 +146,15 @@ public class AppsAndUsersTest {
     LOGGER.info("All apps created: ");
     for (AppEntity app : apps) {
       LOGGER.info(app.toString());
+    }
+  }
+
+  private void addInstances() {
+    // Platform are not to be deleted => use them with hard-coded ids
+    AppPlatformEntity appPlatform = AppPlatformFacade.getFacade().find(1);
+    assertTrue(appPlatform != null);
+    for (AppEntity app : apps) {
+      app.addInstance(new AppInstanceEntity(appPlatform, "http://store.apple.com/" + app.getName()));
     }
   }
 }
