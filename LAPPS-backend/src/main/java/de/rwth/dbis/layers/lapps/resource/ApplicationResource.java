@@ -21,7 +21,6 @@ import com.wordnik.swagger.annotations.ApiResponses;
 
 import de.rwth.dbis.layers.lapps.domain.AppFacade;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
-import de.rwth.dbis.layers.lapps.entity.UserEntity;
 
 /**
  * Application resource (exposed at "apps" path).
@@ -74,7 +73,7 @@ public class ApplicationResource {
   @GET
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get app by ID", response = UserEntity.class)
+  @ApiOperation(value = "Get app by ID", response = AppEntity.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
