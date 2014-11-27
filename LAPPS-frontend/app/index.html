@@ -2,6 +2,8 @@
 <html lang="en" ng-app="lappsApp">
 <head>
 <meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Layers Application Store</title>
 <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
 <link rel="stylesheet" href="assets/css/app.css">
@@ -20,16 +22,15 @@
 <script src="components/featuredCarousel/featuredCarouselDirective.js"></script>
 <script src="components/featuredList/featuredListDirective.js"></script>
 <script src="components/featuredList/featuredListCtrl.js"></script>
+<script src="components/searchPage/searchPageCtrl.js"></script>
 <script src="core/filters/rangeFilter.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 </head>
 <body>
 	<div class="container">
 		<lapps-header></lapps-header>
-
 		<div ng-view class="view-frame"></div>
 		<lapps-footer></lapps-footer>
-
 	</div>
 </body>
 </html>

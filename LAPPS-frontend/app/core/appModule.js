@@ -31,6 +31,12 @@
     }).when('/apps/:appId', {
       templateUrl: 'components/appDetail/appDetailView.html',
       controller: 'appDetailCtrl'
+    }).when('/search/:query', {
+      templateUrl: 'components/searchPage/searchPageView.html',
+      controller: 'searchPageCtrl'
+    }).when('/search', {
+      templateUrl: 'components/searchPage/searchPageView.html',
+      controller: 'searchPageCtrl'
     }).otherwise({
       redirectTo: '/apps'
     });
