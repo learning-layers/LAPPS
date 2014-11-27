@@ -63,7 +63,7 @@ public class UsersResource {
   /**
    * Provides a list of user Ids known to this server.
    * 
-   * @return Response with all users as a JSON array.
+   * @return Response with all user Ids as a JSON array.
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
