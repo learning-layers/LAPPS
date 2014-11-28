@@ -15,16 +15,20 @@
                 if ($routeParams.query) {
                   $scope.searchQuery = $routeParams.query;
                 } else {
-                  $scope.searchQuery = 'af';
+                  $scope.searchQuery = '';
                 }
                 $scope.apps = [];
                 $scope.collapsed = true;
 
-                $scope.searchApps = function(query) {
+                $scope.search = function() {
                   $http.get('assets/dummy/appList.json').success(
                           function(data) {
-                            $scope.apps = data;
+                            $scope.apps = data.filter(function(el) {
+                              return el.name.toLowerCase().indexOf(
+                                      $scope.searchQuery.toLowerCase()) >= 0;
+                            });
                           });
+
                 }
 
                 $scope.expandCollapseSearch = function() {
@@ -35,6 +39,6 @@
                   }
 
                 }
-                $scope.searchApps($scope.searchQuery);
+                $scope.search();
               }]);
 }).call(this);

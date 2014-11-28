@@ -10,11 +10,10 @@
 					<span class="caret hidden-lg hidden-md"
 						ng-class="{'caret-reversed': !collapsed}"></span>
 				</h3>
-				<button
-					class="advanced-search-btn btn btn-default btn-primary hidden-lg hidden-md hidden-xs"
-					ng-class="{'hidden': collapsed}">
-					<span class="glyphicon glyphicon-search"></span> Search
-				</button>
+        <button class="advanced-search-btn btn btn-default btn-primary hidden-lg hidden-md hidden-xs"
+                ng-class="{'hidden': collapsed}" ng-click="search()">
+          <span class="glyphicon glyphicon-search"></span> Search
+        </button>
 			</div>
 			<form role="form">
 				<div class="form-group col-md-12 col-sm-6 col-lg-12">
@@ -22,7 +21,7 @@
 					<div class="input-group">
 						<span class="input-group-addon"><span
 							class="glyphicon glyphicon-font"></span></span> <input type="text"
-							class="form-control" id="has-title" placeholder="myApp">
+							class="form-control" id="has-title" placeholder="myApp" value="{{searchQuery}}">
 					</div>
 				</div>
 				<div class="form-group col-md-12 col-sm-6 col-lg-12">
@@ -60,7 +59,7 @@
 				<div class="col-xs-12 visible-lg visible-md visible-xs">
 					<button
 						class="advanced-search-btn btn btn-default btn-primary btn-block"
-						style="">
+						ng-click="search()">
 						<span class="glyphicon glyphicon-search"></span> Search
 					</button>
 				</div>
@@ -91,7 +90,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row hidden">
 			<div class="col-xs-12 text-center">
 				<ul class="pagination">
 					<li class="disabled"><a href="#"><span

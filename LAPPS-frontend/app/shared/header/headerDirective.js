@@ -7,7 +7,8 @@
   angular.module('lappsDirectives').directive('lappsHeader', function() {
     return {
       restrict: 'E',
-      templateUrl: 'shared/header/headerView.html'
+      templateUrl: 'shared/header/headerView.html',
+      controller: 'headerCtrl'
     };
   });
 }).call(this);
