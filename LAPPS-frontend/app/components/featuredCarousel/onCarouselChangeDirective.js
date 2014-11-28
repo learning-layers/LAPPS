@@ -6,7 +6,7 @@
  */
 (function() {
   angular.module('lappsDirectives').directive('onCarouselChange',
-          function($parse) {
+          ['$parse', function($parse) {
             return {
               require: 'carousel',
               link: function(scope, element, attrs, carouselCtrl) {
@@ -23,5 +23,5 @@
                 };
               }
             };
-          });
+          }]);
 }).call(this);

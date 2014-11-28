@@ -21,8 +21,14 @@
    * @class lapps.lappsApp
    * @memberOf lapps
    */
+  var lappsFilters = angular.module('lappsAttibuteDirectives', []);
+  /**
+   * @class lapps.lappsApp
+   * @memberOf lapps
+   */
   var lappsApp = angular.module('lappsApp', ['ngRoute', 'ui.bootstrap',
-      'lappsControllers', 'lappsDirectives', 'lappsFilters']);
+      'lappsControllers', 'lappsDirectives', 'lappsFilters',
+      'lappsAttibuteDirectives']);
 
   lappsApp.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/apps', {

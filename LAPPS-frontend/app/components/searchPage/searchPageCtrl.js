@@ -21,6 +21,7 @@
                 $scope.collapsed = true;
 
                 $scope.search = function() {
+
                   $http.get('assets/dummy/appList.json').success(
                           function(data) {
                             $scope.apps = data.filter(function(el) {
