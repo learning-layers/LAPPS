@@ -6,6 +6,7 @@ module.exports = function(config) {
         'app/bower_components/angular-route/angular-route.js',
         'app/bower_components/angular-resource/angular-resource.js',
         'app/bower_components/angular-mocks/angular-mocks.js',
+        'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
         'app/bower_components/jquery/dist/jquery.js', 'app/core/**/*.js',
         'app/components/**/*.js', 'app/shared/**/*.js', 'test/unit/**/*.js'],
 
@@ -17,8 +18,7 @@ module.exports = function(config) {
     singleRun: true,
     plugins: [
     // 'karma-firefox-launcher',
-    'karma-chrome-launcher', 'karma-phantomjs-launcher',
-    'karma-jasmine'],
+    'karma-chrome-launcher', 'karma-phantomjs-launcher', 'karma-jasmine'],
 
     junitReporter: {
       outputFile: 'test_out/unit.xml',

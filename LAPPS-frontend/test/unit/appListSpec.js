@@ -3,7 +3,7 @@
 /* jasmine specs for controllers go here */
 describe('Logic for app list', function() {
   beforeEach(module('lappsApp'));
-  describe('appListCtrl', function() {
+  describe('featuredListCtrl', function() {
     var scope, ctrl, $httpBackend;
 
     beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
@@ -23,7 +23,7 @@ describe('Logic for app list', function() {
       }]);
 
       scope = $rootScope.$new();
-      ctrl = $controller('appListCtrl', {
+      ctrl = $controller('featuredListCtrl', {
         $scope: scope
       });
     }));
