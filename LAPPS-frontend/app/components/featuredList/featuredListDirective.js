@@ -10,7 +10,7 @@
       scope: true,
       restrict: 'E',
       templateUrl: 'components/featuredList/featuredListView.html',
-      controller: 'featuredListCtr'
+      controller: 'featuredListCtrl'
     };
   });
 }).call(this);
