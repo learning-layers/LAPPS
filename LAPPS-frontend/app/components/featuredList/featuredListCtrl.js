@@ -5,7 +5,7 @@
  *              apps.
  */
 (function() {
-  angular.module('lappsControllers').controller('featuredListCtr',
+  angular.module('lappsControllers').controller('featuredListCtrl',
           ['$scope', '$http', function($scope, $http) {
 
             $scope.currentTab = '';
