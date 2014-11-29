@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * App domain object.
  *
@@ -23,15 +25,19 @@ public class AppEntity implements Entity {
   private int id = 0;
   private double rating = 0D;
   private String name = null;
+  @JsonIgnore
   @OneToMany(mappedBy = "app", fetch = FetchType.EAGER)
   private List<AppCommentEntity> comments = new ArrayList<AppCommentEntity>();
+  @JsonIgnore
   @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppTagEntity> tags = new ArrayList<AppTagEntity>();
+  @JsonIgnore
   @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppInstanceEntity> instances = new ArrayList<AppInstanceEntity>();
+  @JsonIgnore
   @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppDetailEntity> details = new ArrayList<AppDetailEntity>();
-
+  @JsonIgnore
   @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppArtifactEntity> artifacts = new ArrayList<AppArtifactEntity>();
 
