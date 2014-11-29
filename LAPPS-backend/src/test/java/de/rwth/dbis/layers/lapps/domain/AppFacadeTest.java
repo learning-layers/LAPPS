@@ -5,13 +5,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.persistence.EntityManager;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import de.rwth.dbis.layers.lapps.Utils;
-import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.entity.AppArtifactEntity;
 import de.rwth.dbis.layers.lapps.entity.AppDetailEntity;
 import de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity;
@@ -34,24 +31,19 @@ public class AppFacadeTest {
 
   @Before
   public void beforeTest() {
-    LOGGER.info("Deleting app data...");
-    // Clear data (TODO: beware that this will fail, if the database is already empty)
-    final EntityManager em = EMF.getEm();
-    em.getTransaction().begin();
-    // Cascading delete on foreign keys seems to be doing the trick, so do delete just the 'root'
-    // entity.
-    em.createQuery("delete AppEntity app where app.name like :value")
-        .setParameter("value", "%" + appName + "%").executeUpdate();
-    em.getTransaction().commit();
-    em.close();
-    LOGGER.info("App data deleted.");
-    LOGGER.info("Creating dummy app: ");
+    // final EntityManager em = EMF.getEm();
+    // em.getTransaction().begin();
+    // // Cascading delete on foreign keys seems to be doing the trick, so do delete just the 'root'
+    // // entity.
+    // em.createQuery("delete AppEntity app where app.name like :value")
+    // .setParameter("value", "%" + appName + "%").executeUpdate();
+    // em.getTransaction().commit();
+    // em.close();
+    appFacade.deleteAll("name", appName);
     app = this.createApp();
-    LOGGER.info("Persisting dummy app: ");
     app = this.appFacade.save(app);
     assertTrue(app.getId() > 0 && app.getTags().size() > 0 && app.getDetails().size() > 0
         && app.getArtifacts().size() > 0 && app.getInstances().size() > 0);
-    LOGGER.info("App created: " + app);
   }
 
   public AppEntity createApp() {
@@ -72,7 +64,6 @@ public class AppFacadeTest {
 
   @Test
   public void addInstance() {
-    LOGGER.info("Creating a random instance to add to " + app);
     // Load a random app platform:
     AppPlatformEntity platform = getRandomPlatform();
     // Create another app instance and add it to this existing app:
@@ -81,12 +72,10 @@ public class AppFacadeTest {
     appInstance.setApp(app);
     this.app = appFacade.save(app);
     assertTrue(app.getInstances().size() > 1);
-    LOGGER.info("Instance created, application now: " + app);
   }
 
   @Test
   public void addDetail() {
-    LOGGER.info("Creating a random detail to add to " + app);
     // Load a random app detail type:
     AppDetailTypeEntity detailType = this.getRandomDetailType();
     // Create another app detail and add it to this existing app:
@@ -94,22 +83,18 @@ public class AppFacadeTest {
     app.addDetail(appDetail);
     app = appFacade.save(app);
     assertTrue(app.getDetails().size() > 1);
-    LOGGER.info("Detail created, application now: " + app);
   }
 
   @Test
   public void addTag() {
-    LOGGER.info("Creating a random tag to add to " + app);
     AppTagEntity tag = new AppTagEntity("New_tag_" + app.getName());
     app.addTag(tag);
     app = appFacade.save(app);
     assertTrue(app.getTags().size() > 1);
-    LOGGER.info("Tag created, application now: " + app);
   }
 
   @Test
   public void addArtifact() {
-    LOGGER.info("Creating a random artifact to add to " + app);
     // Load a random app artifact type:
     ArtifactTypeEntity artifactType = this.getRandomArtifactType();
     // Create another app artifact and add it to this existing app:
@@ -118,24 +103,26 @@ public class AppFacadeTest {
     app.addArtifacts(appArtifact);
     app = appFacade.save(app);
     assertTrue(app.getArtifacts().size() > 1);
-    LOGGER.info("Artifact created, application now: " + app);
   }
 
   @Test
   public void load() {
-    LOGGER.info("Loading a random app...");
     AppEntity app = this.getRandomApp();
     assertTrue(app.getId() > 0);
-    LOGGER.info("App loaded: " + app);
   }
 
   @Test
   public void findByName() {
     String name = app.getName().substring(4); // error-prone!
-    LOGGER.info("Searching for \"" + name + "\" with existing \"" + app.getName() + "\"");
-    AppEntity found = appFacade.findByName(name).get(0);
-    assertTrue(found.getId() == app.getId());
-    LOGGER.info("App found.");
+    List<AppEntity> matched = appFacade.findByName(name);
+    boolean found = false;
+    for (AppEntity a : matched) {
+      if (a.getId() == app.getId()) {
+        found = true;
+        break;
+      }
+    }
+    assertTrue(found);
   }
 
   public static AppPlatformEntity getRandomPlatform() {

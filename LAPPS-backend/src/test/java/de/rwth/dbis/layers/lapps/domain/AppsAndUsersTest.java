@@ -6,13 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.persistence.EntityManager;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import de.rwth.dbis.layers.lapps.Utils;
-import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.entity.AppArtifactEntity;
 import de.rwth.dbis.layers.lapps.entity.AppDetailEntity;
 import de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity;
@@ -30,7 +27,7 @@ public class AppsAndUsersTest {
   private AppFacade appFacade = AppFacade.getFacade();
   private UserFacade userFacade = new UserFacade();
 
-  private final static int APP_COUNT = 2;
+  private final static int APP_COUNT = 6;
   private final static int USER_COUNT = 3;
   private List<String> appNames = null;
 
@@ -85,12 +82,8 @@ public class AppsAndUsersTest {
 
   private void deleteExisting() {
     LOGGER.info("Deleting data...");
-    final EntityManager em = EMF.getEm();
-    em.getTransaction().begin();
-    em.createQuery(Utils.DELETE_APPS_QUERY).executeUpdate();
-    em.createQuery(Utils.DELETE_USERS_QUERY).executeUpdate();
-    em.getTransaction().commit();
-    em.close();
+    userFacade.deleteAll(null, null);
+    appFacade.deleteAll(null, null);
   }
 
   private void populateWithData() {
@@ -98,8 +91,11 @@ public class AppsAndUsersTest {
     appNames = new ArrayList<String>();
     appNames.add("HelpApp");
     appNames.add("ExpertApp");
-    appNames.add("TurboApp");
+    appNames.add("Turbo App");
     appNames.add("Yeah");
+    appNames.add("Tutor 2.0");
+    appNames.add("Serendipity");
+    appNames.add("Organizer Recharged");
 
     LOGGER.info("Creating data...");
     for (int i = 0; i < APP_COUNT; i++) {
@@ -134,11 +130,12 @@ public class AppsAndUsersTest {
 
   private void addArtifacts() {
     // Artifact types are not to be deleted => use them with hard-coded ids
-    ArtifactTypeEntity artifactType = ArtifactFacade.getFacade().find(2);
-    assertTrue(artifactType != null);
+    ArtifactTypeEntity image = ArtifactFacade.getFacade().find(2);
+    ArtifactTypeEntity thumbnail = ArtifactFacade.getFacade().find(3);
+    assertTrue(image != null && thumbnail != null);
     for (AppEntity app : apps) {
-      app.addArtifacts(new AppArtifactEntity(artifactType, "http://lorempixel.com/500/280/cats"));
-      app.addArtifacts(new AppArtifactEntity(artifactType, "http://lorempixel.com/150/150/cats"));
+      app.addArtifacts(new AppArtifactEntity(image, "http://lorempixel.com/500/280/cats"));
+      app.addArtifacts(new AppArtifactEntity(thumbnail, "http://lorempixel.com/150/150/cats"));
     }
   }
 

@@ -47,6 +47,7 @@ public class UserFacade extends AbstractFacade<UserEntity, Integer> {
     // app.addComment(c);
     em.persist(user);
     em.getTransaction().commit();
+    em.close();
     return c;
   }
 

@@ -8,7 +8,6 @@ import static org.junit.Assert.fail;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import javax.persistence.EntityManager;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -24,8 +23,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.rwth.dbis.layers.lapps.Main;
-import de.rwth.dbis.layers.lapps.Utils;
-import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.domain.UserFacade;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
@@ -52,11 +49,12 @@ public class UsersResourceTest {
 
     // delete all old users and then create one new user
     LOGGER.info("Deleting user data...");
-    final EntityManager em = EMF.getEm();
-    em.getTransaction().begin();
-    em.createQuery(Utils.DELETE_USERS_QUERY).executeUpdate();
-    em.getTransaction().commit();
-    em.close();
+    // final EntityManager em = EMF.getEm();
+    // em.getTransaction().begin();
+    // em.createQuery(Utils.DELETE_USERS_QUERY).executeUpdate();
+    // em.getTransaction().commit();
+    // em.close();
+    userFacade.deleteAll("oidcId", "1234567");
     LOGGER.info("User data deleted.");
     LOGGER.info("Creating a new user...");
     user = new UserEntity("1234567", "test@lapps.com");

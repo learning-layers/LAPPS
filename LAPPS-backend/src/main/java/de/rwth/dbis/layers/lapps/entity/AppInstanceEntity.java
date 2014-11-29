@@ -8,6 +8,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * App Instance domain object. App instances are, for example, distributions of the same app on
  * different platforms, e.g. TurboApp for Android or TurboApp for iOS.
@@ -20,6 +22,7 @@ public class AppInstanceEntity implements Entity {
   @Id
   @GeneratedValue
   private int id = 0;
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "app_id")
   private AppEntity app = null;
