@@ -8,6 +8,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * App Detail domain object. The contents of a certain detail are kept here with reference to the
  * App entity to which their belongs.
@@ -22,6 +24,7 @@ public class AppDetailEntity implements Entity {
   @Id
   @GeneratedValue
   private int id = 0;
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "app_id")
   private AppEntity app = null;

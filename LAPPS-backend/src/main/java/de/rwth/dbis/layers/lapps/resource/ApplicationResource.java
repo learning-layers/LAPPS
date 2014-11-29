@@ -7,7 +7,9 @@ import java.util.logging.Logger;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -15,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
@@ -44,8 +47,14 @@ public class ApplicationResource {
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems"),
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message")})
-  public Response getAllApps() {
-    List<AppEntity> entities = (List<AppEntity>) appFacade.findAll();
+  public Response getAllApps(
+      @ApiParam(value = "A query parameter", required = false) @QueryParam("search") String search) {
+    List<AppEntity> entities;
+    if (search == null) {
+      entities = (List<AppEntity>) appFacade.findAll();
+    } else {
+      entities = (List<AppEntity>) appFacade.findByName(search);
+    }
     ArrayList<Integer> appIds = new ArrayList<Integer>();
     Iterator<AppEntity> appIt = entities.iterator();
     while (appIt.hasNext()) {
@@ -59,4 +68,38 @@ public class ApplicationResource {
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
     }
   }
+
+  /**
+   * 
+   * Gets the app for a given id.
+   * 
+   * @param id
+   * 
+   * @return Response with an app as a JSON object.
+   * 
+   */
+  @GET
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiOperation(value = "Get app by ID", response = AppEntity.class)
+  @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
+      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
+          message = "Internal server problems"),
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message")})
+  public Response getApp(@PathParam("id") int id) {
+
+    AppEntity app = appFacade.find(id);
+    if (app == null) {
+      return Response.status(HttpStatusCode.NOT_FOUND).build();
+    }
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(app)).build();
+    } catch (JsonProcessingException e) {
+      LOGGER.warning(e.getMessage());
+      return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
 }

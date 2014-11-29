@@ -1,6 +1,8 @@
 package de.rwth.dbis.layers.lapps.domain;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -17,6 +19,7 @@ import de.rwth.dbis.layers.lapps.entity.Entity;
  * @param <I> Identity type
  */
 public abstract class AbstractFacade<T extends Entity, I> {
+  private static Logger LOGGER = Logger.getLogger(ArtifactFacade.class.getName());
 
   /**
    * The type (class) of the concrete {@link Entity} extending this abstract business service.
@@ -47,12 +50,20 @@ public abstract class AbstractFacade<T extends Entity, I> {
    */
   public T save(final T entity) {
     final EntityManager em = getEntityManager();
-    em.getTransaction().begin();
-    // em.persist(entity);
-    T managed = em.merge(entity);
-    em.flush();
-    em.getTransaction().commit();
-    em.close();
+    T managed = null;
+    try {
+      em.getTransaction().begin();
+      // em.persist(entity);
+      managed = em.merge(entity);
+      em.flush();
+      em.getTransaction().commit();
+      em.clear();
+      // em.close();
+    } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Exception while saving: " + e.getMessage());
+    } finally {
+      em.close();
+    }
     return managed;
   }
 
@@ -64,10 +75,17 @@ public abstract class AbstractFacade<T extends Entity, I> {
    */
   public final T find(final I id) {
     final EntityManager em = getEntityManager();
-    em.getTransaction().begin();
-    T entity = getEntityManager().find(entityClass, id);
-    em.getTransaction().commit();
-    em.close();
+    T entity = null;
+    try {
+      em.getTransaction().begin();
+      entity = getEntityManager().find(entityClass, id);
+      em.getTransaction().commit();
+      // em.close();
+    } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Exception while searching for an entity: " + e.getMessage());
+    } finally {
+      em.close();
+    }
     return entity;
   }
 
@@ -79,12 +97,19 @@ public abstract class AbstractFacade<T extends Entity, I> {
   @SuppressWarnings("unchecked")
   public final List<T> findAll() {
     final EntityManager em = getEntityManager();
-    em.getTransaction().begin();
-    // u parameter is the entity class itself
-    Query query = em.createQuery("select u from " + entityClass.getSimpleName() + " u");
-    List<T> entities = query.getResultList();
-    em.getTransaction().commit();
-    em.close();
+    List<T> entities = null;
+    try {
+      em.getTransaction().begin();
+      // u parameter is the entity class itself
+      Query query = em.createQuery("select u from " + entityClass.getSimpleName() + " u");
+      entities = query.getResultList();
+      em.getTransaction().commit();
+      // em.close();
+    } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Exception while obtaining all entities: " + e.getMessage());
+    } finally {
+      em.close();
+    }
     return entities;
   }
 
@@ -98,14 +123,22 @@ public abstract class AbstractFacade<T extends Entity, I> {
   @SuppressWarnings("unchecked")
   public final List<T> findByParameter(String param, String value) {
     final EntityManager em = getEntityManager();
-    em.getTransaction().begin();
-    Query query =
-        em.createQuery(
-            "select entity from " + entityClass.getSimpleName() + " entity where entity." + param
-                + " like :value").setParameter("value", "%" + value + "%");
-    List<T> entities = query.getResultList();
-    em.getTransaction().commit();
-    em.close();
+    List<T> entities = null;
+    try {
+      em.getTransaction().begin();
+      Query query =
+          em.createQuery(
+              "select entity from " + entityClass.getSimpleName() + " entity where entity." + param
+                  + " like :value").setParameter("value", "%" + value + "%");
+      entities = query.getResultList();
+      em.getTransaction().commit();
+      // em.close();
+    } catch (Exception e) {
+      LOGGER.log(Level.SEVERE,
+          "Exception while searching for an entity by a paramter: " + e.getMessage());
+    } finally {
+      em.close();
+    }
     return entities;
   }
 }
