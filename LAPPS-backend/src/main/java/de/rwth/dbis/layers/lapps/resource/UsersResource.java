@@ -171,7 +171,7 @@ public class UsersResource {
    * Update the user with the given id.
    * 
    * @param id
-   * @param UserEntity as JSON
+   * @param updatedUser as JSON
    * 
    * @return Response
    */
