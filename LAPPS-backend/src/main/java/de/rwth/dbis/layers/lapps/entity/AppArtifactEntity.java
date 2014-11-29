@@ -8,6 +8,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * App artifact object. The media content of an app
  *
@@ -20,6 +22,7 @@ public class AppArtifactEntity implements Entity {
   @Id
   @GeneratedValue
   private int id = 0;
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "app_id")
   private AppEntity app = null;

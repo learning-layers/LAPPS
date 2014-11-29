@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Comment domain object.
  * 
@@ -27,6 +29,7 @@ public class AppCommentEntity implements Entity {
   @ManyToOne
   @JoinColumn(name = "user_id")
   UserEntity author = null;
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "app_id")
   AppEntity app = null;

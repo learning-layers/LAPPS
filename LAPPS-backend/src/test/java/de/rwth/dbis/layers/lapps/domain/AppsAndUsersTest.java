@@ -19,7 +19,6 @@ import de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
 import de.rwth.dbis.layers.lapps.entity.AppPlatformEntity;
-import de.rwth.dbis.layers.lapps.entity.AppUserRightsEntity;
 import de.rwth.dbis.layers.lapps.entity.ArtifactTypeEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 
@@ -31,7 +30,7 @@ public class AppsAndUsersTest {
   private AppFacade appFacade = AppFacade.getFacade();
   private UserFacade userFacade = new UserFacade();
 
-  private final static int APP_COUNT = 2;
+  private final static int APP_COUNT = 6;
   private final static int USER_COUNT = 3;
   private List<String> appNames = null;
 
@@ -49,7 +48,8 @@ public class AppsAndUsersTest {
     this.addComments();
     this.addDescriptions();
     this.addArtifacts();
-    this.grantRights();
+    this.addInstances();
+    // TODO: Grand the first user rights for some apps!
 
     for (AppEntity app : apps) {
       appFacade.save(app);
@@ -70,7 +70,6 @@ public class AppsAndUsersTest {
     }
     for (AppEntity a : apps) {
       assertTrue(a.getId() > 0);
-      assertTrue(a.getInstances().get(0).getId() > 0);
     }
   }
 
@@ -99,14 +98,15 @@ public class AppsAndUsersTest {
     appNames = new ArrayList<String>();
     appNames.add("HelpApp");
     appNames.add("ExpertApp");
-    appNames.add("TurboApp");
+    appNames.add("Turbo App");
     appNames.add("Yeah");
+    appNames.add("Tutor 2.0");
+    appNames.add("Serendipity");
+    appNames.add("Organizer Recharged");
 
     LOGGER.info("Creating data...");
-    AppPlatformEntity appPlatform = AppPlatformFacade.getFacade().find(1);
     for (int i = 0; i < APP_COUNT; i++) {
       AppEntity app = new AppEntity(appNames.remove(Utils.generateRandomInt(0, appNames.size())));
-      app.addInstance(new AppInstanceEntity(appPlatform, "http://store.apple.com/" + app.getName()));
       apps.add(appFacade.save(app));
     }
     for (int i = 0; i < USER_COUNT; i++) {
@@ -137,11 +137,12 @@ public class AppsAndUsersTest {
 
   private void addArtifacts() {
     // Artifact types are not to be deleted => use them with hard-coded ids
-    ArtifactTypeEntity artifactType = ArtifactFacade.getFacade().find(2);
-    assertTrue(artifactType != null);
+    ArtifactTypeEntity image = ArtifactFacade.getFacade().find(2);
+    ArtifactTypeEntity thumbnail = ArtifactFacade.getFacade().find(3);
+    assertTrue(image != null && thumbnail != null);
     for (AppEntity app : apps) {
-      app.addArtifacts(new AppArtifactEntity(artifactType, "http://lorempixel.com/500/280/cats"));
-      app.addArtifacts(new AppArtifactEntity(artifactType, "http://lorempixel.com/150/150/cats"));
+      app.addArtifacts(new AppArtifactEntity(image, "http://lorempixel.com/500/280/cats"));
+      app.addArtifacts(new AppArtifactEntity(thumbnail, "http://lorempixel.com/150/150/cats"));
     }
   }
 
@@ -152,9 +153,12 @@ public class AppsAndUsersTest {
     }
   }
 
-  private void grantRights() {
-    assertTrue(apps.get(0).getInstances().get(0).getId() > 0);
-    userFacade.grant(AppUserRightsEntity.MODIFY,
-        users.get(Utils.generateRandomInt(0, users.size())), apps.get(0).getInstances().get(0));
+  private void addInstances() {
+    // Platform are not to be deleted => use them with hard-coded ids
+    AppPlatformEntity appPlatform = AppPlatformFacade.getFacade().find(1);
+    assertTrue(appPlatform != null);
+    for (AppEntity app : apps) {
+      app.addInstance(new AppInstanceEntity(appPlatform, "http://store.apple.com/" + app.getName()));
+    }
   }
 }

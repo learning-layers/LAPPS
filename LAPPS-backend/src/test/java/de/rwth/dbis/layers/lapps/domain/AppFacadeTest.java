@@ -133,8 +133,15 @@ public class AppFacadeTest {
   public void findByName() {
     String name = app.getName().substring(4); // error-prone!
     LOGGER.info("Searching for \"" + name + "\" with existing \"" + app.getName() + "\"");
-    AppEntity found = appFacade.findByName(name).get(0);
-    assertTrue(found.getId() == app.getId());
+    List<AppEntity> matched = appFacade.findByName(name);
+    boolean found = false;
+    for (AppEntity a : matched) {
+      if (a.getId() == app.getId()) {
+        found = true;
+        break;
+      }
+    }
+    assertTrue(found);
     LOGGER.info("App found.");
   }
 
@@ -164,9 +171,6 @@ public class AppFacadeTest {
 
   public AppEntity getRandomApp() {
     List<AppEntity> apps = appFacade.findAll();
-    for (AppEntity app : apps) {
-      LOGGER.info(app.toString());
-    }
     return apps.get(Utils.generateRandomInt(0, apps.size()));
   }
 
