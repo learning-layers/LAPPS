@@ -5,14 +5,11 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import javax.persistence.EntityManager;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.rwth.dbis.layers.lapps.Utils;
-import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.entity.AppCommentEntity;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
@@ -29,11 +26,7 @@ public class UserFacadeTest {
   @Before
   public void init() {
     LOGGER.info("Deleting user data...");
-    final EntityManager em = EMF.getEm();
-    em.getTransaction().begin();
-    em.createQuery(Utils.DELETE_USERS_QUERY).executeUpdate();
-    em.getTransaction().commit();
-    em.close();
+    userFacade.deleteAll("email", "@test.com");
     LOGGER.info("User data deleted.");
     LOGGER.info("Creating a new user...");
     user = this.createUser();
@@ -44,7 +37,7 @@ public class UserFacadeTest {
 
   private UserEntity createUser() {
     return new UserEntity(Utils.generateRandomInt(0, 5000) + "", "test"
-        + Utils.generateRandomInt(0, 5000) + "@lapps.com");
+        + Utils.generateRandomInt(0, 5000) + "@test.com");
   }
 
   @Test
@@ -72,7 +65,7 @@ public class UserFacadeTest {
   }
 
   // TODO: Implement
-  @Test
+  // @Test
   public void grandRights() {
 
   }
@@ -88,10 +81,6 @@ public class UserFacadeTest {
 
   @After
   public void releaseResources() {
-    final EntityManager em = EMF.getEm();
-    em.getTransaction().begin();
-    em.createQuery("delete from AppEntity").executeUpdate();
-    em.getTransaction().commit();
-    em.close();
+    AppFacade.getFacade().deleteAll("name", "Test app ");
   }
 }

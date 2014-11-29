@@ -51,6 +51,7 @@ public abstract class AbstractFacade<T extends Entity, I> {
   public T save(final T entity) {
     final EntityManager em = getEntityManager();
     T managed = null;
+    LOGGER.info("Attempting to save a(n) " + entityClass.getName() + "...");
     try {
       em.getTransaction().begin();
       // em.persist(entity);
@@ -64,6 +65,7 @@ public abstract class AbstractFacade<T extends Entity, I> {
     } finally {
       em.close();
     }
+    LOGGER.info("Saved: " + managed);
     return managed;
   }
 
@@ -76,6 +78,7 @@ public abstract class AbstractFacade<T extends Entity, I> {
   public final T find(final I id) {
     final EntityManager em = getEntityManager();
     T entity = null;
+    LOGGER.info("Attempting to find a(n) " + entityClass.getName() + "...");
     try {
       em.getTransaction().begin();
       entity = getEntityManager().find(entityClass, id);
@@ -86,6 +89,7 @@ public abstract class AbstractFacade<T extends Entity, I> {
     } finally {
       em.close();
     }
+    LOGGER.info("Found: " + entity);
     return entity;
   }
 
@@ -98,6 +102,7 @@ public abstract class AbstractFacade<T extends Entity, I> {
   public final List<T> findAll() {
     final EntityManager em = getEntityManager();
     List<T> entities = null;
+    LOGGER.info("Attempting to find all " + entityClass.getName() + " instances...");
     try {
       em.getTransaction().begin();
       // u parameter is the entity class itself
@@ -110,6 +115,7 @@ public abstract class AbstractFacade<T extends Entity, I> {
     } finally {
       em.close();
     }
+    LOGGER.info("Found: " + entities.size() + " " + entityClass.getName() + "entities.");
     return entities;
   }
 
@@ -124,6 +130,7 @@ public abstract class AbstractFacade<T extends Entity, I> {
   public final List<T> findByParameter(String param, String value) {
     final EntityManager em = getEntityManager();
     List<T> entities = null;
+    LOGGER.info("Searching for " + entityClass.getName() + " by a parameter...");
     try {
       em.getTransaction().begin();
       Query query =
@@ -139,6 +146,33 @@ public abstract class AbstractFacade<T extends Entity, I> {
     } finally {
       em.close();
     }
+    LOGGER.info("Found: " + entities.size() + " " + entityClass.getName() + "entities.");
     return entities;
+  }
+
+  public void deleteAll(String param, String value) {
+    final EntityManager em = getEntityManager();
+    Query query = null;
+    int count = 0;
+    if (param != null && value != null) {
+      query =
+          em.createQuery(
+              "delete from " + entityClass.getSimpleName() + " entity where entity." + param
+                  + " like :value").setParameter("value", "%" + value + "%");
+      LOGGER.info("Deleting " + entityClass.getName() + " with " + param + " == " + value + " ...");
+    } else {
+      query = em.createQuery("delete from " + entityClass.getName());
+      LOGGER.info("Deleting all " + entityClass.getName() + "...");
+    }
+    try {
+      em.getTransaction().begin();
+      count = query.executeUpdate();
+      em.getTransaction().commit();
+    } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Exception while deleting entities: " + e.getMessage());
+    } finally {
+      em.close();
+    }
+    LOGGER.info(count + " entities deleted.");
   }
 }

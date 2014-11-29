@@ -6,13 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.persistence.EntityManager;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import de.rwth.dbis.layers.lapps.Utils;
-import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.entity.AppArtifactEntity;
 import de.rwth.dbis.layers.lapps.entity.AppDetailEntity;
 import de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity;
@@ -85,12 +82,8 @@ public class AppsAndUsersTest {
 
   private void deleteExisting() {
     LOGGER.info("Deleting data...");
-    final EntityManager em = EMF.getEm();
-    em.getTransaction().begin();
-    em.createQuery(Utils.DELETE_APPS_QUERY).executeUpdate();
-    em.createQuery(Utils.DELETE_USERS_QUERY).executeUpdate();
-    em.getTransaction().commit();
-    em.close();
+    userFacade.deleteAll(null, null);
+    appFacade.deleteAll(null, null);
   }
 
   private void populateWithData() {
