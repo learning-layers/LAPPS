@@ -24,7 +24,7 @@
 		"fetch-swagger-schema": ">=0.1.2"
 	},
 	"scripts": {
-		"postinstall": ["bower install", "node fetchApi.js"],
+		"postinstall": "bower install && node fetchApi.js",
 
 		"predoc": "npm install",
 		"doc": "node node_modules/jsdoc/jsdoc.js -c jsdoc.conf.json -r app",
