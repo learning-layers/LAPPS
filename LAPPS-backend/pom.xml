@@ -155,8 +155,7 @@
 			    <configuration>
 			        <url>http://buche.informatik.rwth-aachen.de:9080/manager/text</url>
 			        <path>/lapps-${project.version}</path>
-			        <username>admin</username>
-			        <password>admin</password>
+                    <server>LabCourseTomcatServer</server>
 			        <update>true</update>
 			    </configuration>
 		    </plugin>
