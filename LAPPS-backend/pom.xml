@@ -149,16 +149,16 @@
                  access to the settings.xml of our Jenkins)
              -->
             <plugin>
-			    <groupId>org.apache.tomcat.maven</groupId>
-			    <artifactId>tomcat7-maven-plugin</artifactId>
-			    <version>2.2</version>
-			    <configuration>
-			        <url>http://buche.informatik.rwth-aachen.de:9080/manager/text</url>
-			        <path>/lapps-${project.version}</path>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <url>http://buche.informatik.rwth-aachen.de:9080/manager/text</url>
+                    <path>/lapps-${project.version}</path>
                     <server>LabCourseTomcatServer</server>
-			        <update>true</update>
-			    </configuration>
-		    </plugin>
+                    <update>true</update>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     
