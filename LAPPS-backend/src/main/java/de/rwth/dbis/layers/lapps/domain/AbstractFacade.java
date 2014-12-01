@@ -59,9 +59,10 @@ public abstract class AbstractFacade<T extends Entity, I> {
       em.flush();
       em.getTransaction().commit();
       em.clear();
-      // em.close();
-    } catch (Exception e) {
-      LOGGER.log(Level.SEVERE, "Exception while saving: " + e.getMessage());
+    } catch (Throwable t) {
+      LOGGER.log(Level.SEVERE, "Exception while saving: " + t.getMessage());
+      em.getTransaction().rollback();
+      throw t;
     } finally {
       em.close();
     }
@@ -84,8 +85,10 @@ public abstract class AbstractFacade<T extends Entity, I> {
       entity = getEntityManager().find(entityClass, id);
       em.getTransaction().commit();
       // em.close();
-    } catch (Exception e) {
-      LOGGER.log(Level.SEVERE, "Exception while searching for an entity: " + e.getMessage());
+    } catch (Throwable t) {
+      LOGGER.log(Level.SEVERE, "Exception while searching for an entity: " + t.getMessage());
+      em.getTransaction().rollback();
+      throw t;
     } finally {
       em.close();
     }
@@ -110,8 +113,10 @@ public abstract class AbstractFacade<T extends Entity, I> {
       entities = query.getResultList();
       em.getTransaction().commit();
       // em.close();
-    } catch (Exception e) {
-      LOGGER.log(Level.SEVERE, "Exception while obtaining all entities: " + e.getMessage());
+    } catch (Throwable t) {
+      LOGGER.log(Level.SEVERE, "Exception while obtaining all entities: " + t.getMessage());
+      em.getTransaction().rollback();
+      throw t;
     } finally {
       em.close();
     }
@@ -140,9 +145,11 @@ public abstract class AbstractFacade<T extends Entity, I> {
       entities = query.getResultList();
       em.getTransaction().commit();
       // em.close();
-    } catch (Exception e) {
+    } catch (Throwable t) {
       LOGGER.log(Level.SEVERE,
-          "Exception while searching for an entity by a paramter: " + e.getMessage());
+          "Exception while searching for an entity by a paramter: " + t.getMessage());
+      em.getTransaction().rollback();
+      throw t;
     } finally {
       em.close();
     }
@@ -168,8 +175,10 @@ public abstract class AbstractFacade<T extends Entity, I> {
       em.getTransaction().begin();
       count = query.executeUpdate();
       em.getTransaction().commit();
-    } catch (Exception e) {
-      LOGGER.log(Level.SEVERE, "Exception while deleting entities: " + e.getMessage());
+    } catch (Throwable t) {
+      LOGGER.log(Level.SEVERE, "Exception while deleting entities: " + t.getMessage());
+      em.getTransaction().rollback();
+      throw t;
     } finally {
       em.close();
     }
