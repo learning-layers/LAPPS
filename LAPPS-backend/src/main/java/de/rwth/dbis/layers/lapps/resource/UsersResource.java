@@ -147,10 +147,10 @@ public class UsersResource {
   @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Get user by ID", response = UserEntity.class)
   @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
-          message = "Internal server problems"),
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message")})
+          message = "Internal server problems")})
   public Response getUser(@PathParam("id") int id) {
 
     UserEntity user = userFacade.find(id);
@@ -179,12 +179,12 @@ public class UsersResource {
   @Path("/{id}")
   @ApiOperation(value = "Delete user by ID")
   @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
-  public Response deleteUser(@HeaderParam("access_token") String accessToken,
-      @PathParam("id") int id) {
+  public Response deleteUser(@HeaderParam("accessToken") String accessToken, @PathParam("id") int id) {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
       // process)
@@ -211,22 +211,20 @@ public class UsersResource {
    * 
    * @return Response
    */
-  // TODO: Think about success token (instead of only a 200 response)
-  // TODO: Think if really needed (since we only create users via OIDC authenticate, and also update
-  // via this functionality. Would make sense if we had more user attributes.)
   @PUT
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Update user by ID", response = UserEntity.class)
   @ApiResponses(value = {
-      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
-          message = "Internal server problems"),
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
+      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
+          message = "Internal server problems"),
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
-  public Response updateUser(@HeaderParam("access_token") String accessToken,
+  public Response updateUser(@HeaderParam("accessToken") String accessToken,
       @PathParam("id") int id,
       @ApiParam(value = "User entity as JSON", required = true) UserEntity updatedUser) {
     try {
