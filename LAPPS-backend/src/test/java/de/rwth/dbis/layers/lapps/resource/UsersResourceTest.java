@@ -75,7 +75,7 @@ public class UsersResourceTest {
   public void testGetAllUser() {
     Response response =
         target.path("users").request(MediaType.APPLICATION_JSON)
-            .header("access_token", UsersResource.OPEN_ID_TEST_TOKEN).get();
+            .header("accessToken", UsersResource.OPEN_ID_TEST_TOKEN).get();
     assertEquals(HttpStatusCode.OK, response.getStatus());
     MediaType responseMediaType = response.getMediaType();
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());

@@ -77,7 +77,7 @@ public class UsersResource {
           message = "Internal server problems"),
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message")})
   public Response getAllUsers(
-      @HeaderParam("access_token") String accessToken,
+      @HeaderParam("accessToken") String accessToken,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
       @ApiParam(value = "Sort by field", required = false, allowableValues = "email") @DefaultValue("email") @QueryParam("sortBy") String sortBy,
