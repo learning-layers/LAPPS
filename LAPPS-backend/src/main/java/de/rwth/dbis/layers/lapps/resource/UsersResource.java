@@ -6,18 +6,21 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -73,7 +76,12 @@ public class UsersResource {
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems"),
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message")})
-  public Response getAllUsers(@HeaderParam("access_token") String accessToken) {
+  public Response getAllUsers(
+      @HeaderParam("access_token") String accessToken,
+      @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
+      @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
+      @ApiParam(value = "Sort by field", required = false, allowableValues = "email") @DefaultValue("email") @QueryParam("sortBy") String sortBy,
+      @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order) {
     try {
       authenticate(accessToken);
       // TODO: Check for admin rights (not part of the open id authentication process)
@@ -83,6 +91,27 @@ public class UsersResource {
     }
 
     List<UserEntity> entities = (List<UserEntity>) userFacade.findAll();
+
+    Collections.sort(entities);
+    if (order.equalsIgnoreCase("desc")) {
+      Collections.reverse(entities);
+    }
+
+    int numberOfPages = 1;
+    if (pageLength > 0 && pageLength < entities.size()) {
+      int fromIndex = page == 1 ? 0 : (page * pageLength) - pageLength;
+      int toIndex = page == 1 ? pageLength : page * pageLength;
+      numberOfPages = (int) Math.ceil((double) entities.size() / pageLength);
+      if (entities.size() < fromIndex + 1) {
+        entities.clear();
+      } else {
+        if (entities.size() < toIndex + 1) {
+          toIndex = entities.size();
+        }
+        entities = entities.subList(fromIndex, toIndex);
+      }
+    }
+
     ArrayList<Integer> userIds = new ArrayList<Integer>();
     Iterator<UserEntity> userIt = entities.iterator();
     while (userIt.hasNext()) {
@@ -90,7 +119,8 @@ public class UsersResource {
     }
     try {
       ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(userIds)).build();
+      return Response.status(HttpStatusCode.OK).header("numberOfPages", numberOfPages)
+          .entity(mapper.writeValueAsBytes(userIds)).build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
