@@ -72,10 +72,10 @@ public class UsersResource {
   @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Get list of all users")
   @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
-          message = "Internal server problems"),
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message")})
+          message = "Internal server problems")})
   public Response getAllUsers(
       @HeaderParam("accessToken") String accessToken,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
