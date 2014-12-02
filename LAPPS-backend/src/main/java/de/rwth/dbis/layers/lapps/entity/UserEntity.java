@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @javax.persistence.Entity
 @Table(name = "user")
-public class UserEntity implements Entity {
+public class UserEntity implements Entity, Comparable<UserEntity> {
   private static final long serialVersionUID = 1L;
   @Id
   @GeneratedValue
@@ -76,5 +76,17 @@ public class UserEntity implements Entity {
   public String toString() {
     return "[" + this.getClass().getName() + "] id: " + this.id + ", oidcId: " + this.getOidcId()
         + ", email: " + this.getEmail();
+  }
+
+  // Default constuctor
+  @Override
+  public int compareTo(UserEntity o) {
+    if (this.getEmail() == null) {
+      return -1;
+    } else if (o.getEmail() == null) {
+      return 1;
+    } else {
+      return this.getEmail().compareToIgnoreCase(o.getEmail());
+    }
   }
 }

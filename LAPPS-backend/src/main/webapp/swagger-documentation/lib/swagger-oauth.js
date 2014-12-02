@@ -101,7 +101,7 @@ function handleLogin() {
         if(authSchemes[key].type === 'oauth2' && authSchemes[key].flow === 'implicit') {
           var dets = authSchemes[key];
           url = dets.authorizationUrl + '?response_type=token';
-          window.swaggerUi.tokenName = dets.tokenUrl || 'access_token';          
+          window.swaggerUi.tokenName = dets.tokenUrl || 'accessToken';          
         }
         else if(authSchemes[key].grantTypes) {
           // 1.2 support
