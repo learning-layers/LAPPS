@@ -78,6 +78,7 @@ public class UsersResource {
           message = "Internal server problems")})
   public Response getAllUsers(
       @HeaderParam("accessToken") String accessToken,
+      @ApiParam(value = "Search query parameter", required = false) @QueryParam("search") String search,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
       @ApiParam(value = "Sort by field", required = false, allowableValues = "email") @DefaultValue("email") @QueryParam("sortBy") String sortBy,
@@ -90,7 +91,12 @@ public class UsersResource {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
 
-    List<UserEntity> entities = (List<UserEntity>) userFacade.findAll();
+    List<UserEntity> entities;
+    if (search == null) {
+      entities = (List<UserEntity>) userFacade.findAll();
+    } else {
+      entities = (List<UserEntity>) userFacade.findByEmail(search);
+    }
 
     Collections.sort(entities);
     if (order.equalsIgnoreCase("desc")) {
