@@ -1,12 +1,22 @@
 package de.rwth.dbis.layers.lapps.entity;
 
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -30,6 +40,28 @@ public class AppInstanceEntity implements Entity {
   @JoinColumn(name = "platform_id")
   private AppPlatformEntity platform = null;
   private String url = null;
+  private String version = null;
+  private int size = 0;
+  private String sourceUrl = null;
+  @Column(name = "date_created")
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date dateCreated = new Date();
+  @Column(name = "date_modified")
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date dateModified = null;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private List<AppDetailEntity> details = new ArrayList<AppDetailEntity>();
+  @JsonIgnore
+  @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private List<AppArtifactEntity> artifacts = new ArrayList<AppArtifactEntity>();
+  @JsonIgnore
+  @OneToMany(mappedBy = "appInstance", fetch = FetchType.EAGER)
+  private List<AppCommentEntity> comments = new ArrayList<AppCommentEntity>();
+  @JsonIgnore
+  @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private List<AppTagEntity> tags = new ArrayList<AppTagEntity>();
 
   public AppInstanceEntity() {}
 
@@ -69,10 +101,100 @@ public class AppInstanceEntity implements Entity {
     this.url = url;
   }
 
+  public String getVersion() {
+    return version;
+  }
+
+  public void setVersion(String version) {
+    this.version = version;
+  }
+
+  public int getSize() {
+    return size;
+  }
+
+  public void setSize(int size) {
+    this.size = size;
+  }
+
+  public String getSourceUrl() {
+    return sourceUrl;
+  }
+
+  public void setSourceUrl(String sourceUrl) {
+    this.sourceUrl = sourceUrl;
+  }
+
+  public Date getDateCreated() {
+    return dateCreated;
+  }
+
+  public void setDateCreated(Date dateCreated) {
+    this.dateCreated = dateCreated;
+  }
+
+  public Date getDateModified() {
+    return dateModified;
+  }
+
+  public void setDateModified(Date dateModified) {
+    this.dateModified = dateModified;
+  }
+
+  public List<AppArtifactEntity> getArtifacts() {
+    return artifacts;
+  }
+
+  public void addArtifacts(AppArtifactEntity artifact) {
+    this.artifacts.add(artifact);
+    if (artifact.getAppInstance() != this) {
+      artifact.setAppInstance(this);
+    }
+  }
+
+  public List<AppDetailEntity> getDetails() {
+    return details;
+  }
+
+  public void addDetail(AppDetailEntity detail) {
+    this.details.add(detail);
+    if (detail.getAppInstance() != this) {
+      detail.setAppInstance(this);
+    }
+  }
+
+  public List<AppCommentEntity> getComments() {
+    return comments;
+  }
+
+  public void addComment(AppCommentEntity comment) {
+    this.comments.add(comment);
+    if (comment.getAppInstance() != this) {
+      comment.setAppInstance(this);
+    }
+  }
+
+  public List<AppTagEntity> getTags() {
+    return tags;
+  }
+
+  public void addTag(AppTagEntity tag) {
+    this.tags.add(tag);
+    if (tag.getAppInstance() != this) {
+      tag.setAppInstance(this);
+    }
+  }
+
   @Override
   public String toString() {
-    return "[" + this.getClass().getName() + "] id: " + this.getId() + ", for app: "
-        + this.getApp().getName() + ", on: " + this.getPlatform().getName() + ", available at: "
-        + this.getUrl();
+    return "[" + this.getClass().getName() + "] id = " + this.getId() + ", for app "
+        + this.getApp().getName() + "(created on "
+        + DateFormat.getInstance().format(this.getDateCreated()) + ", last modified on "
+        + DateFormat.getInstance().format(this.getDateModified()) + ") version "
+        + this.getVersion() + ", on " + this.getPlatform().getName() + "[" + this.getSize()
+        + "KB], available at " + this.getUrl() + ", with source at " + this.getSourceUrl()
+        + " having " + this.getComments().size() + "comments, " + this.getArtifacts().size()
+        + " artifacts, " + this.getDetails().size() + " descriptions and " + this.getTags().size()
+        + " tags";
   }
 }

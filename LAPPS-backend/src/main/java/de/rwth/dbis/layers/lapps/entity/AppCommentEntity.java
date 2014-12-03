@@ -31,17 +31,17 @@ public class AppCommentEntity implements Entity {
   UserEntity author = null;
   @JsonIgnore
   @ManyToOne
-  @JoinColumn(name = "app_id")
-  AppEntity app = null;
+  @JoinColumn(name = "app_instance_id")
+  AppInstanceEntity appInstance = null;
   @Temporal(TemporalType.TIMESTAMP)
   Date date = new Date();
 
   public AppCommentEntity() {}
 
-  public AppCommentEntity(String text, UserEntity author, AppEntity app) {
+  public AppCommentEntity(String text, UserEntity author, AppInstanceEntity app) {
     this.setText(text);
     this.setAuthor(author);
-    this.setApp(app);
+    this.setAppInstance(app);
   }
 
   public String getText() {
@@ -63,14 +63,14 @@ public class AppCommentEntity implements Entity {
     }
   }
 
-  public AppEntity getApp() {
-    return app;
+  public AppInstanceEntity getAppInstance() {
+    return appInstance;
   }
 
-  public void setApp(AppEntity app) {
-    this.app = app;
-    if (!app.getComments().contains(this)) {
-      app.getComments().add(this);
+  public void setAppInstance(AppInstanceEntity appInstance) {
+    this.appInstance = appInstance;
+    if (!appInstance.getComments().contains(this)) {
+      appInstance.getComments().add(this);
     }
   }
 
@@ -90,6 +90,7 @@ public class AppCommentEntity implements Entity {
   public String toString() {
     return "[" + this.getClass().getName() + "] id: " + this.getId() + ", contents: "
         + this.getText() + ", from user: " + this.getAuthor().getEmail() + " regarding app: "
-        + this.getApp().getName() + ", on: " + DateFormat.getInstance().format(this.getDate());
+        + this.getAppInstance().getApp().getName() + ", on: "
+        + DateFormat.getInstance().format(this.getDate());
   }
 }

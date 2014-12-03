@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.entity.AppCommentEntity;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
+import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 
 /**
@@ -41,8 +42,8 @@ public class UserFacade extends AbstractFacade<UserEntity, Integer> {
     final EntityManager em = getEntityManager();
     em.getTransaction().begin();
     UserEntity user = em.find(UserEntity.class, userId);
-    AppEntity app = em.find(AppEntity.class, appId);
-    AppCommentEntity c = new AppCommentEntity(comment, user, app);
+    AppInstanceEntity appInstance = em.find(AppInstanceEntity.class, appId);
+    AppCommentEntity c = new AppCommentEntity(comment, user, appInstance);
     // user.addComment(c);
     // app.addComment(c);
     em.persist(user);
@@ -59,8 +60,8 @@ public class UserFacade extends AbstractFacade<UserEntity, Integer> {
    * @param app The app the comment refers to
    * @return The newly created {@link AppCommentEntity}
    */
-  public AppCommentEntity comment(String comment, UserEntity user, AppEntity app) {
-    new AppCommentEntity(comment, user, app);
+  public AppCommentEntity comment(String comment, UserEntity user, AppInstanceEntity appInstance) {
+    new AppCommentEntity(comment, user, appInstance);
     UserEntity u = this.save(user);
     List<AppCommentEntity> comments = u.getComments();
     return comments.get(comments.size() - 1);

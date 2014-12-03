@@ -27,6 +27,7 @@ public class UserEntity implements Entity, Comparable<UserEntity> {
   @Column(name = "oidc_id")
   private String oidcId = "";
   private String email = null;
+  private String username = null;
 
   // TODO: remove this @JsonIgnore, we need it because their is a recursive loop between author
   // (user) <-> appcomment <-> author (user) <-> appcomment
@@ -59,6 +60,14 @@ public class UserEntity implements Entity, Comparable<UserEntity> {
 
   public Integer getId() {
     return id;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
   }
 
   public void addComment(AppCommentEntity c) {
