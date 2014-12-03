@@ -1001,7 +1001,7 @@
           }
           queryParams += encodeURIComponent(param.name) + '=' + output;
         } else if ((param.paramType == 'query')
-                && (param.required || !(args[param.name] === 'undefined'
+                && (param.required || !(typeof args[param.name] === 'undefined'
                         || args[param.name] === null || args[param.name] === ''))) {
           queryParams += encodeURIComponent(param.name) + '='
                   + encodeURIComponent(args[param.name]);
