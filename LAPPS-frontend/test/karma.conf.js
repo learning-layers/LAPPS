@@ -11,9 +11,9 @@ module.exports = function(config) {
                 'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
                 'app/bower_components/swagger-angular-client/dist/swagger-angular-client.js',
                 'app/bower_components/jquery/dist/jquery.js',
-                'app/core/**/*.js', 'test/utils/swagger2HttpBackend.js',
-                'app/components/**/*.js', 'app/shared/**/*.js',
-                'test/unit/**/*.js'],
+                'app/api/lappsApi.js', 'app/core/**/*.js',
+                'test/utils/swagger2HttpBackend.js', 'app/components/**/*.js',
+                'app/shared/**/*.js', 'test/unit/**/*.js'],
 
             autoWatch: true,
 

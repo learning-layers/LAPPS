@@ -10,7 +10,7 @@
   var localAddress = 'http://buche.informatik.rwth-aachen.de:9080/lapps-0.2-SNAPSHOT/lapps/v1/api-docs';
   var deployAddress = 'http://buche.informatik.rwth-aachen.de:9080/lapps-0.2-SNAPSHOT/lapps/v1/api-docs';
   var address = deployAddress;
-  var apiFile = 'app/core/lappsApi.js';
+  var apiFile = 'app/api/lappsApi.js';
 
   if (args[0] == 'local') {// use local or deploy server?
     address = localAddress;

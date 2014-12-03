@@ -32,7 +32,7 @@
    * @memberOf lapps
    */
   var lappsApp = angular.module('lappsApp', ['ngRoute', 'ui.bootstrap',
-      'swagger-client', 'lappsControllers', 'lappsDirectives', 'lappsServices',
+      'lappsControllers', 'lappsDirectives', 'lappsServices', 'swagger-client',
       'lappsFilters', 'lappsAttibuteDirectives']);
   lappsApp.run(['$rootScope', 'swaggerClient',
       function($rootScope, swaggerClient) {
