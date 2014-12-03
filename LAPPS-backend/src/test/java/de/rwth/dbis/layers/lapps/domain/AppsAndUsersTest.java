@@ -45,7 +45,6 @@ public class AppsAndUsersTest {
     this.addComments();
     this.addDescriptions();
     this.addArtifacts();
-    this.addInstances();
     // TODO: Grand the first user rights for some apps!
 
     for (AppEntity app : apps) {
@@ -61,23 +60,23 @@ public class AppsAndUsersTest {
   }
 
   private void dataAvailable() {
-    assertTrue(users.size() > 0 && apps.size() > 0);
+    assertTrue("No users or no apps have been created!", users.size() > 0 && apps.size() > 0);
     for (UserEntity u : users) {
-      assertTrue(u.getId() > 0);
+      assertTrue("There is a user with an id <= 0!", u.getId() > 0);
     }
     for (AppEntity a : apps) {
-      assertTrue(a.getId() > 0);
+      assertTrue("There is an app with an id <= 0!", a.getId() > 0);
     }
   }
 
   private void getComments() {
     boolean expectationMet = false;
     for (AppEntity app : apps) {
-      if (app.getComments().size() > 1) {
+      if (app.getInstances().get(0).getComments().size() > 1) {
         expectationMet = true;
       }
     }
-    assertTrue(expectationMet);
+    assertTrue("There is no app instance with comments!", expectationMet);
   }
 
   private void deleteExisting() {
@@ -97,9 +96,12 @@ public class AppsAndUsersTest {
     appNames.add("Serendipity");
     appNames.add("Organizer Recharged");
 
+    AppPlatformEntity appPlatform = AppPlatformFacade.getFacade().find(1);
+    assertTrue(appPlatform != null);
     LOGGER.info("Creating data...");
     for (int i = 0; i < APP_COUNT; i++) {
       AppEntity app = new AppEntity(appNames.remove(Utils.generateRandomInt(0, appNames.size())));
+      app.addInstance(new AppInstanceEntity(appPlatform, "http://store.apple.com/" + app.getName()));
       apps.add(appFacade.save(app));
     }
     for (int i = 0; i < USER_COUNT; i++) {
@@ -111,8 +113,9 @@ public class AppsAndUsersTest {
   }
 
   private void addComments() {
-    userFacade.comment("I really love this app!", users.get(0), apps.get(0));
-    userFacade.comment("Aaah.. that's a crap...", users.get(users.size() - 1), apps.get(0));
+    userFacade.comment("I really love this app!", users.get(0), apps.get(0).getInstances().get(0));
+    userFacade.comment("Aaah.. that's a crap...", users.get(users.size() - 1), apps.get(0)
+        .getInstances().get(0));
     // new AppCommentEntity("Test Comment", users.get(Utils.generateRandomInt(0, users.size())),
     // apps.get(0));
     // new AppCommentEntity("Another Test Comment",
@@ -121,21 +124,23 @@ public class AppsAndUsersTest {
 
   private void addDescriptions() {
     // Detail types are not to be deleted => use them with hard-coded ids
-    AppDetailTypeEntity detailType = AppDetailTypeFacade.getFacade().find(2);
+    AppDetailTypeEntity detailType = AppDetailTypeFacade.getFacade().find(1);
     assertTrue(detailType != null);
     for (AppEntity app : apps) {
-      app.addDetail(new AppDetailEntity(detailType, "Lorem ipsum..."));
+      app.getInstances().get(0).addDetail(new AppDetailEntity(detailType, "Lorem ipsum..."));
     }
   }
 
   private void addArtifacts() {
     // Artifact types are not to be deleted => use them with hard-coded ids
-    ArtifactTypeEntity image = ArtifactFacade.getFacade().find(2);
-    ArtifactTypeEntity thumbnail = ArtifactFacade.getFacade().find(3);
+    ArtifactTypeEntity image = ArtifactFacade.getFacade().find(1);
+    ArtifactTypeEntity thumbnail = ArtifactFacade.getFacade().find(2);
     assertTrue(image != null && thumbnail != null);
     for (AppEntity app : apps) {
-      app.addArtifacts(new AppArtifactEntity(image, "http://lorempixel.com/500/280/cats"));
-      app.addArtifacts(new AppArtifactEntity(thumbnail, "http://lorempixel.com/150/150/cats"));
+      app.getInstances().get(0)
+          .addArtifacts(new AppArtifactEntity(image, "http://lorempixel.com/500/280/cats"));
+      app.getInstances().get(0)
+          .addArtifacts(new AppArtifactEntity(thumbnail, "http://lorempixel.com/150/150/cats"));
     }
   }
 
@@ -143,15 +148,6 @@ public class AppsAndUsersTest {
     LOGGER.info("All apps created: ");
     for (AppEntity app : apps) {
       LOGGER.info(app.toString());
-    }
-  }
-
-  private void addInstances() {
-    // Platform are not to be deleted => use them with hard-coded ids
-    AppPlatformEntity appPlatform = AppPlatformFacade.getFacade().find(1);
-    assertTrue(appPlatform != null);
-    for (AppEntity app : apps) {
-      app.addInstance(new AppInstanceEntity(appPlatform, "http://store.apple.com/" + app.getName()));
     }
   }
 }
