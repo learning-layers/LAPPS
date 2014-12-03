@@ -26,12 +26,64 @@ describe('Logic for app list', function() {
       ctrl = $controller('featuredListCtrl', {
         $scope: scope
       });
-    }));
 
+    }));
+    afterEach(function() {
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+    });
     it('should create "app" model with 3 dummy apps', function() {
       expect(scope.apps.length).toBe(0);
       $httpBackend.flush();
       expect(scope.apps.length).toBe(3);
+    });
+  });
+});
+
+// TODO: create tests in different files, this is only an example how to use
+// swagger with tests
+describe('Logic for app search', function() {
+  beforeEach(module('lappsApp'));
+  describe('searchPageCtrl', function() {
+    var scope, ctrl, $httpBackend;
+
+    beforeEach(inject(function(_$httpBackend_, $rootScope, $controller,
+            swagger2HttpBackend) {
+
+      $httpBackend = _$httpBackend_;
+      var apiRequest = swagger2HttpBackend.getRequest('apps.getAllApps', {
+        search: ''
+      });
+      $httpBackend.expectGET(apiRequest.url).respond([1, 2]);
+
+      apiRequest = swagger2HttpBackend.getRequest('apps.getApp', {
+        id: '1'
+      });
+      $httpBackend.expectGET(apiRequest.url).respond({
+        'id': '1',
+        'name': 'ChessApp',
+        'rating': '1'
+      });
+      apiRequest = swagger2HttpBackend.getRequest('apps.getApp', {
+        id: '2'
+      });
+      $httpBackend.expectGET(apiRequest.url).respond({
+        'id': '2',
+        'name': 'FoodApp',
+        'rating': '1'
+      });
+
+      scope = $rootScope.$new();
+      ctrl = $controller('searchPageCtrl', {
+        $scope: scope
+      });
+
+    }));
+
+    it('should result in 2 apps found', function() {
+      expect(scope.apps.length).toBe(0);
+      $httpBackend.flush();
+      expect(scope.apps.length).toBe(2);
     });
   });
 });

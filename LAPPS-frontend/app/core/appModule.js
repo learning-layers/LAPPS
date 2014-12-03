@@ -13,6 +13,11 @@
    */
   var lappsDirectives = angular.module('lappsDirectives', []);
   /**
+   * @class lapps.lappsServices
+   * @memberOf lapps
+   */
+  var lappsServices = angular.module('lappsServices', []);
+  /**
    * @class lapps.lassFilters
    * @memberOf lapps
    */
@@ -27,8 +32,8 @@
    * @memberOf lapps
    */
   var lappsApp = angular.module('lappsApp', ['ngRoute', 'ui.bootstrap',
-      'swagger-client', 'lappsControllers', 'lappsDirectives', 'lappsFilters',
-      'lappsAttibuteDirectives']);
+      'swagger-client', 'lappsControllers', 'lappsDirectives', 'lappsServices',
+      'lappsFilters', 'lappsAttibuteDirectives']);
   lappsApp.run(['$rootScope', 'swaggerClient',
       function($rootScope, swaggerClient) {
         $rootScope.api = swaggerClient(lappsApi);
