@@ -4,8 +4,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Random;
 
-import org.junit.Test;
-
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
 import de.rwth.dbis.layers.lapps.entity.AppPlatformEntity;
@@ -37,14 +35,15 @@ public class Utils {
     return app;
   }
 
-  @Test
-  public void mockupAppGenerator() {
-    for (int i = 0; i < 1; i++) {
-      // System.out.println(MockupAppGenerator.getRandomName());
-      // System.out.println(MockupAppGenerator.getRandomIpsumBlock());
-      System.out.println(MockupAppGenerator.getRandomText(70, 10));
-    }
-  }
+  /*
+   * @Test public void mockupAppGenerator() { for (int i = 0; i < 1; i++) { //
+   * System.out.println(MockupAppGenerator.getRandomName()); //
+   * System.out.println(MockupAppGenerator.getRandomIpsumBlock()); //
+   * System.out.println(MockupAppGenerator.getRandomText(700, 3)); //
+   * System.out.println(MockupAppGenerator.getRandomImageUrl());
+   * 
+   * } }
+   */
 
   /**
    * Generates mockup app instances
@@ -209,7 +208,7 @@ public class Utils {
      * @return edited text
      */
     private static String insert(String input, int index, String toInsert) {
-      return input.substring(0, index) + toInsert + input.substring(index, input.length());
+      return input.substring(0, index) + toInsert + input.substring(index);
     }
 
     /**
@@ -255,16 +254,27 @@ public class Utils {
 
       String text = sb.toString();
       ArrayList<Integer> dots = findAll(text, ".");
-      int insertionOffset = 1;
-      for (int j = 0; j < paragraphs; j++) {
-        if (dots.size() <= 0) {
+
+      /*
+       * for (int j = 0; j < dots.size(); j++) { System.out.println(dots.get(j)); }
+       */
+
+      for (int j = 0; j < paragraphs - 1; j++) {
+        if (dots.size() <= 2) {
           break;
         }
+
         int randomIndex = RandomNumberGenerator.getRandomInt(0, dots.size() - 1);
         Integer index = dots.get(randomIndex);
+        text = insert(text, index + 2, "\n\n");
+
+        for (int k = randomIndex + 1; k < dots.size(); k++) {
+          dots.set(k, dots.get(k) + 2);
+        }
         dots.remove(randomIndex);
-        text = insert(text, index + insertionOffset, "\n\n");
-        insertionOffset += 2;
+
+
+
       }
 
       return text;
