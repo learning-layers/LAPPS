@@ -24,8 +24,8 @@ public class AppArtifactEntity implements Entity {
   private int id = 0;
   @JsonIgnore
   @ManyToOne
-  @JoinColumn(name = "app_id")
-  private AppEntity app = null;
+  @JoinColumn(name = "app_instance_id")
+  private AppInstanceEntity appInstance = null;
   @OneToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "app_artifact_type_id")
   private ArtifactTypeEntity artifactType = null;
@@ -39,14 +39,14 @@ public class AppArtifactEntity implements Entity {
     this.url = url;
   }
 
-  public AppEntity getApp() {
-    return app;
+  public AppInstanceEntity getAppInstance() {
+    return appInstance;
   }
 
-  public void setApp(AppEntity app) {
-    this.app = app;
-    if (!app.getArtifacts().contains(this)) {
-      app.getArtifacts().add(this);
+  public void setAppInstance(AppInstanceEntity appInstance) {
+    this.appInstance = appInstance;
+    if (!appInstance.getArtifacts().contains(this)) {
+      appInstance.getArtifacts().add(this);
     }
   }
 
@@ -72,9 +72,9 @@ public class AppArtifactEntity implements Entity {
 
   @Override
   public String toString() {
-    return "[" + this.getClass().getName() + "] id: " + this.getId() + ", for app: "
-        + this.getApp().getName() + ", with: " + this.getArtifact() + ", available at: "
-        + this.getUrl();
+    return "[" + this.getClass().getName() + "] id: " + this.getId() + ", for platform: "
+        + this.getAppInstance().getPlatform().getName() + ", with: " + this.getArtifact()
+        + ", available at: " + this.getUrl();
   }
 
 }

@@ -3,6 +3,7 @@ package de.rwth.dbis.layers.lapps.domain;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.junit.After;
@@ -12,6 +13,8 @@ import org.junit.Test;
 import de.rwth.dbis.layers.lapps.Utils;
 import de.rwth.dbis.layers.lapps.entity.AppCommentEntity;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
+import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
+import de.rwth.dbis.layers.lapps.entity.AppPlatformEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 
 /**
@@ -56,18 +59,21 @@ public class UserFacadeTest {
   public void comment() {
     LOGGER.info("Creating a test comment...");
     AppEntity app = new AppEntity("Test app " + Utils.generateRandomInt(0, 5000));
+    AppInstanceEntity appInstance =
+        new AppInstanceEntity(this.getPlatform(), "test_app_instance@gdahfk.c");
+    app.addInstance(appInstance);
     app = AppFacade.getFacade().save(app);
-    AppCommentEntity comment = userFacade.comment("Test comment", user, app);
+    AppCommentEntity comment = userFacade.comment("Test comment", user, appInstance);
     assertTrue(comment != null && comment.getId() > 0);
     // LOGGER.info("user's comment: " + comment.getAuthor().getComments().get(0).toString());
     // LOGGER.info("app's comment: " + app.getComments().get(0).toString());
-    LOGGER.info("Dummy app created, comment added: " + comment.toString());
+    LOGGER.info("Dummy app and dummy instance created, comment added: " + comment.toString());
   }
 
-  // TODO: Implement
-  // @Test
-  public void grandRights() {
-
+  private AppPlatformEntity getPlatform() {
+    List<AppPlatformEntity> platforms = AppPlatformFacade.getFacade().findAll();
+    assertTrue(platforms.size() > 0);
+    return platforms.get(0);
   }
 
   // @Test

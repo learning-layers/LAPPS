@@ -17,9 +17,9 @@
       <class>de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity</class>
       <properties>
         <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-         <property name="javax.persistence.jdbc.user" value="henm1415g1"/>
-         <property name="javax.persistence.jdbc.password" value="17988fukudITA"/>
-         <property name="javax.persistence.jdbc.url" value="jdbc:mysql://buche.informatik.rwth-aachen.de:3306/henm1415g1"/>
+         <property name="javax.persistence.jdbc.user" value="java_user"/>
+         <property name="javax.persistence.jdbc.password" value="A6XwKeLFVCadZh2t"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/lapps"/>
          <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
          
          <property name="hibernate.connection.provider_class"
