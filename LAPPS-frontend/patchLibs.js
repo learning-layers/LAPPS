@@ -22,12 +22,32 @@
   var libSource = fs.readFileSync(libFile, FILE_ENCODING);
   var regex = /\('swagger-validate'\);\s*var/g;
   var match = regex.exec(libSource);
+  var changed = false;
   if (match != null) {
     var offset = match.index + 21;
     libSource = libSource
             .insert(
                     offset,
                     'window.swaggerAngularClientExt = {};window.swaggerAngularClientExt.getRequestHeaders = getRequestHeaders;window.swaggerAngularClientExt.getRequestUrl = getRequestUrl;window.swaggerAngularClientExt.getRequestBody = getRequestBody;window.swaggerAngularClientExt.applyAuthData = applyAuthData;window.swaggerAngularClientExt.errorTypes = errorTypes;');
+    changed = true;
+  }
+  // make it minification compatible. the .min. given with the swagger angular
+  // client package is buggy
+  var regex2 = /\.factory\('swaggerClient',\s*f/g;
+  var regex3 = /\);\s*},{"..\/bower_components\/swagger-client-generator\/dist\/swagger-client-generator\.js/g;
+  match = regex2.exec(libSource);
+  if (match != null) {
+    var offset = match.index + 25;
+    libSource = libSource.insert(offset, "['$log', '$http', '$q', ");
+    match = regex3.exec(libSource);
+    if (match != null) {
+      var offset = match.index;
+      libSource = libSource.insert(offset, "]");
+    }
+    ;
+    changed = true;
+  }
+  if (changed) {
     fs.writeFileSync(libFile, libSource, FILE_ENCODING);
   }
 

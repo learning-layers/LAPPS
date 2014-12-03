@@ -13,15 +13,19 @@
    */
   var deployDirectory = 'deploy/'; // where to put all files
   var devDirectory = 'app/'; // directory containing all files during
-                              // development
+  // development
 
   // define how to group js files
   var jsGroups = [{
+    baseDirs: ['api'],
+    groupFile: 'js/api.js'
+  }, {
     baseDirs: ['core', 'components', 'shared'],
     groupFile: 'js/lapps.js'
   }, {
     baseDirs: ['bower_components'],
-    groupFile: 'js/libs.js'
+    groupFile: 'js/libs.js'/*,
+    ignore: ['.min.']*/
   }];
   // define which other files should be copied
   var copyPaths = ['**/*.html', 'assets/img/**/*', 'assets/dummy/**/*',
@@ -122,7 +126,7 @@
             }
           }
           if (k == patterns.length - 1) // proceed with other steps when all
-                                        // files have been copied
+          // files have been copied
           callback();
         });
       })(k);
@@ -197,16 +201,27 @@
     for (var i = 0; i < groups.length; i++) {
       var baseDirs = groups[i].baseDirs;
       var groupFile = groups[i].groupFile;
+      var ignore = groups[i].ignore || [];
       var fileList = [];
 
       for (var j = 0; j < scripts.length; j++) {
-        for (var k = 0; k < baseDirs.length; k++) {
-          if (scripts[j].file.indexOf(baseDirs[k]) == 0) {// starts with
+        var ignoreThisScript = false;
+        for (var k = 0; k < ignore.length; k++) {
+          if (scripts[j].file.indexOf(ignore[k]) > 0) { // contains ignore
+            // pattern
+            ignoreThisScript = true;
+          }
+        }
+        if (!ignoreThisScript) {
+          for (var k = 0; k < baseDirs.length; k++) {
+            if (scripts[j].file.indexOf(baseDirs[k]) == 0) {// starts with
 
-            scripts[j].reference = '<script src="' + groupFile + '"></script>';
-            fileList.push(scripts[j].file);
-            scripts[j].file = groupFile;
-            scripts[j].isGrouped = true;
+              scripts[j].reference = '<script src="' + groupFile
+                      + '"></script>';
+              fileList.push(scripts[j].file);
+              scripts[j].file = groupFile;
+              scripts[j].isGrouped = true;
+            }
           }
         }
       }
