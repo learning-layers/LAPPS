@@ -31,34 +31,27 @@ public class AppFacadeTest {
 
   @Before
   public void beforeTest() {
-    // final EntityManager em = EMF.getEm();
-    // em.getTransaction().begin();
-    // // Cascading delete on foreign keys seems to be doing the trick, so do delete just the 'root'
-    // // entity.
-    // em.createQuery("delete AppEntity app where app.name like :value")
-    // .setParameter("value", "%" + appName + "%").executeUpdate();
-    // em.getTransaction().commit();
-    // em.close();
     appFacade.deleteAll("name", appName);
     app = this.createApp();
     app = this.appFacade.save(app);
-    assertTrue(app.getId() > 0 && app.getTags().size() > 0 && app.getDetails().size() > 0
-        && app.getArtifacts().size() > 0 && app.getInstances().size() > 0);
+    assertTrue("App ID or Instance ID lower than 0!", app.getId() > 0
+        && app.getInstances().size() > 0);
   }
 
   public AppEntity createApp() {
     // Load a random app platform:
     AppPlatformEntity platform = getRandomPlatform();
     // Load a random app detail type:
-    AppDetailTypeEntity detailType = this.getRandomDetailType();
+    AppDetailTypeEntity detailType = getRandomDetailType();
     // Load a random app artifact type:
-    ArtifactTypeEntity artifactType = this.getRandomArtifactType();
+    ArtifactTypeEntity artifactType = getRandomArtifactType();
     // Save a new app with all its properties.
     AppEntity app = new AppEntity(appName);
-    app.addTag(new AppTagEntity("tag_" + appName));
-    app.addDetail(new AppDetailEntity(detailType, "detail_" + appName));
-    app.addArtifacts(new AppArtifactEntity(artifactType, "url_" + appName));
-    app.addInstance(new AppInstanceEntity(platform, "url_" + appName));
+    AppInstanceEntity appInstance = new AppInstanceEntity(platform, "url_" + appName);
+    appInstance.addTag(new AppTagEntity("tag_" + appName));
+    appInstance.addDetail(new AppDetailEntity(detailType, "detail_" + appName));
+    appInstance.addArtifacts(new AppArtifactEntity(artifactType, "url_" + appName));
+    app.addInstance(appInstance);
     return app;
   }
 
@@ -77,32 +70,32 @@ public class AppFacadeTest {
   @Test
   public void addDetail() {
     // Load a random app detail type:
-    AppDetailTypeEntity detailType = this.getRandomDetailType();
+    AppDetailTypeEntity detailType = getRandomDetailType();
     // Create another app detail and add it to this existing app:
     AppDetailEntity appDetail = new AppDetailEntity(detailType, "Test app description");
-    app.addDetail(appDetail);
+    app.getInstances().get(0).addDetail(appDetail);
     app = appFacade.save(app);
-    assertTrue(app.getDetails().size() > 1);
+    assertTrue(app.getInstances().get(0).getDetails().size() > 1);
   }
 
   @Test
   public void addTag() {
     AppTagEntity tag = new AppTagEntity("New_tag_" + app.getName());
-    app.addTag(tag);
+    app.getInstances().get(0).addTag(tag);
     app = appFacade.save(app);
-    assertTrue(app.getTags().size() > 1);
+    assertTrue(app.getInstances().get(0).getTags().size() > 1);
   }
 
   @Test
   public void addArtifact() {
     // Load a random app artifact type:
-    ArtifactTypeEntity artifactType = this.getRandomArtifactType();
+    ArtifactTypeEntity artifactType = getRandomArtifactType();
     // Create another app artifact and add it to this existing app:
     AppArtifactEntity appArtifact =
         new AppArtifactEntity(artifactType, "artifact_" + app.getName());
-    app.addArtifacts(appArtifact);
+    app.getInstances().get(0).addArtifacts(appArtifact);
     app = appFacade.save(app);
-    assertTrue(app.getArtifacts().size() > 1);
+    assertTrue(app.getInstances().get(0).getArtifacts().size() > 1);
   }
 
   @Test
@@ -127,25 +120,23 @@ public class AppFacadeTest {
 
   public static AppPlatformEntity getRandomPlatform() {
     List<AppPlatformEntity> platforms = AppPlatformFacade.getFacade().findAll();
-    if (platforms.size() < 1) {
-      LOGGER.severe("No Platforms available!");
-    }
+    assertTrue("No platforms available! Please create at least one platform and try again!",
+        platforms.size() > 0);
     return platforms.get(Utils.generateRandomInt(0, platforms.size()));
   }
 
-  public AppDetailTypeEntity getRandomDetailType() {
+  public static AppDetailTypeEntity getRandomDetailType() {
     List<AppDetailTypeEntity> detailTypes = AppDetailTypeFacade.getFacade().findAll();
-    if (detailTypes.size() < 1) {
-      LOGGER.severe("No Detail types available!");
-    }
+    assertTrue("No detail types available! Please create at least one detail type and try again!",
+        detailTypes.size() > 0);
     return detailTypes.get(Utils.generateRandomInt(0, detailTypes.size()));
   }
 
-  public ArtifactTypeEntity getRandomArtifactType() {
+  public static ArtifactTypeEntity getRandomArtifactType() {
     List<ArtifactTypeEntity> artifactTypes = ArtifactFacade.getFacade().findAll();
-    if (artifactTypes.size() < 1) {
-      LOGGER.severe("No Artifact types available!");
-    }
+    assertTrue(
+        "No artifact types available! Please create at least on artifact type and try again!",
+        artifactTypes.size() > 0);
     return artifactTypes.get(Utils.generateRandomInt(0, artifactTypes.size()));
   }
 

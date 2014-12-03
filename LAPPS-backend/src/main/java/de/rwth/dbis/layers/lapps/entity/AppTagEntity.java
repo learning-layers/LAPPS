@@ -15,8 +15,8 @@ public class AppTagEntity implements Entity {
   private int id = 0;
   private String name = null;
   @ManyToOne
-  @JoinColumn(name = "app_id")
-  private AppEntity app = null;
+  @JoinColumn(name = "app_instance_id")
+  private AppInstanceEntity appInstance = null;
 
   public AppTagEntity() {}
 
@@ -24,9 +24,9 @@ public class AppTagEntity implements Entity {
     this.name = name;
   }
 
-  public AppTagEntity(String name, AppEntity app) {
+  public AppTagEntity(String name, AppInstanceEntity appInstance) {
     this.name = name;
-    this.app = app;
+    this.appInstance = appInstance;
   }
 
   public String getName() {
@@ -37,14 +37,14 @@ public class AppTagEntity implements Entity {
     this.name = name;
   }
 
-  public AppEntity getApp() {
-    return app;
+  public AppInstanceEntity getAppInstance() {
+    return appInstance;
   }
 
-  public void setApp(AppEntity app) {
-    this.app = app;
-    if (!this.app.getTags().contains(this)) {
-      app.getTags().add(this);
+  public void setAppInstance(AppInstanceEntity appInstance) {
+    this.appInstance = appInstance;
+    if (!this.appInstance.getTags().contains(this)) {
+      appInstance.getTags().add(this);
     }
   }
 
@@ -59,6 +59,6 @@ public class AppTagEntity implements Entity {
   @Override
   public String toString() {
     return "[" + this.getClass().getName() + "] id: " + this.getId() + ", name: " + this.getName()
-        + ", for app: " + this.getApp().getName();
+        + ", for app: " + this.getAppInstance().getApp().getName();
   }
 }

@@ -26,8 +26,8 @@ public class AppDetailEntity implements Entity {
   private int id = 0;
   @JsonIgnore
   @ManyToOne
-  @JoinColumn(name = "app_id")
-  private AppEntity app = null;
+  @JoinColumn(name = "app_instance_id")
+  private AppInstanceEntity appInstance = null;
   @OneToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "app_detail_type_id")
   private AppDetailTypeEntity type = null;
@@ -40,14 +40,14 @@ public class AppDetailEntity implements Entity {
     this.contents = contents;
   }
 
-  public AppEntity getApp() {
-    return app;
+  public AppInstanceEntity getAppInstance() {
+    return appInstance;
   }
 
-  public void setApp(AppEntity app) {
-    this.app = app;
-    if (!this.app.getDetails().contains(this)) {
-      this.app.getDetails().add(this);
+  public void setAppInstance(AppInstanceEntity appInstance) {
+    this.appInstance = appInstance;
+    if (!this.appInstance.getDetails().contains(this)) {
+      this.appInstance.getDetails().add(this);
     }
   }
 

@@ -23,37 +23,16 @@ public class AppEntity implements Entity {
   @Id
   @GeneratedValue
   private int id = 0;
-  private double rating = 0D;
   private String name = null;
-  @JsonIgnore
-  @OneToMany(mappedBy = "app", fetch = FetchType.EAGER)
-  private List<AppCommentEntity> comments = new ArrayList<AppCommentEntity>();
-  @JsonIgnore
-  @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  private List<AppTagEntity> tags = new ArrayList<AppTagEntity>();
   @JsonIgnore
   @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppInstanceEntity> instances = new ArrayList<AppInstanceEntity>();
-  @JsonIgnore
-  @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  private List<AppDetailEntity> details = new ArrayList<AppDetailEntity>();
-  @JsonIgnore
-  @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  private List<AppArtifactEntity> artifacts = new ArrayList<AppArtifactEntity>();
 
 
   public AppEntity() {}
 
   public AppEntity(String name) {
     this.setName(name);
-  }
-
-  public double getRating() {
-    return rating;
-  }
-
-  public void setRating(double rating) {
-    this.rating = rating;
   }
 
   public String getName() {
@@ -68,28 +47,6 @@ public class AppEntity implements Entity {
     return id;
   }
 
-  public List<AppCommentEntity> getComments() {
-    return comments;
-  }
-
-  public void addComment(AppCommentEntity comment) {
-    this.comments.add(comment);
-    if (comment.getApp() != this) {
-      comment.setApp(this);
-    }
-  }
-
-  public List<AppTagEntity> getTags() {
-    return tags;
-  }
-
-  public void addTag(AppTagEntity tag) {
-    this.tags.add(tag);
-    if (tag.getApp() != this) {
-      tag.setApp(this);
-    }
-  }
-
   public List<AppInstanceEntity> getInstances() {
     return instances;
   }
@@ -101,36 +58,8 @@ public class AppEntity implements Entity {
     }
   }
 
-
-  public List<AppArtifactEntity> getArtifacts() {
-    return artifacts;
-  }
-
-  public void addArtifacts(AppArtifactEntity artifact) {
-    this.artifacts.add(artifact);
-    if (artifact.getApp() != this) {
-      artifact.setApp(this);
-    }
-  }
-
-  public List<AppDetailEntity> getDetails() {
-    return details;
-  }
-
-  public void addDetail(AppDetailEntity detail) {
-    this.details.add(detail);
-    if (detail.getApp() != this) {
-      detail.setApp(this);
-
-    }
-  }
-
   @Override
   public String toString() {
-    return "[" + this.getClass().getName() + "] id: " + this.getId() + ", name: " + this.getName()
-        + ", rating: " + this.getRating() + ", comment(s): " + this.getComments().size()
-        + ", tag(s): " + this.getTags().size() + ", available on: " + this.getInstances().size()
-        + " platform(s) with " + this.getArtifacts().size() + " artifact(s), having: "
-        + this.getDetails().size() + " descriptions(s)";
+    return "[" + this.getClass().getName() + "] id: " + this.getId() + ", name: " + this.getName();
   }
 }
