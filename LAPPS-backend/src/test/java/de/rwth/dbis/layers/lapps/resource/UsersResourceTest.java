@@ -47,13 +47,7 @@ public class UsersResourceTest {
     Client c = ClientBuilder.newClient();
     target = c.target(Main.BASE_URI);
 
-    // delete all old users and then create one new user
-    LOGGER.info("Deleting user data...");
-    // final EntityManager em = EMF.getEm();
-    // em.getTransaction().begin();
-    // em.createQuery(Utils.DELETE_USERS_QUERY).executeUpdate();
-    // em.getTransaction().commit();
-    // em.close();
+    LOGGER.info("Deleting old user data...");
     userFacade.deleteAll("oidcId", "1234567");
     LOGGER.info("User data deleted.");
     LOGGER.info("Creating a new user...");
@@ -116,7 +110,8 @@ public class UsersResourceTest {
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
     String responseContent = response.readEntity(String.class);
     assertEquals(new String("{\"id\":" + user.getId().toString()
-        + ",\"oidcId\":\"1234567\",\"email\":\"test@lapps.com\"}"), responseContent);
+        + ",\"oidcId\":\"1234567\",\"email\":\"test@lapps.com\",\"username\":null}"),
+        responseContent);
   }
 
   /**
