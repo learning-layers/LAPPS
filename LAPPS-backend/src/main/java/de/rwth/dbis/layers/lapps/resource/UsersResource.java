@@ -64,7 +64,15 @@ public class UsersResource {
   private static UserFacade userFacade = new UserFacade();
 
   /**
+   * 
    * Provides a list of user Ids known to this server.
+   * 
+   * @param accessToken
+   * @param search query parameter
+   * @param page number
+   * @param pageLength number of users by page
+   * @param sortBy field
+   * @param order asc or desc
    * 
    * @return Response with all user Ids as a JSON array.
    */
@@ -253,6 +261,8 @@ public class UsersResource {
   /**
    * Tries to authenticate a user for a given OpenIdToken. If the user is not yet registered, it
    * will register him to the LAPPS backend.
+   * 
+   * @param openIdToken
    * 
    * @return the (LAPPS) id of the user
    * @throws OIDCException an exception thrown for all Open Id Connect issues
