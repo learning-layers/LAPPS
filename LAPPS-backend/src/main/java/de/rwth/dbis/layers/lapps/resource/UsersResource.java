@@ -5,9 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -65,7 +63,7 @@ public class UsersResource {
 
   /**
    * 
-   * Provides a list of user Ids known to this server.
+   * Get all users.
    * 
    * @param accessToken
    * @param search query parameter
@@ -74,11 +72,11 @@ public class UsersResource {
    * @param sortBy field
    * @param order asc or desc
    * 
-   * @return Response with all user Ids as a JSON array.
+   * @return Response with all users as JSON array.
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get list of all users")
+  @ApiOperation(value = "Get all users")
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
@@ -126,15 +124,10 @@ public class UsersResource {
       }
     }
 
-    ArrayList<Integer> userIds = new ArrayList<Integer>();
-    Iterator<UserEntity> userIt = entities.iterator();
-    while (userIt.hasNext()) {
-      userIds.add(userIt.next().getId());
-    }
     try {
       ObjectMapper mapper = new ObjectMapper();
       return Response.status(HttpStatusCode.OK).header("numberOfPages", numberOfPages)
-          .entity(mapper.writeValueAsBytes(userIds)).build();
+          .entity(mapper.writeValueAsBytes(entities)).build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
