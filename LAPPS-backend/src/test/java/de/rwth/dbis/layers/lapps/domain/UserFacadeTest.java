@@ -63,10 +63,9 @@ public class UserFacadeTest {
         new AppInstanceEntity(this.getPlatform(), "test_app_instance@gdahfk.c");
     app.addInstance(appInstance);
     app = AppFacade.getFacade().save(app);
-    AppCommentEntity comment = userFacade.comment("Test comment", user, appInstance);
+    assertTrue("No app instances in " + app.getName(), app.getInstances().size() > 0);
+    AppCommentEntity comment = userFacade.comment("Test comment", user, app.getInstances().get(0));
     assertTrue(comment != null && comment.getId() > 0);
-    // LOGGER.info("user's comment: " + comment.getAuthor().getComments().get(0).toString());
-    // LOGGER.info("app's comment: " + app.getComments().get(0).toString());
     LOGGER.info("Dummy app and dummy instance created, comment added: " + comment.toString());
   }
 
