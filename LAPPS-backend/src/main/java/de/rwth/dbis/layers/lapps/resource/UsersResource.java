@@ -175,7 +175,6 @@ public class UsersResource {
    * 
    * @return Response
    */
-  // TODO: Think about success token (instead of only a 200 response)
   @DELETE
   @Path("/{id}")
   @ApiOperation(value = "Delete user by ID")
