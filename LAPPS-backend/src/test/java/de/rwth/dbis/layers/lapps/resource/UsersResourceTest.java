@@ -75,23 +75,23 @@ public class UsersResourceTest {
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
     String responseContent = response.readEntity(String.class);
     ObjectMapper mapper = new ObjectMapper();
-    JsonNode userIds;
+    JsonNode users;
     try {
-      userIds = mapper.readTree(responseContent);
-      assertTrue(!userIds.isNull());
-      assertTrue(userIds.isArray());
-      Iterator<JsonNode> userIterator = userIds.iterator();
+      users = mapper.readTree(responseContent);
+      assertTrue(!users.isNull());
+      assertTrue(users.isArray());
+      Iterator<JsonNode> userIterator = users.iterator();
       // check if previously created user can be found
-      String retrievedUserId = "-1";
+      JsonNode retrievedUser = null;
       while (userIterator.hasNext()) {
         // go through the list until our user is found
-        retrievedUserId = userIterator.next().toString();
-        if (retrievedUserId.equals(user.getId())) {
+        retrievedUser = userIterator.next();
+        if (retrievedUser.get("id").toString().equals(user.getId())) {
           break;
         }
       }
       // this is only false if user was not in list
-      assertEquals(user.getId().toString(), retrievedUserId);
+      assertEquals(user.getId().toString(), retrievedUser.get("id").toString());
     } catch (Exception e) {
       e.printStackTrace();
       fail("JSON parsing failed with " + e.getMessage());
