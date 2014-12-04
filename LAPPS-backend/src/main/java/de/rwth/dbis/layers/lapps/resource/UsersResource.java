@@ -189,7 +189,7 @@ public class UsersResource {
    * @param id
    * @param updatedUser as JSON
    * 
-   * @return Response
+   * @return Response with updated User
    */
   @PUT
   @Path("/{id}")
