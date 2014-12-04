@@ -23,7 +23,7 @@ import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
-import de.rwth.dbis.layers.lapps.authenticate.AuthenticationProvider;
+import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.AppFacade;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
@@ -124,7 +124,7 @@ public class ApplicationResource {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
       // process)
-      AuthenticationProvider.authenticate(accessToken);
+      OIDCAuthentication.authenticate(accessToken);
     } catch (OIDCException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
@@ -166,7 +166,7 @@ public class ApplicationResource {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
       // process)
-      AuthenticationProvider.authenticate(accessToken);
+      OIDCAuthentication.authenticate(accessToken);
     } catch (OIDCException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();

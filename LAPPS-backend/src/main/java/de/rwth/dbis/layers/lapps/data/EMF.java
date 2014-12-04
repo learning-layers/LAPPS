@@ -20,4 +20,8 @@ public enum EMF {
   public static EntityManager getEm() {
     return (EntityManager) emf.createEntityManager();
   }
+
+  public static void closeEmFactory() {
+    emf.close();
+  }
 }
