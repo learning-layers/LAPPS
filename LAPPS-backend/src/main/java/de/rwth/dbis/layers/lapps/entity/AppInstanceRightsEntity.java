@@ -10,7 +10,8 @@ import javax.persistence.Table;
 @Table(name = "app_instance_management")
 public class AppInstanceRightsEntity implements Entity {
   private static final long serialVersionUID = 719666222722429917L;
-  public static final int MODIFY = 1;
+  public static final int CREATE = 1 << 0;
+
   @Id
   @GeneratedValue
   private int id = 0;
@@ -66,6 +67,18 @@ public class AppInstanceRightsEntity implements Entity {
 
   public int getId() {
     return id;
+  }
+
+  public boolean hasRights(int rights) {
+    return (this.rights & rights) == rights;
+  }
+
+  public void grantRights(int toGrant) {
+    this.rights = this.rights | toGrant;
+  }
+
+  public void dropRights(int toDrop) {
+    this.rights = this.rights - (this.rights & toDrop);
   }
 
   @Override
