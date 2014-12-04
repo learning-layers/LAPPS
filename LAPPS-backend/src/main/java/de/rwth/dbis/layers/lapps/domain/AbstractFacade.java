@@ -186,11 +186,18 @@ public abstract class AbstractFacade<T extends Entity, I> {
     LOGGER.info(count + " entities deleted.");
   }
 
+  /**
+   * Finds entities from {@link Entity} subtype filtered by the expression given with
+   * <code>queryStr</code>.
+   * 
+   * @param queryStr The JPQL Query string
+   * @return List of Entities
+   */
   @SuppressWarnings("unchecked")
-  public static <R> List<R> findByQuery(String queryStr, Class<R> resultType) {
-    List<R> entities = null;
+  public List<T> findByQuery(String queryStr) {
+    List<T> entities = null;
     final EntityManager em = EMF.getEm();
-    Query query = em.createQuery(queryStr, resultType);
+    Query query = em.createQuery(queryStr, entityClass);
     try {
       em.getTransaction().begin();
       entities = query.getResultList();
