@@ -25,7 +25,7 @@ import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
-import de.rwth.dbis.layers.lapps.authenticate.AuthenticationProvider;
+import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.UserFacade;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
@@ -71,7 +71,7 @@ public class UsersResource {
       @ApiParam(value = "Sort by field", required = false, allowableValues = "email") @DefaultValue("email") @QueryParam("sortBy") String sortBy,
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order) {
     try {
-      AuthenticationProvider.authenticate(accessToken);
+      OIDCAuthentication.authenticate(accessToken);
       // TODO: Check for admin rights (not part of the open id authentication process)
     } catch (OIDCException e) {
       LOGGER.warning(e.getMessage());
@@ -169,7 +169,7 @@ public class UsersResource {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
       // process)
-      AuthenticationProvider.authenticate(accessToken);
+      OIDCAuthentication.authenticate(accessToken);
     } catch (OIDCException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
@@ -211,7 +211,7 @@ public class UsersResource {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
       // process)
-      AuthenticationProvider.authenticate(accessToken);
+      OIDCAuthentication.authenticate(accessToken);
     } catch (OIDCException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();

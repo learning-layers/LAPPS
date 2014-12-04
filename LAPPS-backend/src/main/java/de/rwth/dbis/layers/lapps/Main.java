@@ -12,8 +12,6 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
 
-import de.rwth.dbis.layers.lapps.authenticate.AuthenticationProvider;
-
 /**
  * Creates and starts a new instance of {@link HttpServer} waiting for an user input.
  * 
@@ -34,7 +32,7 @@ public class Main {
     String[] packages = {"de.rwth.dbis.layers.lapps", "com.wordnik.swagger.jersey.listing"};
     final ResourceConfig rc = new ResourceConfig().packages(packages);
     rc.register(new LoggingFilter(Logger.getLogger(Main.class.getName()), true));
-    rc.register(AuthenticationProvider.class);
+    // rc.register(AuthenticationProvider.class);
 
     // Configure swagger
     BeanConfig config = new BeanConfig();

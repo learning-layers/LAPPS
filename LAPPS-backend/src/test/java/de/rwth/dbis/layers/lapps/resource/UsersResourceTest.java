@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.rwth.dbis.layers.lapps.Main;
-import de.rwth.dbis.layers.lapps.authenticate.AuthenticationProvider;
+import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.UserFacade;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
@@ -70,7 +70,7 @@ public class UsersResourceTest {
   public void testGetAllUser() {
     Response response =
         target.path("users").request(MediaType.APPLICATION_JSON)
-            .header("accessToken", AuthenticationProvider.OPEN_ID_TEST_TOKEN).get();
+            .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).get();
     assertEquals(HttpStatusCode.OK, response.getStatus());
     MediaType responseMediaType = response.getMediaType();
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
@@ -123,7 +123,7 @@ public class UsersResourceTest {
   public void testDeleteUser() {
     Response response =
         target.path("users/" + user.getId().toString()).request()
-            .header("accessToken", AuthenticationProvider.OPEN_ID_TEST_TOKEN).delete();
+            .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
     assertEquals(HttpStatusCode.NOT_IMPLEMENTED, response.getStatus());
   }
 
@@ -137,7 +137,7 @@ public class UsersResourceTest {
     updatedUser.setEmail("new@mail.com");
     Response response =
         target.path("users/" + user.getId().toString()).request()
-            .header("accessToken", AuthenticationProvider.OPEN_ID_TEST_TOKEN)
+            .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
             .put(entity(updatedUser, MediaType.APPLICATION_JSON));
     assertEquals(HttpStatusCode.NOT_IMPLEMENTED, response.getStatus());
   }
@@ -149,10 +149,10 @@ public class UsersResourceTest {
   public void testAuthentication() {
     int returnValue = 0;
     try {
-      returnValue = AuthenticationProvider.authenticate(AuthenticationProvider.OPEN_ID_TEST_TOKEN);
+      returnValue = OIDCAuthentication.authenticate(OIDCAuthentication.OPEN_ID_TEST_TOKEN);
     } catch (OIDCException e) {
       fail("Open Id authentication did not succeed!");
     }
-    assertEquals(AuthenticationProvider.OPEN_ID_USER_ID, returnValue); // ID of test user
+    assertEquals(OIDCAuthentication.OPEN_ID_USER_ID, returnValue); // ID of test user
   }
 }
