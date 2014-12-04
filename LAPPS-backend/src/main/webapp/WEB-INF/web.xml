@@ -18,6 +18,11 @@
 		</init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
+	<listener>
+		<listener-class>
+		  de.rwth.dbis.layers.lapps.WebAppListener 
+		</listener-class>
+	</listener>
     <servlet-mapping>
         <servlet-name>Layers App Store</servlet-name>
         <url-pattern>/lapps/v1/*</url-pattern>
