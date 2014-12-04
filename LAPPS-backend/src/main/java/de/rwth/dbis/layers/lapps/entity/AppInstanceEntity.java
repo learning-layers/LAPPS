@@ -62,6 +62,8 @@ public class AppInstanceEntity implements Entity {
   @JsonIgnore
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppTagEntity> tags = new ArrayList<AppTagEntity>();
+  @OneToMany(mappedBy = "appInstance", fetch = FetchType.EAGER)
+  private List<AppInstanceRightsEntity> rights = new ArrayList<AppInstanceRightsEntity>();
 
   public AppInstanceEntity() {}
 
@@ -182,6 +184,17 @@ public class AppInstanceEntity implements Entity {
     this.tags.add(tag);
     if (tag.getAppInstance() != this) {
       tag.setAppInstance(this);
+    }
+  }
+
+  public List<AppInstanceRightsEntity> getRights() {
+    return rights;
+  }
+
+  public void addRights(AppInstanceRightsEntity rights) {
+    this.rights.add(rights);
+    if (rights.getAppInstance() != this) {
+      rights.setAppInstance(this);
     }
   }
 

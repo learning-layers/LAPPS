@@ -35,6 +35,10 @@ public class UserEntity implements Entity, Comparable<UserEntity> {
   @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppCommentEntity> comments = new ArrayList<AppCommentEntity>();
 
+  @JsonIgnore
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private List<AppInstanceRightsEntity> rights = new ArrayList<AppInstanceRightsEntity>();
+
   public UserEntity() {}
 
   public UserEntity(String oidcId, String email, String username) {
@@ -80,6 +84,17 @@ public class UserEntity implements Entity, Comparable<UserEntity> {
 
   public List<AppCommentEntity> getComments() {
     return comments;
+  }
+
+  public void addRights(AppInstanceRightsEntity rights) {
+    this.rights.add(rights);
+    if (rights.getUser() != this) {
+      rights.setUser(this);
+    }
+  }
+
+  public List<AppInstanceRightsEntity> getRights() {
+    return this.rights;
   }
 
   @Override
