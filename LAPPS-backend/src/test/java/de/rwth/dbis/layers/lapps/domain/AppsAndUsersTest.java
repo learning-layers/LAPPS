@@ -45,6 +45,7 @@ public class AppsAndUsersTest {
     this.addComments();
     this.addDescriptions();
     this.addArtifacts();
+    this.findByQuery();
     // TODO: Grand the first user rights for some apps!
 
     for (AppEntity app : apps) {
@@ -150,5 +151,13 @@ public class AppsAndUsersTest {
     for (AppEntity app : apps) {
       LOGGER.info(app.toString());
     }
+  }
+
+  private void findByQuery() {
+    Class<AppInstanceEntity> clazz = AppInstanceEntity.class;
+    List<AppInstanceEntity> appInstances =
+        AbstractFacade.findByQuery("select a from " + clazz.getName()
+            + " a where a.platform.name = 'iOS'", clazz);
+    assertTrue("Empty list of appInstances with platfrom iOS", appInstances.size() > 0);
   }
 }

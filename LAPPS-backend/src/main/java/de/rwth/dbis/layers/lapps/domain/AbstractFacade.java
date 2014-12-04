@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.entity.Entity;
 
 /**
@@ -183,5 +184,24 @@ public abstract class AbstractFacade<T extends Entity, I> {
       em.close();
     }
     LOGGER.info(count + " entities deleted.");
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <R> List<R> findByQuery(String queryStr, Class<R> resultType) {
+    List<R> entities = null;
+    final EntityManager em = EMF.getEm();
+    Query query = em.createQuery(queryStr, resultType);
+    try {
+      em.getTransaction().begin();
+      entities = query.getResultList();
+      em.getTransaction().commit();
+    } catch (Throwable t) {
+      LOGGER.log(Level.SEVERE, "Exception while fetching: " + t.getMessage());
+      em.getTransaction().rollback();
+      throw t;
+    } finally {
+      em.close();
+    }
+    return entities;
   }
 }
