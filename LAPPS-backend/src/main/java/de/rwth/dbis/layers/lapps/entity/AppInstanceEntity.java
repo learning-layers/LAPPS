@@ -62,6 +62,8 @@ public class AppInstanceEntity implements Entity {
   @JsonIgnore
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppTagEntity> tags = new ArrayList<AppTagEntity>();
+  @OneToMany(mappedBy = "appInstance", fetch = FetchType.EAGER)
+  private List<AppInstanceRightsEntity> rights = new ArrayList<AppInstanceRightsEntity>();
 
   public AppInstanceEntity() {}
 
@@ -185,16 +187,33 @@ public class AppInstanceEntity implements Entity {
     }
   }
 
+  public List<AppInstanceRightsEntity> getRights() {
+    return rights;
+  }
+
+  public void addRights(AppInstanceRightsEntity rights) {
+    this.rights.add(rights);
+    if (rights.getAppInstance() != this) {
+      rights.setAppInstance(this);
+    }
+  }
+
   @Override
   public String toString() {
-    return "[" + this.getClass().getName() + "] id = " + this.getId() + ", for app "
-        + this.getApp().getName() + "(created on "
-        + DateFormat.getInstance().format(this.getDateCreated()) + ", last modified on "
-        + DateFormat.getInstance().format(this.getDateModified()) + ") version "
-        + this.getVersion() + ", on " + this.getPlatform().getName() + "[" + this.getSize()
-        + "KB], available at " + this.getUrl() + ", with source at " + this.getSourceUrl()
-        + " having " + this.getComments().size() + "comments, " + this.getArtifacts().size()
-        + " artifacts, " + this.getDetails().size() + " descriptions and " + this.getTags().size()
-        + " tags";
+    return "["
+        + this.getClass().getName()
+        + "] id = "
+        + this.getId()
+        + ", for app "
+        + this.getApp().getName()
+        + " (created on "
+        + DateFormat.getInstance().format(this.getDateCreated())
+        + ", last modified on "
+        + (this.getDateModified() != null ? DateFormat.getInstance().format(this.getDateModified())
+            : "never") + ") version " + this.getVersion() + ", on " + this.getPlatform().getName()
+        + "[" + this.getSize() + "KB], available at " + this.getUrl() + ", with source at "
+        + this.getSourceUrl() + " having " + this.getComments().size() + " comment(s), "
+        + this.getArtifacts().size() + " artifact(s), " + this.getDetails().size()
+        + " description(s) and " + this.getTags().size() + " tag(s)";
   }
 }

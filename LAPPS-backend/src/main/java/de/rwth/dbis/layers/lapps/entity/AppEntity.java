@@ -60,6 +60,7 @@ public class AppEntity implements Entity {
 
   @Override
   public String toString() {
-    return "[" + this.getClass().getName() + "] id: " + this.getId() + ", name: " + this.getName();
+    return "[" + this.getClass().getName() + "] id: " + this.getId() + ", name: " + this.getName()
+        + ", with " + this.getInstances().size() + " instance(s)";
   }
 }

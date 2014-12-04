@@ -26,6 +26,7 @@ public class AppsAndUsersTest {
   private final static Logger LOGGER = Logger.getLogger(AppsAndUsersTest.class.getName());
   private AppFacade appFacade = AppFacade.getFacade();
   private UserFacade userFacade = new UserFacade();
+  private static AppInstanceFacade appInstanceFacade = AppInstanceFacade.getFacade();
 
   private final static int APP_COUNT = 6;
   private final static int USER_COUNT = 3;
@@ -45,6 +46,7 @@ public class AppsAndUsersTest {
     this.addComments();
     this.addDescriptions();
     this.addArtifacts();
+    this.findByQuery();
     // TODO: Grand the first user rights for some apps!
 
     for (AppEntity app : apps) {
@@ -150,5 +152,11 @@ public class AppsAndUsersTest {
     for (AppEntity app : apps) {
       LOGGER.info(app.toString());
     }
+  }
+
+  private void findByQuery() {
+    List<AppInstanceEntity> appInstances =
+        appInstanceFacade.findByParameter("platform.name", "iOS");
+    assertTrue("There are no app instances with platform name iOS!", appInstances.size() > 0);
   }
 }
