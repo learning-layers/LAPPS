@@ -40,7 +40,8 @@ public class UserFacadeTest {
 
   private UserEntity createUser() {
     return new UserEntity(Utils.generateRandomInt(0, 5000) + "", "test"
-        + Utils.generateRandomInt(0, 5000) + "@test.com");
+        + Utils.generateRandomInt(0, 5000) + "@test.com", "test-"
+        + Utils.generateRandomInt(0, 5000));
   }
 
   @Test

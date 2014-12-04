@@ -185,7 +185,6 @@ public class Utils {
      */
     private static ArrayList<Integer> findAll(String input, String subString) {
       int lastIndex = 0;
-      int count = 0;
       ArrayList<Integer> indices = new ArrayList<Integer>();
       while (lastIndex != -1) {
 

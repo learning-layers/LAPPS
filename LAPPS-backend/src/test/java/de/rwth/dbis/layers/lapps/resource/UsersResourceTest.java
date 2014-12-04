@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.rwth.dbis.layers.lapps.Main;
+import de.rwth.dbis.layers.lapps.authenticate.AuthenticationProvider;
 import de.rwth.dbis.layers.lapps.domain.UserFacade;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
@@ -51,7 +52,7 @@ public class UsersResourceTest {
     userFacade.deleteAll("oidcId", "1234567");
     LOGGER.info("User data deleted.");
     LOGGER.info("Creating a new user...");
-    user = new UserEntity("1234567", "test@lapps.com");
+    user = new UserEntity("1234567", "test@lapps.com", "testuser");
     user = userFacade.save(user);
     LOGGER.info("User created: " + user);
   }
@@ -69,7 +70,7 @@ public class UsersResourceTest {
   public void testGetAllUser() {
     Response response =
         target.path("users").request(MediaType.APPLICATION_JSON)
-            .header("accessToken", UsersResource.OPEN_ID_TEST_TOKEN).get();
+            .header("accessToken", AuthenticationProvider.OPEN_ID_TEST_TOKEN).get();
     assertEquals(HttpStatusCode.OK, response.getStatus());
     MediaType responseMediaType = response.getMediaType();
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
@@ -110,7 +111,7 @@ public class UsersResourceTest {
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
     String responseContent = response.readEntity(String.class);
     assertEquals(new String("{\"id\":" + user.getId().toString()
-        + ",\"oidcId\":\"1234567\",\"email\":\"test@lapps.com\",\"username\":null}"),
+        + ",\"oidcId\":\"1234567\",\"email\":\"test@lapps.com\",\"username\":\"testuser\"}"),
         responseContent);
   }
 
@@ -122,7 +123,7 @@ public class UsersResourceTest {
   public void testDeleteUser() {
     Response response =
         target.path("users/" + user.getId().toString()).request()
-            .header("accessToken", UsersResource.OPEN_ID_TEST_TOKEN).delete();
+            .header("accessToken", AuthenticationProvider.OPEN_ID_TEST_TOKEN).delete();
     assertEquals(HttpStatusCode.NOT_IMPLEMENTED, response.getStatus());
   }
 
@@ -136,7 +137,7 @@ public class UsersResourceTest {
     updatedUser.setEmail("new@mail.com");
     Response response =
         target.path("users/" + user.getId().toString()).request()
-            .header("accessToken", UsersResource.OPEN_ID_TEST_TOKEN)
+            .header("accessToken", AuthenticationProvider.OPEN_ID_TEST_TOKEN)
             .put(entity(updatedUser, MediaType.APPLICATION_JSON));
     assertEquals(HttpStatusCode.NOT_IMPLEMENTED, response.getStatus());
   }
@@ -148,10 +149,10 @@ public class UsersResourceTest {
   public void testAuthentication() {
     int returnValue = 0;
     try {
-      returnValue = UsersResource.authenticate(UsersResource.OPEN_ID_TEST_TOKEN);
+      returnValue = AuthenticationProvider.authenticate(AuthenticationProvider.OPEN_ID_TEST_TOKEN);
     } catch (OIDCException e) {
       fail("Open Id authentication did not succeed!");
     }
-    assertEquals(UsersResource.OPEN_ID_USER_ID, returnValue); // ID of test user
+    assertEquals(AuthenticationProvider.OPEN_ID_USER_ID, returnValue); // ID of test user
   }
 }
