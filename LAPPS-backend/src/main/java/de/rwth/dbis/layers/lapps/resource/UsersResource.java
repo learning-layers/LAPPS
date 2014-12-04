@@ -1,10 +1,5 @@
 package de.rwth.dbis.layers.lapps.resource;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
@@ -23,22 +18,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.oauth2.sdk.ParseException;
-import com.nimbusds.oauth2.sdk.http.HTTPRequest;
-import com.nimbusds.oauth2.sdk.http.HTTPRequest.Method;
-import com.nimbusds.oauth2.sdk.http.HTTPResponse;
-import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
-import com.nimbusds.openid.connect.sdk.UserInfoResponse;
-import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
+import de.rwth.dbis.layers.lapps.authenticate.AuthenticationProvider;
 import de.rwth.dbis.layers.lapps.domain.UserFacade;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
@@ -50,14 +37,7 @@ import de.rwth.dbis.layers.lapps.exception.OIDCException;
 @Api(value = "/users", description = "User ressource")
 public class UsersResource {
 
-  private static final String OPEN_ID_PROVIDER = "http://api.learning-layers.eu/o/oauth2";
-  private static final String OPEN_ID_PROVIDER_CONFIGURATION_URI = OPEN_ID_PROVIDER.trim()
-      + "/.well-known/openid-configuration";
   private static final Logger LOGGER = Logger.getLogger(UsersResource.class.getName());
-
-  // only for testing, will always be valid
-  public static final String OPEN_ID_TEST_TOKEN = "test_token";
-  public static final int OPEN_ID_USER_ID = -1;
 
   private static UserFacade userFacade = new UserFacade();
 
@@ -90,7 +70,7 @@ public class UsersResource {
       @ApiParam(value = "Sort by field", required = false, allowableValues = "email") @DefaultValue("email") @QueryParam("sortBy") String sortBy,
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order) {
     try {
-      authenticate(accessToken);
+      AuthenticationProvider.authenticate(accessToken);
       // TODO: Check for admin rights (not part of the open id authentication process)
     } catch (OIDCException e) {
       LOGGER.warning(e.getMessage());
@@ -188,7 +168,7 @@ public class UsersResource {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
       // process)
-      authenticate(accessToken);
+      AuthenticationProvider.authenticate(accessToken);
     } catch (OIDCException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
@@ -230,7 +210,7 @@ public class UsersResource {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
       // process)
-      authenticate(accessToken);
+      AuthenticationProvider.authenticate(accessToken);
     } catch (OIDCException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
@@ -249,123 +229,4 @@ public class UsersResource {
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
     }
   }
-
-  /**
-   * Tries to authenticate a user for a given OpenIdToken. If the user is not yet registered, it
-   * will register him to the LAPPS backend.
-   * 
-   * @param openIdToken
-   * 
-   * @return the (LAPPS) id of the user
-   * @throws OIDCException an exception thrown for all Open Id Connect issues
-   */
-  public static int authenticate(String openIdToken) throws OIDCException {
-
-    // return value
-    int userId = OPEN_ID_USER_ID;
-
-    // no token provided
-    if (openIdToken == null) {
-      throw new OIDCException("No token was provided");
-    }
-
-    // default testing token returns default testing id
-    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
-      return userId;
-    }
-
-    // JSON initialization stuff
-    ObjectMapper mapper = new ObjectMapper();
-    JsonNode serverConfig;
-
-    // get provider configuration
-    URL providerConfigurationUri;
-    try {
-      providerConfigurationUri = new URL(OPEN_ID_PROVIDER_CONFIGURATION_URI);
-    } catch (MalformedURLException e) {
-      throw new OIDCException("Exception during Open Id Connect authentication occured: "
-          + e.getMessage());
-    }
-    HTTPRequest providerConfigRequest = new HTTPRequest(Method.GET, providerConfigurationUri);
-
-    // parse JSON result from configuration request
-    try {
-      String configStr = providerConfigRequest.send().getContent();
-      serverConfig = mapper.readTree(configStr);
-    } catch (Exception e) {
-      throw new OIDCException("Exception during Open Id Connect authentication occured: "
-          + e.getMessage());
-    }
-
-    // send access token, get user info
-    HTTPRequest httpRequest;
-    HTTPResponse httpResponse;
-
-    try {
-      URI userinfoEndpointUri = new URI(serverConfig.get("userinfo_endpoint").textValue());
-      httpRequest = new HTTPRequest(Method.GET, userinfoEndpointUri.toURL());
-      httpRequest.setAuthorization("Bearer " + openIdToken);
-      httpResponse = httpRequest.send();
-    } catch (IOException | URISyntaxException e) {
-      throw new OIDCException("Exception during Open Id Connect authentication occured: "
-          + e.getMessage());
-    }
-
-    // ..and process the response
-    UserInfoResponse userInfoResponse;
-    try {
-      userInfoResponse = UserInfoResponse.parse(httpResponse);
-    } catch (ParseException e) {
-      throw new OIDCException("Exception during Open Id Authentication occured: " + e.getMessage());
-    }
-    // request failed (unauthorized)
-    if (userInfoResponse instanceof UserInfoErrorResponse) {
-      UserInfoErrorResponse uier = (UserInfoErrorResponse) userInfoResponse;
-      throw new OIDCException("Exception during Open Id Authentication occured: "
-          + uier.getClass().toString());
-    }
-    // successful, now get the user info and start extracting content
-    UserInfo userInfo = ((UserInfoSuccessResponse) userInfoResponse).getUserInfo();
-    String sub = userInfo.getSubject().toString();
-    String mail = userInfo.getEmail().toString();
-
-    // search for existing user
-    List<UserEntity> entities = userFacade.findByParameter("oidcId", sub);
-
-    // more than one means something bad happened, one means user is already known..
-    if (entities.size() > 1)
-      throw new OIDCException("Exception during Open Id Authentication occured.");
-    else if (entities.size() == 1) {
-      // quick check, if mail of OIDC server account differs (has changed) to our database entry; if
-      // so, update our user
-      if (!entities.get(0).getEmail().equals(mail)) {
-        UserEntity user = entities.get(0);
-        userId = user.getId();
-        user.setEmail(mail);
-        userFacade.save(user);
-      }
-      return userId;
-
-    }
-
-    // user is unknown, has to be created
-    userId = createNewUser(sub, mail);
-    return userId;
-  }
-
-  /**
-   * Creates a new user for a given oidc_id and mail.
-   * 
-   * @param oidc_id the "subject" identifier of the open id connect authentication
-   * @param mail a user email
-   * 
-   * @return the (LAPPS) id of the user
-   */
-  private static int createNewUser(String oidc_id, String mail) {
-    UserEntity user = new UserEntity(oidc_id, mail);
-    user = userFacade.save(user);
-
-    return user.getId();
-  }
-
 }
