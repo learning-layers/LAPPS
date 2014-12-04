@@ -119,6 +119,7 @@ public class AuthenticationProvider {
     UserInfo userInfo = ((UserInfoSuccessResponse) userInfoResponse).getUserInfo();
     String sub = userInfo.getSubject().toString();
     String mail = userInfo.getEmail().toString();
+    String userName = userInfo.getName();
 
     // search for existing user
     List<UserEntity> entities = userFacade.findByParameter("oidcId", sub);
@@ -127,12 +128,14 @@ public class AuthenticationProvider {
     if (entities.size() > 1)
       throw new OIDCException("Exception during Open Id Authentication occured.");
     else if (entities.size() == 1) {
-      // quick check, if mail of OIDC server account differs (has changed) to our database entry; if
-      // so, update our user
-      if (!entities.get(0).getEmail().equals(mail)) {
+      // quick check, if mail or user name of OIDC server account differs (has changed) to our
+      // database entry; if so, update our user
+      if (!entities.get(0).getEmail().equals(mail)
+          && !entities.get(0).getUsername().equals(userName)) {
         UserEntity user = entities.get(0);
         userId = user.getId();
         user.setEmail(mail);
+        user.setUsername(userName);
         userFacade.save(user);
       }
       return userId;
@@ -140,7 +143,7 @@ public class AuthenticationProvider {
     }
 
     // user is unknown, has to be created
-    userId = createNewUser(sub, mail);
+    userId = createNewUser(sub, mail, userName);
     return userId;
   }
 
@@ -152,10 +155,9 @@ public class AuthenticationProvider {
    * 
    * @return the (LAPPS) id of the user
    */
-  private static int createNewUser(String oidc_id, String mail) {
-    UserEntity user = new UserEntity(oidc_id, mail);
+  private static int createNewUser(String oidc_id, String mail, String userName) {
+    UserEntity user = new UserEntity(oidc_id, mail, userName);
     user = userFacade.save(user);
-
     return user.getId();
   }
 

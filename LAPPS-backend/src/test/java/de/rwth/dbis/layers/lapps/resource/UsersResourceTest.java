@@ -52,8 +52,7 @@ public class UsersResourceTest {
     userFacade.deleteAll("oidcId", "1234567");
     LOGGER.info("User data deleted.");
     LOGGER.info("Creating a new user...");
-    user = new UserEntity("1234567", "test@lapps.com");
-    user.setUsername("testuser");
+    user = new UserEntity("1234567", "test@lapps.com", "testuser");
     user = userFacade.save(user);
     LOGGER.info("User created: " + user);
   }
@@ -150,8 +149,7 @@ public class UsersResourceTest {
   public void testAuthentication() {
     int returnValue = 0;
     try {
-      returnValue =
-          AuthenticationProvider.authenticate(AuthenticationProvider.OPEN_ID_TEST_TOKEN);
+      returnValue = AuthenticationProvider.authenticate(AuthenticationProvider.OPEN_ID_TEST_TOKEN);
     } catch (OIDCException e) {
       fail("Open Id authentication did not succeed!");
     }

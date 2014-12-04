@@ -37,9 +37,10 @@ public class UserEntity implements Entity, Comparable<UserEntity> {
 
   public UserEntity() {}
 
-  public UserEntity(String oidcId, String email) {
+  public UserEntity(String oidcId, String email, String username) {
     this.setOidcId(oidcId);
     this.setEmail(email);
+    this.setUsername(username);
   }
 
   public String getOidcId() {
