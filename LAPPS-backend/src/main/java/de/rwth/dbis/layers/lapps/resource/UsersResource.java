@@ -27,6 +27,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
 
 import de.rwth.dbis.layers.lapps.authenticate.AuthenticationProvider;
 import de.rwth.dbis.layers.lapps.domain.UserFacade;
+import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
@@ -56,7 +57,7 @@ public class UsersResource {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get all users")
+  @ApiOperation(value = "Get all users", response = AppEntity.class, responseContainer = "List")
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
