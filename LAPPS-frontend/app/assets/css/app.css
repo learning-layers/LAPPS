@@ -131,7 +131,7 @@ h1, h2, h3, h4, h5 {
 	border: 1px solid #ddd;
 }
 
-.nav-pills>li:not (:last-child ) {
+.nav-pills>li:not(:last-child ) {
 	position: absolute;
 	left: 0;
 	width: 49.5%;
@@ -314,8 +314,9 @@ h1, h2, h3, h4, h5 {
 @media ( max-width : 768px) {
 	.carousel-caption {
 		background: none;
+		overflow: hidden;
 	}
-	.carousel-caption h1, .carousel-caption h3 {
+	.carousel-caption h1, .carousel-caption h3 {		
 		background-color: rgba(0, 0, 0, 0.5);
 		padding: 5px;
 		-moz-border-radius: 15px;
@@ -385,3 +386,111 @@ h1, h2, h3, h4, h5 {
 	position: relative;
 }
 /* search end */
+
+/* detail page start*/
+/* app-description */
+#app-description img {
+  float: left;
+  padding-left: 9px;
+  padding-bottom: 5px;
+}
+
+#app-description h2 {
+  margin: 0;
+}
+
+h2 span {
+  margin-left: 10px;
+  font-size: 12px;
+}
+
+#app-description .app-title, 
+#app-technical-detail h3 {
+  text-align: center;
+  margin: 3px 4px 10px 4px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+#app-description {
+  margin-top: 20px;
+}
+#app-description .caption {
+	  padding-top: 0;
+	  padding-bottom: 42px;	 
+}
+#app-description .caption .long-description {	
+	  margin-right: 150px;  
+	  text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      height: 200px;
+}
+
+@media (min-width:768px){
+	#app-description .caption {
+	  position: absolute;
+	  right: 0;
+	  left: 150px;
+	  margin-left: 20px;
+	  margin-right: 10px;
+	  bottom: 0px;
+	  top: 50px;
+	}
+}
+
+#app-description .caption > button{
+  position: absolute;
+  right: 15px;
+  bottom: 15px; 
+}
+
+
+.hspace4 {
+  padding:0 15px;
+}
+
+.hspace5 {
+  padding: 0 5px;
+  color: #999;
+}
+#app-description .glyphicon-tags {
+  color: #999;
+}
+
+#app-description .caption > div {
+  display: inline-block;
+}
+.glyphicon-star,
+.glyphicon-star-empty {
+  color: #c30;
+}
+/* app-description ends here */
+/* carousel and technical detais start here*/
+.item img {
+ width: 1920;
+ height: 600;
+}
+
+#app-technical-detail {
+  padding: 10px;
+}
+
+#app-technical-detail dl {
+  margin: 10px 15px;
+}
+
+#app-tags,
+#app-rating {
+  float: left;  
+}
+
+#platform-links {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+/* carousel and technical details end here*/
+/* detail page ends here */
+
