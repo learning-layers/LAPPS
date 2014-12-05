@@ -68,13 +68,23 @@ public class UserFacade extends AbstractFacade<UserEntity, Integer> {
   }
 
   /**
-   * Finds a user by its email or part of it.
+   * Finds users by email (or part of it).
    * 
    * @param email (part of) The email of the user
    * @return List of matched users
    */
   public List<UserEntity> findByEmail(String email) {
     return super.findByParameter("email", email);
+  }
+
+  /**
+   * Finds users by OIDC ID (or part of it).
+   * 
+   * @param oidcId
+   * @return List of matched users
+   */
+  public List<UserEntity> findByOidcId(Long oidcId) {
+    return super.findByParameter("oidcId", oidcId.toString());
   }
 
 }

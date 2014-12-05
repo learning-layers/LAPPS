@@ -143,7 +143,8 @@ public class OIDCAuthentication {
     }
 
     // user is unknown, has to be created
-    userId = createNewUser(sub, mail, userName);
+    // TODO: type-check!? (String -> Long)
+    userId = createNewUser(Long.parseLong(sub), mail, userName);
     return userId;
   }
 
@@ -155,7 +156,7 @@ public class OIDCAuthentication {
    * 
    * @return the (LAPPS) id of the user
    */
-  private static int createNewUser(String oidc_id, String mail, String userName) {
+  private static int createNewUser(Long oidc_id, String mail, String userName) {
     UserEntity user = new UserEntity(oidc_id, mail, userName);
     user = userFacade.save(user);
     return user.getId();
