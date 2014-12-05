@@ -1,7 +1,113 @@
-﻿<div class="container-fluid">
-  <div class="row">
-    <h1>{{appData.name}}</h1>
-    <p>{{appData.description}}</p>
-    <p>{{appData.longDescription}}</p>
-  </div>
-</div>
+ <div class="container">
+      <div class="row">
+          <div class="col-md-12 thumbnail" id="app-description">
+              <div class="app-title">
+                  <h2>{{appData.name}}
+                  <span>from 
+                      <a href="link">Developer</a>
+                      </span>
+                  </h2>
+              </div>
+              <div id="platform-links">
+            	    <input type="image" src="./assets/img/android.png" id="android" data-ng-click="chosenVersion($event)"/>
+            	    <input type="image" src="./assets/img/windows.png" id="windows" data-ng-click="chosenVersion($event)"/>
+            	    <input type="image" src="./assets/img/apple.png" id="ios" data-ng-click="chosenVersion($event)"/>
+                </div>
+              <img src="http://lorempixel.com/150/150/nature" class="img-responsive hidden-xs">
+              <div class="caption">
+                  <div>
+                      <div id="app-rating">
+                          <h4>
+							<span ng-repeat="n in [] | rangeFilter:appData.rating"
+								class="glyphicon glyphicon-star text-color-staryellow"> </span><span
+								ng-repeat="n in [] | rangeFilter:(5-appData.rating)"
+								class="glyphicon glyphicon-star-empty text-color-staryellow"></span>
+								<span class="hspacer05 text-color-paleblack ">({{appData.instances.currentVersion.commentsCount}})</span>
+                          </h4>
+                      </div>
+                      <div id="app-tags">
+                          <h4>
+                              <span class="hspace4 hidden-xs"></span>
+                              <span class="glyphicon glyphicon-tags "></span>
+                              <span class="hspace5">cats, lions, kittens, fur ...</span>
+                          </h4>
+                      </div>
+                  </div>
+                  <p>{{appData.instances.currentVersion.description}}
+                  </p>
+                  <p class="long-description">{{appData.instances.currentVersion.longDescription}}</p>
+                  <button class="btn btn-default btn-primary" type="button">Show more <span class="caret"></span></button>
+              </div>              
+          </div>         
+      </div>
+      <div class="row">
+        <div class="col-md-9">
+          <div class="carousel slide" id="carousel-example-generic" data-interval="false">
+            <ol class="carousel-indicators">
+              <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+              <li data-target="#myCarousel" data-slide-to="1"></li>
+              <li data-target="#myCarousel" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+              <div class="item active" >
+                <img src="http://lorempixel.com/900/400/food/" width="1920" height="600">
+                <div class="carousel-caption">
+                  <h2>{{appData.name}}</h2>
+                  <p>{{appData.instances.currentVersion.description}}</p>
+                </div>
+              </div>
+              <div class="item">
+                <img src="http://lorempixel.com/900/400/animals/">
+                <div class="carousel-caption">
+                  <h2>Title</h2>
+                  <p>Description</p>
+                </div>
+              </div>
+              <div class="item">
+                <img src="http://lorempixel.com/900/400/technics/">
+                <div class="carousel-caption">
+                  <h2>Title</h2>
+                  <p>Description</p>
+                </div>
+              </div>
+            </div>
+            <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+            <a class="right carousel-control" href="#carousel-example-generic" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+          </div>
+        </div>
+        <div class="thumbnail col-md-3" id="app-technical-detail">
+          <h3>Technical details</h3>
+          <dl>
+
+            <dt>
+              <dfn>Source Code</dfn>
+            </dt>
+            <dd>
+              <a href="/en/extensions/category/productivity/?order=popular">on Github</a>
+            </dd>
+            <dt >
+              <dfn>Version</dfn>
+            </dt>
+            <dd>{{appData.instances.currentVersion.version}}</dd>
+            <dt>
+              <dfn>Size</dfn>
+            </dt>
+            <dd>{{appData.instances.currentVersion.size}}</dd>
+            <dt>
+              <dfn>Last update</dfn>
+            </dt>
+            <dd itemprop="releaseDate">{{appData.instances.currentVersion.lastUpdate}}</dd>
+            <dt>
+              <dfn>License</dfn>
+            </dt>
+            <dd>{{appData.instances.currentVersion.license}}</dd>
+            <dt>
+              <dfn>Support page</dfn>
+            </dt>
+            <dd dir="ltr">
+              <a href="http://www.lixe.co/" rel="nofollow" target="_blank">{{appData.instances.currentVersion.supportPage}}</a>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>

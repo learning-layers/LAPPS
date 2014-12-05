@@ -4,6 +4,7 @@
  * @description This controller is responsible for displaying the details of a
  *              selected app.
  */
+
 (function() {
   angular.module('lappsControllers').controller(
           'appDetailCtrl',
@@ -29,6 +30,12 @@
                  * @description AppData is fetched by an API call to the
                  *              backend.
                  */
+                $scope.currentVersion = "ios";
+
+                $scope.chosenVersion = function(event) {
+                  $scope.currentVersion = event.target.id;
+                };
+
                 $scope.appData = {};
                 $http.get('assets/dummy/app-' + $scope.appId + '.json')
                         .success(function(data) {

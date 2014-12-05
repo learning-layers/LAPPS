@@ -1,4 +1,4 @@
-﻿<div id="featured-list" class="row">
+<div id="featured-list" class="row">
 	<div class="col-md-12">
 		<ul class="lead nav nav-justified nav-pills">
 			<li ng-class="{'active': currentTab=='new'}"><a
@@ -29,7 +29,6 @@
 										class="glyphicon glyphicon-star text-color-staryellow">
 									</span><span ng-repeat="n in [] | rangeFilter:(5-app.rating)"
 										class="glyphicon glyphicon-star-empty text-color-staryellow"></span>
-
 									<span class="hspacer05 text-color-paleblack ">({{app.commentsCount}})</span>
 								</div>
 								<p>{{app.description}}</p>
