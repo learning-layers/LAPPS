@@ -126,23 +126,28 @@ public abstract class AbstractFacade<T extends Entity, I> {
   }
 
   /**
-   * Lists all {@link Entity} instances filtered by a certain parameter.
+   * Lists all {@link Entity} instances filtered by a certain parameter. For Strings, this will
+   * return all instances that match the given substring. Numerical data types have to match fully.
    * 
    * @param param The field to filter on
    * @param value The value of the field filtering on
    * @return List of Entities
    */
   @SuppressWarnings("unchecked")
-  public final List<T> findByParameter(String param, String value) {
+  public final List<T> findByParameter(String param, Object value) {
     final EntityManager em = getEntityManager();
     List<T> entities = null;
+
     LOGGER.info("Searching for " + entityClass.getName() + " by a parameter...");
+    if (value instanceof String) {
+      value = (String) "%" + value + "%";
+    }
     try {
       em.getTransaction().begin();
       Query query =
           em.createQuery(
               "select entity from " + entityClass.getSimpleName() + " entity where entity." + param
-                  + " like :value").setParameter("value", "%" + value + "%");
+                  + " like :value").setParameter("value", value);
       entities = query.getResultList();
       em.getTransaction().commit();
       // em.close();
@@ -158,38 +163,21 @@ public abstract class AbstractFacade<T extends Entity, I> {
     return entities;
   }
 
-  public void deleteAll(String param, String value) {
+  /**
+   * Deletes all {@link Entity} instances filtered by a certain parameter. For Strings, this will
+   * delete all instances that match the given substring. Numerical data types have to match fully.
+   * 
+   * @param param The field that should match
+   * @param value The value of the field matching on
+   * 
+   */
+  public void deleteAll(String param, Object value) {
     final EntityManager em = getEntityManager();
     Query query = null;
     int count = 0;
-    if (param != null && value != null) {
-      query =
-          em.createQuery(
-              "delete from " + entityClass.getSimpleName() + " entity where entity." + param
-                  + " like :value").setParameter("value", "%" + value + "%");
-      LOGGER.info("Deleting " + entityClass.getName() + " with " + param + " == " + value + " ...");
-    } else {
-      query = em.createQuery("delete from " + entityClass.getName());
-      LOGGER.info("Deleting all " + entityClass.getName() + "...");
+    if (value instanceof String) {
+      value = (String) "%" + value + "%";
     }
-    try {
-      em.getTransaction().begin();
-      count = query.executeUpdate();
-      em.getTransaction().commit();
-    } catch (Throwable t) {
-      LOGGER.log(Level.SEVERE, "Exception while deleting entities: " + t.getMessage());
-      em.getTransaction().rollback();
-      throw t;
-    } finally {
-      em.close();
-    }
-    LOGGER.info(count + " entities deleted.");
-  }
-
-  public void deleteAll(String param, Long value) {
-    final EntityManager em = getEntityManager();
-    Query query = null;
-    int count = 0;
     if (param != null && value != null) {
       query =
           em.createQuery(

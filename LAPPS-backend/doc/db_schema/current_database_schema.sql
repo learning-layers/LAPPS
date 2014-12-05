@@ -229,20 +229,20 @@ ALTER TABLE `tag`
 INSERT INTO `user` (`id`, `oidc_id`, `email`) VALUES
 (1, '1', 'test@lapps.com');
 
-INSERT INTO `app` (`id`, `name`, `rating`) VALUES
-(1, 'First App', 0);
+INSERT INTO `app` (`id`, `name`) VALUES
+(1, 'something here');
 
 INSERT INTO `app_platform` (`id`, `name`) VALUES
 (1, 'IOS');
 
-INSERT INTO `tag` (`id`, `app_id`, `name`) VALUES
+INSERT INTO `app_instance` (`id`, `app_id`, `platform_id`, `url`, `version`, `min_platform_version`, `size`,`sourceURL`) VALUES
+(1, 1, 1, 'www.apple.something',1,'something here',11,1);
+
+INSERT INTO `tag` (`id`, `app_instance_id`, `name`) VALUES
 (1, 1, 'Some Tag');
 
-INSERT INTO `comment` (`id`, `app_id`, `user_id`, `text`) VALUES
+INSERT INTO `comment` (`id`, `app_instance_id`, `user_id`, `text`) VALUES
 (1, 1, 1, 'Great App');
-
-INSERT INTO `app_instance` (`id`, `app_id`, `platform_id`, `url`) VALUES
-(1, 1, 1, 'www.apple.something');
 
 INSERT INTO `app_instance_management` (`id`, `user_id`, `app_instance_id`, `rights`) VALUES
 (1, 1, 1, 0);
@@ -250,11 +250,13 @@ INSERT INTO `app_instance_management` (`id`, `user_id`, `app_instance_id`, `righ
 INSERT INTO `app_detail_type` (`id`, `type`) VALUES
 (1, 'Some Detail Type');
 
-INSERT INTO `app_detail` (`id`, `app_detail_type_id`, `app_id`, `contents`) VALUES
+INSERT INTO `app_detail` (`id`, `app_detail_type_id`, `app_instance_id`, `contents`) VALUES
 (1, 1, 1, 'Some Content');
 
 INSERT INTO `app_artifact_type` (`id`, `type`) VALUES
 (1, 'Some Artifact Type');
+INSERT INTO `app_artifact_type` (`id`, `type`) VALUES
+(2, 'Some Artifact Type');
 
-INSERT INTO `app_artifact` (`id`, `app_artifact_type_id`, `app_id`, `url`) VALUES
+INSERT INTO `app_artifact` (`id`, `app_artifact_type_id`, `app_instance_id`, `url`) VALUES
 (1, 1, 1, 'www.some.url');
