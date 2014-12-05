@@ -31,7 +31,7 @@ import de.rwth.dbis.layers.lapps.exception.OIDCException;
 @Singleton
 public class OIDCAuthentication {
 
-  private static final String OPEN_ID_PROVIDER = "http://api.learning-layers.eu/o/oauth2";
+  private static final String OPEN_ID_PROVIDER = "https://api.learning-layers.eu/o/oauth2";
   private static final String OPEN_ID_PROVIDER_CONFIGURATION_URI = OPEN_ID_PROVIDER.trim()
       + "/.well-known/openid-configuration";
 
