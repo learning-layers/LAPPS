@@ -49,10 +49,10 @@ public class UsersResourceTest {
     target = c.target(Main.BASE_URI);
 
     LOGGER.info("Deleting old user data...");
-    userFacade.deleteAll("oidcId", "1234567");
+    userFacade.deleteAll("oidcId", 1234567L);
     LOGGER.info("User data deleted.");
     LOGGER.info("Creating a new user...");
-    user = new UserEntity("1234567", "test@lapps.com", "testuser");
+    user = new UserEntity(1234567, "test@lapps.com", "testuser");
     user = userFacade.save(user);
     LOGGER.info("User created: " + user);
   }
@@ -111,7 +111,7 @@ public class UsersResourceTest {
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
     String responseContent = response.readEntity(String.class);
     assertEquals(new String("{\"id\":" + user.getId().toString()
-        + ",\"oidcId\":\"1234567\",\"email\":\"test@lapps.com\",\"username\":\"testuser\"}"),
+        + ",\"oidcId\":1234567,\"email\":\"test@lapps.com\",\"username\":\"testuser\"}"),
         responseContent);
   }
 

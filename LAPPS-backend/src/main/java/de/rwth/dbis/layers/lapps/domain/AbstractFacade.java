@@ -186,6 +186,55 @@ public abstract class AbstractFacade<T extends Entity, I> {
     LOGGER.info(count + " entities deleted.");
   }
 
+  public void deleteAll(String param, Long value) {
+    final EntityManager em = getEntityManager();
+    Query query = null;
+    int count = 0;
+    if (param != null && value != null) {
+      query =
+          em.createQuery(
+              "delete from " + entityClass.getSimpleName() + " entity where entity." + param
+                  + " like :value").setParameter("value", value);
+      LOGGER.info("Deleting " + entityClass.getName() + " with " + param + " == " + value + " ...");
+    } else {
+      query = em.createQuery("delete from " + entityClass.getName());
+      LOGGER.info("Deleting all " + entityClass.getName() + "...");
+    }
+    try {
+      em.getTransaction().begin();
+      count = query.executeUpdate();
+      em.getTransaction().commit();
+    } catch (Throwable t) {
+      LOGGER.log(Level.SEVERE, "Exception while deleting entities: " + t.getMessage());
+      em.getTransaction().rollback();
+      throw t;
+    } finally {
+      em.close();
+    }
+    LOGGER.info(count + " entities deleted.");
+  }
+
+  public void deleteAll() {
+    final EntityManager em = getEntityManager();
+    Query query = null;
+    int count = 0;
+    query = em.createQuery("delete from " + entityClass.getName());
+    LOGGER.info("Deleting all " + entityClass.getName() + "...");
+    try {
+      em.getTransaction().begin();
+      count = query.executeUpdate();
+      em.getTransaction().commit();
+    } catch (Throwable t) {
+      LOGGER.log(Level.SEVERE, "Exception while deleting entities: " + t.getMessage());
+      em.getTransaction().rollback();
+      throw t;
+    } finally {
+      em.close();
+    }
+    LOGGER.info(count + " entities deleted.");
+  }
+
+
   /**
    * Finds entities from {@link Entity} subtype filtered by the expression given with
    * <code>queryStr</code>.

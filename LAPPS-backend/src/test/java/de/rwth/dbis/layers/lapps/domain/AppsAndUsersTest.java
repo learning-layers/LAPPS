@@ -83,8 +83,8 @@ public class AppsAndUsersTest {
 
   private void deleteExisting() {
     LOGGER.info("Deleting data...");
-    userFacade.deleteAll(null, null);
-    appFacade.deleteAll(null, null);
+    userFacade.deleteAll();
+    appFacade.deleteAll();
   }
 
   private void populateWithData() {
