@@ -22,7 +22,7 @@
 								class="glyphicon glyphicon-star text-color-staryellow"> </span><span
 								ng-repeat="n in [] | rangeFilter:(5-appData.rating)"
 								class="glyphicon glyphicon-star-empty text-color-staryellow"></span>
-								<span class="hspacer05 text-color-paleblack ">({{appData.instances.currentVersion.commentsCount}})</span>
+								<span class="hspacer05 text-color-paleblack ">({{appData.instances[currentVersion].commentsCount}})</span>
                           </h4>
                       </div>
                       <div id="app-tags">
@@ -33,9 +33,9 @@
                           </h4>
                       </div>
                   </div>
-                  <p>{{appData.instances.currentVersion.description}}
+                  <p>{{appData.instances[currentVersion].description}}
                   </p>
-                  <p class="long-description">{{appData.instances.currentVersion.longDescription}}</p>
+                  <p class="long-description">{{appData.instances[currentVersion].longDescription}}</p>
                   <button class="btn btn-default btn-primary" type="button">Show more <span class="caret"></span></button>
               </div>              
           </div>         
@@ -53,7 +53,7 @@
                 <img src="http://lorempixel.com/900/400/food/" width="1920" height="600">
                 <div class="carousel-caption">
                   <h2>{{appData.name}}</h2>
-                  <p>{{appData.instances.currentVersion.description}}</p>
+                  <p>{{appData.instances[currentVersion].description}}</p>
                 </div>
               </div>
               <div class="item">
@@ -88,24 +88,24 @@
             <dt >
               <dfn>Version</dfn>
             </dt>
-            <dd>{{appData.instances.currentVersion.version}}</dd>
+            <dd>{{appData.instances[currentVersion].version}}</dd>
             <dt>
               <dfn>Size</dfn>
             </dt>
-            <dd>{{appData.instances.currentVersion.size}}</dd>
+            <dd>{{appData.instances[currentVersion].size}}</dd>
             <dt>
               <dfn>Last update</dfn>
             </dt>
-            <dd itemprop="releaseDate">{{appData.instances.currentVersion.lastUpdate}}</dd>
+            <dd itemprop="releaseDate">{{appData.instances[currentVersion].lastUpdate}}</dd>
             <dt>
               <dfn>License</dfn>
             </dt>
-            <dd>{{appData.instances.currentVersion.license}}</dd>
+            <dd>{{appData.instances[currentVersion].license}}</dd>
             <dt>
               <dfn>Support page</dfn>
             </dt>
             <dd dir="ltr">
-              <a href="http://www.lixe.co/" rel="nofollow" target="_blank">{{appData.instances.currentVersion.supportPage}}</a>
+              <a href="http://www.lixe.co/" rel="nofollow" target="_blank">{{appData.instances[currentVersion].supportPage}}</a>
             </dd>
           </dl>
         </div>
