@@ -84,7 +84,7 @@ public class UserFacade extends AbstractFacade<UserEntity, Integer> {
    * @return List of matched users
    */
   public List<UserEntity> findByOidcId(Long oidcId) {
-    return super.findByParameter("oidcId", oidcId.toString());
+    return super.findByParameter("oidcId", oidcId);
   }
 
 }

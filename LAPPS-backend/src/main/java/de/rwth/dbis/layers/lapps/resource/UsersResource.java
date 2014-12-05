@@ -35,7 +35,7 @@ import de.rwth.dbis.layers.lapps.exception.OIDCException;
  * Users resource (exposed at "users" path).
  */
 @Path("/users")
-@Api(value = "/users", description = "User ressource")
+@Api(value = "/users", description = "User resource")
 public class UsersResource {
 
   private static final Logger LOGGER = Logger.getLogger(UsersResource.class.getName());
@@ -117,27 +117,31 @@ public class UsersResource {
 
   /**
    * 
-   * Gets the user for a given id.
+   * Gets the user for a given oidcId.
    * 
-   * @param id
+   * @param oidcId
    * 
    * @return Response with user as a JSON object.
    * 
    */
   @GET
-  @Path("/{id}")
+  @Path("/{oidcId}")
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get user by ID", response = UserEntity.class)
+  @ApiOperation(value = "Get user by oidcId", response = UserEntity.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
-  public Response getUser(@PathParam("id") int id) {
+  public Response getUser(@PathParam("oidcId") long oidcId) {
 
-    UserEntity user = userFacade.find(id);
-    if (user == null) {
+    // search for existing user
+    List<UserEntity> entities = userFacade.findByOidcId(oidcId);
+    UserEntity user = null;
+    if (entities.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
+    } else {
+      user = entities.get(0);
     }
     try {
       ObjectMapper mapper = new ObjectMapper();
@@ -150,22 +154,24 @@ public class UsersResource {
 
   /**
    * 
-   * Delete the user with the given id.
+   * Delete the user with the given oidcId.
    * 
-   * @param id
+   * @param oidcId
    * 
    * @return Response
+   * 
    */
   @DELETE
-  @Path("/{id}")
-  @ApiOperation(value = "Delete user by ID")
+  @Path("/{oidcId}")
+  @ApiOperation(value = "Delete user by oidcId")
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
-  public Response deleteUser(@HeaderParam("accessToken") String accessToken, @PathParam("id") int id) {
+  public Response deleteUser(@HeaderParam("accessToken") String accessToken,
+      @PathParam("oidcId") long oidcId) {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
       // process)
@@ -174,10 +180,12 @@ public class UsersResource {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
-
-    UserEntity user = userFacade.find(id);
-    if (user == null) {
+    // search for existing user
+    List<UserEntity> entities = userFacade.findByOidcId(oidcId);
+    if (entities.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
+    } else {
+      // UserEntity user = entities.get(0);
     }
     // TODO: delete user with help of userFacade
     return Response.status(HttpStatusCode.NOT_IMPLEMENTED).build();
@@ -185,18 +193,18 @@ public class UsersResource {
 
   /**
    * 
-   * Update the user with the given id.
+   * Update the user with the given oidcId.
    * 
-   * @param id
+   * @param oidcId
    * @param updatedUser as JSON
    * 
    * @return Response with updated User
    */
   @PUT
-  @Path("/{id}")
+  @Path("/{oidcId}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Update user by ID", response = UserEntity.class)
+  @ApiOperation(value = "Update user by oidcId", response = UserEntity.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
@@ -206,7 +214,7 @@ public class UsersResource {
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
   public Response updateUser(@HeaderParam("accessToken") String accessToken,
-      @PathParam("id") int id,
+      @PathParam("oidcId") long oidcId,
       @ApiParam(value = "User entity as JSON", required = true) UserEntity updatedUser) {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
@@ -216,9 +224,12 @@ public class UsersResource {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
-    UserEntity user = userFacade.find(id);
-    if (user == null) {
+    // search for existing user
+    List<UserEntity> entities = userFacade.findByOidcId(oidcId);
+    if (entities.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
+    } else {
+      // UserEntity user = entities.get(0);
     }
     // TODO: update user with help of userFacade
     try {

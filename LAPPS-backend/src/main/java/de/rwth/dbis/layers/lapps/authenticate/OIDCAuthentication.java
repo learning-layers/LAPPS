@@ -117,12 +117,12 @@ public class OIDCAuthentication {
     }
     // successful, now get the user info and start extracting content
     UserInfo userInfo = ((UserInfoSuccessResponse) userInfoResponse).getUserInfo();
-    String sub = userInfo.getSubject().toString();
+    long sub = Long.parseLong(userInfo.getSubject().toString());
     String mail = userInfo.getEmail().toString();
     String userName = userInfo.getName();
 
     // search for existing user
-    List<UserEntity> entities = userFacade.findByParameter("oidcId", sub);
+    List<UserEntity> entities = userFacade.findByOidcId(sub);
 
     // more than one means something bad happened, one means user is already known..
     if (entities.size() > 1)
@@ -144,7 +144,7 @@ public class OIDCAuthentication {
 
     // user is unknown, has to be created
     // TODO: type-check!? (String -> Long)
-    userId = createNewUser(Long.parseLong(sub), mail, userName);
+    userId = createNewUser(sub, mail, userName);
     return userId;
   }
 
@@ -156,7 +156,7 @@ public class OIDCAuthentication {
    * 
    * @return the (LAPPS) id of the user
    */
-  private static int createNewUser(Long oidc_id, String mail, String userName) {
+  private static int createNewUser(long oidc_id, String mail, String userName) {
     UserEntity user = new UserEntity(oidc_id, mail, userName);
     user = userFacade.save(user);
     return user.getId();
