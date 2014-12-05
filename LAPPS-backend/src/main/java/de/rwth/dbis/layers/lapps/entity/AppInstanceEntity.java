@@ -43,12 +43,18 @@ public class AppInstanceEntity implements Entity {
   private String version = null;
   private int size = 0;
   private String sourceUrl = null;
+
+  @Column(name = "min_platform_version")
+  private String availableOn = null;
+
   @Column(name = "date_created")
   @Temporal(TemporalType.TIMESTAMP)
   private Date dateCreated = new Date();
   @Column(name = "date_modified")
   @Temporal(TemporalType.TIMESTAMP)
   private Date dateModified = null;
+
+
 
   @JsonIgnore
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -125,6 +131,14 @@ public class AppInstanceEntity implements Entity {
 
   public void setSourceUrl(String sourceUrl) {
     this.sourceUrl = sourceUrl;
+  }
+
+  public String getAvailableOn() {
+    return availableOn;
+  }
+
+  public void setAvailableOn(String availableOn) {
+    this.availableOn = availableOn;
   }
 
   public Date getDateCreated() {
@@ -214,6 +228,7 @@ public class AppInstanceEntity implements Entity {
         + "[" + this.getSize() + "KB], available at " + this.getUrl() + ", with source at "
         + this.getSourceUrl() + " having " + this.getComments().size() + " comment(s), "
         + this.getArtifacts().size() + " artifact(s), " + this.getDetails().size()
-        + " description(s) and " + this.getTags().size() + " tag(s)";
+        + " description(s) and " + this.getTags().size() + " tag(s)" + "availble for: "
+        + this.getAvailableOn();
   }
 }

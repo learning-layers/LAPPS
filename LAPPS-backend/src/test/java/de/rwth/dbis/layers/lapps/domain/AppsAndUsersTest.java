@@ -108,7 +108,7 @@ public class AppsAndUsersTest {
     }
     for (int i = 0; i < USER_COUNT; i++) {
       UserEntity user =
-          new UserEntity(Utils.generateRandomInt(0, 5000) + "", "test"
+          new UserEntity(Utils.generateRandomInt(0, 5000), "test"
               + Utils.generateRandomInt(0, 5000) + "@lapps.com", "test-"
               + Utils.generateRandomInt(0, 5000));
       users.add(userFacade.save(user));

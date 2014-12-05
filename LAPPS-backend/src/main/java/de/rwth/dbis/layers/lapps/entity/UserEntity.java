@@ -25,9 +25,11 @@ public class UserEntity implements Entity, Comparable<UserEntity> {
   @GeneratedValue
   private Integer id = 0;
   @Column(name = "oidc_id")
-  private String oidcId = "";
+  private long oidcId = 0;
   private String email = null;
   private String username = null;
+
+  private int roles = 0;
 
   // TODO: remove this @JsonIgnore, we need it because their is a recursive loop between author
   // (user) <-> appcomment <-> author (user) <-> appcomment
@@ -41,17 +43,17 @@ public class UserEntity implements Entity, Comparable<UserEntity> {
 
   public UserEntity() {}
 
-  public UserEntity(String oidcId, String email, String username) {
+  public UserEntity(long oidcId, String email, String username) {
     this.setOidcId(oidcId);
     this.setEmail(email);
     this.setUsername(username);
   }
 
-  public String getOidcId() {
+  public long getOidcId() {
     return oidcId;
   }
 
-  public void setOidcId(String oidcId) {
+  public void setOidcId(long oidcId) {
     this.oidcId = oidcId;
   }
 
@@ -82,6 +84,19 @@ public class UserEntity implements Entity, Comparable<UserEntity> {
     }
   }
 
+  public boolean hasRoles(int roles) {
+    return (this.roles & roles) == roles;
+  }
+
+  public void grantRoles(int toGrant) {
+    this.roles = this.roles | toGrant;
+  }
+
+  public void dropRoles(int toDrop) {
+    this.roles = this.roles - (this.roles & toDrop);
+  }
+
+
   public List<AppCommentEntity> getComments() {
     return comments;
   }
@@ -96,6 +111,8 @@ public class UserEntity implements Entity, Comparable<UserEntity> {
   public List<AppInstanceRightsEntity> getRights() {
     return this.rights;
   }
+
+
 
   @Override
   public String toString() {
