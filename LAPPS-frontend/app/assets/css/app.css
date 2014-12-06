@@ -149,17 +149,14 @@ h1, h2, h3, h4, h5 {
   border: 1px solid #ddd;
 }
 
-<<<<<<< Upstream, based on develop
 .nav-pills > li:not(:last-child) {
   position: absolute;
   left: 0;
   width: 49.5%;
-=======
 .nav-pills>li:not(:last-child ) {
 	position: absolute;
 	left: 0;
 	width: 49.5%;
->>>>>>> 334d94b currentState of detail page. Not complete yet. 
 }
 
 .nav-pills > li:last-child {
@@ -341,7 +338,6 @@ h1, h2, h3, h4, h5 {
 }
 
 /*smartphone size start*/
-<<<<<<< Upstream, based on develop
 @media (max-width: 768px) {
   .carousel-caption {
     background: none;
@@ -354,7 +350,6 @@ h1, h2, h3, h4, h5 {
     -webkit-border-radius: 15px;
     border-radius: 15px;
   }
-=======
 @media ( max-width : 768px) {
 	.carousel-caption {
 		background: none;
@@ -367,7 +362,6 @@ h1, h2, h3, h4, h5 {
 		-webkit-border-radius: 15px;
 		border-radius: 15px;
 	}
->>>>>>> 334d94b currentState of detail page. Not complete yet. 
 }
 /*smartphone size end*/
 
