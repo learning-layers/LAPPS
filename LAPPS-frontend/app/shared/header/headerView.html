@@ -1,16 +1,16 @@
 ﻿<nav role="navigation" class="navbar navbar-default" style="">
-	<!-- Brand and toggle get grouped for better mobile display -->
-	<div class="navbar-header">
-		<button type="button" data-target="#navbarCollapse"
-			data-toggle="collapse" class="navbar-toggle">
-			<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span>
-			<span class="icon-bar"></span> <span class="icon-bar"></span>
-		</button>
-		<a href="#" class="hidden-xs navbar-brand"> <span
-			class="glyphicon glyphicon-shopping-cart"></span> LAPPS
-		</a> <a href="#" class="visible-xs navbar-brand"> <span
-			class="glyphicon glyphicon-shopping-cart"></span>
-		</a>
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" data-target="#navbarCollapse"
+            data-toggle="collapse" class="navbar-toggle">
+      <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span>
+      <span class="icon-bar"></span> <span class="icon-bar"></span>
+    </button>
+    <a href="#" class="hidden-xs navbar-brand">
+      <span class="glyphicon glyphicon-shopping-cart"></span> LAPPS
+    </a> <a href="#" class="visible-xs navbar-brand">
+      <span class="glyphicon glyphicon-shopping-cart"></span>
+    </a>
     <form ng-submit="search()" class="search-bar-xs visible-xs">
       <div class="input-group">
         <input ng-model="searchQuery" type="text" class="form-control" placeholder="Search"
@@ -22,25 +22,31 @@
         </div>
       </div>
     </form>
-	</div>
-	<div id="navbarCollapse" class="collapse navbar-collapse">
-		<ul class="nav navbar-nav">
-			<li class="active"><a href="#"> <span class="visible-xs">
-						<span class="glyphicon glyphicon-home"></span> Home
-				</span><span class="hidden-xs"> <span
-						class="glyphicon glyphicon-home"></span>
-				</span>
-			</a></li>
-			<li class="dropdown"><a href="" class="dropdown-toggle"
-				data-toggle="dropdown"> <span class="glyphicon glyphicon-edit"></span>
-					Dev<span class="caret"></span>
-			</a>
-				<ul class="dropdown-menu" role="menu">
-					<li><a href="#">Manage my Apps</a></li>
-					<li><a href="#">Create new App Description</a></li>
-				</ul></li>
-		</ul>
-		<div class="search-bar hidden-xs">
+  </div>
+  <div id="navbarCollapse" class="collapse navbar-collapse">
+    <ul class="nav navbar-nav">
+      <li class="active">
+        <a href="#">
+          <span class="visible-xs">
+            <span class="glyphicon glyphicon-home"></span> Home
+          </span><span class="hidden-xs">
+            <span class="glyphicon glyphicon-home"></span>
+          </span>
+        </a>
+      </li>
+      <li class="dropdown">
+        <a href="" class="dropdown-toggle"
+           data-toggle="dropdown">
+          <span class="glyphicon glyphicon-edit"></span>
+          Dev<span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#">Manage my Apps</a></li>
+          <li><a href="#">Create new App Description</a></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="search-bar hidden-xs">
       <form ng-submit="search()" class="navbar-form" role="search">
         <div class="input-group">
           <input ng-model="searchQuery" type="text" class="form-control" placeholder="Search"
@@ -52,22 +58,30 @@
           </div>
         </div>
       </form>
-		</div>
-		<ul class="nav navbar-nav navbar-right">
+    </div>
+    <ul class="nav navbar-nav navbar-right">
 
-			<li><a href="#"> <span class="visible-xs"> <span
-						class="glyphicon glyphicon glyphicon-cog"></span> Administration
-				</span><span class="hidden-xs"> <span
-						class="glyphicon glyphicon glyphicon-cog"></span>
-				</span>
-			</a></li>
-			<li><a href="#"> <span class="glyphicon glyphicon-user"></span>
-					Profile
-			</a></li>
-			<li>
-				<button id="sign-in-button" type="button"
-					class="btn btn-success navbar-btn btn-small">Sign in</button>
-			</li>
-		</ul>
-	</div>
+      <li>
+
+        <div id="sign-in-button">
+          <button ng-show="!isloggedIn" ng-click="login()" type="button" class="btn btn-success navbar-btn btn-small"><span class="glyphicon glyphicon-ok"></span><span class="hspacer05"></span>{{loginText}}</button>
+
+          <button ng-show="isloggedIn" type="button" class="btn btn-primary dropdown-toggle navbar-btn btn-small" data-toggle="dropdown" aria-expanded="false">
+            <span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>{{userName}}<span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#"><span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>My Profile</a></li>
+            <li><a href="#"><span class="glyphicon glyphicon glyphicon-cog"></span><span class="hspacer05"></span>Admin Panel</a></li>
+
+            <li class="divider"></li>
+            <li ng-click="logout()"><a href="javascript:void(0)"><span class="glyphicon glyphicon-off"></span><span class="hspacer05"></span>Sign out</a></li>
+          </ul>
+        </div>
+        <!--<button ng-click="loginLogout()" id="sign-in-button" type="button"
+                class="btn btn-success navbar-btn btn-small dropdown-toggle" data-toggle="dropdown">
+          {{loginText}}
+        </button>-->
+      </li>
+    </ul>
+  </div>
 </nav>

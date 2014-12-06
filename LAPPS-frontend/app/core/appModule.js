@@ -34,10 +34,16 @@
   var lappsApp = angular.module('lappsApp', ['ngRoute', 'ui.bootstrap',
       'lappsControllers', 'lappsDirectives', 'lappsServices', 'swagger-client',
       'lappsFilters', 'lappsAttibuteDirectives']);
-  lappsApp.run(['$rootScope', 'swaggerClient',
-      function($rootScope, swaggerClient) {
-        $rootScope.api = swaggerClient(lappsApi);
-      }]);
+
+  lappsApp.config(['userProvider', function(userProvider) {
+    userProvider.configOidc({
+      server: 'https://api.learning-layers.eu/o/oauth2',
+      clientId: '67da4ca6-c1b3-48cf-a7e5-df61274d55f0',// 'f31522e8-3088-4ef8-9eb3-2881f39a7f78',//
+                                                        // new one for buche
+                                                        // 67da4ca6-c1b3-48cf-a7e5-df61274d55f0
+      scope: 'openid phone email address profile'
+    });
+  }]);
 
   lappsApp.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/apps', {
@@ -56,4 +62,9 @@
       redirectTo: '/apps'
     });
   }]);
+
+  lappsApp.run(['$rootScope', 'swaggerClient',
+      function($rootScope, swaggerClient) {
+        $rootScope.api = swaggerClient(lappsApi);
+      }]);
 }).call(this);

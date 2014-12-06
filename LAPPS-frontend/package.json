@@ -22,6 +22,7 @@
     "fs-extra": ">=0.12.0",
     "colors": ">=1.0.3",
     "fetch-swagger-schema": ">=0.1.2"
+
   },
   "scripts": {
     "postinstall": "bower install && node patchLibs.js",
