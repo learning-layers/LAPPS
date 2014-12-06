@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * App Instance domain object. App instances are, for example, distributions of the same app on
  * different platforms, e.g. TurboApp for Android or TurboApp for iOS.
- *
+ * 
  */
 @javax.persistence.Entity
 @Table(name = "app_instance")
@@ -32,7 +32,6 @@ public class AppInstanceEntity implements Entity {
   @Id
   @GeneratedValue
   private int id = 0;
-  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "app_id")
   private AppEntity app = null;
@@ -54,8 +53,6 @@ public class AppInstanceEntity implements Entity {
   @Temporal(TemporalType.TIMESTAMP)
   private Date dateModified = null;
 
-
-
   @JsonIgnore
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppDetailEntity> details = new ArrayList<AppDetailEntity>();
@@ -68,6 +65,7 @@ public class AppInstanceEntity implements Entity {
   @JsonIgnore
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppTagEntity> tags = new ArrayList<AppTagEntity>();
+  @JsonIgnore
   @OneToMany(mappedBy = "appInstance", fetch = FetchType.EAGER)
   private List<AppInstanceRightsEntity> rights = new ArrayList<AppInstanceRightsEntity>();
 
