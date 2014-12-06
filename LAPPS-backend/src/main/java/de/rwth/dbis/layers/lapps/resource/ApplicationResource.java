@@ -24,12 +24,12 @@ import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
-import de.rwth.dbis.layers.lapps.domain.AppFacade;
-import de.rwth.dbis.layers.lapps.entity.AppEntity;
+import de.rwth.dbis.layers.lapps.domain.AppInstanceFacade;
+import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
 /**
- * Application resource (exposed at "apps" path).
+ * Application resource (exposed at "apps" path). AppInstance refers to AppInstanceRessource.
  */
 @Path("/apps")
 @Api(value = "/apps", description = "Application resource")
@@ -37,7 +37,7 @@ public class ApplicationResource {
 
   private static final Logger LOGGER = Logger.getLogger(ApplicationResource.class.getName());
 
-  private static AppFacade appFacade = AppFacade.getFacade();
+  private static AppInstanceFacade appInstanceFacade = AppInstanceFacade.getFacade();
 
   /**
    * Get all apps.
@@ -46,19 +46,20 @@ public class ApplicationResource {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get all apps", response = AppEntity.class, responseContainer = "List")
+  @ApiOperation(value = "Get all apps", response = AppInstanceEntity.class,
+      responseContainer = "List")
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
   public Response getAllApps(
       @ApiParam(value = "Search query parameter", required = false) @QueryParam("search") String search) {
-    List<AppEntity> entities;
+    List<AppInstanceEntity> entities;
 
     if (search == null) {
-      entities = (List<AppEntity>) appFacade.findAll();
+      entities = (List<AppInstanceEntity>) appInstanceFacade.findAll();
     } else {
-      entities = (List<AppEntity>) appFacade.findByName(search);
+      entities = (List<AppInstanceEntity>) appInstanceFacade.findByName(search);
     }
 
     try {
@@ -82,7 +83,7 @@ public class ApplicationResource {
   @GET
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get app by ID", response = AppEntity.class)
+  @ApiOperation(value = "Get app by ID", response = AppInstanceEntity.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
@@ -90,7 +91,7 @@ public class ApplicationResource {
           message = "Internal server problems")})
   public Response getApp(@PathParam("id") int id) {
 
-    AppEntity app = appFacade.find(id);
+    AppInstanceEntity app = appInstanceFacade.find(id);
     if (app == null) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     }
@@ -130,7 +131,7 @@ public class ApplicationResource {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
 
-    AppEntity app = appFacade.find(id);
+    AppInstanceEntity app = appInstanceFacade.find(id);
     if (app == null) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     }
@@ -151,7 +152,7 @@ public class ApplicationResource {
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Update app by ID", response = AppEntity.class)
+  @ApiOperation(value = "Update app by ID", response = AppInstanceEntity.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
@@ -162,7 +163,7 @@ public class ApplicationResource {
           message = "Currently, this method is not implemented")})
   public Response updateApp(@HeaderParam("accessToken") String accessToken,
       @PathParam("id") int id,
-      @ApiParam(value = "App entity as JSON", required = true) AppEntity updatedApp) {
+      @ApiParam(value = "App entity as JSON", required = true) AppInstanceEntity updatedApp) {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
       // process)
@@ -171,7 +172,7 @@ public class ApplicationResource {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
-    AppEntity app = appFacade.find(id);
+    AppInstanceEntity app = appInstanceFacade.find(id);
     if (app == null) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     }
