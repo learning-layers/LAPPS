@@ -1,10 +1,12 @@
 package de.rwth.dbis.layers.lapps.resource;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -43,6 +45,12 @@ public class ApplicationResource {
   /**
    * Get all apps.
    * 
+   * @param search query parameter
+   * @param page number
+   * @param pageLength number of apps by page
+   * @param sortBy field
+   * @param order asc or desc
+   * 
    * @return Response with all applications as a JSON array.
    */
   @GET
@@ -54,18 +62,42 @@ public class ApplicationResource {
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
   public Response getAllApps(
-      @ApiParam(value = "Search query parameter", required = false) @QueryParam("search") String search) {
+      @ApiParam(value = "Search query parameter", required = false) @QueryParam("search") String search,
+      @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
+      @ApiParam(value = "Number of apps by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
+      @ApiParam(value = "Sort by field", required = false, allowableValues = "name") @DefaultValue("name") @QueryParam("sortBy") String sortBy,
+      @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order) {
     List<AppInstanceEntity> entities;
-
     if (search == null) {
       entities = (List<AppInstanceEntity>) appInstanceFacade.findAll();
     } else {
       entities = (List<AppInstanceEntity>) appInstanceFacade.findByName(search);
     }
 
+    Collections.sort(entities);
+    if (order.equalsIgnoreCase("desc")) {
+      Collections.reverse(entities);
+    }
+
+    int numberOfPages = 1;
+    if (pageLength > 0 && pageLength < entities.size()) {
+      int fromIndex = page == 1 ? 0 : (page * pageLength) - pageLength;
+      int toIndex = page == 1 ? pageLength : page * pageLength;
+      numberOfPages = (int) Math.ceil((double) entities.size() / pageLength);
+      if (entities.size() < fromIndex + 1) {
+        entities.clear();
+      } else {
+        if (entities.size() < toIndex + 1) {
+          toIndex = entities.size();
+        }
+        entities = entities.subList(fromIndex, toIndex);
+      }
+    }
+
     try {
       ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(entities)).build();
+      return Response.status(HttpStatusCode.OK).header("numberOfPages", numberOfPages)
+          .entity(mapper.writeValueAsBytes(entities)).build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();

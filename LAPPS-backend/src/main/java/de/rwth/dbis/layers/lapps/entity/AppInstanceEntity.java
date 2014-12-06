@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @javax.persistence.Entity
 @Table(name = "app_instance")
-public class AppInstanceEntity implements Entity {
+public class AppInstanceEntity implements Entity, Comparable<AppInstanceEntity> {
   private static final long serialVersionUID = 1L;
   @Id
   @GeneratedValue
@@ -228,5 +228,17 @@ public class AppInstanceEntity implements Entity {
         + this.getArtifacts().size() + " artifact(s), " + this.getDetails().size()
         + " description(s) and " + this.getTags().size() + " tag(s)" + "availble for: "
         + this.getAvailableOn();
+  }
+
+  // Default comparator
+  @Override
+  public int compareTo(AppInstanceEntity o) {
+    if (this.getApp().getName() == null) {
+      return -1;
+    } else if (o.getApp().getName() == null) {
+      return 1;
+    } else {
+      return this.getApp().getName().compareToIgnoreCase(o.getApp().getName());
+    }
   }
 }
