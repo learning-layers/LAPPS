@@ -128,12 +128,11 @@ public class OIDCAuthentication {
     if (entities.size() > 1)
       throw new OIDCException("Exception during Open Id Authentication occured.");
     else if (entities.size() == 1) {
+      UserEntity user = entities.get(0);
+      userId = user.getId();
       // quick check, if mail or user name of OIDC server account differs (has changed) to our
       // database entry; if so, update our user
-      if (!entities.get(0).getEmail().equals(mail)
-          && !entities.get(0).getUsername().equals(userName)) {
-        UserEntity user = entities.get(0);
-        userId = user.getId();
+      if (!user.getEmail().equals(mail) || !user.getUsername().equals(userName)) {
         user.setEmail(mail);
         user.setUsername(userName);
         userFacade.save(user);
