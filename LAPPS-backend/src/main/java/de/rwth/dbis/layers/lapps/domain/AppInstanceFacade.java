@@ -23,4 +23,19 @@ public class AppInstanceFacade extends AbstractFacade<AppInstanceEntity, Integer
     return EMF.getEm();
   }
 
+  /**
+   * Create a new AppInstanceEntity with the given User as creator
+   * 
+   * @param creator the owner of the AppInstanceEntity
+   * @param onPlatform the platform which the AppInstanceEntity runs on
+   * @param url the url for the AppInstanceEntity
+   * @return persisted AppInstanceEntity
+   */
+  // public AppInstanceEntity createAppInstance(UserEntity creator, AppEntity instanceOf,
+  // AppPlatformEntity onPlatform, String url) {
+  // AppInstanceEntity inst = new AppInstanceEntity(onPlatform, url);
+  // inst.addRights(new AppInstanceRightsEntity(AppInstanceRightsEntity.CREATE, creator, inst));
+  // inst.setApp(instanceOf);
+  // return this.save(inst);
+  // }
 }

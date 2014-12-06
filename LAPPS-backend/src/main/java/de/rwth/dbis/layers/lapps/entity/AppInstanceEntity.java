@@ -68,7 +68,7 @@ public class AppInstanceEntity implements Entity {
   @JsonIgnore
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppTagEntity> tags = new ArrayList<AppTagEntity>();
-  @OneToMany(mappedBy = "appInstance", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppInstanceRightsEntity> rights = new ArrayList<AppInstanceRightsEntity>();
 
   public AppInstanceEntity() {}

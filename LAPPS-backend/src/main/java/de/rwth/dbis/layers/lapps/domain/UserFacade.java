@@ -8,6 +8,7 @@ import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.entity.AppCommentEntity;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
+import de.rwth.dbis.layers.lapps.entity.AppInstanceRightsEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 
 /**
@@ -85,6 +86,19 @@ public class UserFacade extends AbstractFacade<UserEntity, Integer> {
    */
   public List<UserEntity> findByOidcId(Long oidcId) {
     return super.findByParameter("oidcId", oidcId);
+  }
+
+  /**
+   * Gives a User certain rights over an AppInstanceEntity.
+   * 
+   * @param user the user to grant the rights to
+   * @param withRights the rights to grant
+   * @param forAppInstance the AppInstanceEntity which are the rights given for
+   * @return persisted User containing the rights given
+   */
+  public UserEntity authorize(UserEntity user, int withRights, AppInstanceEntity forAppInstance) {
+    new AppInstanceRightsEntity(withRights, user, forAppInstance);
+    return super.save(user);
   }
 
 }
