@@ -7,6 +7,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -106,8 +107,49 @@ public class ApplicationResource {
 
   /**
    * 
+   * Create an app.
+   * 
+   * @param openID connect token
+   * @param created app as JSON
+   * 
+   * @return Response
+   */
+  @POST
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ApiOperation(value = "Create app", response = AppInstanceEntity.class)
+  @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
+      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
+          message = "Internal server problems"),
+      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
+          message = "Currently, this method is not implemented")})
+  public Response createApp(@HeaderParam("accessToken") String accessToken, @ApiParam(
+      value = "App entity as JSON", required = true) AppInstanceEntity createdApp) {
+    try {
+      OIDCAuthentication.authenticate(accessToken);
+    } catch (OIDCException e) {
+      LOGGER.warning(e.getMessage());
+      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+    }
+    // TODO: create app with help of appFacade
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      return Response.status(HttpStatusCode.NOT_IMPLEMENTED)
+          .entity(mapper.writeValueAsBytes(createdApp)).build();
+    } catch (JsonProcessingException e) {
+      LOGGER.warning(e.getMessage());
+      return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
+    }
+
+  }
+
+  /**
+   * 
    * Delete the app with the given id.
    * 
+   * @param openID connect token
    * @param id
    * 
    * @return Response
@@ -143,8 +185,9 @@ public class ApplicationResource {
    * 
    * Update the app with the given id.
    * 
+   * @param openID connect token
    * @param id
-   * @param updatedApp as JSON
+   * @param updated app as JSON
    * 
    * @return Response
    */
