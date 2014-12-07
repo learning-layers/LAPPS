@@ -109,10 +109,15 @@ public class AppsAndUsersTest {
         // TODO: Try to catch SQL error for duplicates!
         LOGGER.log(Level.WARNING, "Possible duplicate! Error: " + t.getMessage());
       }
-      app =
+      apps.add(app);
+      AppInstanceEntity instance =
           appFacade.createAppInstance(Utils.getRandomEntity(users), app,
               Utils.getRandomEntity(platforms), "http://dummyStore.com/" + app.getName());
-      apps.add(app);
+      instance.setSourceUrl("http://dummySourceStore.com/" + app.getName());
+      instance.setAvailableOn("Min. Version: " + Utils.generateRandomInt(1, 10));
+      instance.setVersion(Utils.generateRandomInt(1, 10) + "." + Utils.generateRandomInt(1, 10));
+      instance.setSize(Utils.generateRandomInt(100, 10000));
+      appInstanceFacade.save(instance);
     }
   }
 

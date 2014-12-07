@@ -59,10 +59,11 @@ public class AppInstanceEntity implements Entity, Comparable<AppInstanceEntity> 
   @JsonIgnore
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppDetailEntity> details = new ArrayList<AppDetailEntity>();
-  @JsonIgnore
-  @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  private List<AppArtifactEntity> artifacts = new ArrayList<AppArtifactEntity>();
   // @JsonIgnore
+  @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  // @Fetch(FetchMode.SUBSELECT)
+  private List<AppArtifactEntity> artifacts = new ArrayList<AppArtifactEntity>();
+  @JsonIgnore
   @OneToMany(mappedBy = "appInstance", fetch = FetchType.EAGER)
   // Workaround concerning the duplication of child collection entries caused by outer join in
   // hibernate implementation

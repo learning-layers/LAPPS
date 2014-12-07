@@ -141,8 +141,8 @@ public class ApplicationResource {
    * 
    * Create an app.
    * 
-   * @param openID connect token
-   * @param created app as JSON
+   * @param accessToken openID connect token
+   * @param createdApp as JSON
    * 
    * @return Response
    */
@@ -181,7 +181,7 @@ public class ApplicationResource {
    * 
    * Delete the app with the given id.
    * 
-   * @param openID connect token
+   * @param accessToken openID connect token
    * @param id
    * 
    * @return Response
@@ -217,9 +217,9 @@ public class ApplicationResource {
    * 
    * Update the app with the given id.
    * 
-   * @param openID connect token
+   * @param accessToken openID connect token
    * @param id
-   * @param updated app as JSON
+   * @param updatedApp as JSON
    * 
    * @return Response
    */

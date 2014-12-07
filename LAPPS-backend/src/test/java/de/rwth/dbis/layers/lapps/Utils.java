@@ -212,7 +212,7 @@ public class Utils {
     }
 
     /**
-     * Finds all occurrence of a substring in a string
+     * Finds all occurrence of a substring in a string.
      * 
      * @param input base string
      * @param subString substring to search for
@@ -288,10 +288,6 @@ public class Utils {
 
       String text = sb.toString();
       ArrayList<Integer> dots = findAll(text, ".");
-
-      /*
-       * for (int j = 0; j < dots.size(); j++) { System.out.println(dots.get(j)); }
-       */
 
       for (int j = 0; j < paragraphs - 1; j++) {
         if (dots.size() <= 2) {
