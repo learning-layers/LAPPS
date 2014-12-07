@@ -142,7 +142,6 @@ public class OIDCAuthentication {
     }
 
     // user is unknown, has to be created
-    // TODO: type-check!? (String -> Long)
     userId = createNewUser(sub, mail, userName);
     return userId;
   }
@@ -152,6 +151,7 @@ public class OIDCAuthentication {
    * 
    * @param oidc_id the "subject" identifier of the open id connect authentication
    * @param mail a user email
+   * @param userName the name of the user to be created
    * 
    * @return the (LAPPS) id of the user
    */

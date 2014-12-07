@@ -6,7 +6,6 @@ import javax.persistence.EntityManager;
 
 import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.entity.AppCommentEntity;
-import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 
@@ -31,7 +30,7 @@ public class UserFacade extends AbstractFacade<UserEntity, Integer> {
    *             Note that this method first loads user and app with the given IDs so that they are
    *             attached to the current {@link EntityManager}. If user and app instances are
    *             already available better user
-   *             {@link UserFacade#comment(String, UserEntity, AppEntity)}.
+   *             {@link UserFacade#comment(String, UserEntity, AppInstanceEntity)}.
    * 
    * @param comment The comment contents
    * @param userId The id of the author
@@ -57,7 +56,7 @@ public class UserFacade extends AbstractFacade<UserEntity, Integer> {
    * 
    * @param comment The comment contents
    * @param user The author
-   * @param app The app the comment refers to
+   * @param appInstance The app the comment refers to
    * @return The newly created {@link AppCommentEntity}
    */
   public AppCommentEntity comment(String comment, UserEntity user, AppInstanceEntity appInstance) {
