@@ -66,7 +66,7 @@ public class AppInstanceEntity implements Entity, Comparable<AppInstanceEntity> 
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppTagEntity> tags = new ArrayList<AppTagEntity>();
   @JsonIgnore
-  @OneToMany(mappedBy = "appInstance", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppInstanceRightsEntity> rights = new ArrayList<AppInstanceRightsEntity>();
 
   public AppInstanceEntity() {}

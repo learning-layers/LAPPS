@@ -118,6 +118,20 @@ public class AppFacadeTest {
     assertTrue(found);
   }
 
+  @Test
+  public void pagination() {
+    String needle = "App";
+    List<AppEntity> apps = appFacade.findByParameter("name", needle, 2, 2, true);
+    if (apps.size() > 0) {
+      for (AppEntity app : apps) {
+        assertTrue("The app " + app.getName() + " fetched does not contain '" + needle
+            + "' in its name!", app.getName().toLowerCase().contains(needle.toLowerCase()));
+      }
+    } else {
+      LOGGER.info("No apps containing '" + needle + "' in thier names matched!");
+    }
+  }
+
   public static AppPlatformEntity getRandomPlatform() {
     List<AppPlatformEntity> platforms = AppPlatformFacade.getFacade().findAll();
     assertTrue("No platforms available! Please create at least one platform and try again!",

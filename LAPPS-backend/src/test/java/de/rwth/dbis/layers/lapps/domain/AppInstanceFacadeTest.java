@@ -46,6 +46,7 @@ public class AppInstanceFacadeTest {
   public void doTests() {
     this.testAppConsistency();
     this.addAppInstance();
+    this.pagination();
   }
 
   @After
@@ -72,5 +73,20 @@ public class AppInstanceFacadeTest {
     assertTrue("App Instance not saved!", appInstance.getId() > 0);
     assertTrue("App Instance does not have an app!", appInstance.getApp() != null);
     assertTrue("App Instance did not save its app properly!", appInstance.getApp().getId() > 0);
+  }
+
+  private void pagination() {
+    final String needle = "iOS";
+    List<AppInstanceEntity> appInstances =
+        appInstanceFacade.findByParameter("platform.name", needle, 2, 2, true);
+    if (appInstances.size() > 0) {
+      for (AppInstanceEntity inst : appInstances) {
+        assertTrue(inst.getUrl() + " on " + inst.getPlatform().getName() + "does not contain '"
+            + needle + "'",
+            inst.getPlatform().getName().toLowerCase().contains(needle.toLowerCase()));
+      }
+    } else {
+      // do nothing
+    }
   }
 }
