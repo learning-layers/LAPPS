@@ -40,11 +40,12 @@ public class AppFacade extends AbstractFacade<AppEntity, Integer> {
     return super.findByParameter("name", name);
   }
 
-  public AppEntity createAppInstance(UserEntity creator, AppEntity instanceOf,
+  public AppInstanceEntity createAppInstance(UserEntity creator, AppEntity instanceOf,
       AppPlatformEntity onPlatform, String url) {
     AppInstanceEntity inst = new AppInstanceEntity(onPlatform, url);
     inst.addRights(new AppInstanceRightsEntity(AppInstanceRightsEntity.CREATE, creator, inst));
     inst.setApp(instanceOf);
-    return this.save(instanceOf);
+    this.save(instanceOf);
+    return inst;
   }
 }
