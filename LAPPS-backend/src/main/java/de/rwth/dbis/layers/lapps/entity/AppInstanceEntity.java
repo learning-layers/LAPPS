@@ -23,16 +23,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * App Instance domain object. App instances are, for example, distributions of the same app on
  * different platforms, e.g. TurboApp for Android or TurboApp for iOS.
- *
+ * 
  */
 @javax.persistence.Entity
 @Table(name = "app_instance")
-public class AppInstanceEntity implements Entity {
+public class AppInstanceEntity implements Entity, Comparable<AppInstanceEntity> {
   private static final long serialVersionUID = 1L;
   @Id
   @GeneratedValue
   private int id = 0;
-  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "app_id")
   private AppEntity app = null;
@@ -54,8 +53,6 @@ public class AppInstanceEntity implements Entity {
   @Temporal(TemporalType.TIMESTAMP)
   private Date dateModified = null;
 
-
-
   @JsonIgnore
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppDetailEntity> details = new ArrayList<AppDetailEntity>();
@@ -68,6 +65,7 @@ public class AppInstanceEntity implements Entity {
   @JsonIgnore
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppTagEntity> tags = new ArrayList<AppTagEntity>();
+  @JsonIgnore
   @OneToMany(mappedBy = "appInstance", fetch = FetchType.EAGER)
   private List<AppInstanceRightsEntity> rights = new ArrayList<AppInstanceRightsEntity>();
 
@@ -230,5 +228,17 @@ public class AppInstanceEntity implements Entity {
         + this.getArtifacts().size() + " artifact(s), " + this.getDetails().size()
         + " description(s) and " + this.getTags().size() + " tag(s)" + "availble for: "
         + this.getAvailableOn();
+  }
+
+  // Default comparator
+  @Override
+  public int compareTo(AppInstanceEntity o) {
+    if (this.getApp().getName() == null) {
+      return -1;
+    } else if (o.getApp().getName() == null) {
+      return 1;
+    } else {
+      return this.getApp().getName().compareToIgnoreCase(o.getApp().getName());
+    }
   }
 }
