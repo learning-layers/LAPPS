@@ -105,6 +105,23 @@ public abstract class AbstractFacade<T extends Entity, I> {
   public final List<T> findAll() {
     final EntityManager em = getEntityManager();
     List<T> entities = null;
+    // Session session = em.unwrap(Session.class);
+    // Criteria crit = session.createCriteria(entityClass);
+    // try {
+    // session.getTransaction().begin();
+    // entities =
+    // crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).add(Restrictions.gt("id", 0))
+    // .list();
+    // session.getTransaction().commit();
+    // } catch (Throwable t) {
+    // session.getTransaction().rollback();
+    // throw t;
+    // } finally {
+    // em.close();
+    // // session.close();
+    // }
+    // return entities;
+
     LOGGER.info("Attempting to find all " + entityClass.getName() + " instances...");
     try {
       em.getTransaction().begin();
@@ -124,7 +141,7 @@ public abstract class AbstractFacade<T extends Entity, I> {
   }
 
   @SuppressWarnings("unchecked")
-  private List<T> doFindByParameter(EntityManager em, Query query) {
+  protected List<T> doFindByParameter(EntityManager em, Query query) {
     List<T> entities = null;
     try {
       em.getTransaction().begin();
