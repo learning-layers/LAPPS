@@ -85,7 +85,6 @@ public abstract class AbstractFacade<T extends Entity, I> {
       em.getTransaction().begin();
       entity = getEntityManager().find(entityClass, id);
       em.getTransaction().commit();
-      // em.close();
     } catch (Throwable t) {
       LOGGER.log(Level.SEVERE, "Exception while searching for an entity: " + t.getMessage());
       em.getTransaction().rollback();
@@ -106,14 +105,30 @@ public abstract class AbstractFacade<T extends Entity, I> {
   public final List<T> findAll() {
     final EntityManager em = getEntityManager();
     List<T> entities = null;
+    // Session session = em.unwrap(Session.class);
+    // Criteria crit = session.createCriteria(entityClass);
+    // try {
+    // session.getTransaction().begin();
+    // entities =
+    // crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).add(Restrictions.gt("id", 0))
+    // .list();
+    // session.getTransaction().commit();
+    // } catch (Throwable t) {
+    // session.getTransaction().rollback();
+    // throw t;
+    // } finally {
+    // em.close();
+    // // session.close();
+    // }
+    // return entities;
+
     LOGGER.info("Attempting to find all " + entityClass.getName() + " instances...");
     try {
       em.getTransaction().begin();
-      // u parameter is the entity class itself
-      Query query = em.createQuery("select u from " + entityClass.getSimpleName() + " u");
+      // e parameter is the entity class itself
+      Query query = em.createQuery("select e from " + entityClass.getSimpleName() + " e");
       entities = query.getResultList();
       em.getTransaction().commit();
-      // em.close();
     } catch (Throwable t) {
       LOGGER.log(Level.SEVERE, "Exception while obtaining all entities: " + t.getMessage());
       em.getTransaction().rollback();
@@ -125,27 +140,13 @@ public abstract class AbstractFacade<T extends Entity, I> {
     return entities;
   }
 
-  /**
-   * Lists all {@link Entity} instances filtered by a certain parameter.
-   * 
-   * @param param The field to filter on
-   * @param value The value of the field filtering on
-   * @return List of Entities
-   */
   @SuppressWarnings("unchecked")
-  public final List<T> findByParameter(String param, String value) {
-    final EntityManager em = getEntityManager();
+  protected List<T> doFindByParameter(EntityManager em, Query query) {
     List<T> entities = null;
-    LOGGER.info("Searching for " + entityClass.getName() + " by a parameter...");
     try {
       em.getTransaction().begin();
-      Query query =
-          em.createQuery(
-              "select entity from " + entityClass.getSimpleName() + " entity where entity." + param
-                  + " like :value").setParameter("value", "%" + value + "%");
       entities = query.getResultList();
       em.getTransaction().commit();
-      // em.close();
     } catch (Throwable t) {
       LOGGER.log(Level.SEVERE,
           "Exception while searching for an entity by a paramter: " + t.getMessage());
@@ -154,28 +155,85 @@ public abstract class AbstractFacade<T extends Entity, I> {
     } finally {
       em.close();
     }
+    return entities;
+  }
+
+  /**
+   * Lists all {@link Entity} instances filtered by a certain parameter. For Strings, this will
+   * return all instances that match the given substring (case-insensitive). Numerical data types
+   * have to match fully.
+   * 
+   * @param param The field to filter on
+   * @param value The value of the field filtering on
+   * @return List of Entities
+   */
+  public final List<T> findByParameter(String param, Object value) {
+    final EntityManager em = getEntityManager();
+    List<T> entities = null;
+    LOGGER.info("Searching for " + entityClass.getName() + " by a parameter...");
+    value = value instanceof String ? "%" + value + "%" : value;
+    try {
+      Query query =
+          em.createQuery(
+              "select entity from " + entityClass.getSimpleName() + " entity where entity." + param
+                  + " like :value").setParameter("value", value);
+      entities = this.doFindByParameter(em, query);
+    } catch (IllegalArgumentException e) {
+      LOGGER.log(Level.SEVERE, e.getMessage());
+      throw e;
+    }
     LOGGER.info("Found: " + entities.size() + " " + entityClass.getName() + "entities.");
     return entities;
   }
 
-  public void deleteAll(String param, String value) {
-    final EntityManager em = getEntityManager();
-    Query query = null;
-    int count = 0;
-    if (param != null && value != null) {
-      query =
-          em.createQuery(
-              "delete from " + entityClass.getSimpleName() + " entity where entity." + param
-                  + " like :value").setParameter("value", "%" + value + "%");
-      LOGGER.info("Deleting " + entityClass.getName() + " with " + param + " == " + value + " ...");
-    } else {
-      query = em.createQuery("delete from " + entityClass.getName());
-      LOGGER.info("Deleting all " + entityClass.getName() + "...");
+  /**
+   * Lists all {@link Entity} instances filtered by a certain parameter. For Strings, this will
+   * return all instances that match the given substring (case-insensitive). Numerical data types
+   * have to match fully.
+   * 
+   * @param param The field to filter on
+   * @param value The value of the field filtering on
+   * @param page The number of the page in the result set
+   * @param pageLength Page size
+   * @param isOrderedAsceding Order ascending or descending
+   * @return List of Entities
+   */
+  public List<T> findByParameter(String param, Object value, int page, int pageLength,
+      boolean isOrderedAsceding) {
+    if (page < 1) {
+      throw new IllegalArgumentException("page parameter must be positive integer!");
     }
+    if (pageLength < 1) {
+      throw new IllegalArgumentException("pageLength parameter must be positive integer!");
+    }
+    int limitStart = (page - 1) * pageLength;
+    // int limitEnd = limitStart + pageLength;
+    final EntityManager em = getEntityManager();
+    List<T> entities = null;
+    LOGGER.info("Searching for " + entityClass.getName() + " by a parameter...");
+    value = value instanceof String ? "%" + value + "%" : value;
+    try {
+      Query query =
+          em.createQuery(
+              "select entity from " + entityClass.getSimpleName() + " entity where entity." + param
+                  + " like :value order by entity." + param
+                  + (isOrderedAsceding ? " asc" : " desc")).setParameter("value", value)
+              .setFirstResult(limitStart).setMaxResults(pageLength);
+      entities = this.doFindByParameter(em, query);
+    } catch (IllegalArgumentException e) {
+      LOGGER.log(Level.SEVERE, e.getMessage());
+      throw e;
+    }
+    LOGGER.info("Found: " + entities.size() + " " + entityClass.getName() + "entities.");
+    return entities;
+  }
+
+  private void doDelete(EntityManager em, Query query) {
     try {
       em.getTransaction().begin();
-      count = query.executeUpdate();
+      final int count = query.executeUpdate();
       em.getTransaction().commit();
+      LOGGER.info(count + " entities deleted.");
     } catch (Throwable t) {
       LOGGER.log(Level.SEVERE, "Exception while deleting entities: " + t.getMessage());
       em.getTransaction().rollback();
@@ -183,55 +241,53 @@ public abstract class AbstractFacade<T extends Entity, I> {
     } finally {
       em.close();
     }
-    LOGGER.info(count + " entities deleted.");
   }
 
-  public void deleteAll(String param, Long value) {
+  /**
+   * Deletes all {@link Entity} instances of the {@link #entityClass} type, filtered by a certain
+   * parameter. For Strings, this will delete all instances containing the given substring
+   * (%substring%). Numerical data types have to match fully.
+   * 
+   * @param param The field that should match
+   * @param value The value of the field matching on
+   * 
+   */
+  public void deleteAll(String param, Object value) {
     final EntityManager em = getEntityManager();
     Query query = null;
-    int count = 0;
+    if (value instanceof String) {
+      value = (String) "%" + value + "%";
+    }
     if (param != null && value != null) {
-      query =
-          em.createQuery(
-              "delete from " + entityClass.getSimpleName() + " entity where entity." + param
-                  + " like :value").setParameter("value", value);
-      LOGGER.info("Deleting " + entityClass.getName() + " with " + param + " == " + value + " ...");
-    } else {
-      query = em.createQuery("delete from " + entityClass.getName());
-      LOGGER.info("Deleting all " + entityClass.getName() + "...");
+      try {
+        query =
+            em.createQuery(
+                "delete from " + entityClass.getSimpleName() + " entity where entity." + param
+                    + " like :value").setParameter("value", value);
+        LOGGER
+            .info("Deleting " + entityClass.getName() + " with " + param + " == " + value + "...");
+        this.doDelete(em, query);
+      } catch (IllegalArgumentException e) {
+        LOGGER.log(Level.SEVERE, e.getMessage());
+        throw e;
+      }
     }
-    try {
-      em.getTransaction().begin();
-      count = query.executeUpdate();
-      em.getTransaction().commit();
-    } catch (Throwable t) {
-      LOGGER.log(Level.SEVERE, "Exception while deleting entities: " + t.getMessage());
-      em.getTransaction().rollback();
-      throw t;
-    } finally {
-      em.close();
-    }
-    LOGGER.info(count + " entities deleted.");
   }
 
+  /**
+   * Deletes all entities from the {@link #entityClass} type.
+   */
   public void deleteAll() {
     final EntityManager em = getEntityManager();
     Query query = null;
-    int count = 0;
-    query = em.createQuery("delete from " + entityClass.getName());
-    LOGGER.info("Deleting all " + entityClass.getName() + "...");
     try {
-      em.getTransaction().begin();
-      count = query.executeUpdate();
-      em.getTransaction().commit();
-    } catch (Throwable t) {
-      LOGGER.log(Level.SEVERE, "Exception while deleting entities: " + t.getMessage());
-      em.getTransaction().rollback();
-      throw t;
-    } finally {
-      em.close();
+      query = em.createQuery("delete from " + entityClass.getName());
+      LOGGER.info("Deleting all " + entityClass.getName() + "...");
+      this.doDelete(em, query);
+    } catch (IllegalArgumentException e) {
+      LOGGER.log(Level.SEVERE, e.getMessage());
+      throw e;
     }
-    LOGGER.info(count + " entities deleted.");
   }
 
 

@@ -6,6 +6,10 @@ import javax.persistence.EntityManager;
 
 import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
+import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
+import de.rwth.dbis.layers.lapps.entity.AppInstanceRightsEntity;
+import de.rwth.dbis.layers.lapps.entity.AppPlatformEntity;
+import de.rwth.dbis.layers.lapps.entity.UserEntity;
 
 public class AppFacade extends AbstractFacade<AppEntity, Integer> {
   private static AppFacade instance = null;
@@ -36,4 +40,11 @@ public class AppFacade extends AbstractFacade<AppEntity, Integer> {
     return super.findByParameter("name", name);
   }
 
+  public AppEntity createAppInstance(UserEntity creator, AppEntity instanceOf,
+      AppPlatformEntity onPlatform, String url) {
+    AppInstanceEntity inst = new AppInstanceEntity(onPlatform, url);
+    inst.addRights(new AppInstanceRightsEntity(AppInstanceRightsEntity.CREATE, creator, inst));
+    inst.setApp(instanceOf);
+    return this.save(instanceOf);
+  }
 }

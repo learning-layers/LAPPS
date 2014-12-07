@@ -13,8 +13,10 @@ module.exports = function(config) {
                 'app/bower_components/jquery/dist/jquery.js',
                 'app/api/lappsApi.js', 'app/core/**/*.js',
                 'test/utils/swagger2HttpBackend.js', 'app/components/**/*.js',
-                'app/shared/**/*.js', 'test/unit/**/*.js'],
+                'app/shared/**/*.js', 'test/unit/**/*.js',
+                'test/utils/mockUserProvider.js'],
 
+            exclude: ['app/shared/login/userProvider.js'],
             autoWatch: true,
 
             frameworks: ['jasmine'],
