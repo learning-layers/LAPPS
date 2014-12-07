@@ -3,6 +3,7 @@ package de.rwth.dbis.layers.lapps.domain;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.Before;
@@ -10,6 +11,7 @@ import org.junit.Test;
 
 import de.rwth.dbis.layers.lapps.Utils;
 import de.rwth.dbis.layers.lapps.entity.AppArtifactEntity;
+import de.rwth.dbis.layers.lapps.entity.AppCommentEntity;
 import de.rwth.dbis.layers.lapps.entity.AppDetailEntity;
 import de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
@@ -20,6 +22,7 @@ import de.rwth.dbis.layers.lapps.entity.ArtifactTypeEntity;
 
 public class AppInstanceFacadeTest {
   private static AppInstanceFacade appInstanceFacade = AppInstanceFacade.getFacade();
+  private static Logger LOGGER = Logger.getLogger(AppInstanceFacadeTest.class.getName());
   private static AppFacade appFacade = AppFacade.getFacade();
   private static String appInstanceUrl = "http://instanceTest.com";
   private static String appName = "TestInstanceApp";
@@ -47,6 +50,7 @@ public class AppInstanceFacadeTest {
     this.testAppConsistency();
     this.addAppInstance();
     this.pagination();
+    this.preview();
   }
 
   @After
@@ -87,6 +91,17 @@ public class AppInstanceFacadeTest {
       }
     } else {
       // do nothing
+    }
+  }
+
+  private void preview() {
+    List<AppInstanceEntity> entities = appInstanceFacade.findAll();// appInstanceFacade.findAllPreview();
+    for (AppInstanceEntity entity : entities) {
+      List<AppCommentEntity> comments = entity.getComments();
+      LOGGER.info("instance: " + entity);
+      for (AppCommentEntity comment : comments) {
+        LOGGER.info(comment.toString());
+      }
     }
   }
 }

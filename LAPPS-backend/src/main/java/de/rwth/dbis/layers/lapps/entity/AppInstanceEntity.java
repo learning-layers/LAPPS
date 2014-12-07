@@ -18,6 +18,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -59,8 +62,11 @@ public class AppInstanceEntity implements Entity, Comparable<AppInstanceEntity> 
   @JsonIgnore
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppArtifactEntity> artifacts = new ArrayList<AppArtifactEntity>();
-  @JsonIgnore
+  // @JsonIgnore
   @OneToMany(mappedBy = "appInstance", fetch = FetchType.EAGER)
+  // Workaround concerning the duplication of child collection entries caused by outer join in
+  // hibernate implementation
+  @Fetch(FetchMode.SUBSELECT)
   private List<AppCommentEntity> comments = new ArrayList<AppCommentEntity>();
   @JsonIgnore
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -223,7 +229,7 @@ public class AppInstanceEntity implements Entity, Comparable<AppInstanceEntity> 
         + ", last modified on "
         + (this.getDateModified() != null ? DateFormat.getInstance().format(this.getDateModified())
             : "never") + ") version " + this.getVersion() + ", on " + this.getPlatform().getName()
-        + "[" + this.getSize() + "KB], available at " + this.getUrl() + ", with source at "
+        + " [" + this.getSize() + "KB], available at " + this.getUrl() + ", with source at "
         + this.getSourceUrl() + " having " + this.getComments().size() + " comment(s), "
         + this.getArtifacts().size() + " artifact(s), " + this.getDetails().size()
         + " description(s) and " + this.getTags().size() + " tag(s)" + "availble for: "
