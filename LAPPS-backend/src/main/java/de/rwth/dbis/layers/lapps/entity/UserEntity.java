@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @javax.persistence.Entity
 @Table(name = "user")
 public class UserEntity implements Entity, Comparable<UserEntity> {
-  public static final int ADMIN = 1 << 0;
-
   private static final long serialVersionUID = 1L;
   @Id
   @GeneratedValue
@@ -30,6 +28,7 @@ public class UserEntity implements Entity, Comparable<UserEntity> {
   private long oidcId = 0;
   private String email = null;
   private String username = null;
+
   private int roles = 0;
 
   // TODO: remove this @JsonIgnore, we need it because their is a recursive loop between author
@@ -39,7 +38,7 @@ public class UserEntity implements Entity, Comparable<UserEntity> {
   private List<AppCommentEntity> comments = new ArrayList<AppCommentEntity>();
 
   @JsonIgnore
-  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppInstanceRightsEntity> rights = new ArrayList<AppInstanceRightsEntity>();
 
   public UserEntity() {}

@@ -4,7 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.Before;
@@ -16,7 +15,6 @@ import de.rwth.dbis.layers.lapps.entity.AppDetailEntity;
 import de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
-import de.rwth.dbis.layers.lapps.entity.AppInstanceRightsEntity;
 import de.rwth.dbis.layers.lapps.entity.AppPlatformEntity;
 import de.rwth.dbis.layers.lapps.entity.ArtifactTypeEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
@@ -29,10 +27,10 @@ public class AppsAndUsersTest {
   private AppFacade appFacade = AppFacade.getFacade();
   private UserFacade userFacade = new UserFacade();
   private static AppInstanceFacade appInstanceFacade = AppInstanceFacade.getFacade();
-  private static List<AppPlatformEntity> platforms = AppPlatformFacade.getFacade().findAll();
 
-  private final static int APP_COUNT = 30;
+  private final static int APP_COUNT = 6;
   private final static int USER_COUNT = 3;
+  private List<String> appNames = null;
 
   private List<AppEntity> apps = new ArrayList<AppEntity>();
   private List<UserEntity> users = new ArrayList<UserEntity>();
@@ -49,7 +47,7 @@ public class AppsAndUsersTest {
     this.addDescriptions();
     this.addArtifacts();
     this.findByQuery();
-    // this.grantRights();
+    // TODO: Grand the first user rights for some apps!
 
     for (AppEntity app : apps) {
       appFacade.save(app);
@@ -90,29 +88,30 @@ public class AppsAndUsersTest {
   }
 
   private void populateWithData() {
+    // Init predefined app names:
+    appNames = new ArrayList<String>();
+    appNames.add("HelpApp");
+    appNames.add("ExpertApp");
+    appNames.add("Turbo App");
+    appNames.add("Yeah");
+    appNames.add("Tutor 2.0");
+    appNames.add("Serendipity");
+    appNames.add("Organizer Recharged");
+
+    AppPlatformEntity appPlatform = AppPlatformFacade.getFacade().find(1);
+    assertTrue(appPlatform != null);
     LOGGER.info("Creating data...");
+    for (int i = 0; i < APP_COUNT; i++) {
+      AppEntity app = new AppEntity(appNames.remove(Utils.generateRandomInt(0, appNames.size())));
+      app.addInstance(new AppInstanceEntity(appPlatform, "http://store.apple.com/" + app.getName()));
+      apps.add(appFacade.save(app));
+    }
     for (int i = 0; i < USER_COUNT; i++) {
       UserEntity user =
           new UserEntity(Utils.generateRandomInt(0, 5000), "test"
               + Utils.generateRandomInt(0, 5000) + "@lapps.com", "test-"
               + Utils.generateRandomInt(0, 5000));
       users.add(userFacade.save(user));
-    }
-    for (int i = 0; i < APP_COUNT; i++) {
-      AppEntity app = new AppEntity(Utils.MockupAppGenerator.getRandomName());
-      // AppInstanceEntity appInstance =
-      // new AppInstanceEntity(appPlatform, "http://store.apple.com/" + app.getName());
-      // app.addInstance(appInstance);
-      try {
-        app = appFacade.save(app);
-      } catch (Throwable t) {
-        // TODO: Try to catch SQL error for duplicates!
-        LOGGER.log(Level.WARNING, "Possible duplicate! Error: " + t.getMessage());
-      }
-      app =
-          appFacade.createAppInstance(Utils.getRandomEntity(users), app,
-              Utils.getRandomEntity(platforms), "http://dummyStore.com/" + app.getName());
-      apps.add(app);
     }
   }
 
@@ -131,10 +130,7 @@ public class AppsAndUsersTest {
     AppDetailTypeEntity detailType = AppDetailTypeFacade.getFacade().find(1);
     assertTrue(detailType != null);
     for (AppEntity app : apps) {
-      app.getInstances()
-          .get(0)
-          .addDetail(
-              new AppDetailEntity(detailType, Utils.MockupAppGenerator.getRandomIpsumBlock()));
+      app.getInstances().get(0).addDetail(new AppDetailEntity(detailType, "Lorem ipsum..."));
     }
   }
 
@@ -144,9 +140,10 @@ public class AppsAndUsersTest {
     ArtifactTypeEntity thumbnail = ArtifactFacade.getFacade().find(2);
     assertTrue(image != null && thumbnail != null);
     for (AppEntity app : apps) {
-      String[] pair = Utils.MockupAppGenerator.getImagePair();
-      app.getInstances().get(0).addArtifacts(new AppArtifactEntity(image, pair[1]));
-      app.getInstances().get(0).addArtifacts(new AppArtifactEntity(thumbnail, pair[0]));
+      app.getInstances().get(0)
+          .addArtifacts(new AppArtifactEntity(image, "http://lorempixel.com/500/280/cats"));
+      app.getInstances().get(0)
+          .addArtifacts(new AppArtifactEntity(thumbnail, "http://lorempixel.com/150/150/cats"));
     }
   }
 
@@ -158,14 +155,8 @@ public class AppsAndUsersTest {
   }
 
   private void findByQuery() {
-    String pl = Utils.getRandomEntity(platforms).getName();
-    List<AppInstanceEntity> appInstances = appInstanceFacade.findByParameter("platform.name", pl);
-    LOGGER.info("Apps on " + pl + ": " + appInstances.size());
-  }
-
-  private void grantRights() {
-    UserEntity user = users.get(0);
-    AppInstanceEntity appInstance = apps.get(0).getInstances().get(0);
-    user = userFacade.authorize(user, AppInstanceRightsEntity.CREATE, appInstance);
+    List<AppInstanceEntity> appInstances =
+        appInstanceFacade.findByParameter("platform.name", "iOS");
+    assertTrue("There are no app instances with platform name iOS!", appInstances.size() > 0);
   }
 }

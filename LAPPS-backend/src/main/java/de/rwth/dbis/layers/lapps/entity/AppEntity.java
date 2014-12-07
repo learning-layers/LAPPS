@@ -14,13 +14,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * App domain object.
- * 
+ *
  */
 @javax.persistence.Entity
 @Table(name = "app")
 public class AppEntity implements Entity {
   private static final long serialVersionUID = 1L;
-  @JsonIgnore
   @Id
   @GeneratedValue
   private int id = 0;

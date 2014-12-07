@@ -13,8 +13,8 @@
                       '$scope',
                       '$rootScope',
                       '$routeParams',
-                      'user',
-                      function($scope, $rootScope, $routeParams, user) {
+                      '$http',
+                      function($scope, $rootScope, $routeParams, $http) {
                         if ($routeParams.query) {
                           $scope.searchQuery = $routeParams.query;
                         } else {
@@ -28,9 +28,6 @@
                          * $scope.searchQuery.toLowerCase()) >= 0; });
                          */
                         $scope.search = function() {
-
-                          // $rootScope.api.users.getAllUsers({'accessToken':user.token}).then(function(data2){
-                          // alert(data2)});
                           $rootScope.api.apps
                                   .getAllApps({
                                     search: $scope.searchQuery

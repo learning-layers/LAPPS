@@ -2,7 +2,6 @@ package de.rwth.dbis.layers.lapps;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
@@ -29,20 +28,11 @@ public class Utils {
     return new BigInteger(80, random).toString();
   }
 
-  // @deprecated
   public static AppEntity createDummyAppWithInstance(AppPlatformEntity onPlatform) {
     AppInstanceEntity instance = new AppInstanceEntity(onPlatform, "dummy app instance");
     AppEntity app = new AppEntity("dummy app");
     app.addInstance(instance);
     return app;
-  }
-
-  public static <E> E getRandomEntity(List<E> list) {
-    return list.get(generateRandomInt(0, list.size()));
-  }
-
-  public static <E> E removeRandomEntity(List<E> list) {
-    return list.remove(generateRandomInt(0, list.size()));
   }
 
   /*
@@ -99,31 +89,6 @@ public class Utils {
     private final static String[] imageCategories = new String[] {"abstract", "animals",
         "business", "cats", "city", "food", "nightlife", "fashion", "people", "nature", "sports",
         "technics", "transport"};
-    private final static String[] images = new String[] {"http://i.imgur.com/GHqgU71b.jpg",
-        "http://i.imgur.com/2FdFykWb.jpg", "http://i.imgur.com/HngIsi8b.jpg",
-        "http://i.imgur.com/PVq1E48b.jpg", "http://i.imgur.com/JenkQ6Wb.jpg",
-        "http://i.imgur.com/7G2JjkRb.jpg", "http://i.imgur.com/Im5G6eQb.jpg",
-        "http://i.imgur.com/oIBvEKjb.jpg", "http://i.imgur.com/ia6PcPsb.jpg",
-        "http://i.imgur.com/foYuknsb.jpg", "http://i.imgur.com/RSxkEsHb.jpg",
-        "http://i.imgur.com/tqUfedwb.jpg", "http://i.imgur.com/xMvMvqKb.jpg",
-        "http://i.imgur.com/3VYM1Gyb.jpg", "http://i.imgur.com/e2Nt0jgb.jpg",
-        "http://i.imgur.com/SHgvm2db.jpg", "http://i.imgur.com/exv79Vib.jpg",
-        "http://i.imgur.com/5KRULPOb.jpg", "http://i.imgur.com/nAWDAftb.jpg",
-        "http://i.imgur.com/V5UlLVyb.jpg", "http://i.imgur.com/BXOpcSzb.jpg",
-        "http://i.imgur.com/ApteZX1b.jpg", "http://i.imgur.com/8wYq8x0b.jpg",
-        "http://i.imgur.com/0jT9sb1b.jpg", "http://i.imgur.com/UB9dHqkb.jpg",
-        "http://i.imgur.com/NKawdIFb.jpg", "http://i.imgur.com/HIxueyvb.jpg",
-        "http://i.imgur.com/gA02T4pb.jpg", "http://i.imgur.com/3X5XEUbb.jpg",
-        "http://i.imgur.com/NDD3WlYb.jpg", "http://i.imgur.com/Quazb9Nb.jpg",
-        "http://i.imgur.com/DBDon2Wb.jpg", "http://i.imgur.com/Fd8qOOAb.jpg",
-        "http://i.imgur.com/GiUSHvXb.jpg", "http://i.imgur.com/uM5grFZb.jpg",
-        "http://i.imgur.com/zBBx7jPb.jpg", "http://i.imgur.com/gaAqBsob.jpg",
-        "http://i.imgur.com/cJTetYab.jpg", "http://i.imgur.com/mCbUkO6b.jpg",
-        "http://i.imgur.com/yrxhYrib.jpg", "http://i.imgur.com/CclmTGhb.jpg",
-        "http://i.imgur.com/AvW7ZGHb.jpg", "http://i.imgur.com/ThZhD6Eb.jpg",
-        "http://i.imgur.com/DuGHh5zb.jpg", "http://i.imgur.com/UucIiQcb.jpg",
-        "http://i.imgur.com/Rx2YXQrb.jpg", "http://i.imgur.com/xxAqUpzb.jpg",
-        "http://i.imgur.com/heSczUwb.jpg"};
     private final static int IMAGE_W = 500;
     private final static int IMAGE_H = 280;
     private final static int LOGO_W = 150;
@@ -347,24 +312,6 @@ public class Utils {
         res[i] = getRandomImageUrl();
       }
       return res;
-    }
-
-    /**
-     * Returns a tuple (thumbnail, logo) from the set {@link #images}.
-     * 
-     * @return
-     */
-    public static String[] getImagePair() {
-      String[] pair = new String[2];
-      int index = generateRandomInt(1, images.length - 1);
-      if (index % 2 == 1) {
-        pair[0] = images[index - 1];
-        pair[1] = images[index];
-      } else {
-        pair[0] = images[index];
-        pair[1] = images[index + 1];
-      }
-      return pair;
     }
   }
 

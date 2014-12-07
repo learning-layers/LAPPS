@@ -27,6 +27,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
 
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.UserFacade;
+import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
@@ -34,7 +35,7 @@ import de.rwth.dbis.layers.lapps.exception.OIDCException;
  * Users resource (exposed at "users" path).
  */
 @Path("/users")
-@Api(value = "/users", description = "User resource")
+@Api(value = "/users", description = "User ressource")
 public class UsersResource {
 
   private static final Logger LOGGER = Logger.getLogger(UsersResource.class.getName());
@@ -56,7 +57,7 @@ public class UsersResource {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get all users", response = UserEntity.class, responseContainer = "List")
+  @ApiOperation(value = "Get all users", response = AppEntity.class, responseContainer = "List")
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
@@ -116,31 +117,27 @@ public class UsersResource {
 
   /**
    * 
-   * Gets the user for a given oidcId.
+   * Gets the user for a given id.
    * 
-   * @param oidcId
+   * @param id
    * 
    * @return Response with user as a JSON object.
    * 
    */
   @GET
-  @Path("/{oidcId}")
+  @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get user by oidcId", response = UserEntity.class)
+  @ApiOperation(value = "Get user by ID", response = UserEntity.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
-  public Response getUser(@PathParam("oidcId") long oidcId) {
+  public Response getUser(@PathParam("id") int id) {
 
-    // search for existing user
-    List<UserEntity> entities = userFacade.findByOidcId(oidcId);
-    UserEntity user = null;
-    if (entities.isEmpty()) {
+    UserEntity user = userFacade.find(id);
+    if (user == null) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
-    } else {
-      user = entities.get(0);
     }
     try {
       ObjectMapper mapper = new ObjectMapper();
@@ -153,24 +150,22 @@ public class UsersResource {
 
   /**
    * 
-   * Delete the user with the given oidcId.
+   * Delete the user with the given id.
    * 
-   * @param oidcId
+   * @param id
    * 
    * @return Response
-   * 
    */
   @DELETE
-  @Path("/{oidcId}")
-  @ApiOperation(value = "Delete user by oidcId")
+  @Path("/{id}")
+  @ApiOperation(value = "Delete user by ID")
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
-  public Response deleteUser(@HeaderParam("accessToken") String accessToken,
-      @PathParam("oidcId") long oidcId) {
+  public Response deleteUser(@HeaderParam("accessToken") String accessToken, @PathParam("id") int id) {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
       // process)
@@ -179,12 +174,10 @@ public class UsersResource {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
-    // search for existing user
-    List<UserEntity> entities = userFacade.findByOidcId(oidcId);
-    if (entities.isEmpty()) {
+
+    UserEntity user = userFacade.find(id);
+    if (user == null) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
-    } else {
-      // UserEntity user = entities.get(0);
     }
     // TODO: delete user with help of userFacade
     return Response.status(HttpStatusCode.NOT_IMPLEMENTED).build();
@@ -192,18 +185,18 @@ public class UsersResource {
 
   /**
    * 
-   * Update the user with the given oidcId.
+   * Update the user with the given id.
    * 
-   * @param oidcId
+   * @param id
    * @param updatedUser as JSON
    * 
    * @return Response with updated User
    */
   @PUT
-  @Path("/{oidcId}")
+  @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Update user by oidcId", response = UserEntity.class)
+  @ApiOperation(value = "Update user by ID", response = UserEntity.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
@@ -213,7 +206,7 @@ public class UsersResource {
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
   public Response updateUser(@HeaderParam("accessToken") String accessToken,
-      @PathParam("oidcId") long oidcId,
+      @PathParam("id") int id,
       @ApiParam(value = "User entity as JSON", required = true) UserEntity updatedUser) {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
@@ -223,12 +216,9 @@ public class UsersResource {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
-    // search for existing user
-    List<UserEntity> entities = userFacade.findByOidcId(oidcId);
-    if (entities.isEmpty()) {
+    UserEntity user = userFacade.find(id);
+    if (user == null) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
-    } else {
-      // UserEntity user = entities.get(0);
     }
     // TODO: update user with help of userFacade
     try {

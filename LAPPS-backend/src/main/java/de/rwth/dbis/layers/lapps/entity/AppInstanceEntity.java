@@ -18,23 +18,21 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * App Instance domain object. App instances are, for example, distributions of the same app on
  * different platforms, e.g. TurboApp for Android or TurboApp for iOS.
- * 
+ *
  */
 @javax.persistence.Entity
 @Table(name = "app_instance")
-public class AppInstanceEntity implements Entity, Comparable<AppInstanceEntity> {
+public class AppInstanceEntity implements Entity {
   private static final long serialVersionUID = 1L;
   @Id
   @GeneratedValue
   private int id = 0;
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "app_id")
   private AppEntity app = null;
@@ -56,23 +54,21 @@ public class AppInstanceEntity implements Entity, Comparable<AppInstanceEntity> 
   @Temporal(TemporalType.TIMESTAMP)
   private Date dateModified = null;
 
+
+
   @JsonIgnore
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppDetailEntity> details = new ArrayList<AppDetailEntity>();
   @JsonIgnore
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppArtifactEntity> artifacts = new ArrayList<AppArtifactEntity>();
-  // @JsonIgnore
+  @JsonIgnore
   @OneToMany(mappedBy = "appInstance", fetch = FetchType.EAGER)
-  // Workaround concerning the duplication of child collection entries caused by outer join in
-  // hibernate implementation
-  @Fetch(FetchMode.SUBSELECT)
   private List<AppCommentEntity> comments = new ArrayList<AppCommentEntity>();
   @JsonIgnore
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<AppTagEntity> tags = new ArrayList<AppTagEntity>();
-  @JsonIgnore
-  @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "appInstance", fetch = FetchType.EAGER)
   private List<AppInstanceRightsEntity> rights = new ArrayList<AppInstanceRightsEntity>();
 
   public AppInstanceEntity() {}
@@ -229,22 +225,10 @@ public class AppInstanceEntity implements Entity, Comparable<AppInstanceEntity> 
         + ", last modified on "
         + (this.getDateModified() != null ? DateFormat.getInstance().format(this.getDateModified())
             : "never") + ") version " + this.getVersion() + ", on " + this.getPlatform().getName()
-        + " [" + this.getSize() + "KB], available at " + this.getUrl() + ", with source at "
+        + "[" + this.getSize() + "KB], available at " + this.getUrl() + ", with source at "
         + this.getSourceUrl() + " having " + this.getComments().size() + " comment(s), "
         + this.getArtifacts().size() + " artifact(s), " + this.getDetails().size()
         + " description(s) and " + this.getTags().size() + " tag(s)" + "availble for: "
         + this.getAvailableOn();
-  }
-
-  // Default comparator
-  @Override
-  public int compareTo(AppInstanceEntity o) {
-    if (this.getApp().getName() == null) {
-      return -1;
-    } else if (o.getApp().getName() == null) {
-      return 1;
-    } else {
-      return this.getApp().getName().compareToIgnoreCase(o.getApp().getName());
-    }
   }
 }

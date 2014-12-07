@@ -105,7 +105,7 @@ public class UsersResourceTest {
   @Test
   public void testGetUser() {
     Response response =
-        target.path("users/" + user.getOidcId()).request(MediaType.APPLICATION_JSON).get();
+        target.path("users/" + user.getId().toString()).request(MediaType.APPLICATION_JSON).get();
     assertEquals(HttpStatusCode.OK, response.getStatus());
     MediaType responseMediaType = response.getMediaType();
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
@@ -122,7 +122,7 @@ public class UsersResourceTest {
   @Test
   public void testDeleteUser() {
     Response response =
-        target.path("users/" + user.getOidcId()).request()
+        target.path("users/" + user.getId().toString()).request()
             .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
     assertEquals(HttpStatusCode.NOT_IMPLEMENTED, response.getStatus());
   }
@@ -136,7 +136,7 @@ public class UsersResourceTest {
     UserEntity updatedUser = user;
     updatedUser.setEmail("new@mail.com");
     Response response =
-        target.path("users/" + user.getOidcId()).request()
+        target.path("users/" + user.getId().toString()).request()
             .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
             .put(entity(updatedUser, MediaType.APPLICATION_JSON));
     assertEquals(HttpStatusCode.NOT_IMPLEMENTED, response.getStatus());

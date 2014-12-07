@@ -117,22 +117,23 @@ public class OIDCAuthentication {
     }
     // successful, now get the user info and start extracting content
     UserInfo userInfo = ((UserInfoSuccessResponse) userInfoResponse).getUserInfo();
-    long sub = Long.parseLong(userInfo.getSubject().toString());
+    String sub = userInfo.getSubject().toString();
     String mail = userInfo.getEmail().toString();
     String userName = userInfo.getName();
 
     // search for existing user
-    List<UserEntity> entities = userFacade.findByOidcId(sub);
+    List<UserEntity> entities = userFacade.findByParameter("oidcId", sub);
 
     // more than one means something bad happened, one means user is already known..
     if (entities.size() > 1)
       throw new OIDCException("Exception during Open Id Authentication occured.");
     else if (entities.size() == 1) {
-      UserEntity user = entities.get(0);
-      userId = user.getId();
       // quick check, if mail or user name of OIDC server account differs (has changed) to our
       // database entry; if so, update our user
-      if (!user.getEmail().equals(mail) || !user.getUsername().equals(userName)) {
+      if (!entities.get(0).getEmail().equals(mail)
+          && !entities.get(0).getUsername().equals(userName)) {
+        UserEntity user = entities.get(0);
+        userId = user.getId();
         user.setEmail(mail);
         user.setUsername(userName);
         userFacade.save(user);
@@ -142,7 +143,8 @@ public class OIDCAuthentication {
     }
 
     // user is unknown, has to be created
-    userId = createNewUser(sub, mail, userName);
+    // TODO: type-check!? (String -> Long)
+    userId = createNewUser(Long.parseLong(sub), mail, userName);
     return userId;
   }
 
@@ -151,11 +153,10 @@ public class OIDCAuthentication {
    * 
    * @param oidc_id the "subject" identifier of the open id connect authentication
    * @param mail a user email
-   * @param userName the name of the user to be created
    * 
    * @return the (LAPPS) id of the user
    */
-  private static int createNewUser(long oidc_id, String mail, String userName) {
+  private static int createNewUser(Long oidc_id, String mail, String userName) {
     UserEntity user = new UserEntity(oidc_id, mail, userName);
     user = userFacade.save(user);
     return user.getId();

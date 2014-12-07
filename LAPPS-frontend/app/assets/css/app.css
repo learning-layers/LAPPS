@@ -81,7 +81,7 @@ h1, h2, h3, h4, h5 {
 /* header start */
 .search-bar {
   left: 230px;
-  right: 180px;
+  right: 230px;
   position: absolute;
 }
 
@@ -96,32 +96,13 @@ h1, h2, h3, h4, h5 {
   width: 100%;
 }
 
-.search-bar .input-group .input-group-btn, search-bar-xs .input-group .input-group-btn {
-  width: 40px;
-}
+  .search-bar .input-group .input-group-btn, search-bar-xs .input-group .input-group-btn {
+    width: 40px;
+  }
 
 #sign-in-button {
-  margin-right: 10px;
-  margin-left: 10px;
-}
-
-#sign-in-button button {
-  width: 160px;
-  overflow: hidden;
-  -ms-text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
-  text-overflow: ellipsis;
-  padding-right: 30px;
-}
-
-#sign-in-button button.dropdown-toggle {
-  text-align: left;
-}
-
-#sign-in-button button .caret {
-  position: absolute;
-  right: 23px;
-  top: 23px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .navbar-default {
@@ -139,29 +120,29 @@ h1, h2, h3, h4, h5 {
   position: relative;
 }
 
-.nav-pills > li > a {
-  border: 1px solid #1f1f1f;
-  color: #333;
-}
+  .nav-pills > li > a {
+    border: 1px solid #1f1f1f;
+    color: #333;
+  }
 
-.nav-pills > li.active > a {
-  background-color: #474747;
-  border: 1px solid #ddd;
-}
+  .nav-pills > li.active > a {
+    background-color: #474747;
+    border: 1px solid #ddd;
+  }
 
-.nav-pills > li:not(:last-child) {
-  position: absolute;
-  left: 0;
-  width: 49.5%;
-}
+  .nav-pills > li:not(:last-child) {
+    position: absolute;
+    left: 0;
+    width: 49.5%;
+  }
 
-.nav-pills > li:last-child {
-  position: absolute;
-  right: 0;
-  width: 49.5%;
-}
+  .nav-pills > li:last-child {
+    position: absolute;
+    right: 0;
+    width: 49.5%;
+  }
 
-@media (max-width: 768px) {
+@media ( max-width : 768px) {
 }
 
 /*tabs end*/
@@ -237,7 +218,7 @@ h1, h2, h3, h4, h5 {
   float: left;
 }
 
-@media (max-width: 768px) {
+@media ( max-width : 768px) {
   .app-list-item .thumbnail .image-container > img {
     width: 110px;
   }
@@ -246,10 +227,10 @@ h1, h2, h3, h4, h5 {
     left: 122px;
   }
 
-  .app-list-item .thumbnail .caption p {
-    -webkit-line-clamp: 4;
-    max-height: 80px;
-  }
+    .app-list-item .thumbnail .caption p {
+      -webkit-line-clamp: 4;
+      max-height: 80px;
+    }
 
   .app-list-item .thumbnail {
     height: 176px;
@@ -260,7 +241,7 @@ h1, h2, h3, h4, h5 {
   }
 }
 
-@media (min-width: 768px) {
+@media ( min-width : 768px) {
   #featured-list .app-list-item:hover .thumbnail {
     -moz-box-shadow: 4px 4px 15px #999;
     -webkit-box-shadow: 4px 4px 15px #999;
@@ -334,18 +315,18 @@ h1, h2, h3, h4, h5 {
 }
 
 /*smartphone size start*/
-@media (max-width: 768px) {
+@media ( max-width : 768px) {
   .carousel-caption {
     background: none;
   }
 
-  .carousel-caption h1, .carousel-caption h3 {
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 5px;
-    -moz-border-radius: 15px;
-    -webkit-border-radius: 15px;
-    border-radius: 15px;
-  }
+    .carousel-caption h1, .carousel-caption h3 {
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 5px;
+      -moz-border-radius: 15px;
+      -webkit-border-radius: 15px;
+      border-radius: 15px;
+    }
 }
 /*smartphone size end*/
 
@@ -358,18 +339,18 @@ h1, h2, h3, h4, h5 {
   box-shadow: 1px 1px 10px #999;
 }
 
-.pagination > li > a {
-  color: #474747;
-  font-weight: 600;
-}
+  .pagination > li > a {
+    color: #474747;
+    font-weight: 600;
+  }
 /* pagination end */
 
 /* search start */
 #search-filter.thumbnail {
   padding: 10px;
   /*-moz-box-shadow: 1px 1px 15px #999 inset;
-   -webkit-box-shadow: 1px 1px 15px #999 inset;
-   box-shadow: 1px 1px 15px #999 inset;*/
+  -webkit-box-shadow: 1px 1px 15px #999 inset;
+  box-shadow: 1px 1px 15px #999 inset;*/
   background-color: #f8f8f8;
   overflow-y: auto;
   border-color: #aaa;
@@ -382,21 +363,21 @@ h1, h2, h3, h4, h5 {
   text-align: center;
 }
 
-@media (min-width: 992px) {
+@media ( min-width : 992px) {
   #search-filter form > div {
     padding: 0;
   }
 }
 
-@media (max-width: 992px) {
+@media ( max-width : 992px) {
   #search-filter.collapsed {
     height: 40px;
     overflow: hidden;
   }
 
-  #search-filter.collapsed h3 {
-    border: none;
-  }
+    #search-filter.collapsed h3 {
+      border: none;
+    }
 }
 
 #search-filter .advanced-search-btn.hidden-lg {

@@ -29,7 +29,7 @@ public class AppInstanceRightsEntity implements Entity {
   public AppInstanceRightsEntity() {}
 
   public AppInstanceRightsEntity(int rights, UserEntity user, AppInstanceEntity appInstance) {
-    this.grantRights(rights);
+    this.setRights(rights);
     this.setUser(user);
     this.setAppInstance(appInstance);
   }
@@ -38,9 +38,9 @@ public class AppInstanceRightsEntity implements Entity {
     return rights;
   }
 
-  // public void setRights(int rights) {
-  // this.rights = rights;
-  // }
+  public void setRights(int rights) {
+    this.rights = rights;
+  }
 
   public UserEntity getUser() {
     return user;
