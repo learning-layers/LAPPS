@@ -116,6 +116,7 @@ public class AppsAndUsersTest {
       instance.setSourceUrl("http://dummySourceStore.com/" + app.getName());
       instance.setAvailableOn("Min. Version: " + Utils.generateRandomInt(1, 10));
       instance.setVersion(Utils.generateRandomInt(1, 10) + "." + Utils.generateRandomInt(1, 10));
+      appInstanceFacade.save(instance);
     }
   }
 
