@@ -61,7 +61,7 @@ public class AppInstanceEntity implements Entity, Comparable<AppInstanceEntity> 
   private List<AppDetailEntity> details = new ArrayList<AppDetailEntity>();
   // @JsonIgnore
   @OneToMany(mappedBy = "appInstance", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @Fetch(FetchMode.SUBSELECT)
+  // @Fetch(FetchMode.SUBSELECT)
   private List<AppArtifactEntity> artifacts = new ArrayList<AppArtifactEntity>();
   @JsonIgnore
   @OneToMany(mappedBy = "appInstance", fetch = FetchType.EAGER)
