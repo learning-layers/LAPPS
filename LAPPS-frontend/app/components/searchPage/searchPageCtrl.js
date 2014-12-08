@@ -11,10 +11,10 @@
                   'searchPageCtrl',
                   [
                       '$scope',
-                      '$rootScope',
+                      'swaggerApi',
                       '$routeParams',
                       'user',
-                      function($scope, $rootScope, $routeParams, user) {
+                      function($scope, swaggerApi, $routeParams, user) {
                         if ($routeParams.query) {
                           $scope.searchQuery = $routeParams.query;
                         } else {
@@ -29,16 +29,16 @@
                          */
                         $scope.search = function() {
 
-                          // $rootScope.api.users.getAllUsers({'accessToken':user.token}).then(function(data2){
+                          // swaggerApi.users.getAllUsers({'accessToken':user.token}).then(function(data2){
                           // alert(data2)});
-                          $rootScope.api.apps
+                          swaggerApi.apps
                                   .getAllApps({
                                     search: $scope.searchQuery
                                   })
                                   .then(
                                           function(appList) {
                                             for (var i = 0; i < appList.length; i++) {
-                                              $rootScope.api.apps
+                                              swaggerApi.apps
                                                       .getApp(appList[i])
                                                       .then(
                                                               function(app) {

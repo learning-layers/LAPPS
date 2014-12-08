@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 /* jasmine specs for controllers go here */
-describe('Logic for app list', function() {
+/*describe('Logic for app list', function() {
   beforeEach(module('lappsApp'));
   describe('featuredListCtrl', function() {
     var scope, ctrl, $httpBackend;
@@ -38,7 +38,7 @@ describe('Logic for app list', function() {
       expect(scope.apps.length).toBe(3);
     });
   });
-});
+});*/
 
 // TODO: create tests in different files, this is only an example how to use
 // swagger with tests
