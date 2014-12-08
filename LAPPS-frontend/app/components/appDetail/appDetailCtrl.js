@@ -115,8 +115,9 @@
                                             var item = $scope.randShortDescription[Math
                                                     .floor(Math.random()
                                                             * $scope.randShortDescription.length)];
-                                            long += item + Math.random() > 0.9
-                                                    ? '\n' : ' ';
+                                            long += item
+                                                    + ((Math.random() > 0.9)
+                                                            ? '\n\n' : ' ');
                                           }
                                           $scope.appData.description = long;
                                           var developer = $scope.randShortDescription[Math
