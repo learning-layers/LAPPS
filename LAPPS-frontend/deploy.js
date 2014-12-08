@@ -23,7 +23,11 @@
     baseDirs: ['core', 'components', 'shared', 'api/swaggerApi'],
     groupFile: 'js/lapps.js'
   }, {
-    baseDirs: ['bower_components'],
+    baseDirs: ['bower_components/angular', 'bower_components/swagger'],
+    groupFile: 'js/libsAngular.js'/*,
+    ignore: ['.min.']*/
+  }, {
+    baseDirs: ['bower_components/bootstrap', 'bower_components/jquery',],
     groupFile: 'js/libs.js'/*,
     ignore: ['.min.']*/
   }];
@@ -265,12 +269,12 @@
   }
   function insertScriptsInHtml(html, scripts) {
 
-    var startPoint = html.indexOf('</title>');// insert scripts below title-tag
+    var startPoint = html.lastIndexOf('.css">');// insert scripts below title-tag
     if (startPoint < 0) {
       console.log('No title tag found in index.html!');
       return null;
     }
-    startPoint += ('</title>').length;
+    startPoint += ('.css">').length;
     var scriptBlock = "\n";
     for (var i = 0; i < scripts.length; i++) {
       scriptBlock += "  " + scripts[i].reference + "\n";
