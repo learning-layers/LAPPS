@@ -241,6 +241,7 @@ h1, h2, h3, h4, h5 {
 .app-list-item .thumbnail .image-container > img {
   display: block;
   width: 150px;
+  height: 150px;
 }
 
 .app-list-item .thumbnail h3 {
