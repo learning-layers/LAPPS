@@ -9,6 +9,7 @@ import javax.persistence.Query;
 
 import de.rwth.dbis.layers.lapps.data.EMF;
 import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
+import de.rwth.dbis.layers.lapps.entity.AppInstanceOverview;
 import de.rwth.dbis.layers.lapps.entity.Entity;
 
 public class AppInstanceFacade extends AbstractFacade<AppInstanceEntity, Integer> implements Entity {
@@ -54,17 +55,28 @@ public class AppInstanceFacade extends AbstractFacade<AppInstanceEntity, Integer
     return super.findByParameter("name", name);
   }
 
-  public List<AppInstanceEntity> findAllPreview() {
+  // TODO: Add owner and make platformId parameter!
+  @SuppressWarnings("unchecked")
+  public List<AppInstanceOverview> findAllPreview() {
     final EntityManager em = this.getEntityManager();
-    List<AppInstanceEntity> entities = null;
+    List<AppInstanceOverview> entities = null;
     try {
-      Query query = em.createQuery("");
+      em.getTransaction().begin();
+      Query query =
+          em.createQuery("select new "
+              + AppInstanceOverview.class.getName()
+              + "(inst.id, app.name, inst.rating, artifact.url, description.contents, platform.name) from AppInstanceEntity inst inner join inst.artifacts as artifact inner join inst.platform as platform inner join inst.details as description inner join inst.app as app where platform.id = 2 and artifact.artifactType = 2 and description.type.id = 1");
       LOGGER.info("Searching for all AppInstanceEntities in Preview mode...");
-      entities = super.doFindByParameter(em, query);
+      entities = query.getResultList();
+      em.getTransaction().commit();
       LOGGER.info("Found " + entities.size() + " entities!");
     } catch (IllegalArgumentException e) {
+      // not really needed...
+      em.getTransaction().rollback();
       LOGGER.log(Level.SEVERE, e.getMessage());
       throw e;
+    } finally {
+      em.close();
     }
     return entities;
   }

@@ -72,9 +72,8 @@ public class AppArtifactEntity implements Entity {
 
   @Override
   public String toString() {
-    return "[" + this.getClass().getName() + "] id: " + this.getId() + ", for platform: "
-        + this.getAppInstance().getPlatform().getName() + ", with: " + this.getArtifact()
-        + ", available at: " + this.getUrl();
+    return "[" + this.getClass().getName() + "] id: " + this.getId() + ", with: "
+        + this.getArtifact() + ", available at: " + this.getUrl();
   }
 
 }
