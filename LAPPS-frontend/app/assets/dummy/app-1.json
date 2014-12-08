@@ -3,6 +3,7 @@
   "name": "HelpApp",
   "instances": {
       "ios": {
+      "download": "http://www.google.com",
       "tags": ["cats", "kittens", "fur", "cute", "fish", "tree", "sun", "sleep"],
       "thumbnail":  "http://i.imgur.com/ThZhD6E.jpg",
       "images":  ["http://i.imgur.com/SHgvm2d.jpg","http://i.imgur.com/7G2JjkR.jpg", "http://i.imgur.com/zBBx7jP.jpg"],
@@ -23,6 +24,7 @@
     },
     "android":
     { 
+      "download": "http://www.google.com",
       "tags": ["cats", "kittens", "fur", "cute", "fish", "tree", "sun", "sleep"],
       "thumbnail":  "http://i.imgur.com/ThZhD6E.jpg",
       "images":  ["http://i.imgur.com/SHgvm2d.jpg","http://i.imgur.com/7G2JjkR.jpg", "http://i.imgur.com/zBBx7jP.jpg"],
@@ -43,6 +45,7 @@
     },
     "windows":
     { 
+      "download": "http://www.google.com",
       "tags": ["cats", "kittens", "fur", "cute", "fish", "tree", "sun", "sleep"],
       "thumbnail":  "http://i.imgur.com/ThZhD6E.jpg",
       "images":  ["http://i.imgur.com/SHgvm2d.jpg","http://i.imgur.com/7G2JjkR.jpg", "http://i.imgur.com/zBBx7jP.jpg"],

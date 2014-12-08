@@ -27,16 +27,21 @@ h1, h2, h3, h4, h5 {
 
 @media (max-width: 768px) {
   .thumbnail .caption {
-    padding-left: 2px;
-    padding-right: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
   }
 
   .container {
     padding-right: 5px;
     padding-left: 5px;
   }
+
   body {
     padding-top: 1px;
+  }
+
+  .navbar {
+    margin-bottom: 7px;
   }
 }
 /* general end*/
@@ -368,6 +373,7 @@ h1, h2, h3, h4, h5 {
   -webkit-line-clamp: 10;
   line-height: 20px;
   max-height: 200px;
+  
 }
 
 /*smartphone size start*/
@@ -454,7 +460,8 @@ h1, h2, h3, h4, h5 {
 #app-description .img-detail {
   margin-left: 5px;
   margin-bottom: 5px;
-  width: 150px;
+  width: 200px;
+  height: 200px;
   -ms-flex: none;
   flex: none;
 }
@@ -497,13 +504,20 @@ h1, h2, h3, h4, h5 {
 
   #app-description .caption .long-description {
     overflow-y: auto;
-    max-height: 1000px;
+    max-height: 670px;
     border: 1px solid #ddd;
-    padding: 5px;
+    padding: 8px;
     margin-right: 30px;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
     border-radius: 4px;
+    /*-moz-transition: max-height 0.25s ease-in;
+    -o-transition: max-height 0.25s ease-in;
+    -webkit-transition: max-height 0.25s ease-in;
+    transition: max-height 0.25s ease-in;*/
+    -moz-box-shadow: 3px 3px 10px #ccc inset;
+    -webkit-box-shadow: 3px 3px 10px #ccc inset;
+    box-shadow: 3px 3px 10px #ccc inset;
   }
 
     #app-description .caption .long-description.collapsed {
@@ -512,8 +526,11 @@ h1, h2, h3, h4, h5 {
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
-      padding: 0;
+      -moz-box-shadow: none;
+      -webkit-box-shadow: none;
+      box-shadow: none;
       border: none;
+      max-height: 50px;
     }
 
   #app-description .caption .short-description {
@@ -552,7 +569,7 @@ h1, h2, h3, h4, h5 {
     -webkit-box-shadow: -1px -1px 5px #aaa;
     box-shadow: -1px -1px 5px #aaa;
     font-size: large;
-    width: 100%;
+    width: 50%;
   }
 
   #app-description .caption .tag-expander {
@@ -570,6 +587,16 @@ h1, h2, h3, h4, h5 {
     margin-left: 0;
   }
 
+    #app-description .caption .description-expander {
+      width: 100%;
+      right: -10px;
+    }
+
+    #app-description .caption .long-description {
+      max-height: 400px;
+      margin-left: -10px;
+    }
+
     #app-description .caption .short-description {
       font-size: 17px;
     }
@@ -577,6 +604,8 @@ h1, h2, h3, h4, h5 {
   #app-description .app-detail-container {
     -ms-flex-direction: column;
     flex-direction: column;
+    padding-left: 5px;
+    padding-right: 5px;
   }
 
   #app-description .img-detail {
@@ -589,23 +618,36 @@ h1, h2, h3, h4, h5 {
     max-height: 300px;
   }
 
-  #app-description .caption .description-expander {
-    right: -5px;
+  #download-button {
+    width: 100%;
+    margin-bottom: 15px!important;
+    margin-left: auto!important;
+    margin-right: auto;
+    max-width: 300px;
+    float:none!important;
   }
 }
 
-#app-description .caption > button {
-  position: absolute;
-  right: 15px;
-  bottom: 15px;
+#download-button {
+  float: right;
+  margin-left: 5px;
+  margin-top: -5px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+#app-description #download-button h4 {
+  margin: 0;
 }
 
 #app-description .caption .app-meta-data {
   display: inline-block;
+  margin-top: 5px;
 }
 
   #app-description .caption .app-meta-data div {
     float: left;
+    max-width: 400px;
   }
 
   #app-description .caption .app-meta-data .glyphicon {

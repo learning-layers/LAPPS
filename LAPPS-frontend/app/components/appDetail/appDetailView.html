@@ -3,8 +3,8 @@
     <div class="col-md-12 thumbnail" id="app-description">
       <div class="app-title">
         <h2>
-          {{appData.name}}
-          <span>from <a href="javascript:void(0)">{{appData.instances[currentVersion].developedby}}</a> </span>
+          {{appData.app.name}} <span>from <a href="javascript:void(0)">{{appData.developedBy}}</a>
+          </span>
         </h2>
       </div>
       <!--<div id="platform-links">
@@ -13,30 +13,27 @@
         <input type="image" src="./assets/img/apple.png" id="ios" data-ng-click="chosenVersion($event)" />
       </div>-->
       <div class="app-detail-container">
-        <img ng-src="{{appData.instances[currentVersion].thumbnail}}" class="img-detail" width="150" height="150">
+
+        <img ng-src="{{appData.thumbnail}}" class="img-detail">
         <div class="caption">
+          <a href="{{appData.url}}" id="download-button" class="btn btn-success"><h4>
+              <span class="glyphicon glyphicon glyphicon-download-alt"></span> Download
+            </h4></a>
           <div class="app-meta-data  text-color-paleblack">
             <div id="app-rating">
-              <span ng-repeat="n in [] | rangeFilter:appData.instances[currentVersion].rating"
-                    class="glyphicon glyphicon-star text-color-staryellow"></span><span ng-repeat="n in [] | rangeFilter:(5 - appData.instances[currentVersion].rating)"
-                                                                                        class="glyphicon glyphicon-star-empty text-color-staryellow"></span>
-              <span class="hspacer05">({{appData.instances[currentVersion].commentsCount}})</span>
+              <span ng-repeat="n in [] | rangeFilter:appData.rating" class="glyphicon glyphicon-star text-color-staryellow"></span><span ng-repeat="n in [] | rangeFilter:(5 - appData.rating)" class="glyphicon glyphicon-star-empty text-color-staryellow"></span> <span class="hspacer05"></span>
             </div>
             <div id="app-tags">
-              <span class="hspacer05 hidden-xs"></span>
-              <span class="glyphicon glyphicon-tags text-color-grey "></span>
-              <span class="hspacer05"></span><span ng-repeat="tag in (appData.instances[currentVersion].tags) | limitTo : tagLimit">
-                <a href="tags/{{tag}}">{{tag}}</a>{{$last ? '' : ', '}}
-              </span>
-              <a class="tag-expander" ng-hide="$scope.DEFAULT_TAGS>=appData.instances[currentVersion].tags.length" ng-click="expandCollapseTags()" href="javascript:void(0)"> ... </a>
+              <span class="hspacer05 hidden-xs"></span> <span class="glyphicon glyphicon-tags text-color-grey "></span> <span class="hspacer05"></span><span ng-repeat="tag in (appData.tags) | limitTo : tagLimit"> <a href="tags/{{tag}}">{{tag}}</a>{{$last ? '' : ', '}}
+              </span> <a class="tag-expander" ng-hide="$scope.DEFAULT_TAGS>=appData.tags.length" ng-click="expandCollapseTags()" href="javascript:void(0)"> ... </a>
             </div>
           </div>
-          <div class="vspacer03"></div>
-          <p class="short-description">
-            {{appData.instances[currentVersion].description}}
-          </p>
-          <p class="long-description" ng-class="{'collapsed': collapsed}">{{appData.instances[currentVersion].longDescription}}</p>
-          <button ng-click="expandCollapseDescription()" class="description-expander btn btn-primary"><span class="caret" ng-class="{'caret-reversed-white': !collapsed}"></span><span class="hspacer05"></span>{{collapsed?'Expand Text':'Collapse Text'}}<span class="hspacer05"></span><span class="caret" ng-class="{'caret-reversed-white': !collapsed}"></span></button>
+          <div class="vspacer05"></div>
+          <p class="short-description">{{appData.shortDescription}}</p>
+          <p class="long-description" ng-class="{'collapsed': collapsed}">{{appData.description}}</p>
+          <button ng-click="expandCollapseDescription()" class="description-expander btn btn-primary">
+            <span class="caret" ng-class="{'caret-reversed-white': !collapsed}"></span><span class="hspacer05"></span>{{collapsed?'Expand Text':'Collapse Text'}}<span class="hspacer05"></span><span class="caret" ng-class="{'caret-reversed-white': !collapsed}"></span>
+          </button>
         </div>
       </div>
     </div>
@@ -47,53 +44,49 @@
     <div class="vspacer1 hidden-xs hidden-sm"></div>
     <div class="col-md-9" id="app-images">
       <div id="featured-carousel">
-        <carousel interval="interval">
-          <slide ng-repeat="image in appData.instances[currentVersion].images">
-            <img ng-src="{{image}}" width="1000" height="560">
-          </slide>
-        </carousel>
+        <carousel interval="interval"> <slide ng-repeat="image in appData.images"> <img ng-src="{{image}}" width="1000" height="560"> </slide> </carousel>
       </div>
       <div class="vspacer1"></div>
     </div>
     <div class="thumbnail col-md-3" id="app-technical-detail">
       <h3>Technical details</h3>
       <dl>
-        <div ng-if="appData.instances[currentVersion].sourceCode">
+        <div ng-if="appData.sourceUrl">
           <dt>
             <dfn>Source Code</dfn>
           </dt>
           <dd>
-            <a href="{{appData.instances[currentVersion].sourceCodeLocation}}">{{appData.instances[currentVersion].sourceCode}}</a>
+            <a href="{{appData.sourceUrl}}">{{appData.sourceUrl}}</a>
           </dd>
         </div>
         <dt>
           <dfn>Version</dfn>
         </dt>
-        <dd>{{appData.instances[currentVersion].version}}</dd>
-        <div ng-if="appData.instances[currentVersion].size">
+        <dd>{{appData.version}}</dd>
+        <div ng-if="appData.size">
           <dt>
             <dfn>Size</dfn>
           </dt>
-          <dd>{{convertSize(appData.instances[currentVersion].size)}}</dd>
+          <dd>{{convertSize(appData.size)}}</dd>
         </div>
         <dt>
           <dfn>Release</dfn>
         </dt>
-        <dd>{{convertDate(appData.instances[currentVersion].release)}}</dd>
+        <dd>{{convertDate(appData.dateCreated)}}</dd>
 
         <dt>
           <dfn>Last update</dfn>
         </dt>
-        <dd>{{convertDate(appData.instances[currentVersion].lastUpdate)}}</dd>
+        <dd>{{convertDate(appData.dateModified)}}</dd>
         <dt>
           <dfn>License</dfn>
         </dt>
-        <dd>{{appData.instances[currentVersion].license}}</dd>
+        <dd>{{appData.license}}</dd>
         <dt>
           <dfn>Support page</dfn>
         </dt>
         <dd dir="ltr">
-          <a href="{{appData.instances[currentVersion].supportPage}}" rel=" nofollow" target="_blank">{{appData.instances[currentVersion].supportPage}}</a>
+          <a href="{{appData.supportPage}}" rel=" nofollow" target="_blank">{{appData.supportPage}}</a>
         </dd>
       </dl>
     </div>

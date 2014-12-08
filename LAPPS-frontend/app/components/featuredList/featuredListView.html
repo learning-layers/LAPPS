@@ -20,7 +20,7 @@
           <div class="app-list-item">
             <a href="#/apps/{{app.id}}"></a>
             <div class="thumbnail">
-              <h3 class="single-line">{{app.name}}</h3>
+              <h3 class="single-line">{{app.app.name}}</h3>
               <div class="image-container">
                 <img ng-src="{{app.thumbnail}}" alt="cats">
               </div>
@@ -31,9 +31,9 @@
                         class="glyphicon glyphicon-star text-color-staryellow">
                   </span><span ng-repeat="n in [] | rangeFilter:(5-app.rating)"
                                class="glyphicon glyphicon-star-empty text-color-staryellow"></span>
-                  <span class="hspacer05 text-color-paleblack ">({{app.commentsCount}})</span>
+                  <span class="hspacer05 text-color-paleblack "></span>
                 </div>
-                <p>{{app.description}}</p>
+                <p>{{app.shortDescription}}</p>
               </div>
             </div>
           </div>
