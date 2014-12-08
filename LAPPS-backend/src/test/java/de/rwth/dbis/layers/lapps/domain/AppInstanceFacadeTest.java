@@ -11,11 +11,11 @@ import org.junit.Test;
 
 import de.rwth.dbis.layers.lapps.Utils;
 import de.rwth.dbis.layers.lapps.entity.AppArtifactEntity;
-import de.rwth.dbis.layers.lapps.entity.AppCommentEntity;
 import de.rwth.dbis.layers.lapps.entity.AppDetailEntity;
 import de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity;
 import de.rwth.dbis.layers.lapps.entity.AppEntity;
 import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
+import de.rwth.dbis.layers.lapps.entity.AppInstanceOverview;
 import de.rwth.dbis.layers.lapps.entity.AppPlatformEntity;
 import de.rwth.dbis.layers.lapps.entity.AppTagEntity;
 import de.rwth.dbis.layers.lapps.entity.ArtifactTypeEntity;
@@ -95,13 +95,9 @@ public class AppInstanceFacadeTest {
   }
 
   private void preview() {
-    List<AppInstanceEntity> entities = appInstanceFacade.findAll();// appInstanceFacade.findAllPreview();
-    for (AppInstanceEntity entity : entities) {
-      List<AppCommentEntity> comments = entity.getComments();
-      LOGGER.info("instance: " + entity);
-      for (AppCommentEntity comment : comments) {
-        LOGGER.info(comment.toString());
-      }
+    List<AppInstanceOverview> entities = appInstanceFacade.findAllPreview();
+    for (Object entity : entities) {
+      LOGGER.info(entity.toString());
     }
   }
 }

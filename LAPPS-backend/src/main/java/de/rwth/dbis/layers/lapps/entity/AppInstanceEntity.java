@@ -45,6 +45,7 @@ public class AppInstanceEntity implements Entity, Comparable<AppInstanceEntity> 
   private String version = null;
   private int size = 0;
   private String sourceUrl = null;
+  private double rating = 0;
 
   @Column(name = "min_platform_version")
   private String availableOn = null;
@@ -136,6 +137,14 @@ public class AppInstanceEntity implements Entity, Comparable<AppInstanceEntity> 
 
   public void setSourceUrl(String sourceUrl) {
     this.sourceUrl = sourceUrl;
+  }
+
+  public double getRating() {
+    return rating;
+  }
+
+  public void setRating(double rating) {
+    this.rating = rating;
   }
 
   public String getAvailableOn() {
