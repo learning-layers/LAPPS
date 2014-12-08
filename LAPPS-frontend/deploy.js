@@ -17,10 +17,10 @@
 
   // define how to group js files
   var jsGroups = [{
-    baseDirs: ['api'],
+    baseDirs: ['api/lappsApi'],
     groupFile: 'js/api.js'
   }, {
-    baseDirs: ['core', 'components', 'shared'],
+    baseDirs: ['core', 'components', 'shared', 'api/swaggerApi'],
     groupFile: 'js/lapps.js'
   }, {
     baseDirs: ['bower_components'],
