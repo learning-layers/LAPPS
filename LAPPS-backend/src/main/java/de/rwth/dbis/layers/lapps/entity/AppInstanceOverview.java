@@ -1,5 +1,9 @@
 package de.rwth.dbis.layers.lapps.entity;
 
+
+/**
+ * Read-only access, do not modify. Used as a DTO for a minimal AppInstanceEntity representation.
+ */
 public class AppInstanceOverview implements Entity {
   private static final long serialVersionUID = -355646226620364799L;
   private int id = 0;
@@ -11,7 +15,7 @@ public class AppInstanceOverview implements Entity {
   private String ownerEmail = null;
 
   public AppInstanceOverview(int id, String name, double rating, String thumbnailUrl,
-      String shortDescription, String platform) {
+      String shortDescription, String platform, String ownerEmail) {
     super();
     this.id = id;
     this.name = name;
@@ -19,6 +23,7 @@ public class AppInstanceOverview implements Entity {
     this.thumbnailUrl = thumbnailUrl;
     this.shortDescription = shortDescription;
     this.platform = platform;
+    this.ownerEmail = ownerEmail;
   }
 
   public String getName() {
