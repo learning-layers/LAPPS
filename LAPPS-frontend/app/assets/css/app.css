@@ -1,6 +1,6 @@
 /* general start*/
 body {
-  padding-top: 10px;
+  padding-top: 0;
   padding-bottom: 0;
 }
 
@@ -31,10 +31,7 @@ h1, h2, h3, h4, h5 {
     padding-right: 5px;
   }
 
-  .container {
-    padding-right: 5px;
-    padding-left: 5px;
-  }
+  
 
   body {
     padding-top: 1px;
@@ -127,15 +124,20 @@ h1, h2, h3, h4, h5 {
   font-weight: 200;
   color: #777;
   text-shadow: 0 1px 0 #ffffff;
+  
+}
+
+.navbar-static-top .container{
+  position: relative;
 }
 .search-bar {
-  left: 230px;
+  left: 350px;
   right: 180px;
   position: absolute;
 }
 
 .search-bar-xs {
-  left: 60px;
+  left: 65px;
   right: 80px;
   top: 8px;
   position: absolute;
@@ -646,6 +648,12 @@ h1, h2, h3, h4, h5 {
   display: block;
 }
 
+dd {
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
 #app-description #download-button h4 {
   margin: 0;
 }
