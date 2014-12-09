@@ -55,17 +55,18 @@ public class AppInstanceFacade extends AbstractFacade<AppInstanceEntity, Integer
     return super.findByParameter("name", name);
   }
 
-  // TODO: Add owner and make platformId parameter!
   @SuppressWarnings("unchecked")
-  public List<AppInstanceOverview> findAllPreview() {
+  public List<AppInstanceOverview> findAllPreview(int platformId) {
     final EntityManager em = this.getEntityManager();
     List<AppInstanceOverview> entities = null;
     try {
       em.getTransaction().begin();
       Query query =
-          em.createQuery("select new "
-              + AppInstanceOverview.class.getName()
-              + "(inst.id, app.name, inst.rating, artifact.url, description.contents, platform.name) from AppInstanceEntity inst inner join inst.artifacts as artifact inner join inst.platform as platform inner join inst.details as description inner join inst.app as app where platform.id = 2 and artifact.artifactType = 2 and description.type.id = 1");
+          em.createQuery(
+              "select new "
+                  + AppInstanceOverview.class.getName()
+                  + "(inst.id, app.name, inst.rating, artifact.url, description.contents, platform.name, management.user.email) from AppInstanceEntity inst inner join inst.artifacts as artifact inner join inst.platform as platform inner join inst.details as description inner join inst.app as app inner join inst.rights as management where platform.id = :platformId and artifact.artifactType = 2 and description.type.id = 1 and bitwiseAnd(management.rights, 1) = 1")
+              .setParameter("platformId", platformId);
       LOGGER.info("Searching for all AppInstanceEntities in Preview mode...");
       entities = query.getResultList();
       em.getTransaction().commit();

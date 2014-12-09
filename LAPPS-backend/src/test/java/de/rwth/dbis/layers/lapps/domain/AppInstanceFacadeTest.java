@@ -95,7 +95,7 @@ public class AppInstanceFacadeTest {
   }
 
   private void preview() {
-    List<AppInstanceOverview> entities = appInstanceFacade.findAllPreview();
+    List<AppInstanceOverview> entities = appInstanceFacade.findAllPreview(1);
     for (Object entity : entities) {
       LOGGER.info(entity.toString());
     }

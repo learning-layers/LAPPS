@@ -22,7 +22,8 @@
         <property name="javax.persistence.jdbc.user" value="${jdbc.username}"/>
         <property name="javax.persistence.jdbc.password" value="${jdbc.password}"/>
         <property name="javax.persistence.jdbc.url" value="${jdbc.url}"/>
-        <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+        <!-- <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/> -->
+        <property name="hibernate.dialect" value="de.rwth.dbis.layers.lapps.data.MySqlDialectExtention"/>
 
         <property name="hibernate.connection.provider_class"
           value="org.hibernate.connection.C3P0ConnectionProvider" />
