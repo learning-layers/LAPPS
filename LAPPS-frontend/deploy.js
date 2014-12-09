@@ -24,12 +24,14 @@
     groupFile: 'js/lapps.js'
   }, {
     baseDirs: ['bower_components/angular', 'bower_components/swagger'],
-    groupFile: 'js/libsAngular.js'/*,
-    ignore: ['.min.']*/
+    groupFile: 'js/libsAngular.js'/*
+                                   * , ignore: ['.min.']
+                                   */
   }, {
-    baseDirs: ['bower_components/bootstrap', 'bower_components/jquery',],
-    groupFile: 'js/libs.js'/*,
-    ignore: ['.min.']*/
+    baseDirs: ['bower_components/bootstrap', 'bower_components/jquery', ],
+    groupFile: 'js/libs.js'/*
+                             * , ignore: ['.min.']
+                             */
   }];
   // define which other files should be copied
   var copyPaths = ['**/*.html', 'assets/img/**/*', 'assets/dummy/**/*',
@@ -153,6 +155,9 @@
   }
   function gzipFilePure(src, dest) {
     if (!zipAll) return 0;
+
+    if (!(src.endsWith('.js') || src.endsWith('.html') || src.endsWith('.css') || src
+            .endsWith('.svg'))) return 0;
     var gzip = zlib.createGzip();
     fs.createReadStream(src).pipe(gzip)
             .pipe(fs.createWriteStream(dest + '.gz'));
@@ -269,7 +274,8 @@
   }
   function insertScriptsInHtml(html, scripts) {
 
-    var startPoint = html.lastIndexOf('.css">');// insert scripts below title-tag
+    var startPoint = html.lastIndexOf('.css">');// insert scripts below
+                                                // title-tag
     if (startPoint < 0) {
       console.log('No title tag found in index.html!');
       return null;
