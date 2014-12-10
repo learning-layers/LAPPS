@@ -3,7 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+ 
   <title>Layers Application Store</title>
+  <link rel="icon" href="assets/img/logos/favicon.ico" sizes="16x16 32x32" type="image/icon">
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
   <link rel="stylesheet" href="assets/css/app.css">
   <script src="api/lappsApi.js"></script>
@@ -34,8 +36,9 @@
 
 </head>
 <body>
+  <lapps-header></lapps-header>
   <div class="container">
-    <lapps-header></lapps-header>
+    
     <div ng-view class="view-frame"></div>
     <lapps-footer></lapps-footer>
   </div>
