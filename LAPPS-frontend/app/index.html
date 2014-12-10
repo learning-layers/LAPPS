@@ -1,44 +1,45 @@
 ﻿<!doctype html>
 <html lang="en" ng-app="lappsApp">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
- 
-  <title>Layers Application Store</title>
-  <link rel="icon" href="assets/img/logos/favicon.ico" sizes="16x16 32x32" type="image/icon">
-  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
-  <link rel="stylesheet" href="assets/css/app.css">
-  <script src="api/lappsApi.js"></script>
-  <script src="bower_components/jquery/dist/jquery.js"></script>
-  <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/angular-route/angular-route.js"></script>
-  <script src="bower_components/angular-resource/angular-resource.js"></script>
-  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-  <script src="core/appModule.js"></script>
-  <script src="components/welcomePage/welcomePageCtrl.js"></script>
-  <script src="components/appDetail/appDetailCtrl.js"></script>
-  <script src="shared/header/headerDirective.js"></script>
-  <script src="shared/footer/footerDirective.js"></script>
-  <script src="components/featuredCarousel/featuredCarouselCtr.js"></script>
-  <script src="components/featuredCarousel/onCarouselChangeDirective.js"></script>
-  <script src="components/featuredCarousel/featuredCarouselDirective.js"></script>
-  <script src="components/featuredList/featuredListDirective.js"></script>
-  <script src="components/featuredList/featuredListCtrl.js"></script>
-  <script src="components/searchPage/searchPageCtrl.js"></script>
-  <script src="core/filters/rangeFilter.js"></script>
-  <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script src="shared/header/headerCtrl.js"></script>
-  <script src="bower_components/swagger-angular-client/dist/swagger-angular-client.js"></script>
-  <script src="core/attributeDirectives/ngEnter.js"></script>
-  <script src="shared/login/userProvider.js"></script>
-  <script src="api/swaggerApi.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
+<title>Layers Application Store</title>
+<link rel="icon" href="assets/img/logos/favicon.ico" sizes="16x16 32x32" type="image/icon">
+<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<script src="api/lappsApi.js"></script>
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-route/angular-route.js"></script>
+<script src="bower_components/angular-resource/angular-resource.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="core/appModule.js"></script>
+<script src="components/welcomePage/welcomePageCtrl.js"></script>
+<script src="components/appDetail/appDetailCtrl.js"></script>
+<script src="shared/header/headerDirective.js"></script>
+<script src="shared/footer/footerDirective.js"></script>
+<script src="components/featuredCarousel/featuredCarouselCtr.js"></script>
+<script src="components/featuredCarousel/onCarouselChangeDirective.js"></script>
+<script src="components/featuredCarousel/featuredCarouselDirective.js"></script>
+<script src="components/featuredList/featuredListDirective.js"></script>
+<script src="components/featuredList/featuredListCtrl.js"></script>
+<script src="components/searchPage/searchPageCtrl.js"></script>
+<script src="core/filters/rangeFilter.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="shared/header/headerCtrl.js"></script>
+<script src="bower_components/swagger-angular-client/dist/swagger-angular-client.js"></script>
+<script src="core/attributeDirectives/ngEnter.js"></script>
+<script src="shared/login/userProvider.js"></script>
+<script src="api/swaggerApi.js"></script>
+<script src="bower_components/marked/lib/marked.js"></script>
+<script src="core/filters/unsafeFilter.js"></script>
 
 </head>
 <body>
   <lapps-header></lapps-header>
   <div class="container">
-    
+
     <div ng-view class="view-frame"></div>
     <lapps-footer></lapps-footer>
   </div>

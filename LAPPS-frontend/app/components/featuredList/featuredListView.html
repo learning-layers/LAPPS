@@ -14,6 +14,7 @@
       </li>
     </ul>
     <div class="tab-content">
+      <p ng-bind-html="markdownOut | unsafe"></p></p>
       <div class="tab-pane row active" id="info-tab">
         <div ng-repeat="app in apps"
              class="col-xs-12 col-sm-12 col-md-6 col-lg-4">

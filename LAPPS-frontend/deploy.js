@@ -16,23 +16,28 @@
   // development
 
   // define how to group js files
-  var jsGroups = [{
-    baseDirs: ['api/lappsApi'],
-    groupFile: 'js/api.js'
-  }, {
-    baseDirs: ['core', 'components', 'shared', 'api/swaggerApi'],
-    groupFile: 'js/lapps.js'
-  }, {
-    baseDirs: ['bower_components/angular', 'bower_components/swagger'],
-    groupFile: 'js/libsAngular.js'/*
-                                   * , ignore: ['.min.']
-                                   */
-  }, {
-    baseDirs: ['bower_components/bootstrap', 'bower_components/jquery', ],
-    groupFile: 'js/libs.js'/*
-                             * , ignore: ['.min.']
-                             */
-  }];
+  var jsGroups = [
+      {
+        baseDirs: ['api/lappsApi'],
+        groupFile: 'js/api.js'
+      },
+      {
+        baseDirs: ['core', 'components', 'shared', 'api/swaggerApi'],
+        groupFile: 'js/lapps.js'
+      },
+      {
+        baseDirs: ['bower_components/angular', 'bower_components/swagger'],
+        groupFile: 'js/libsAngular.js'/*
+                                       * , ignore: ['.min.']
+                                       */
+      },
+      {
+        baseDirs: ['bower_components/bootstrap', 'bower_components/jquery',
+            'bower_components/marked'],
+        groupFile: 'js/libs.js'/*
+                                 * , ignore: ['.min.']
+                                 */
+      }];
   // define which other files should be copied
   var copyPaths = ['**/*.html', 'assets/img/**/*', 'assets/dummy/**/*',
       'bower_components/bootstrap/dist/fonts/*'];
@@ -275,7 +280,7 @@
   function insertScriptsInHtml(html, scripts) {
 
     var startPoint = html.lastIndexOf('.css">');// insert scripts below
-                                                // title-tag
+    // title-tag
     if (startPoint < 0) {
       console.log('No title tag found in index.html!');
       return null;
