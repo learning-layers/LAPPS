@@ -316,6 +316,7 @@ h1, h2, h3, h4, h5 {
 @media (max-width: 768px) {
   .app-list-item .thumbnail .image-container > img {
     width: 110px;
+    height: 110px;
   }
 
   .app-list-item .thumbnail .caption {
