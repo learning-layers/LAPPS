@@ -18,7 +18,7 @@
    */
   var lappsServices = angular.module('lappsServices', []);
   /**
-   * @class lapps.lassFilters
+   * @class lapps.lappsFilters
    * @memberOf lapps
    */
   var lappsFilters = angular.module('lappsFilters', []);
