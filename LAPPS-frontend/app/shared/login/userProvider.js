@@ -80,9 +80,10 @@
                             /**
                              * @function
                              * @memberOf lapps.lappsServices.user
-                             * @param function
-                             *          loginCallback What function to call,
-                             *          when login was successful or failed.
+                             * @param {function}
+                             *          loginCallback loginCallback What
+                             *          function to call, when login was
+                             *          successful or failed.
                              * @description Retrieves oidc provider information
                              *              and attempts to login the current
                              *              user. Retrieves token and user data
