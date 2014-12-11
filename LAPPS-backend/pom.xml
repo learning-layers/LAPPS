@@ -1,19 +1,23 @@
+<!-- LAPPS Backend Build Script -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+    <!-- Reference to parent project -->
 	<parent>
 	    <groupId>de.rwth.dbis.layers.lapps</groupId>
 	    <artifactId>LAPPS-Project</artifactId>
-	    <version>0.1-SNAPSHOT</version>
+	    <version>0.2</version>
 	    <relativePath>../pom.xml</relativePath>
 	</parent>
 
     <modelVersion>4.0.0</modelVersion>
-
+    
+    <!-- Project's main attributes -->
     <artifactId>LAPPS-backend</artifactId>
     <packaging>war</packaging>
     <name>LAPPS-backend</name>
 
+    <!-- Dependency management -->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -26,7 +30,27 @@
         </dependencies>
     </dependencyManagement>
 
+    <!-- Project's dependencies, all external dependencies are added here -->
     <dependencies>
+        <!-- JSON support -->
+		<dependency>
+		    <groupId>org.glassfish.jersey.media</groupId>
+		    <artifactId>jersey-media-json-jackson</artifactId>
+		</dependency>
+		
+		<!-- Open Id Connect Stuff -->
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>oauth2-oidc-sdk</artifactId>
+            <version>3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <version>2.26</version>
+        </dependency>
+        
+        <!-- JPA Stuff -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
@@ -37,6 +61,18 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.33</version>
         </dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.3.7.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>4.3.7.Final</version>
+		</dependency>
+        
+        <!-- (Embedded) server -->
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-grizzly2-http</artifactId>
@@ -45,16 +81,60 @@
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet-core</artifactId>
         </dependency>
+        
+        <!-- JUnit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.9</version>
             <scope>test</scope>
         </dependency>
-    </dependencies>
+        
+        <!-- Swagger (API Doc) -->
+        <dependency>
+            <groupId>com.wordnik</groupId>
+            <artifactId>swagger-jersey2-jaxrs_2.10</artifactId>
+            <version>1.3.4</version>
+        </dependency>
+        
+	    <!-- Logger -->        
+	    <dependency>
+	        <groupId>org.slf4j</groupId>
+	        <artifactId>slf4j-log4j12</artifactId>
+	        <version>1.7.0</version>
+	        <scope>runtime</scope>
+	    </dependency>
 
+        <!-- Enables the Servlet Listener -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+    
+    </dependencies>
+    
+
+
+    <!-- Build process -->
     <build>
+        <!-- Scan for credentials of database and replace them -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+        <!-- Build plugins -->
         <plugins>
+        
+            <!-- Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -65,6 +145,8 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+            
+            <!-- Exec plugin (for the exec:java goal) -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -80,9 +162,26 @@
                     <mainClass>de.rwth.dbis.layers.lapps.Main</mainClass>
                 </configuration>
             </plugin>
+            
+            <!-- Deploy WAR file to Tomcat
+                 (Not good style to have credentials here, but we don't have
+                 access to the settings.xml of our Jenkins)
+             -->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <url>http://buche.informatik.rwth-aachen.de:9080/manager/text</url>
+                    <path>/lapps-${project.version}</path>
+                    <server>LabCourseTomcatServer</server>
+                    <update>true</update>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
+    
+    <!-- Jersey version -->
     <properties>
         <jersey.version>2.13</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

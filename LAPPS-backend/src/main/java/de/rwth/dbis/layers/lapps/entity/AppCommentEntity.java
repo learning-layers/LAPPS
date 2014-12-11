@@ -1,10 +1,17 @@
 package de.rwth.dbis.layers.lapps.entity;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Comment domain object.
@@ -22,16 +29,19 @@ public class AppCommentEntity implements Entity {
   @ManyToOne
   @JoinColumn(name = "user_id")
   UserEntity author = null;
+  @JsonIgnore
   @ManyToOne
-  @JoinColumn(name = "app_id")
-  AppEntity app = null;
+  @JoinColumn(name = "app_instance_id")
+  AppInstanceEntity appInstance = null;
+  @Temporal(TemporalType.TIMESTAMP)
+  Date date = new Date();
 
   public AppCommentEntity() {}
 
-  public AppCommentEntity(String text, UserEntity author, AppEntity app) {
+  public AppCommentEntity(String text, UserEntity author, AppInstanceEntity app) {
     this.setText(text);
     this.setAuthor(author);
-    this.setApp(app);
+    this.setAppInstance(app);
   }
 
   public String getText() {
@@ -53,18 +63,34 @@ public class AppCommentEntity implements Entity {
     }
   }
 
-  public AppEntity getApp() {
-    return app;
+  public AppInstanceEntity getAppInstance() {
+    return appInstance;
   }
 
-  public void setApp(AppEntity app) {
-    this.app = app;
-    if (!app.getComments().contains(this)) {
-      app.getComments().add(this);
+  public void setAppInstance(AppInstanceEntity appInstance) {
+    this.appInstance = appInstance;
+    if (!appInstance.getComments().contains(this)) {
+      appInstance.getComments().add(this);
     }
+  }
+
+  public Date getDate() {
+    return date;
+  }
+
+  public void setDate(Date date) {
+    this.date = date;
   }
 
   public int getId() {
     return id;
+  }
+
+  @Override
+  public String toString() {
+    return "[" + this.getClass().getName() + "] id: " + this.getId() + ", contents: "
+        + this.getText() + ", from user: " + this.getAuthor().getEmail() + " regarding app: "
+        + this.getAppInstance().getApp().getName() + ", on: "
+        + DateFormat.getInstance().format(this.getDate());
   }
 }

@@ -13,16 +13,31 @@
    */
   var deployDirectory = 'deploy/'; // where to put all files
   var devDirectory = 'app/'; // directory containing all files during
-                              // development
+  // development
 
   // define how to group js files
-  var jsGroups = [{
-    baseDirs: ['core', 'components', 'shared'],
-    groupFile: 'js/lapps.js'
-  }, {
-    baseDirs: ['bower_components'],
-    groupFile: 'js/libs.js'
-  }];
+  var jsGroups = [
+      {
+        baseDirs: ['api/lappsApi'],
+        groupFile: 'js/api.js'
+      },
+      {
+        baseDirs: ['core', 'components', 'shared', 'api/swaggerApi'],
+        groupFile: 'js/lapps.js'
+      },
+      {
+        baseDirs: ['bower_components/angular', 'bower_components/swagger'],
+        groupFile: 'js/libsAngular.js'/*
+                                       * , ignore: ['.min.']
+                                       */
+      },
+      {
+        baseDirs: ['bower_components/bootstrap', 'bower_components/jquery',
+            'bower_components/marked'],
+        groupFile: 'js/libs.js'/*
+                                 * , ignore: ['.min.']
+                                 */
+      }];
   // define which other files should be copied
   var copyPaths = ['**/*.html', 'assets/img/**/*', 'assets/dummy/**/*',
       'bower_components/bootstrap/dist/fonts/*'];
@@ -122,7 +137,7 @@
             }
           }
           if (k == patterns.length - 1) // proceed with other steps when all
-                                        // files have been copied
+          // files have been copied
           callback();
         });
       })(k);
@@ -145,6 +160,9 @@
   }
   function gzipFilePure(src, dest) {
     if (!zipAll) return 0;
+
+    if (!(src.endsWith('.js') || src.endsWith('.html') || src.endsWith('.css') || src
+            .endsWith('.svg'))) return 0;
     var gzip = zlib.createGzip();
     fs.createReadStream(src).pipe(gzip)
             .pipe(fs.createWriteStream(dest + '.gz'));
@@ -197,16 +215,27 @@
     for (var i = 0; i < groups.length; i++) {
       var baseDirs = groups[i].baseDirs;
       var groupFile = groups[i].groupFile;
+      var ignore = groups[i].ignore || [];
       var fileList = [];
 
       for (var j = 0; j < scripts.length; j++) {
-        for (var k = 0; k < baseDirs.length; k++) {
-          if (scripts[j].file.indexOf(baseDirs[k]) == 0) {// starts with
+        var ignoreThisScript = false;
+        for (var k = 0; k < ignore.length; k++) {
+          if (scripts[j].file.indexOf(ignore[k]) > 0) { // contains ignore
+            // pattern
+            ignoreThisScript = true;
+          }
+        }
+        if (!ignoreThisScript) {
+          for (var k = 0; k < baseDirs.length; k++) {
+            if (scripts[j].file.indexOf(baseDirs[k]) == 0) {// starts with
 
-            scripts[j].reference = '<script src="' + groupFile + '"></script>';
-            fileList.push(scripts[j].file);
-            scripts[j].file = groupFile;
-            scripts[j].isGrouped = true;
+              scripts[j].reference = '<script src="' + groupFile
+                      + '"></script>';
+              fileList.push(scripts[j].file);
+              scripts[j].file = groupFile;
+              scripts[j].isGrouped = true;
+            }
           }
         }
       }
@@ -250,12 +279,13 @@
   }
   function insertScriptsInHtml(html, scripts) {
 
-    var startPoint = html.indexOf('</title>');// insert scripts below title-tag
+    var startPoint = html.lastIndexOf('.css">');// insert scripts below
+    // title-tag
     if (startPoint < 0) {
       console.log('No title tag found in index.html!');
       return null;
     }
-    startPoint += ('</title>').length;
+    startPoint += ('.css">').length;
     var scriptBlock = "\n";
     for (var i = 0; i < scripts.length; i++) {
       scriptBlock += "  " + scripts[i].reference + "\n";

@@ -9,7 +9,7 @@
 		<init-param>
 		    <param-name>jersey.config.server.provider.packages</param-name>
 		    <param-value>
-		        de.rwth.dbis.layers.lapps
+		        de.rwth.dbis.layers.lapps;com.wordnik.swagger.jersey.listing
 		     </param-value>
 		</init-param>
 		<init-param>
@@ -18,8 +18,27 @@
 		</init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
+	<listener>
+		<listener-class>
+		  de.rwth.dbis.layers.lapps.WebAppListener 
+		</listener-class>
+	</listener>
     <servlet-mapping>
         <servlet-name>Layers App Store</servlet-name>
-        <url-pattern>/lapps/*</url-pattern>
+        <url-pattern>/lapps/v1/*</url-pattern>
     </servlet-mapping>
+    <servlet>
+	  <servlet-name>JerseyJaxrsConfig</servlet-name>
+	  <servlet-class>com.wordnik.swagger.jersey.config.JerseyJaxrsConfig</servlet-class>
+	  <init-param>
+	    <param-name>api.version</param-name>
+	    <param-value>1</param-value>
+	  </init-param>
+	  <init-param>
+	    <param-name>swagger.api.basepath</param-name>
+	    <!-- <param-value>http://localhost:8080/lapps/v1</param-value> -->
+	    <param-value>http://buche.informatik.rwth-aachen.de:9080/lapps-0.2-SNAPSHOT/lapps/v1</param-value>
+	  </init-param>
+	  <load-on-startup>2</load-on-startup>
+	</servlet>
 </web-app>

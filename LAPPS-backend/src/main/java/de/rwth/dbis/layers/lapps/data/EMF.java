@@ -8,8 +8,9 @@ import javax.persistence.Persistence;
  * A utility class for obtaining a {@link EntityManager} in a container not supporting Injection.
  *
  */
-public class EMF {
-  private static EntityManagerFactory emf = null;
+public enum EMF {
+  INSTANCE;
+  private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("lappsPU");
 
   /**
    * Obtain an {@link EntityManager} out of a single static {@link EntityManagerFactory} instance.
@@ -17,9 +18,10 @@ public class EMF {
    * @return {@link EntityManager}
    */
   public static EntityManager getEm() {
-    if (emf == null) {
-      emf = Persistence.createEntityManagerFactory("lappsPU");
-    }
-    return emf.createEntityManager();
+    return (EntityManager) emf.createEntityManager();
+  }
+
+  public static void closeEmFactory() {
+    emf.close();
   }
 }
