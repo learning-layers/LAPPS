@@ -37,7 +37,7 @@
 	  <init-param>
 	    <param-name>swagger.api.basepath</param-name>
 	    <!-- <param-value>http://localhost:8080/lapps/v1</param-value> -->
-	    <param-value>http://buche.informatik.rwth-aachen.de:9080/lapps-0.2-SNAPSHOT/lapps/v1</param-value>
+	    <param-value>http://buche.informatik.rwth-aachen.de:9080/lapps-0.3-SNAPSHOT/lapps/v1</param-value>
 	  </init-param>
 	  <load-on-startup>2</load-on-startup>
 	</servlet>

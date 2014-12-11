@@ -7,8 +7,8 @@
 (function(args) {
   // config
   var FILE_ENCODING = 'utf-8';
-  var localAddress = 'http://buche.informatik.rwth-aachen.de:9080/lapps-0.2-SNAPSHOT/lapps/v1/api-docs';
-  var deployAddress = 'http://buche.informatik.rwth-aachen.de:9080/lapps-0.2-SNAPSHOT/lapps/v1/api-docs';
+  var localAddress = 'http://localhost:8080/lapps/v1/api-docs';
+  var deployAddress = 'http://buche.informatik.rwth-aachen.de:9080/lapps-0.3-SNAPSHOT/lapps/v1/api-docs';
   var address = deployAddress;
   var apiFile = 'app/api/lappsApi.js';
 
