@@ -80,7 +80,12 @@
                          */
                         $scope.appData = {};
 
+<<<<<<< Upstream, based on origin/frontend_documentation
                          marked.setOptions({
+=======
+<<<<<<< Upstream, based on origin/develop
+                        marked.setOptions({
+>>>>>>> 051a4e0 initial commit
                           renderer: new marked.Renderer(),
                           gfm: true,
                           tables: true,
@@ -90,6 +95,7 @@
                           smartLists: true,
                           smartypants: false
                         });
+<<<<<<< Upstream, based on origin/frontend_documentation
                         /**
                          * @function
                          * @memberOf lapps.lappsControllers.appDetailCtrl
@@ -97,6 +103,16 @@
                          *              {@link lapps.lappsControllers.appDetailCtrl.$scope.collapsed}.
                          */
                        
+=======
+=======
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Toggles
+                         *              {@link lapps.lappsControllers.appDetailCtrl.$scope.collapsed}.
+                         */
+>>>>>>> 285a05d initial commit
+>>>>>>> 051a4e0 initial commit
                         $scope.expandCollapseDescription = function() {
                           if ($scope.collapsed) {
                             $scope.collapsed = false;
