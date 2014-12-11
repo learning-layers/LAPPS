@@ -1,4 +1,8 @@
-﻿(function() {
+﻿/**
+ * Since in tests we don't want to rely on 3rd party services: just give some
+ * mockup values to work with.
+ */
+(function() {
   angular.module('lappsServices').provider('user', function() {
     this.oidcData = {
       server: '',

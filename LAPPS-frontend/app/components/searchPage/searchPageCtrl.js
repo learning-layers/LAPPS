@@ -15,22 +15,39 @@
                       '$routeParams',
                       'user',
                       function($scope, swaggerApi, $routeParams, user) {
+
                         if ($routeParams.query) {
                           $scope.searchQuery = $routeParams.query;
                         } else {
                           $scope.searchQuery = '';
                         }
+                        /**
+                         * @field
+                         * @type app[]
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @description Stores the app objects retrieved from
+                         *              the backend.
+                         */
                         $scope.apps = [];
+                        /**
+                         * @field
+                         * @type boolean
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @description The state of the advanced search area.
+                         */
                         $scope.collapsed = true;
-                        /*
-                         * /$scope.apps = data.filter(function(el) { return
-                         * el.name.toLowerCase().indexOf(
-                         * $scope.searchQuery.toLowerCase()) >= 0; });
+
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @description Searches using the current query
+                         *              settings. And loads a list of apps as
+                         *              results.
                          */
                         $scope.search = function() {
 
                           // swaggerApi.users.getAllUsers({'accessToken':user.token}).then(function(data2){
-                          // alert(data2)});
+
                           swaggerApi.apps
                                   .getAllApps({
                                     search: $scope.searchQuery
@@ -59,6 +76,12 @@
                                           });
                         }
 
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @description Toggles
+                         *              {@link lapps.lappsControllers.searchPageCtrl.$scope.collapsed}.
+                         */
                         $scope.expandCollapseSearch = function() {
                           if ($scope.collapsed) {
                             $scope.collapsed = false;

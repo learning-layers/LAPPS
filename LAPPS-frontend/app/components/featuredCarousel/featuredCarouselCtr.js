@@ -13,11 +13,44 @@
                       '$scope',
                       'swaggerApi',
                       function($scope, swaggerApi) {
+                        /**
+                         * @field
+                         * @type app[]
+                         * @memberOf lapps.lappsControllers.featuredCarouselCtr
+                         * @description Stores the app objects retrieved from
+                         *              the backend.
+                         */
                         $scope.apps = [];
-
+                        /**
+                         * @field
+                         * @type number
+                         * @memberOf lapps.lappsControllers.featuredCarouselCtr
+                         * @description Time in ms to wait until the image in
+                         *              the carousel is changed.
+                         */
                         $scope.interval = 4000;
+                        /**
+                         * @field
+                         * @type number
+                         * @memberOf lapps.lappsControllers.featuredCarouselCtr
+                         * @description Stores the currently displayed slide id
+                         *              in the carousel.
+                         */
                         $scope.currentSlide = 0;
 
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.featuredCarouselCtr
+                         * @param {object}
+                         *          nextSlide The next slide in the carousel.
+                         * @param {object}
+                         *          direction The direction of the slide change.
+                         * @description Converts size in KB to MB with 1 digit
+                         *              after the comma. If size is less than
+                         *              1024 the value is not changed. The
+                         *              string MB or KB is appended to the
+                         *              result (12.5 MB).
+                         */
                         $scope.onSlideChanged = function(nextSlide, direction) {
                           if (direction == 'next') {
                             $scope.currentSlide = ($scope.currentSlide + 1)

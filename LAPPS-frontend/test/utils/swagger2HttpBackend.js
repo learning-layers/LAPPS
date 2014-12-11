@@ -1,4 +1,8 @@
-﻿(function() {
+﻿/**
+ * Helper method to allow usage of swagger api calls inside the karma tests
+ * (without having to explicitly state urls etc.).
+ */
+(function() {
   angular.module('lappsServices').factory(
           'swagger2HttpBackend',
           [
