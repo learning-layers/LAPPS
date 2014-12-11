@@ -33,7 +33,7 @@ LAPPS Backend (run these commands from your project folder):
 * mvn test            --- test backend
 * mvn exec:java       --- compile and start on jetty server (port 8080, please execute in LAPPS-backend folder)
 * mvn javadoc:javadoc --- generates JavaDoc documentation
-* This commands also work inside Eclipse (Run -> Maven build..), then leave the mvn prefix.
+* These commands also work inside Eclipse (Run -> Maven build..), then leave away the mvn prefix.
 
 LAPPS Frontend (run these commands from your project folder):
 * npm install        --- install dependencies (will be done automatically when running the start command)
