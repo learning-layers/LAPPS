@@ -1,8 +1,7 @@
 ﻿/**
- * @class appListCtrl
+ * @class welcomePageCtrl
  * @memberOf lapps.lappsControllers
- * @description This controller is responsible for displaying a list of
- *              available apps.
+ * @description This controller is responsible for the welcome page.
  */
 (function() {
   angular.module('lappsControllers').controller('welcomePageCtrl',

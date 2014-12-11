@@ -1,5 +1,5 @@
 ﻿/**
- * @class featuredListCtr
+ * @class featuredListCtrl
  * @memberOf lapps.lappsControllers
  * @description This controller is responsible for displaying a list of featured
  *              apps.
@@ -13,9 +13,30 @@
                       '$scope',
                       'swaggerApi',
                       function($scope, swaggerApi) {
+                        /**
+                         * @field
+                         * @type string
+                         * @memberOf lapps.lappsControllers.featuredListCtrl
+                         * @description 'The currently active tab (new or top)
+                         */
                         $scope.currentTab = '';
+                        /**
+                         * @field
+                         * @type app[]
+                         * @memberOf lapps.lappsControllers.featuredListCtrl
+                         * @description Stores the app objects retrieved from
+                         *              the backend.
+                         */
                         $scope.apps = [];
-
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.featuredListCtrl
+                         * @param {string}
+                         *          tab The new tab to activate.
+                         * @description Changes the active tab. Only allows
+                         *              'top' and 'new'. Changing tabs requests
+                         *              a new list of apps from the backend.
+                         */
                         $scope.setTab = function(tab) {
                           if ((tab == 'top' || tab == 'new')
                                   && $scope.currentTab != tab) {
@@ -45,18 +66,17 @@
                             'Ut qui duis aliqua. Cillum fugiat sint pariatur. Irure do officia laboris in commodo incididunt.',
                             'Velit sint aliqua. Sunt officia in aute anim consequat. Ullamco lorem ut consectetur dolor sit.',
                             'Aliquip laborum. Ut aute dolor reprehenderit dolore nostrud est eiusmod sunt ipsum non consectetur do.'];
-
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.featuredListCtrl
+                         * @param {string}
+                         *          tab What kind of apps to fetch.
+                         * @description Fetches a list of apps depending on the
+                         *              current tab. For 'new' the newest apps
+                         *              are fetched. For 'top' the best rated
+                         *              apps are fetched.
+                         */
                         $scope.getApps = function(tab) {
-                          /*
-                           * $http.get('assets/dummy/appList.json').success(function(data) {
-                           * $scope.apps = data;
-                           * 
-                           * if (tab == 'new') { $scope.apps.sort(function(a, b) {
-                           * return b.created - a.created; }); } else {
-                           * $scope.apps.sort(function(a, b) { return b.rating -
-                           * a.rating; }); } });
-                           */
-
                           swaggerApi.apps
                                   .getAllApps()
                                   .then(
