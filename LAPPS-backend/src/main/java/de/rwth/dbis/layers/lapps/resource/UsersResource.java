@@ -45,7 +45,7 @@ public class UsersResource {
    * 
    * Get all users.
    * 
-   * @param accessToken
+   * @param accessToken openID connect token
    * @param search query parameter
    * @param page number
    * @param pageLength number of users by page
@@ -155,6 +155,7 @@ public class UsersResource {
    * 
    * Delete the user with the given oidcId.
    * 
+   * @param accessToken openID connect token
    * @param oidcId
    * 
    * @return Response
@@ -194,6 +195,7 @@ public class UsersResource {
    * 
    * Update the user with the given oidcId.
    * 
+   * @param accessToken openID connect token
    * @param oidcId
    * @param updatedUser as JSON
    * 
