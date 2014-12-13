@@ -20,8 +20,8 @@ import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 
-import de.rwth.dbis.layers.lapps.domain.UserFacade;
-import de.rwth.dbis.layers.lapps.entity.UserEntity;
+import de.rwth.dbis.layers.lapps.domain.Facade;
+import de.rwth.dbis.layers.lapps.entity.User;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
 /**
@@ -37,9 +37,9 @@ public class OIDCAuthentication {
 
   // only for testing, will always be valid
   public static final String OPEN_ID_TEST_TOKEN = "test_token";
-  public static final int OPEN_ID_USER_ID = -1;
+  public static final Long OPEN_ID_USER_ID = -1L;
 
-  private static UserFacade userFacade = new UserFacade();
+  private static Facade facade = new Facade();
 
   /**
    * Tries to authenticate a user for a given OpenIdToken. If the user is not yet registered, it
@@ -50,10 +50,10 @@ public class OIDCAuthentication {
    * @return the (LAPPS) id of the user
    * @throws OIDCException an exception thrown for all Open Id Connect issues
    */
-  public static int authenticate(String openIdToken) throws OIDCException {
+  public static Long authenticate(String openIdToken) throws OIDCException {
 
     // return value
-    int userId = OPEN_ID_USER_ID;
+    Long userId = OPEN_ID_USER_ID;
 
     // no token provided
     if (openIdToken == null) {
@@ -122,20 +122,20 @@ public class OIDCAuthentication {
     String userName = userInfo.getName();
 
     // search for existing user
-    List<UserEntity> entities = userFacade.findByOidcId(sub);
+    List<User> entities = facade.findByParam(User.class, "oidcId", sub);
 
     // more than one means something bad happened, one means user is already known..
     if (entities.size() > 1)
       throw new OIDCException("Exception during Open Id Authentication occured.");
     else if (entities.size() == 1) {
-      UserEntity user = entities.get(0);
+      User user = entities.get(0);
       userId = user.getId();
       // quick check, if mail or user name of OIDC server account differs (has changed) to our
       // database entry; if so, update our user
       if (!user.getEmail().equals(mail) || !user.getUsername().equals(userName)) {
         user.setEmail(mail);
         user.setUsername(userName);
-        userFacade.save(user);
+        facade.save(user);
       }
       return userId;
 
@@ -155,9 +155,9 @@ public class OIDCAuthentication {
    * 
    * @return the (LAPPS) id of the user
    */
-  private static int createNewUser(long oidc_id, String mail, String userName) {
-    UserEntity user = new UserEntity(oidc_id, mail, userName);
-    user = userFacade.save(user);
+  private static Long createNewUser(long oidc_id, String mail, String userName) {
+    User user = new User(oidc_id, userName, mail);
+    user = facade.save(user);
     return user.getId();
   }
 

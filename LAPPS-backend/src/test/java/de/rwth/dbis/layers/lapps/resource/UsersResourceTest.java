@@ -24,8 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.rwth.dbis.layers.lapps.Main;
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
-import de.rwth.dbis.layers.lapps.domain.UserFacade;
-import de.rwth.dbis.layers.lapps.entity.UserEntity;
+import de.rwth.dbis.layers.lapps.domain.Facade;
+import de.rwth.dbis.layers.lapps.entity.User;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
 /**
@@ -37,8 +37,8 @@ public class UsersResourceTest {
   private HttpServer server;
   private WebTarget target;
   private static final Logger LOGGER = Logger.getLogger(UsersResource.class.getName());
-  private UserFacade userFacade = new UserFacade();
-  private UserEntity user = null;
+  private Facade userFacade = new Facade();
+  private User user = null;
 
   @Before
   public void setUp() throws Exception {
@@ -49,10 +49,10 @@ public class UsersResourceTest {
     target = c.target(Main.BASE_URI);
 
     LOGGER.info("Deleting old user data...");
-    userFacade.deleteAll("oidcId", 1234567L);
+    userFacade.deleteByParam(User.class, "oidcId", 1234567L);
     LOGGER.info("User data deleted.");
     LOGGER.info("Creating a new user...");
-    user = new UserEntity(1234567, "test@lapps.com", "testuser");
+    user = new User(new Long(1234567), "testuser", "test@lapps.com");
     user = userFacade.save(user);
     LOGGER.info("User created: " + user);
   }
@@ -87,7 +87,7 @@ public class UsersResourceTest {
       while (userIterator.hasNext()) {
         // go through the list until our user is found
         retrievedUser = userIterator.next();
-        if (retrievedUser.get("id").toString().equals(user.getId())) {
+        if (retrievedUser.get("id").toString().equals(user.getId().toString())) {
           break;
         }
       }
@@ -110,8 +110,11 @@ public class UsersResourceTest {
     MediaType responseMediaType = response.getMediaType();
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
     String responseContent = response.readEntity(String.class);
-    assertEquals(new String("{\"id\":" + user.getId().toString()
-        + ",\"oidcId\":1234567,\"email\":\"test@lapps.com\",\"username\":\"testuser\"}"),
+    assertEquals(
+        new String(
+            "{\"id\":"
+                + user.getId().toString()
+                + ",\"oidcId\":1234567,\"email\":\"test@lapps.com\",\"username\":\"testuser\",\"role\":0}"),
         responseContent);
   }
 
@@ -133,7 +136,7 @@ public class UsersResourceTest {
    */
   @Test
   public void testUpdateUser() {
-    UserEntity updatedUser = user;
+    User updatedUser = user;
     updatedUser.setEmail("new@mail.com");
     Response response =
         target.path("users/" + user.getOidcId()).request()
@@ -147,7 +150,7 @@ public class UsersResourceTest {
    */
   @Test
   public void testAuthentication() {
-    int returnValue = 0;
+    Long returnValue = 0L;
     try {
       returnValue = OIDCAuthentication.authenticate(OIDCAuthentication.OPEN_ID_TEST_TOKEN);
     } catch (OIDCException e) {
