@@ -110,7 +110,7 @@ public class TagResource {
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Create tag", response = AppTagEntity.class)
+  @ApiOperation(value = "Create tag for an app", response = AppTagEntity.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
