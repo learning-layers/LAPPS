@@ -87,12 +87,12 @@ public class UsersResourceTest {
       while (userIterator.hasNext()) {
         // go through the list until our user is found
         retrievedUser = userIterator.next();
-        if (retrievedUser.get("id").toString().equals(user.getId().toString())) {
+        if (retrievedUser.get("oidcId").toString().equals(user.getOidcId().toString())) {
           break;
         }
       }
       // this is only false if user was not in list
-      assertEquals(user.getId().toString(), retrievedUser.get("id").toString());
+      assertEquals(user.getOidcId().toString(), retrievedUser.get("oidcId").toString());
     } catch (Exception e) {
       e.printStackTrace();
       fail("JSON parsing failed with " + e.getMessage());
@@ -110,11 +110,8 @@ public class UsersResourceTest {
     MediaType responseMediaType = response.getMediaType();
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
     String responseContent = response.readEntity(String.class);
-    assertEquals(
-        new String(
-            "{\"id\":"
-                + user.getId().toString()
-                + ",\"oidcId\":1234567,\"email\":\"test@lapps.com\",\"username\":\"testuser\",\"role\":0}"),
+    assertEquals(new String(
+        "{\"oidcId\":1234567,\"email\":\"test@lapps.com\",\"username\":\"testuser\",\"role\":0}"),
         responseContent);
   }
 
