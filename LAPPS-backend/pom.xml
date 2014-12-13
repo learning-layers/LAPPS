@@ -16,7 +16,8 @@
     <artifactId>LAPPS-backend</artifactId>
     <packaging>war</packaging>
     <name>LAPPS-backend</name>
-
+    <url>https://github.com/learning-layers/LAPPS/LAPPS-backend</url>
+    
     <!-- Dependency management -->
     <dependencyManagement>
         <dependencies>
@@ -163,10 +164,7 @@
                 </configuration>
             </plugin>
             
-            <!-- Deploy WAR file to Tomcat
-                 (Not good style to have credentials here, but we don't have
-                 access to the settings.xml of our Jenkins)
-             -->
+            <!-- Deploy webapp to Tomcat -->
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
