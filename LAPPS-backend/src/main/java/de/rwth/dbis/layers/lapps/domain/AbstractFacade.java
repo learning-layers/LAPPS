@@ -20,7 +20,7 @@ import de.rwth.dbis.layers.lapps.entity.Entity;
  * @param <I> Identity type
  */
 public abstract class AbstractFacade<T extends Entity, I> {
-  private static Logger LOGGER = Logger.getLogger(ArtifactFacade.class.getName());
+  private static Logger LOGGER = Logger.getLogger(AbstractFacade.class.getName());
 
   /**
    * The type (class) of the concrete {@link Entity} extending this abstract business service.

@@ -1,6 +1,5 @@
 package de.rwth.dbis.layers.lapps.resource;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
@@ -16,19 +15,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
-import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
-import de.rwth.dbis.layers.lapps.domain.AppInstanceFacade;
-import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
-import de.rwth.dbis.layers.lapps.entity.AppTagEntity;
-import de.rwth.dbis.layers.lapps.exception.OIDCException;
+import de.rwth.dbis.layers.lapps.domain.Facade;
+import de.rwth.dbis.layers.lapps.entity.Tag;
 
 /**
  * Tag resource.
@@ -39,7 +33,7 @@ public class TagResource {
 
   private static final Logger LOGGER = Logger.getLogger(TagResource.class.getName());
 
-  private static AppInstanceFacade appInstanceFacade = AppInstanceFacade.getFacade();
+  private static Facade appInstanceFacade = new Facade();
 
 
   /**
@@ -53,8 +47,7 @@ public class TagResource {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get all tags for an app", response = AppTagEntity.class,
-      responseContainer = "List")
+  @ApiOperation(value = "Get all tags for an app", response = Tag.class, responseContainer = "List")
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
@@ -63,39 +56,40 @@ public class TagResource {
       @PathParam("appId") int appId,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of tags by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength) {
-    List<AppInstanceEntity> appEntities =
-        (List<AppInstanceEntity>) appInstanceFacade.findByParameter("id", appId);
-
-    if (appEntities.isEmpty()) {
-      return Response.status(HttpStatusCode.NOT_FOUND).build();
-    }
-    AppInstanceEntity appIntance = appEntities.get(0);
-
-    List<AppTagEntity> tagEntities = appIntance.getTags();
-
-    int numberOfPages = 1;
-    if (pageLength > 0 && pageLength < appEntities.size()) {
-      int fromIndex = page == 1 ? 0 : (page * pageLength) - pageLength;
-      int toIndex = page == 1 ? pageLength : page * pageLength;
-      numberOfPages = (int) Math.ceil((double) appEntities.size() / pageLength);
-      if (appEntities.size() < fromIndex + 1) {
-        appEntities.clear();
-      } else {
-        if (appEntities.size() < toIndex + 1) {
-          toIndex = appEntities.size();
-        }
-        appEntities = appEntities.subList(fromIndex, toIndex);
-      }
-    }
-
-    ObjectMapper mapper = new ObjectMapper();
-    try {
-      return Response.status(HttpStatusCode.OK).header("numberOfPages", numberOfPages)
-          .entity(mapper.writeValueAsBytes(tagEntities)).build();
-    } catch (JsonProcessingException e) {
-      LOGGER.warning(e.getMessage());
-      return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
-    }
+    // TODO: Fix this:
+    return null;
+    // List<App> appEntities = (List<App>) appInstanceFacade.findByParam(App.class, "id", appId);
+    //
+    // if (appEntities.isEmpty()) {
+    // return Response.status(HttpStatusCode.NOT_FOUND).build();
+    // }
+    // AppInstanceEntity appIntance = appEntities.get(0);
+    //
+    // List<AppTagEntity> tagEntities = appIntance.getTags();
+    //
+    // int numberOfPages = 1;
+    // if (pageLength > 0 && pageLength < appEntities.size()) {
+    // int fromIndex = page == 1 ? 0 : (page * pageLength) - pageLength;
+    // int toIndex = page == 1 ? pageLength : page * pageLength;
+    // numberOfPages = (int) Math.ceil((double) appEntities.size() / pageLength);
+    // if (appEntities.size() < fromIndex + 1) {
+    // appEntities.clear();
+    // } else {
+    // if (appEntities.size() < toIndex + 1) {
+    // toIndex = appEntities.size();
+    // }
+    // appEntities = appEntities.subList(fromIndex, toIndex);
+    // }
+    // }
+    //
+    // ObjectMapper mapper = new ObjectMapper();
+    // try {
+    // return Response.status(HttpStatusCode.OK).header("numberOfPages", numberOfPages)
+    // .entity(mapper.writeValueAsBytes(tagEntities)).build();
+    // } catch (JsonProcessingException e) {
+    // LOGGER.warning(e.getMessage());
+    // return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
+    // }
   }
 
   /**
@@ -110,7 +104,7 @@ public class TagResource {
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Create tag for an app", response = AppTagEntity.class)
+  @ApiOperation(value = "Create tag for an app", response = Tag.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
@@ -119,25 +113,27 @@ public class TagResource {
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
   public Response createTag(@PathParam("appId") int appId, @ApiParam(value = "Tag entity as JSON",
-      required = true) AppTagEntity createdTag) {
-    List<AppInstanceEntity> appEntities =
-        (List<AppInstanceEntity>) appInstanceFacade.findByParameter("id", appId);
-
-    if (appEntities.isEmpty()) {
-      return Response.status(HttpStatusCode.NOT_FOUND).build();
-    }
-    AppInstanceEntity appIntance = appEntities.get(0);
-
-    List<AppTagEntity> tagEntities = appIntance.getTags();
-    // TODO: create tag with help of appFacade
-    try {
-      ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.NOT_IMPLEMENTED)
-          .entity(mapper.writeValueAsBytes(createdTag)).build();
-    } catch (JsonProcessingException e) {
-      LOGGER.warning(e.getMessage());
-      return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
-    }
+      required = true) Tag createdTag) {
+    return null;
+    // TODO: Fix this:
+    // List<AppInstanceEntity> appEntities =
+    // (List<AppInstanceEntity>) appInstanceFacade.findByParameter("id", appId);
+    //
+    // if (appEntities.isEmpty()) {
+    // return Response.status(HttpStatusCode.NOT_FOUND).build();
+    // }
+    // AppInstanceEntity appIntance = appEntities.get(0);
+    //
+    // List<AppTagEntity> tagEntities = appIntance.getTags();
+    // // TODO: create tag with help of appFacade
+    // try {
+    // ObjectMapper mapper = new ObjectMapper();
+    // return Response.status(HttpStatusCode.NOT_IMPLEMENTED)
+    // .entity(mapper.writeValueAsBytes(createdTag)).build();
+    // } catch (JsonProcessingException e) {
+    // LOGGER.warning(e.getMessage());
+    // return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
+    // }
   }
 
   /**
@@ -162,30 +158,32 @@ public class TagResource {
           message = "Currently, this method is not implemented")})
   public Response deleteTag(@HeaderParam("accessToken") String accessToken,
       @PathParam("appId") int appId, @PathParam("id") int id) {
-    try {
-      // TODO: Check for admin
-      OIDCAuthentication.authenticate(accessToken);
-    } catch (OIDCException e) {
-      LOGGER.warning(e.getMessage());
-      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
-    }
-
-    List<AppInstanceEntity> appEntities =
-        (List<AppInstanceEntity>) appInstanceFacade.findByParameter("id", appId);
-
-    if (appEntities.isEmpty()) {
-      return Response.status(HttpStatusCode.NOT_FOUND).build();
-    }
-    AppInstanceEntity appIntance = appEntities.get(0);
-
-    List<AppTagEntity> tagEntities = appIntance.getTags();
-    AppTagEntity tag = new AppTagEntity(); // TODO search for the tag
-
-    if (tag == null) {
-      return Response.status(HttpStatusCode.NOT_FOUND).build();
-    } else {
-    }
-    // TODO: delete user with help of userFacade
-    return Response.status(HttpStatusCode.NOT_IMPLEMENTED).build();
+    // TODO: Fix this:
+    return null;
+    // try {
+    // // TODO: Check for admin
+    // OIDCAuthentication.authenticate(accessToken);
+    // } catch (OIDCException e) {
+    // LOGGER.warning(e.getMessage());
+    // return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+    // }
+    //
+    // List<AppInstanceEntity> appEntities =
+    // (List<AppInstanceEntity>) appInstanceFacade.findByParameter("id", appId);
+    //
+    // if (appEntities.isEmpty()) {
+    // return Response.status(HttpStatusCode.NOT_FOUND).build();
+    // }
+    // AppInstanceEntity appIntance = appEntities.get(0);
+    //
+    // List<AppTagEntity> tagEntities = appIntance.getTags();
+    // AppTagEntity tag = new AppTagEntity(); // TODO search for the tag
+    //
+    // if (tag == null) {
+    // return Response.status(HttpStatusCode.NOT_FOUND).build();
+    // } else {
+    // }
+    // // TODO: delete user with help of userFacade
+    // return Response.status(HttpStatusCode.NOT_IMPLEMENTED).build();
   }
 }

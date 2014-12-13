@@ -26,9 +26,9 @@ import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
-import de.rwth.dbis.layers.lapps.domain.UserFacade;
-import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
-import de.rwth.dbis.layers.lapps.entity.UserEntity;
+import de.rwth.dbis.layers.lapps.domain.Facade;
+import de.rwth.dbis.layers.lapps.entity.App;
+import de.rwth.dbis.layers.lapps.entity.User;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
 /**
@@ -40,7 +40,7 @@ public class UsersResource {
 
   private static final Logger LOGGER = Logger.getLogger(UsersResource.class.getName());
 
-  private static UserFacade userFacade = new UserFacade();
+  private static Facade userFacade = new Facade();
 
   /**
    * 
@@ -59,7 +59,7 @@ public class UsersResource {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get all users", response = UserEntity.class, responseContainer = "List")
+  @ApiOperation(value = "Get all users", response = User.class, responseContainer = "List")
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
@@ -82,11 +82,11 @@ public class UsersResource {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
 
-    List<UserEntity> entities;
+    List<User> entities;
     if (search == null) {
-      entities = (List<UserEntity>) userFacade.findAll();
+      entities = (List<User>) userFacade.loadAll(User.class);
     } else {
-      entities = (List<UserEntity>) userFacade.findByEmail(search);
+      entities = (List<User>) userFacade.loadAll(User.class);
     }
 
     Collections.sort(entities);
@@ -131,17 +131,17 @@ public class UsersResource {
   @GET
   @Path("/{oidcId}")
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get user by oidcId", response = UserEntity.class)
+  @ApiOperation(value = "Get user by oidcId", response = User.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
-  public Response getUser(@PathParam("oidcId") long oidcId) {
+  public Response getUser(@PathParam("oidcId") String oidcId) {
 
     // search for existing user
-    List<UserEntity> entities = userFacade.findByOidcId(oidcId);
-    UserEntity user = null;
+    List<User> entities = userFacade.findByParam(User.class, "oidcId", oidcId);
+    User user = null;
     if (entities.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
@@ -176,7 +176,7 @@ public class UsersResource {
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
   public Response deleteUser(@HeaderParam("accessToken") String accessToken,
-      @PathParam("oidcId") long oidcId) {
+      @PathParam("oidcId") String oidcId) {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
       // process)
@@ -186,7 +186,7 @@ public class UsersResource {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
     // search for existing user
-    List<UserEntity> entities = userFacade.findByOidcId(oidcId);
+    List<User> entities = userFacade.findByParam(User.class, "oidcId", oidcId);
     if (entities.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
@@ -210,7 +210,7 @@ public class UsersResource {
   @Path("/{oidcId}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Update user by oidcId", response = UserEntity.class)
+  @ApiOperation(value = "Update user by oidcId", response = User.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
@@ -220,8 +220,8 @@ public class UsersResource {
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
   public Response updateUser(@HeaderParam("accessToken") String accessToken,
-      @PathParam("oidcId") long oidcId,
-      @ApiParam(value = "User entity as JSON", required = true) UserEntity updatedUser) {
+      @PathParam("oidcId") String oidcId,
+      @ApiParam(value = "User entity as JSON", required = true) User updatedUser) {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
       // process)
@@ -231,7 +231,7 @@ public class UsersResource {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
     // search for existing user
-    List<UserEntity> entities = userFacade.findByOidcId(oidcId);
+    List<User> entities = userFacade.findByParam(User.class, "oidcId", oidcId);
     if (entities.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
@@ -262,7 +262,7 @@ public class UsersResource {
   @GET
   @Path("/{oidcId}/apps")
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get all apps for an user", response = AppInstanceEntity.class,
+  @ApiOperation(value = "Get all apps for an user", response = App.class,
       responseContainer = "List")
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
