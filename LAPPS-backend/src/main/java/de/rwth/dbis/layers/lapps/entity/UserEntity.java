@@ -121,7 +121,7 @@ public class UserEntity implements Entity, Comparable<UserEntity> {
         + ", email: " + this.getEmail();
   }
 
-  // Default constructor
+  // Default comparator
   @Override
   public int compareTo(UserEntity o) {
     if (this.getEmail() == null) {

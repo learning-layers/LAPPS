@@ -45,12 +45,14 @@ public class UsersResource {
    * 
    * Get all users.
    * 
-   * @param accessToken
+   * @param accessToken openID connect token
    * @param search query parameter
    * @param page number
    * @param pageLength number of users by page
    * @param sortBy field
    * @param order asc or desc
+   * @param filterBy field
+   * @param filterValue
    * 
    * @return Response with all users as JSON array.
    */
@@ -68,7 +70,9 @@ public class UsersResource {
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
       @ApiParam(value = "Sort by field", required = false, allowableValues = "email") @DefaultValue("email") @QueryParam("sortBy") String sortBy,
-      @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order) {
+      @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
+      @ApiParam(value = "Filter by field", required = false, allowableValues = "role") @DefaultValue("role") @QueryParam("filterBy") String filterBy,
+      @ApiParam(value = "Filter value", required = false) @QueryParam("filterValue") String filterValue) {
     try {
       OIDCAuthentication.authenticate(accessToken);
       // TODO: Check for admin rights (not part of the open id authentication process)
@@ -155,6 +159,7 @@ public class UsersResource {
    * 
    * Delete the user with the given oidcId.
    * 
+   * @param accessToken openID connect token
    * @param oidcId
    * 
    * @return Response
@@ -194,6 +199,7 @@ public class UsersResource {
    * 
    * Update the user with the given oidcId.
    * 
+   * @param accessToken openID connect token
    * @param oidcId
    * @param updatedUser as JSON
    * 
