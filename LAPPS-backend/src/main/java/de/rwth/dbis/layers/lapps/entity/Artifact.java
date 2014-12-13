@@ -6,18 +6,22 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @javax.persistence.Entity
 @Table(name = "artifact")
 public class Artifact implements Entity {
   private static final long serialVersionUID = -2840537551097305456L;
   @Id
   @GeneratedValue
+  @JsonIgnore
   private Long id = 0L;
   private String type = null;
   private String url = null;
   private String description = null;
   @ManyToOne
   @JoinColumn(name = "app_id")
+  @JsonIgnore
   private App belongingTo = null;
 
   public Artifact() {}
