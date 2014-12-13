@@ -80,10 +80,10 @@
         <url>http://layers.dbis.rwth-aachen.de/jira/browse/LAPPS</url>
     </issueManagement>
     <licenses>
-		<license>
-		   <name>The MIT License (MIT)</name>
-		   <url>https://raw.githubusercontent.com/learning-layers/LAPPS/master/LICENSE</url>
-		</license>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>https://raw.githubusercontent.com/learning-layers/LAPPS/master/LICENSE</url>
+        </license>
     </licenses>
     
     <modules>
