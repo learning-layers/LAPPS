@@ -3,10 +3,12 @@ package de.rwth.dbis.layers.lapps.resource;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -90,6 +92,48 @@ public class TagResource {
     try {
       return Response.status(HttpStatusCode.OK).header("numberOfPages", numberOfPages)
           .entity(mapper.writeValueAsBytes(tagEntities)).build();
+    } catch (JsonProcessingException e) {
+      LOGGER.warning(e.getMessage());
+      return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+  /**
+   * 
+   * Create a tag for an {@link AppIntanceEntity}
+   * 
+   * @param app id
+   * @param tag to create as JSON
+   * 
+   * @return Response
+   */
+  @POST
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ApiOperation(value = "Create tag", response = AppTagEntity.class)
+  @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
+      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
+          message = "Internal server problems"),
+      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
+          message = "Currently, this method is not implemented")})
+  public Response createTag(@PathParam("appId") int appId, @ApiParam(value = "Tag entity as JSON",
+      required = true) AppTagEntity createdTag) {
+    List<AppInstanceEntity> appEntities =
+        (List<AppInstanceEntity>) appInstanceFacade.findByParameter("id", appId);
+
+    if (appEntities.isEmpty()) {
+      return Response.status(HttpStatusCode.NOT_FOUND).build();
+    }
+    AppInstanceEntity appIntance = appEntities.get(0);
+
+    List<AppTagEntity> tagEntities = appIntance.getTags();
+    // TODO: create tag with help of appFacade
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      return Response.status(HttpStatusCode.NOT_IMPLEMENTED)
+          .entity(mapper.writeValueAsBytes(createdTag)).build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
