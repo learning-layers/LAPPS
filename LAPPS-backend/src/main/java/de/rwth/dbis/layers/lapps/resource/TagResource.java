@@ -3,9 +3,11 @@ package de.rwth.dbis.layers.lapps.resource;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -20,9 +22,11 @@ import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
+import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.AppInstanceFacade;
 import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
 import de.rwth.dbis.layers.lapps.entity.AppTagEntity;
+import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
 /**
  * Tag resource.
@@ -90,5 +94,54 @@ public class TagResource {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
     }
+  }
+
+  /**
+   * 
+   * Delete the tag with the given id for an {@link AppIntanceEntity}
+   * 
+   * @param accessToken openID connect token
+   * @param app id
+   * @param tag id
+   * 
+   * @return Response
+   * 
+   */
+  @DELETE
+  @Path("/{id}")
+  @ApiOperation(value = "Delete tag with id from app")
+  @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App or tag of app not found"),
+      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
+          message = "Currently, this method is not implemented")})
+  public Response deleteTag(@HeaderParam("accessToken") String accessToken,
+      @PathParam("appId") int appId, @PathParam("id") int id) {
+    try {
+      // TODO: Check for admin
+      OIDCAuthentication.authenticate(accessToken);
+    } catch (OIDCException e) {
+      LOGGER.warning(e.getMessage());
+      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+    }
+
+    List<AppInstanceEntity> appEntities =
+        (List<AppInstanceEntity>) appInstanceFacade.findByParameter("id", appId);
+
+    if (appEntities.isEmpty()) {
+      return Response.status(HttpStatusCode.NOT_FOUND).build();
+    }
+    AppInstanceEntity appIntance = appEntities.get(0);
+
+    List<AppTagEntity> tagEntities = appIntance.getTags();
+    AppTagEntity tag = new AppTagEntity(); // TODO search for the tag
+
+    if (tag == null) {
+      return Response.status(HttpStatusCode.NOT_FOUND).build();
+    } else {
+    }
+    // TODO: delete user with help of userFacade
+    return Response.status(HttpStatusCode.NOT_IMPLEMENTED).build();
   }
 }
