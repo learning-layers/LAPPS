@@ -50,6 +50,8 @@ public class ApplicationResource {
    * @param pageLength number of apps by page
    * @param sortBy field
    * @param order asc or desc
+   * @param filterBy field
+   * @param filterValue
    * 
    * @return Response with all applications as a JSON array.
    */
@@ -66,7 +68,9 @@ public class ApplicationResource {
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of apps by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
       @ApiParam(value = "Sort by field", required = false, allowableValues = "name") @DefaultValue("name") @QueryParam("sortBy") String sortBy,
-      @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order) {
+      @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
+      @ApiParam(value = "Filter by field", required = false, allowableValues = "platform,creator") @QueryParam("filterBy") String filterBy,
+      @ApiParam(value = "Filter value", required = false) @QueryParam("filterValue") String filterValue) {
     List<AppInstanceEntity> entities;
     if (search == null) {
       entities = (List<AppInstanceEntity>) appInstanceFacade.findAll();
