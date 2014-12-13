@@ -33,7 +33,7 @@ LAPPS Backend (run these commands from your project folder):
 * mvn test            --- test backend
 * mvn exec:java       --- compile and start on jetty server (port 8080, please execute in LAPPS-backend folder)
 * mvn javadoc:javadoc --- generates JavaDoc documentation
-* This commands also work inside Eclipse (Run -> Maven build..), then leave the mvn prefix.
+* These commands also work inside Eclipse (Run -> Maven build..), then leave out the mvn prefix.
 
 LAPPS Frontend (run these commands from your project folder):
 * npm install        --- install dependencies (will be done automatically when running the start command)
@@ -47,8 +47,8 @@ LAPPS Frontend (run these commands from your project folder):
 
 Nightly Builds:
 * [![Build Status](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/badge/icon)](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/)
-* [Current Version of "develop" Branch](http://buche.informatik.rwth-aachen.de:9080/lapps-0.2/)
-* [Swagger API Documentation](http://buche.informatik.rwth-aachen.de:9080/lapps-0.2/swagger-documentation/)
+* [Current Version of "develop" Branch](http://buche.informatik.rwth-aachen.de:9080/lapps-0.3-SNAPSHOT/)
+* [Swagger API Documentation](http://buche.informatik.rwth-aachen.de:9080/lapps-0.3-SNAPSHOT/swagger-documentation/)
 * [Jenkins Home Directory](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/)
 * [Backend Documentation](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/de.rwth.dbis.layers.lapps$LAPPS-backend/javadoc/)
 * [Frontend Documentation](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/JavaScript_Documentation/)
