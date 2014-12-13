@@ -9,18 +9,22 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @javax.persistence.Entity
 @Table(name = "user")
 public class User implements Entity, Comparable<User> {
   private static final long serialVersionUID = -1687031374202240517L;
   @Id
   @GeneratedValue
+  @JsonIgnore
   private Long id = 0L;
   @Column(name = "oidc_id")
   private Long oidcId = null;
   private String email = null;
   private String username = null;
   private Integer role = 0;
+
   @OneToMany(mappedBy = "creator")
   private List<App> apps = new ArrayList<App>();
 
