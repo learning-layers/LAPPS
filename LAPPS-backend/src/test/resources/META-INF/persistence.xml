@@ -16,12 +16,21 @@
       <class>de.rwth.dbis.layers.lapps.entity.AppDetailEntity</class>
       <class>de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity</class>
       <class>de.rwth.dbis.layers.lapps.entity.AppInstanceRightsEntity</class>
+      
+      <class>de.rwth.dbis.layers.lapps.entity.App</class>
+      <class>de.rwth.dbis.layers.lapps.entity.Artifact</class>
+      <class>de.rwth.dbis.layers.lapps.entity.Tag</class>
+      <class>de.rwth.dbis.layers.lapps.entity.User</class>
+      
       <properties>
         <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
         <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-		<property name="javax.persistence.jdbc.user" value="${jdbc.username}"/>
+		<!-- <property name="javax.persistence.jdbc.user" value="${jdbc.username}"/>
 		<property name="javax.persistence.jdbc.password" value="${jdbc.password}"/>
-		<property name="javax.persistence.jdbc.url" value="${jdbc.url}"/>
+		<property name="javax.persistence.jdbc.url" value="${jdbc.url}"/> -->
+		<property name="javax.persistence.jdbc.user" value="java_user" />
+		<property name="javax.persistence.jdbc.password" value="A6XwKeLFVCadZh2t" />
+		<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/lapps_new"/>
 		<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/> -->
 		<property name="hibernate.dialect" value="de.rwth.dbis.layers.lapps.data.MySqlDialectExtention"/>
 

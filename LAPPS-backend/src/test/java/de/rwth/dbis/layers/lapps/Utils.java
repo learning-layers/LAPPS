@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import de.rwth.dbis.layers.lapps.entity.AppEntity;
-import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
-import de.rwth.dbis.layers.lapps.entity.AppPlatformEntity;
-
 public class Utils {
   public static final String DELETE_USERS_QUERY = "delete UserEntity";
   public static final String DELETE_APPS_QUERY = "delete AppEntity";
@@ -27,14 +23,6 @@ public class Utils {
   public static String generateRandomString() {
     final Random random = new Random();
     return new BigInteger(80, random).toString();
-  }
-
-  // @deprecated
-  public static AppEntity createDummyAppWithInstance(AppPlatformEntity onPlatform) {
-    AppInstanceEntity instance = new AppInstanceEntity(onPlatform, "dummy app instance");
-    AppEntity app = new AppEntity("dummy app");
-    app.addInstance(instance);
-    return app;
   }
 
   public static <E> E getRandomEntity(List<E> list) {

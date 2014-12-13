@@ -27,8 +27,8 @@ import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
-import de.rwth.dbis.layers.lapps.domain.AppInstanceFacade;
-import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
+import de.rwth.dbis.layers.lapps.domain.Facade;
+import de.rwth.dbis.layers.lapps.entity.App;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
 /**
@@ -40,7 +40,7 @@ public class ApplicationResource {
 
   private static final Logger LOGGER = Logger.getLogger(ApplicationResource.class.getName());
 
-  private static AppInstanceFacade appInstanceFacade = AppInstanceFacade.getFacade();
+  private static Facade appInstanceFacade = new Facade();
 
   /**
    * Get all apps.
@@ -55,8 +55,7 @@ public class ApplicationResource {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get all apps", response = AppInstanceEntity.class,
-      responseContainer = "List")
+  @ApiOperation(value = "Get all apps", response = App.class, responseContainer = "List")
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
@@ -67,11 +66,11 @@ public class ApplicationResource {
       @ApiParam(value = "Number of apps by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
       @ApiParam(value = "Sort by field", required = false, allowableValues = "name") @DefaultValue("name") @QueryParam("sortBy") String sortBy,
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order) {
-    List<AppInstanceEntity> entities;
+    List<App> entities;
     if (search == null) {
-      entities = (List<AppInstanceEntity>) appInstanceFacade.findAll();
+      entities = (List<App>) appInstanceFacade.loadAll(App.class);
     } else {
-      entities = (List<AppInstanceEntity>) appInstanceFacade.findByName(search);
+      entities = (List<App>) appInstanceFacade.findByParam(App.class, "name", search);
     }
 
     Collections.sort(entities);
@@ -116,15 +115,15 @@ public class ApplicationResource {
   @GET
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get app by ID", response = AppInstanceEntity.class)
+  @ApiOperation(value = "Get app by ID", response = App.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
-  public Response getApp(@PathParam("id") int id) {
+  public Response getApp(@PathParam("id") Long id) {
 
-    AppInstanceEntity app = appInstanceFacade.find(id);
+    App app = appInstanceFacade.load(App.class, id);
     if (app == null) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     }
@@ -149,7 +148,7 @@ public class ApplicationResource {
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Create app", response = AppInstanceEntity.class)
+  @ApiOperation(value = "Create app", response = App.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
@@ -158,7 +157,7 @@ public class ApplicationResource {
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
   public Response createApp(@HeaderParam("accessToken") String accessToken, @ApiParam(
-      value = "App entity as JSON", required = true) AppInstanceEntity createdApp) {
+      value = "App entity as JSON", required = true) App createdApp) {
     try {
       OIDCAuthentication.authenticate(accessToken);
     } catch (OIDCException e) {
@@ -195,7 +194,7 @@ public class ApplicationResource {
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
-  public Response deleteApp(@HeaderParam("accessToken") String accessToken, @PathParam("id") int id) {
+  public Response deleteApp(@HeaderParam("accessToken") String accessToken, @PathParam("id") Long id) {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
       // process)
@@ -205,7 +204,7 @@ public class ApplicationResource {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
 
-    AppInstanceEntity app = appInstanceFacade.find(id);
+    App app = appInstanceFacade.load(App.class, id);
     if (app == null) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     }
@@ -227,7 +226,7 @@ public class ApplicationResource {
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Update app by ID", response = AppInstanceEntity.class)
+  @ApiOperation(value = "Update app by ID", response = App.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
@@ -237,8 +236,8 @@ public class ApplicationResource {
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
   public Response updateApp(@HeaderParam("accessToken") String accessToken,
-      @PathParam("id") int id,
-      @ApiParam(value = "App entity as JSON", required = true) AppInstanceEntity updatedApp) {
+      @PathParam("id") Long id,
+      @ApiParam(value = "App entity as JSON", required = true) App updatedApp) {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
       // process)
@@ -247,7 +246,7 @@ public class ApplicationResource {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
-    AppInstanceEntity app = appInstanceFacade.find(id);
+    App app = appInstanceFacade.load(App.class, id);
     if (app == null) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     }
