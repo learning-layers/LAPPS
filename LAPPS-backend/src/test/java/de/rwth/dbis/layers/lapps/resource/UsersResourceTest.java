@@ -48,9 +48,6 @@ public class UsersResourceTest {
     Client c = ClientBuilder.newClient();
     target = c.target(Main.BASE_URI);
 
-    LOGGER.info("Deleting old user data...");
-    userFacade.deleteByParam(User.class, "oidcId", 1234567L);
-    LOGGER.info("User data deleted.");
     LOGGER.info("Creating a new user...");
     user = new User(new Long(1234567), "testuser", "test@lapps.com");
     user = userFacade.save(user);
@@ -59,6 +56,9 @@ public class UsersResourceTest {
 
   @After
   public void tearDown() throws Exception {
+    LOGGER.info("Deleting old user data...");
+    userFacade.deleteByParam(User.class, "oidcId", 1234567L);
+    LOGGER.info("User data deleted.");
     server.shutdownNow();
   }
 
