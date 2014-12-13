@@ -17,7 +17,7 @@ public class User implements Entity, Comparable<User> {
   @GeneratedValue
   private Long id = 0L;
   @Column(name = "oidc_id")
-  private String oidcId = null;
+  private Long oidcId = null;
   private String email = null;
   private String username = null;
   private Integer role = 0;
@@ -26,17 +26,17 @@ public class User implements Entity, Comparable<User> {
 
   public User() {}
 
-  public User(String oidcId, String username, String email) {
+  public User(Long oidcId, String username, String email) {
     this.setOidcId(oidcId);
     this.setUsername(username);
     this.setEmail(email);
   }
 
-  public String getOidcId() {
+  public Long getOidcId() {
     return oidcId;
   }
 
-  public void setOidcId(String oidcId) {
+  public void setOidcId(Long oidcId) {
     this.oidcId = oidcId;
   }
 

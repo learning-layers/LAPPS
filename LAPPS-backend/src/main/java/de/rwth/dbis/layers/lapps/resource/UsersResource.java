@@ -137,7 +137,7 @@ public class UsersResource {
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
-  public Response getUser(@PathParam("oidcId") String oidcId) {
+  public Response getUser(@PathParam("oidcId") Long oidcId) {
 
     // search for existing user
     List<User> entities = userFacade.findByParam(User.class, "oidcId", oidcId);
@@ -176,7 +176,7 @@ public class UsersResource {
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
   public Response deleteUser(@HeaderParam("accessToken") String accessToken,
-      @PathParam("oidcId") String oidcId) {
+      @PathParam("oidcId") Long oidcId) {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication
       // process)
@@ -220,7 +220,7 @@ public class UsersResource {
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
   public Response updateUser(@HeaderParam("accessToken") String accessToken,
-      @PathParam("oidcId") String oidcId,
+      @PathParam("oidcId") Long oidcId,
       @ApiParam(value = "User entity as JSON", required = true) User updatedUser) {
     try {
       // TODO: Check for admin or user himself rights (not part of the open id authentication

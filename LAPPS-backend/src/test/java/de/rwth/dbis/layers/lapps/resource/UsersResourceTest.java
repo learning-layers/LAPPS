@@ -49,10 +49,10 @@ public class UsersResourceTest {
     target = c.target(Main.BASE_URI);
 
     LOGGER.info("Deleting old user data...");
-    userFacade.deleteByParam(User.class, "oidcId", String.valueOf(1234567));
+    userFacade.deleteByParam(User.class, "oidcId", 1234567L);
     LOGGER.info("User data deleted.");
     LOGGER.info("Creating a new user...");
-    user = new User(String.valueOf(1234567), "testuser", "test@lapps.com");
+    user = new User(new Long(1234567), "testuser", "test@lapps.com");
     user = userFacade.save(user);
     LOGGER.info("User created: " + user);
   }
@@ -114,7 +114,7 @@ public class UsersResourceTest {
         new String(
             "{\"id\":"
                 + user.getId().toString()
-                + ",\"oidcId\":\"1234567\",\"email\":\"test@lapps.com\",\"username\":\"testuser\",\"role\":0}"),
+                + ",\"oidcId\":1234567,\"email\":\"test@lapps.com\",\"username\":\"testuser\",\"role\":0}"),
         responseContent);
   }
 

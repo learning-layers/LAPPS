@@ -156,7 +156,7 @@ public class OIDCAuthentication {
    * @return the (LAPPS) id of the user
    */
   private static Long createNewUser(long oidc_id, String mail, String userName) {
-    User user = new User(String.valueOf(oidc_id), userName, mail);
+    User user = new User(oidc_id, userName, mail);
     user = facade.save(user);
     return user.getId();
   }
