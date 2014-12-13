@@ -266,4 +266,16 @@ public class ApplicationResource {
     }
   }
 
+  /**
+   * 
+   * Tag subresource. Leads to {@link TagResource}.
+   * 
+   * @return TagResource
+   * 
+   */
+  @Path("/{appId}/tags")
+  public TagResource getTagResource() {
+    return new TagResource();
+  }
+
 }

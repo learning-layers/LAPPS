@@ -6,6 +6,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @javax.persistence.Entity
 @Table(name = "tag")
 public class AppTagEntity implements Entity {
@@ -14,6 +16,7 @@ public class AppTagEntity implements Entity {
   @GeneratedValue
   private int id = 0;
   private String name = null;
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "app_instance_id")
   private AppInstanceEntity appInstance = null;
