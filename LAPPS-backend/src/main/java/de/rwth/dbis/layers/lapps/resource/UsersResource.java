@@ -27,6 +27,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
 
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.UserFacade;
+import de.rwth.dbis.layers.lapps.entity.AppInstanceEntity;
 import de.rwth.dbis.layers.lapps.entity.UserEntity;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
@@ -246,4 +247,34 @@ public class UsersResource {
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
     }
   }
+
+  /**
+   * 
+   * Get all apps for the user with the given oidcId.
+   * 
+   * @param oidcId
+   * @param page number
+   * @param pageLength number of users by page
+   * 
+   * @return Response with all apps as JSON array.
+   * 
+   */
+  @GET
+  @Path("/{oidcId}/apps")
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiOperation(value = "Get all apps for an user", response = AppInstanceEntity.class,
+      responseContainer = "List")
+  @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
+      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
+          message = "Internal server problems")})
+  public Response getAppsForUser(
+      @PathParam("oidcId") long oidcId,
+      @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
+      @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength) {
+    return new ApplicationResource().getAllApps(null, page, pageLength, null, null, "Creator",
+        String.valueOf(oidcId));
+  }
+
 }
