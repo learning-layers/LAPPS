@@ -135,6 +135,14 @@ public class Facade {
     return entity;
   }
 
+  /**
+   * TODO: Add something meaningful about the param.
+   * 
+   * @param clazz
+   * @param paramName
+   * @param paramValue
+   * @return
+   */
   @SuppressWarnings("unchecked")
   public <E extends Entity> List<E> findByParam(Class<E> clazz, String paramName, Object paramValue) {
     em = EMF.getEm();

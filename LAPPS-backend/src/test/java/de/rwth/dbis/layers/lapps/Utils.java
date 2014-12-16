@@ -117,6 +117,8 @@ public class Utils {
     private final static int LOGO_W = 150;
     private final static int LOGO_H = 150;
 
+    private static String[] platforms = new String[] {"iOS", "Android", "Windows phone", "Web"};
+
     /**
      * Generates a shuffled lorem ipsum textblock.
      * 
@@ -349,6 +351,11 @@ public class Utils {
         pair[1] = images[index + 1];
       }
       return pair;
+    }
+
+    public static String getRandomPlatform() {
+      int index = generateRandomInt(0, platforms.length - 1);
+      return platforms[index];
     }
   }
 
