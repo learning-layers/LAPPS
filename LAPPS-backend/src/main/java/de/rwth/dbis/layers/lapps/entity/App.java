@@ -45,7 +45,7 @@ public class App implements Entity, Comparable<App> {
   @Column(name = "short_description")
   private String shortDescription = null;
   @Column(name = "long_description")
-  private String longDesccription = null;
+  private String longDescription = null;
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User creator = null;
@@ -173,12 +173,12 @@ public class App implements Entity, Comparable<App> {
     this.shortDescription = shortDescription;
   }
 
-  public String getLongDesccription() {
-    return longDesccription;
+  public String getLongDescription() {
+    return longDescription;
   }
 
-  public void setLongDesccription(String longDesccription) {
-    this.longDesccription = longDesccription;
+  public void setLongDescription(String longDescription) {
+    this.longDescription = longDescription;
   }
 
   public User getCreator() {
