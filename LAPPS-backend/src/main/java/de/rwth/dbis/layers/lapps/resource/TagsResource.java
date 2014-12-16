@@ -28,7 +28,6 @@ import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
 import de.rwth.dbis.layers.lapps.entity.Tag;
-import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
 /**
  * Tag resource.
@@ -159,11 +158,8 @@ public class TagsResource {
   public Response deleteTag(@HeaderParam("accessToken") String accessToken,
       @PathParam("appId") long appId, @PathParam("id") long id) {
 
-    try {
-      // TODO: Check for admin
-      OIDCAuthentication.authenticate(accessToken);
-    } catch (OIDCException e) {
-      LOGGER.warning(e.getMessage());
+    // Check for admin status
+    if (!OIDCAuthentication.isAdmin(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
 

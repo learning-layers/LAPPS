@@ -92,8 +92,7 @@ public class TagsResourceTest {
   @Test
   public void testGetAllTags() {
     Response response =
-        target.path("apps/" + app.getId() + "/tags").request(MediaType.APPLICATION_JSON)
-            .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).get();
+        target.path("apps/" + app.getId() + "/tags").request(MediaType.APPLICATION_JSON).get();
     assertEquals(HttpStatusCode.OK, response.getStatus());
     MediaType responseMediaType = response.getMediaType();
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
@@ -108,7 +107,7 @@ public class TagsResourceTest {
       // check if previously created tag can be found
       JsonNode retrievedTag = null;
       while (tagIterator.hasNext()) {
-        // go through the list until our user is found
+        // go through the list until our tag is found
         retrievedTag = tagIterator.next();
         if (retrievedTag.get("value").toString().equals("\"" + tag.getValue().toString() + "\"")) {
           break;

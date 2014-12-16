@@ -14,6 +14,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @javax.persistence.Entity
 @Table(name = "user")
 public class User implements Entity, Comparable<User> {
+
+  // User role constants
+  public static final int USER = 1;
+  public static final int PENDING_DEVELOPER = 2;
+  public static final int DEVELOPER = 3;
+  public static final int ADMIN = 4;
+
   private static final long serialVersionUID = -1687031374202240517L;
   @Id
   @GeneratedValue
@@ -65,7 +72,10 @@ public class User implements Entity, Comparable<User> {
   }
 
   public void setRole(Integer role) {
-    this.role = role;
+    // make sure only valid role entries are set
+    if (role == USER || role == PENDING_DEVELOPER || role == DEVELOPER || role == ADMIN) {
+      this.role = role;
+    }
   }
 
   public Long getId() {
@@ -82,4 +92,5 @@ public class User implements Entity, Comparable<User> {
       return this.getEmail().compareToIgnoreCase(o.getEmail());
     }
   }
+
 }
