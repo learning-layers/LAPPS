@@ -14,6 +14,8 @@
     "angular-resource": "1.3.x",
     "angular-bootstrap": "0.11.x",
     "swagger-angular-client": "0.1.x",
-    "marked":  "0.3.x"
+    "marked":  "0.3.x",
+    "angular-md5":  "0.1.7",
+    "angular-xeditable":  "0.1.8"
   }
 }

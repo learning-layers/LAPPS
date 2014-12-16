@@ -49,7 +49,6 @@
                         '$location',
                         function($http, $location) {
                           return {
-
                             /**
                              * @field
                              * @type {object}
@@ -61,10 +60,29 @@
 
                             /**
                              * @field
+                             * @type string
+                             * @memberOf lapps.lappsServices.user
+                             * @description The role of a user (User, Developer,
+                             *              Admin)
+                             */
+                            role: 'user',
+
+                            /**
+                             * @field
+                             * @type number
+                             * @memberOf lapps.lappsServices.user
+                             * @description The timestamp, when the user first
+                             *              signed in.
+                             */
+
+                            memberSince: 0,
+                            /**
+                             * @field
                              * @type boolean
                              * @memberOf lapps.lappsServices.user
                              * @description True if the user is signed in.
                              */
+
                             signedIn: false,
 
                             /**
@@ -115,7 +133,7 @@
                                                               self.token = window.localStorage['access_token'];// needed
                                                               // for
                                                               // requests
-
+                                                              getDatabaseUserInfo();
                                                               self
                                                                       .loginCallback(true);
                                                             } else {
@@ -191,7 +209,26 @@
                             getAccessToken: function() {
                               return window.localStorage['access_token'];
                             },
-
+                            /**
+                             * @function
+                             * @type boolean
+                             * @memberOf lapps.lappsServices.user
+                             * @description True if the user has the role of an
+                             *              administrator
+                             */
+                            isAdmin: function() {
+                              return this.role.toLowerCase().indexOf('admin') == 0;
+                            },
+                            /**
+                             * @function
+                             * @type boolean
+                             * @memberOf lapps.lappsServices.user
+                             * @description True if the user has the role of a
+                             *              developer
+                             */
+                            isDeveloper: function() {
+                              return this.role.toLowerCase().indexOf('dev') == 0;
+                            },
                             /**
                              * @function
                              * @memberOf lapps.lappsServices.user
@@ -242,6 +279,9 @@
                               });
                             },
 
+                            getDatabaseUserInfo: function() {
+                              // TODO: fetch additional data from our database
+                            },
                             /**
                              * @function
                              * @memberOf lapps.lappsServices.user
