@@ -29,7 +29,6 @@ import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
 import de.rwth.dbis.layers.lapps.entity.User;
-import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
 /**
  * Users resource (exposed at "users" path).
@@ -74,11 +73,8 @@ public class UsersResource {
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
       @ApiParam(value = "Filter by field", required = false, allowableValues = "role") @DefaultValue("role") @QueryParam("filterBy") String filterBy,
       @ApiParam(value = "Filter value", required = false) @QueryParam("filterValue") String filterValue) {
-    try {
-      OIDCAuthentication.authenticate(accessToken);
-      // TODO: Check for admin rights (not part of the open id authentication process)
-    } catch (OIDCException e) {
-      LOGGER.warning(e.getMessage());
+    // Check, if the user has admin rights
+    if (!OIDCAuthentication.isAdmin(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
 
@@ -177,12 +173,8 @@ public class UsersResource {
           message = "Currently, this method is not implemented")})
   public Response deleteUser(@HeaderParam("accessToken") String accessToken,
       @PathParam("oidcId") Long oidcId) {
-    try {
-      // TODO: Check for admin or user himself rights (not part of the open id authentication
-      // process)
-      OIDCAuthentication.authenticate(accessToken);
-    } catch (OIDCException e) {
-      LOGGER.warning(e.getMessage());
+    // Check, if the user has admin rights
+    if (!OIDCAuthentication.isAdmin(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
     // search for existing user
@@ -222,12 +214,11 @@ public class UsersResource {
   public Response updateUser(@HeaderParam("accessToken") String accessToken,
       @PathParam("oidcId") Long oidcId,
       @ApiParam(value = "User entity as JSON", required = true) User updatedUser) {
-    try {
-      // TODO: Check for admin or user himself rights (not part of the open id authentication
-      // process)
-      OIDCAuthentication.authenticate(accessToken);
-    } catch (OIDCException e) {
-      LOGGER.warning(e.getMessage());
+
+    // TODO: Check if the user is himself (also ok)
+
+    // If not, check, if the user has admin rights
+    if (!OIDCAuthentication.isAdmin(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
     // search for existing user

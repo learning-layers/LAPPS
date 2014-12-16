@@ -42,27 +42,117 @@ public class OIDCAuthentication {
   private static Facade facade = new Facade();
 
   /**
+   * Returns true, if the given token belongs to a user with at least(!) "user" rights.
+   * 
+   * @param openIdToken
+   * @return
+   */
+  public static boolean isUser(String openIdToken) {
+    // default testing token returns default testing id
+    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
+      return true;
+    }
+
+    try {
+      User user = authenticate(openIdToken);
+      if (user.getRole() >= User.USER) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (OIDCException e) {
+      return false;
+    }
+  }
+
+  /**
+   * Returns true, if the given token belongs to a user with exactly(!) "pending developer" rights.
+   * 
+   * @param openIdToken
+   * @return
+   */
+  public static boolean isPendingDeveloper(String openIdToken) {
+    // default testing token returns default testing id
+    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
+      return true;
+    }
+
+    try {
+      User user = authenticate(openIdToken);
+      if (user.getRole() == User.PENDING_DEVELOPER) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (OIDCException e) {
+      return false;
+    }
+  }
+
+  /**
+   * Returns true, if the given token belongs to a user with at least(!) "developer" rights.
+   * 
+   * @param openIdToken
+   * @return
+   */
+  public static boolean isDeveloper(String openIdToken) {
+    // default testing token returns default testing id
+    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
+      return true;
+    }
+
+    try {
+      User user = authenticate(openIdToken);
+      if (user.getRole() >= User.DEVELOPER) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (OIDCException e) {
+      return false;
+    }
+  }
+
+  /**
+   * Returns true, if the given token belongs to a user with "admin" rights.
+   * 
+   * @param openIdToken
+   * @return
+   */
+  public static boolean isAdmin(String openIdToken) {
+    // default testing token returns default testing id
+    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
+      return true;
+    }
+
+    try {
+      User user = authenticate(openIdToken);
+      if (user.getRole() == User.ADMIN) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (OIDCException e) {
+      return false;
+    }
+  }
+
+
+  /**
    * Tries to authenticate a user for a given OpenIdToken. If the user is not yet registered, it
-   * will register him to the LAPPS backend.
+   * will register him to the LAPPS backend. If only a role check is needed, better use the other
+   * methods of this class.
    * 
    * @param openIdToken
    * 
-   * @return the (LAPPS) id of the user
+   * @return the user
    * @throws OIDCException an exception thrown for all Open Id Connect issues
    */
-  public static Long authenticate(String openIdToken) throws OIDCException {
-
-    // return value
-    Long userId = OPEN_ID_USER_ID;
+  public static User authenticate(String openIdToken) throws OIDCException {
 
     // no token provided
     if (openIdToken == null) {
       throw new OIDCException("No token was provided");
-    }
-
-    // default testing token returns default testing id
-    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
-      return userId;
     }
 
     // JSON initialization stuff
@@ -129,21 +219,19 @@ public class OIDCAuthentication {
       throw new OIDCException("Exception during Open Id Authentication occured.");
     else if (entities.size() == 1) {
       User user = entities.get(0);
-      userId = user.getId();
       // quick check, if mail or user name of OIDC server account differs (has changed) to our
       // database entry; if so, update our user
       if (!user.getEmail().equals(mail) || !user.getUsername().equals(userName)) {
         user.setEmail(mail);
         user.setUsername(userName);
-        facade.save(user);
+        user = facade.save(user);
       }
-      return userId;
+      return user;
 
     }
 
     // user is unknown, has to be created
-    userId = createNewUser(sub, mail, userName);
-    return userId;
+    return createNewUser(sub, mail, userName);
   }
 
   /**
@@ -153,12 +241,12 @@ public class OIDCAuthentication {
    * @param mail a user email
    * @param userName the name of the user to be created
    * 
-   * @return the (LAPPS) id of the user
+   * @return the user
    */
-  private static Long createNewUser(long oidc_id, String mail, String userName) {
+  private static User createNewUser(long oidc_id, String mail, String userName) {
     User user = new User(oidc_id, userName, mail);
     user = facade.save(user);
-    return user.getId();
+    return user;
   }
 
 }

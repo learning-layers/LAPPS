@@ -108,7 +108,7 @@ public class TagsResourceTest {
       // check if previously created tag can be found
       JsonNode retrievedTag = null;
       while (tagIterator.hasNext()) {
-        // go through the list until our user is found
+        // go through the list until our tag is found
         retrievedTag = tagIterator.next();
         if (retrievedTag.get("value").toString().equals("\"" + tag.getValue().toString() + "\"")) {
           break;

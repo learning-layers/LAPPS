@@ -26,7 +26,6 @@ import de.rwth.dbis.layers.lapps.Main;
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.User;
-import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
 /**
  * User Resource Test Class
@@ -143,16 +142,11 @@ public class UsersResourceTest {
   }
 
   /**
-   * Test the authentication functionality.
+   * Test the authentication functionality (only test token!).
    */
   @Test
   public void testAuthentication() {
-    Long returnValue = 0L;
-    try {
-      returnValue = OIDCAuthentication.authenticate(OIDCAuthentication.OPEN_ID_TEST_TOKEN);
-    } catch (OIDCException e) {
-      fail("Open Id authentication did not succeed!");
-    }
-    assertEquals(OIDCAuthentication.OPEN_ID_USER_ID, returnValue); // ID of test user
+    boolean isAdmin = OIDCAuthentication.isAdmin(OIDCAuthentication.OPEN_ID_TEST_TOKEN);
+    assertTrue(isAdmin);
   }
 }

@@ -29,7 +29,6 @@ import com.wordnik.swagger.annotations.ApiResponses;
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
-import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
 /**
  * Application resource (exposed at "apps" path). AppInstance refers to AppInstanceRessource.
@@ -162,12 +161,12 @@ public class ApplicationResource {
           message = "Currently, this method is not implemented")})
   public Response createApp(@HeaderParam("accessToken") String accessToken, @ApiParam(
       value = "App entity as JSON", required = true) App createdApp) {
-    try {
-      OIDCAuthentication.authenticate(accessToken);
-    } catch (OIDCException e) {
-      LOGGER.warning(e.getMessage());
+
+    // Check, if the user has developer rights
+    if (!OIDCAuthentication.isDeveloper(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
+
     // TODO: create app with help of appFacade
     try {
       ObjectMapper mapper = new ObjectMapper();
@@ -199,15 +198,13 @@ public class ApplicationResource {
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
   public Response deleteApp(@HeaderParam("accessToken") String accessToken, @PathParam("id") Long id) {
-    try {
-      // TODO: Check for admin or user himself rights (not part of the open id authentication
-      // process)
-      OIDCAuthentication.authenticate(accessToken);
-    } catch (OIDCException e) {
-      LOGGER.warning(e.getMessage());
+
+    // TODO: Check, if the user is creator of the app (also ok)
+
+    // If not, check, if the user has admin rights
+    if (!OIDCAuthentication.isAdmin(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
-
     App app = appInstanceFacade.load(App.class, id);
     if (app == null) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
@@ -242,12 +239,11 @@ public class ApplicationResource {
   public Response updateApp(@HeaderParam("accessToken") String accessToken,
       @PathParam("id") Long id,
       @ApiParam(value = "App entity as JSON", required = true) App updatedApp) {
-    try {
-      // TODO: Check for admin or user himself rights (not part of the open id authentication
-      // process)
-      OIDCAuthentication.authenticate(accessToken);
-    } catch (OIDCException e) {
-      LOGGER.warning(e.getMessage());
+
+    // TODO: Check, if the user is creator of the app (also ok)
+
+    // If not, check, if the user has admin rights
+    if (!OIDCAuthentication.isAdmin(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
     App app = appInstanceFacade.load(App.class, id);
