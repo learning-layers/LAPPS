@@ -66,11 +66,11 @@
             <button ng-show="!isloggedIn" ng-click="login()" type="button" class="btn btn-success navbar-btn btn-small"><span class="glyphicon glyphicon-ok"></span><span class="hspacer05"></span>{{loginText}}</button>
 
             <button ng-show="isloggedIn" type="button" class="btn btn-primary dropdown-toggle navbar-btn btn-small" data-toggle="dropdown" aria-expanded="false">
-              <span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>{{userName}}<span class="caret"></span>
+              <span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>{{userData.preferred_username}}<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-              <li><a href="#"><span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>My Profile</a></li>
-              <li><a href="#"><span class="glyphicon glyphicon glyphicon-cog"></span><span class="hspacer05"></span>Admin Panel</a></li>
+              <li><a href="#/users/{{userData.sub}}"><span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>My Profile</a></li>
+              <li><a href="#/admin"><span class="glyphicon glyphicon glyphicon-cog"></span><span class="hspacer05"></span>Admin Panel</a></li>
 
               <li class="divider"></li>
               <li ng-click="logout()"><a href="javascript:void(0)"><span class="glyphicon glyphicon-off"></span><span class="hspacer05"></span>Sign out</a></li>

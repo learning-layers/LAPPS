@@ -11,6 +11,8 @@ module.exports = function(config) {
                 'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
                 'app/bower_components/swagger-angular-client/dist/swagger-angular-client.js',
                 'app/bower_components/jquery/dist/jquery.js',
+                'app/bower_components/angular-md5/angular-md5.js',
+                'app/bower_components/angular-xeditable/dist/js/xeditable.js',
                 'app/api/lappsApi.js', 'app/core/**/*.js',
                 'app/api/swaggerApi.js', 'test/utils/swagger2HttpBackend.js',
                 'app/components/**/*.js', 'app/shared/**/*.js',

@@ -32,8 +32,9 @@
    * @memberOf lapps
    */
   var lappsApp = angular.module('lappsApp', ['ngRoute', 'ui.bootstrap',
-      'lappsControllers', 'lappsDirectives', 'lappsServices', 'swagger-client',
-      'lappsFilters', 'lappsAttibuteDirectives']);
+      'angular-md5', 'xeditable', 'lappsControllers', 'lappsDirectives',
+      'lappsServices', 'swagger-client', 'lappsFilters',
+      'lappsAttibuteDirectives']);
 
   lappsApp.config(['userProvider', function(userProvider) {
     userProvider.configOidc({
@@ -58,9 +59,15 @@
     }).when('/search', {
       templateUrl: 'components/searchPage/searchPageView.html',
       controller: 'searchPageCtrl'
+    }).when('/users/:userId', {
+      templateUrl: 'components/userPage/userPageView.html',
+      controller: 'userPageCtrl'
     }).otherwise({
       redirectTo: '/apps'
     });
   }]);
-
+  lappsApp.run(['editableOptions', function(editableOptions) {
+    editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2',
+                                    // 'default'
+  }]);
 }).call(this);

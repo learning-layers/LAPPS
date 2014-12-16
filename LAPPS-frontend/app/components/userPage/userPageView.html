@@ -1,0 +1,73 @@
+﻿<div class="row">
+  <div class="col-md-12 thumbnail" id="user-profile">
+    <div class="title">
+      <!--<img ng-src="{{user.avatar}}">-->
+      <h2>
+        <span>{{user.name}}</span>
+      </h2>
+    </div>
+
+    <div class="container">
+      <div class="col-md-3 col-sm-5 text-center avatar">
+        <a href="https://secure.gravatar.com" class="img-circle" ng-style="{'background-image':'url({{user.avatar}})'}"></a>
+      </div>
+      <div class="col-md-3 col-sm-7">
+        <hr class="visible-xs" />
+        <dl>
+          <dt>
+            <dfn><span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>Role</dfn>
+          </dt>
+          <dd>
+            {{user.role}}
+          </dd>
+
+          <dt>
+            <dfn><span class="glyphicon glyphicon-time"></span><span class="hspacer05"></span>Member since</dfn>
+          </dt>
+          <dd>
+            {{user.memberSince}}
+          </dd>
+
+          <dt ng-show="{{isDeveloper()||isAdmin()||visitorIsAdmin()}}">
+            <dfn><span class="glyphicon glyphicon-envelope"></span><span class="hspacer05"></span>Email</dfn>
+          </dt>
+          <dd ng-show="{{isDeveloper()||isAdmin()||visitorIsAdmin()}}">
+            <a href="mailto:{{user.email}}">{{user.email}}</a>
+          </dd>
+
+          <dt ng-show="{{isDeveloper()}}">
+            <dfn><span class="glyphicon glyphicon-home"></span><span class="hspacer05"></span>Homepage</dfn>
+          </dt>
+          <dd ng-show="{{isDeveloper()}}">
+            <a ng-show="mayEdit()" editable-url="user.homepage" onaftersave="updateUser()" href="{{user.homepage||'about:blank'}}">{{user.homepage||'about:blank'}}</a>
+            <a ng-hide="mayEdit()" href="{{user.homepage||'about:blank'}}">{{user.homepage||'about:blank'}}</a>
+          </dd>
+
+          <dt ng-show="{{isDeveloper()}}">
+            <dfn><span class="glyphicon glyphicon-upload"></span><span class="hspacer05"></span>Apps uploaded</dfn>
+          </dt>
+          <dd ng-show="{{isDeveloper()}}">
+            <a href="#">See {{user.name}}'s apps</a>
+          </dd>
+        </dl>
+      </div>
+      <div class="col-md-6 col-sm-12" ng-show="{{isDeveloper()}}">
+        <dl>
+          <dt>
+            <dfn><span class="glyphicon glyphicon-pencil"></span><span class="hspacer05"></span>Description</dfn>
+          </dt>
+          <dd ng-show="mayEdit()" editable-textarea="user.description" onaftersave="updateUser()" e-rows="10" e-style="width:100%">
+            {{user.description||'empty'}}
+          </dd>
+          <dd ng-hide="mayEdit()">
+            {{user.description||'empty'}}
+          </dd>
+        </dl>
+      </div>
+      <!--<div id="remove-profile" class="col-md-3 col-sm-12" ng-show="(mayEdit()||visitorIsAdmin())&&!isAdmin()">
+        <button ng-hide="{{visitorIsAdmin()}}" class="btn btn-danger">Delete Me</button>
+        <button ng-show="{{visitorIsAdmin()&&!mayEdit()}}" class="btn btn-danger">Ban User</button>
+      </div>-->
+    </div>
+  </div>
+</div>
