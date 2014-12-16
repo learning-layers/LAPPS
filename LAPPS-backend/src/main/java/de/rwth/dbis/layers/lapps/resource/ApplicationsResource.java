@@ -9,6 +9,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -28,61 +29,51 @@ import com.wordnik.swagger.annotations.ApiResponses;
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
-import de.rwth.dbis.layers.lapps.entity.User;
 
 /**
- * Users resource (exposed at "users" path).
+ * Application resource (exposed at "apps" path). AppInstance refers to AppInstanceRessource.
  */
-@Path("/users")
-@Api(value = "/users", description = "User resource")
-public class UsersResource {
+@Path("/apps")
+@Api(value = "/apps", description = "Applications resource")
+public class ApplicationsResource {
 
-  private static final Logger LOGGER = Logger.getLogger(UsersResource.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(ApplicationsResource.class.getName());
 
-  private static Facade userFacade = new Facade();
+  private static Facade appInstanceFacade = new Facade();
 
   /**
+   * Get all apps.
    * 
-   * Get all users.
-   * 
-   * @param accessToken openID connect token
    * @param search query parameter
    * @param page number
-   * @param pageLength number of users by page
+   * @param pageLength number of apps by page
    * @param sortBy field
    * @param order asc or desc
    * @param filterBy field
    * @param filterValue
    * 
-   * @return Response with all users as JSON array.
+   * @return Response with all applications as a JSON array.
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get all users", response = User.class, responseContainer = "List")
+  @ApiOperation(value = "Get all apps", response = App.class, responseContainer = "List")
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
-      @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
-  public Response getAllUsers(
-      @HeaderParam("accessToken") String accessToken,
+  public Response getAllApps(
       @ApiParam(value = "Search query parameter", required = false) @QueryParam("search") String search,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
-      @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
-      @ApiParam(value = "Sort by field", required = false, allowableValues = "email") @DefaultValue("email") @QueryParam("sortBy") String sortBy,
+      @ApiParam(value = "Number of apps by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
+      @ApiParam(value = "Sort by field", required = false, allowableValues = "name") @DefaultValue("name") @QueryParam("sortBy") String sortBy,
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
-      @ApiParam(value = "Filter by field", required = false, allowableValues = "role") @DefaultValue("role") @QueryParam("filterBy") String filterBy,
+      @ApiParam(value = "Filter by field", required = false, allowableValues = "platform,creator") @QueryParam("filterBy") String filterBy,
       @ApiParam(value = "Filter value", required = false) @QueryParam("filterValue") String filterValue) {
-    // Check, if the user has admin rights
-    if (!OIDCAuthentication.isAdmin(accessToken)) {
-      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
-    }
-
-    List<User> entities;
+    List<App> entities;
     if (search == null) {
-      entities = (List<User>) userFacade.loadAll(User.class);
+      entities = (List<App>) appInstanceFacade.loadAll(App.class);
     } else {
-      entities = (List<User>) userFacade.loadAll(User.class);
+      entities = (List<App>) appInstanceFacade.findByParam(App.class, "name", search);
     }
 
     Collections.sort(entities);
@@ -117,35 +108,31 @@ public class UsersResource {
 
   /**
    * 
-   * Gets the user for a given oidcId.
+   * Gets the app for a given id.
    * 
-   * @param oidcId
+   * @param id
    * 
-   * @return Response with user as a JSON object.
+   * @return Response with an app as a JSON object.
    * 
    */
   @GET
-  @Path("/{oidcId}")
+  @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get user by oidcId", response = User.class)
+  @ApiOperation(value = "Get app by ID", response = App.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
-      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
-  public Response getUser(@PathParam("oidcId") Long oidcId) {
+  public Response getApp(@PathParam("id") Long id) {
 
-    // search for existing user
-    List<User> entities = userFacade.findByParam(User.class, "oidcId", oidcId);
-    User user = null;
-    if (entities.isEmpty()) {
+    App app = appInstanceFacade.load(App.class, id);
+    if (app == null) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
-    } else {
-      user = entities.get(0);
     }
     try {
       ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(user)).build();
+      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(app)).build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
@@ -154,85 +141,120 @@ public class UsersResource {
 
   /**
    * 
-   * Delete the user with the given oidcId.
+   * Create an app.
    * 
    * @param accessToken openID connect token
-   * @param oidcId
+   * @param createdApp as JSON
    * 
    * @return Response
-   * 
    */
-  @DELETE
-  @Path("/{oidcId}")
-  @ApiOperation(value = "Delete user by oidcId")
-  @ApiResponses(value = {
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
-      @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
-      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
-      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
-          message = "Currently, this method is not implemented")})
-  public Response deleteUser(@HeaderParam("accessToken") String accessToken,
-      @PathParam("oidcId") Long oidcId) {
-    // Check, if the user has admin rights
-    if (!OIDCAuthentication.isAdmin(accessToken)) {
-      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
-    }
-    // search for existing user
-    List<User> entities = userFacade.findByParam(User.class, "oidcId", oidcId);
-    if (entities.isEmpty()) {
-      return Response.status(HttpStatusCode.NOT_FOUND).build();
-    } else {
-      // UserEntity user = entities.get(0);
-    }
-    // TODO: delete user with help of userFacade
-    return Response.status(HttpStatusCode.NOT_IMPLEMENTED).build();
-  }
-
-  /**
-   * 
-   * Update the user with the given oidcId.
-   * 
-   * @param accessToken openID connect token
-   * @param oidcId
-   * @param updatedUser as JSON
-   * 
-   * @return Response with updated User
-   */
-  @PUT
-  @Path("/{oidcId}")
+  @POST
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Update user by oidcId", response = User.class)
+  @ApiOperation(value = "Create app", response = App.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
-      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems"),
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
-  public Response updateUser(@HeaderParam("accessToken") String accessToken,
-      @PathParam("oidcId") Long oidcId,
-      @ApiParam(value = "User entity as JSON", required = true) User updatedUser) {
+  public Response createApp(@HeaderParam("accessToken") String accessToken, @ApiParam(
+      value = "App entity as JSON", required = true) App createdApp) {
 
-    // TODO: Check if the user is himself (also ok)
+    // Check, if the user has developer rights
+    if (!OIDCAuthentication.isDeveloper(accessToken)) {
+      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+    }
+
+    // TODO: create app with help of appFacade
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      return Response.status(HttpStatusCode.NOT_IMPLEMENTED)
+          .entity(mapper.writeValueAsBytes(createdApp)).build();
+    } catch (JsonProcessingException e) {
+      LOGGER.warning(e.getMessage());
+      return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
+    }
+
+  }
+
+  /**
+   * 
+   * Delete the app with the given id.
+   * 
+   * @param accessToken openID connect token
+   * @param id
+   * 
+   * @return Response
+   */
+  @DELETE
+  @Path("/{id}")
+  @ApiOperation(value = "Delete app by ID")
+  @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
+      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
+          message = "Currently, this method is not implemented")})
+  public Response deleteApp(@HeaderParam("accessToken") String accessToken, @PathParam("id") Long id) {
+
+    // TODO: Check, if the user is creator of the app (also ok)
 
     // If not, check, if the user has admin rights
     if (!OIDCAuthentication.isAdmin(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
-    // search for existing user
-    List<User> entities = userFacade.findByParam(User.class, "oidcId", oidcId);
-    if (entities.isEmpty()) {
+    App app = appInstanceFacade.load(App.class, id);
+    if (app == null) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
-    } else {
-      // UserEntity user = entities.get(0);
     }
-    // TODO: update user with help of userFacade
+    // TODO: delete app with help of appFacade
+    return Response.status(HttpStatusCode.NOT_IMPLEMENTED).build();
+  }
+
+  /**
+   * 
+   * Update the app with the given id.
+   * 
+   * @param accessToken openID connect token
+   * @param id
+   * @param updatedApp as JSON
+   * 
+   * @return Response
+   */
+  @PUT
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ApiOperation(value = "Update app by ID", response = App.class)
+  @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
+      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
+          message = "Internal server problems"),
+      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
+          message = "Currently, this method is not implemented")})
+  public Response updateApp(@HeaderParam("accessToken") String accessToken,
+      @PathParam("id") Long id,
+      @ApiParam(value = "App entity as JSON", required = true) App updatedApp) {
+
+    // TODO: Check, if the user is creator of the app (also ok)
+
+    // If not, check, if the user has admin rights
+    if (!OIDCAuthentication.isAdmin(accessToken)) {
+      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+    }
+    App app = appInstanceFacade.load(App.class, id);
+    if (app == null) {
+      return Response.status(HttpStatusCode.NOT_FOUND).build();
+    }
+    // TODO: update app with help of appFacade
     try {
       ObjectMapper mapper = new ObjectMapper();
       return Response.status(HttpStatusCode.NOT_IMPLEMENTED)
-          .entity(mapper.writeValueAsBytes(updatedUser)).build();
+          .entity(mapper.writeValueAsBytes(updatedApp)).build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
@@ -241,31 +263,14 @@ public class UsersResource {
 
   /**
    * 
-   * Get all apps for the user with the given oidcId.
+   * Tag subresource. Leads to {@link TagsResource}.
    * 
-   * @param oidcId
-   * @param page number
-   * @param pageLength number of users by page
-   * 
-   * @return Response with all apps as JSON array.
+   * @return TagsResource
    * 
    */
-  @GET
-  @Path("/{oidcId}/apps")
-  @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get all apps for an user", response = App.class,
-      responseContainer = "List")
-  @ApiResponses(value = {
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
-      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
-      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
-          message = "Internal server problems")})
-  public Response getAppsForUser(
-      @PathParam("oidcId") long oidcId,
-      @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
-      @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength) {
-    return new ApplicationsResource().getAllApps(null, page, pageLength, null, null, "Creator",
-        String.valueOf(oidcId));
+  @Path("/{appId}/tags")
+  public TagsResource getTagsResource() {
+    return new TagsResource();
   }
 
 }
