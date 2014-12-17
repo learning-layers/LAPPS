@@ -40,7 +40,8 @@
       }];
   // define which other files should be copied
   var copyPaths = ['**/*.html', 'assets/img/**/*', 'assets/dummy/**/*',
-      'bower_components/bootstrap/dist/fonts/*'];
+      'bower_components/bootstrap/dist/fonts/*',
+      'bower_components/fontawesome/fonts/*'];
 
   var FILE_ENCODING = 'utf-8';
   var EOL = '\n';
