@@ -1,52 +1,19 @@
-﻿<nav role="navigation" class="navbar navbar-default navbar-static-top" style="">
-  <div class="container">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" data-target="#navbarCollapse"
-              data-toggle="collapse" class="navbar-toggle">
-        <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span>
-        <span class="icon-bar"></span> <span class="icon-bar"></span>
-      </button>
-      <a href="#/apps" class="hidden-xs navbar-brand">
-        <img src="assets/img/logos/layersLogo.svg" width="36" height="24" /><span class="hspacer05"></span>APP Store
-      </a> <a href="#" class="visible-xs navbar-brand">
-        <img src="assets/img/logos/layersLogo.svg" width="36" height="24" />
-      </a>
-      <form ng-submit="search()" class="search-bar-xs visible-xs">
-        <div class="input-group">
-          <input ng-model="searchQuery" type="text" class="form-control" placeholder="Search"
-                 name="q">
-          <div class="input-group-btn">
-            <button class="btn btn-default" type="submit">
-              <i class="glyphicon glyphicon-search"></i>
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
-    <div id="navbarCollapse" class="collapse navbar-collapse">
-      <ul class="nav navbar-nav">
-        <li >
-          <a href="#/apps">
-            <span>
-              <span class="glyphicon glyphicon-home"></span><span class="hspacer05"></span>Home
-            </span>
-          </a>
-        </li>
-        <li class="dropdown">
-          <a href="" class="dropdown-toggle"
-             data-toggle="dropdown">
-            <span class="glyphicon glyphicon-edit"></span>
-            Dev<span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">Manage my Apps</a></li>
-            <li><a href="#">Create new App Description</a></li>
-          </ul>
-        </li>
-      </ul>
-      <div class="search-bar hidden-xs">
-        <form ng-submit="search()" class="navbar-form" role="search">
+﻿<div class="pos-rel">
+  <nav ng-click="helperTextVisible=false" role="navigation" class="navbar navbar-default navbar-static-top" style="">
+    <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" data-target="#navbarCollapse"
+                data-toggle="collapse" class="navbar-toggle">
+          <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span>
+          <span class="icon-bar"></span> <span class="icon-bar"></span>
+        </button>
+        <a href="#/apps" class="hidden-xs navbar-brand">
+          <img src="assets/img/logos/layersLogo.svg" width="36" height="24" /><span class="hspacer05"></span>APP Store
+        </a> <a href="#" class="visible-xs navbar-brand">
+          <img src="assets/img/logos/layersLogo.svg" width="36" height="24" />
+        </a>
+        <form ng-submit="search()" class="search-bar-xs visible-xs">
           <div class="input-group">
             <input ng-model="searchQuery" type="text" class="form-control" placeholder="Search"
                    name="q">
@@ -58,30 +25,83 @@
           </div>
         </form>
       </div>
-      <ul class="nav navbar-nav navbar-right">
-
-        <li>
-
-          <div id="sign-in-button">
-            <button ng-show="!isloggedIn" ng-click="login()" type="button" class="btn btn-success navbar-btn btn-small"><span class="glyphicon glyphicon-ok"></span><span class="hspacer05"></span>{{loginText}}</button>
-
-            <button ng-show="isloggedIn" type="button" class="btn btn-primary dropdown-toggle navbar-btn btn-small" data-toggle="dropdown" aria-expanded="false">
-              <span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>{{userData.preferred_username}}<span class="caret"></span>
-            </button>
+      <div id="navbarCollapse" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li>
+            <a href="#/apps">
+              <span>
+                <span class="glyphicon glyphicon-home"></span><span class="hspacer05"></span>Home
+              </span>
+            </a>
+          </li>
+          <li id="platform-selector" class="dropdown">
+            <a href="" class="dropdown-toggle">
+              <i class="fa {{currentPlatform.icon}} fa-lg"></i><span class="hspacer05"></span>{{currentPlatform.name}}<span class="hspacer05"></span><span class="caret"></span>
+            </a>
             <ul class="dropdown-menu" role="menu">
-              <li><a href="#/users/{{userData.sub}}"><span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>My Profile</a></li>
-              <li><a href="#/admin"><span class="glyphicon glyphicon glyphicon-cog"></span><span class="hspacer05"></span>Admin Panel</a></li>
-
-              <li class="divider"></li>
-              <li ng-click="logout()"><a href="javascript:void(0)"><span class="glyphicon glyphicon-off"></span><span class="hspacer05"></span>Sign out</a></li>
+              <li ng-repeat="platform in platforms">
+                <a ng-click="changePlatform(platform.id)"><i class="fa {{platform.icon}} fa-lg"></i><span class="hspacer05"></span>{{platform.name}}</a>
+              </li>
             </ul>
-          </div>
-          <!--<button ng-click="loginLogout()" id="sign-in-button" type="button"
-                  class="btn btn-success navbar-btn btn-small dropdown-toggle" data-toggle="dropdown">
-            {{loginText}}
-          </button>-->
-        </li>
-      </ul>
+          </li>
+          <!--<li class="dropdown">
+            <a href="" class="dropdown-toggle"
+               data-toggle="dropdown">
+              <span class="glyphicon glyphicon-edit"></span>
+              Dev<span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#">Manage my Apps</a></li>
+              <li><a href="#">Create new App Description</a></li>
+            </ul>
+          </li>-->
+        </ul>
+        <div class="search-bar hidden-xs">
+          <form ng-submit="search()" class="navbar-form" role="search">
+            <div class="input-group">
+              <input ng-model="searchQuery" type="text" class="form-control" placeholder="Search"
+                     name="q">
+              <div class="input-group-btn">
+                <button class="btn btn-default" type="submit">
+                  <i class="glyphicon glyphicon-search"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+
+          <li>
+
+            <div id="sign-in-button">
+              <button ng-show="!isloggedIn" ng-click="login()" type="button" class="btn btn-success navbar-btn btn-small"><span class="glyphicon glyphicon-ok"></span><span class="hspacer05"></span>{{loginText}}</button>
+
+              <button ng-show="isloggedIn" type="button" class="btn btn-primary dropdown-toggle navbar-btn btn-small" data-toggle="dropdown" aria-expanded="false">
+                <span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>{{userData.preferred_username}}<span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#/users/{{userData.sub}}"><span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>My Profile</a></li>
+                <li><a href="#/admin"><span class="glyphicon glyphicon glyphicon-cog"></span><span class="hspacer05"></span>Admin Panel</a></li>
+
+                <li class="divider"></li>
+                <li ng-click="logout()"><a href="javascript:void(0)"><span class="glyphicon glyphicon-off"></span><span class="hspacer05"></span>Sign out</a></li>
+              </ul>
+            </div>
+            <!--<button ng-click="loginLogout()" id="sign-in-button" type="button"
+                    class="btn btn-success navbar-btn btn-small dropdown-toggle" data-toggle="dropdown">
+              {{loginText}}
+            </button>-->
+          </li>
+        </ul>
+      </div>
     </div>
+  </nav>
+  <div id="help-text" ng-class="{'expanded': helperTextVisible}" class="text-center" ng-click="helperTextVisible=false">
+    <div class=" arrow-up"></div>
+    <p class="">
+      <i class="fa fa-question-circle"></i><span class=" hspacer05"></span>We detected the platform of your current device as <u>{{currentPlatform.name}}</u>. Only apps compatible to this platform will be shown to you. You can change this filter setting at anytime in the menu.
+      <a ng-click="helperTextVisible=false" class="close">×</a>
+    </p>
+
   </div>
-</nav>
+</div>

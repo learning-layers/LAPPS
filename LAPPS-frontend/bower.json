@@ -16,6 +16,7 @@
     "swagger-angular-client": "0.1.x",
     "marked":  "0.3.x",
     "angular-md5":  "0.1.7",
-    "angular-xeditable":  "0.1.8"
+    "angular-xeditable":  "0.1.8",
+    "fontawesome": "https://github.com/FortAwesome/Font-Awesome.git#~4.2.0"
   }
 }
