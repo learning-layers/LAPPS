@@ -3,6 +3,8 @@ package de.rwth.dbis.layers.lapps;
 import java.util.ArrayList;
 import java.util.Random;
 
+import de.rwth.dbis.layers.lapps.entity.User;
+
 public class DataGeneratorUtils {
   /**
    * Generates a random integer in a range (min-max)
@@ -50,9 +52,8 @@ public class DataGeneratorUtils {
           + "fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt "
           + "in culpa qui officia deserunt mollit anim id est laborum.";
 
-  private final static String[] imageCategories = new String[] {"abstract", "animals", "business",
-      "cats", "city", "food", "nightlife", "fashion", "people", "nature", "sports", "technics",
-      "transport"};
+  private final static String[] userNames = new String[] {"Malcolm Reynolds", "Zoe Washburne",
+      "Hoban Washburne", "Inara Serra", "Jayne Cobb", "Kaylee Frye"};
 
   private final static String[] images = new String[] {"http://i.imgur.com/GHqgU71.jpg",
       "http://i.imgur.com/2FdFykW.jpg", "http://i.imgur.com/HngIsi8.jpg",
@@ -80,12 +81,10 @@ public class DataGeneratorUtils {
       "http://i.imgur.com/Rx2YXQr.jpg", "http://i.imgur.com/xxAqUpz.jpg",
       "http://i.imgur.com/heSczUw.jpg"};
 
-  private final static int IMAGE_W = 500;
-  private final static int IMAGE_H = 280;
-  private final static int LOGO_W = 150;
-  private final static int LOGO_H = 150;
 
-  private static String[] platforms = new String[] {"iOS", "Android", "Windows phone", "Web"};
+
+  private static String[] platforms = new String[] {"iOS", "Android", "Windows Phone", "Web Apps",
+      "Windows", "Linux", "Mac OS X"};
 
   /**
    * Generates a shuffled lorem ipsum textblock.
@@ -140,7 +139,7 @@ public class DataGeneratorUtils {
    * @param glue what to put between the elements
    * @return single string with all elements of the array separated by the glue sequence
    */
-  private static String combine(String[] s, String glue) {
+  public static String combine(String[] s, String glue) {
     int k = s.length;
     if (k == 0) {
       return null;
@@ -216,6 +215,119 @@ public class DataGeneratorUtils {
   }
 
   /**
+   * Generates a random short description.
+   * 
+   * @return a random short description
+   */
+  public static String getRandomShortDescription() {
+    int length = RandomNumberGenerator.getRandomInt(10, 30);
+    return getRandomText(length, 1);
+  }
+
+  /**
+   * Generates a random long description.
+   * 
+   * @return a random long description
+   */
+  public static String getRandomLongDescription() {
+    int paragraphs = RandomNumberGenerator.getRandomInt(2, 5);
+    StringBuilder sb = new StringBuilder();
+
+    for (int i = 0; i < paragraphs; i++) {
+
+      sb.append("##").append(getRandomText(2, 1).replace('.', ' ')).append("##\n");
+      int length = RandomNumberGenerator.getRandomInt(30, 200);
+      sb.append(getRandomText(length, 1)).append("\n");
+    }
+    return sb.toString();
+  }
+
+  /**
+   * Generates a random url
+   * 
+   * @return a random urk
+   */
+  public static String getRandomUrl() {
+    String google = "https://www.google.com/search?q=";
+    String url =
+        names[RandomNumberGenerator.getRandomInt(0, names.length - 1)] + " "
+            + nameSuffixes[RandomNumberGenerator.getRandomInt(0, nameSuffixes.length - 1)];
+    url = google + url.replace(' ', '+');
+    return url.trim();
+  }
+
+  /**
+   * Generates a random license text
+   * 
+   * @return a random license text
+   */
+  public static String getRandomLicense() {
+    String license = "Copyright 2014 ";
+    String owner = names[RandomNumberGenerator.getRandomInt(0, names.length - 1)];
+    license = license + owner;
+    return license.trim();
+  }
+
+  /**
+   * Generates a random version number
+   * 
+   * @return a random version number x.x.x
+   */
+  public static String getRandomVersion() {
+
+    return Integer.toString(RandomNumberGenerator.getRandomInt(0, 5)) + "."
+        + Integer.toString(RandomNumberGenerator.getRandomInt(0, 9)) + "."
+        + Integer.toString(RandomNumberGenerator.getRandomInt(0, 9));
+  }
+
+  /**
+   * Generates a random min platform string
+   * 
+   * @return a random min platform string
+   */
+  public static String getRandomMinPlatform() {
+
+    return "> " + getRandomVersion();
+  }
+
+  /**
+   * Generates a random rating
+   * 
+   * @return a random rating
+   */
+  public static double getRandomRating() {
+
+    return (double) (RandomNumberGenerator.getRandomInt(0, 10) / 2d);
+  }
+
+  /**
+   * Generates a random size
+   * 
+   * @return a random size
+   */
+  public static int getRandomSize() {
+
+    return RandomNumberGenerator.getRandomInt(200, 100000);
+  }
+
+  /**
+   * Generates an array of random tags
+   * 
+   * @param min minimum amount of tags
+   * @param max maximum amount of tags
+   * @return array of random tags
+   */
+  public static String[] getRandomTags(int min, int max) {
+
+    int amount = RandomNumberGenerator.getRandomInt(min, max);
+    String[] tags = new String[amount];
+    for (int i = 0; i < tags.length; i++) {
+      tags[i] = names[RandomNumberGenerator.getRandomInt(0, names.length - 1)];
+    }
+    return tags;
+  }
+
+  /**
    * Generates a random lorem ipsum text.
    * 
    * @param wordCount amount of words required
@@ -236,7 +348,7 @@ public class DataGeneratorUtils {
       sb.append(parts[i]);
       if (wordSize + 1 < wordCount) {
         sb.append(" ");
-      } else {
+      } else if (!parts[i].endsWith(".")) {
         sb.append(".");
       }
       i++;
@@ -264,7 +376,7 @@ public class DataGeneratorUtils {
 
     }
 
-    return text;
+    return text.replaceAll(",\\.", "\\.");
   }
 
   /**
@@ -273,8 +385,8 @@ public class DataGeneratorUtils {
    * @return an url to a random image
    */
   public static String getRandomImageUrl() {
-    return "http://lorempixel.com/" + IMAGE_W + "/" + IMAGE_H + "/"
-        + imageCategories[RandomNumberGenerator.getRandomInt(0, imageCategories.length - 1)];
+    int index = RandomNumberGenerator.getRandomInt(0, images.length / 2 - 1);
+    return images[index * 2 + 1];
   }
 
   /**
@@ -282,10 +394,20 @@ public class DataGeneratorUtils {
    * 
    * @return an url to a random image
    */
-  public static String getRandomLogoUrl() {
-    return "http://lorempixel.com/" + LOGO_W + "/" + LOGO_H + "/"
-        + imageCategories[RandomNumberGenerator.getRandomInt(0, imageCategories.length - 1)];
+  public static String getRandomThumbnailUrl() {
+    int index = RandomNumberGenerator.getRandomInt(0, images.length / 2 - 1);
 
+    return images[index * 2];
+  }
+
+  /**
+   * Generates a random description for an image
+   * 
+   * @return a random description for an image
+   */
+  public static String getRandomImageDescription() {
+    int length = RandomNumberGenerator.getRandomInt(5, 18);
+    return getRandomText(length, 1);
   }
 
   /**
@@ -320,9 +442,29 @@ public class DataGeneratorUtils {
     return pair;
   }
 
+  /**
+   * Picks a random platform
+   * 
+   * @return a random platform
+   */
   public static String getRandomPlatform() {
     int index = generateRandomInt(0, platforms.length - 1);
     return platforms[index];
+  }
+
+  /**
+   * Generates a random user
+   * 
+   * @return a random user
+   */
+  public static User getRandomUser() {
+
+    String name = userNames[RandomNumberGenerator.getRandomInt(0, userNames.length - 1)];
+    long oidcId = name.hashCode();
+    String email = name.replace(" ", "").toLowerCase() + "@test.foobar";
+    User user = new User(oidcId, name, email);
+    user.setRole(2);
+    return user;
   }
 
   /**

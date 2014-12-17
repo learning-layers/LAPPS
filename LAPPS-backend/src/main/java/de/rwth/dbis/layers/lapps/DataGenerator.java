@@ -43,8 +43,8 @@ public class DataGenerator {
       App currentApp =
           new App(appName, DataGeneratorUtils.getRandomPlatform(),
               DataGeneratorUtils.getRandomIpsumBlock());
-      // TODO: add the other 3 additional fields
-      currentApp.setDownloadUrl("dl." + appName + ".org");
+      // TODO: add the other 3 additional fields (shortDescription, platform)
+      currentApp.setDownloadUrl(DataGeneratorUtils.getRandomUrl());
       currentApp.setLicense("License");
       currentApp.setLongDesccription("Long descr.");
       currentApp.setMinPlatformRequired("> 2.1");
