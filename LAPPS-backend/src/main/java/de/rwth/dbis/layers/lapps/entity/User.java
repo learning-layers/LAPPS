@@ -26,9 +26,6 @@ public class User implements Entity, Comparable<User> {
   private String username = null;
   private Integer role = 0;
 
-  public static final Integer DEVELOPER = 10;
-  public static final Integer ADMIN = 20;
-
   @Column(name = "date_registered")
   private Date dateRegistered = new Date();
   private String description = null;
@@ -105,8 +102,6 @@ public class User implements Entity, Comparable<User> {
   public void setWebsite(String website) {
     this.website = website;
   }
-
-
 
   @Override
   public int compareTo(User o) {
