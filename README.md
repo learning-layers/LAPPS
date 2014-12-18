@@ -15,7 +15,7 @@ Newer versions should also work fine.
 ##Configuration##
 Configure Eclipse:
 * Import https://google-styleguide.googlecode.com/svn/trunk/eclipse-java-google-style.xml as Eclipse Java format (Preferences -> Java -> Code Style -> Formatter)
-* Configurate the Java -> Code Style (rest is Eclipse default):
+* Configure the Java -> Code Style (rest is Eclipse default):
   * Enable "Format source code"
   * Enable "Remove unused imports"
 * Configure the Java -> Editor -> Save Actions (rest is Eclipse default):
@@ -29,11 +29,13 @@ Configure Eclipse:
 
 ##Build##
 LAPPS Backend (run these commands from your project folder):
-* mvn clean           --- clean
-* mvn test            --- test backend
-* mvn exec:java       --- compile and start on jetty server (port 8080, please execute in LAPPS-backend folder)
-* mvn javadoc:javadoc --- generates JavaDoc documentation
-* These commands also work inside Eclipse (Run -> Maven build..), then leave away the mvn prefix.
+* mvn clean                     --- clean
+* mvn test                      --- test backend
+* mvn exec:java                 --- compile and start on Jetty (port 8080, execute in LAPPS-backend folder)
+* mvn javadoc:javadoc           --- generates JavaDoc documentation
+* mvn package                   --- generate a servlet that can be deployed to an application server
+* mvn test -Dtest=DataGenerator --- generates mockup data in the database  
+These commands also work inside Eclipse, then leave away the mvn prefix.
 
 LAPPS Frontend (run these commands from your project folder):
 * npm install        --- install dependencies (will be done automatically when running the start command)
@@ -42,9 +44,10 @@ LAPPS Frontend (run these commands from your project folder):
 * npm run protractor --- start e2e tests (start the server with npm start first in another console)  
 * npm run doc 		 --- create jsdoc documentation in out/
 * npm run deploy	 --- create a deployable containing minified files in deploy/
+* npm run api        --- fetches the up to date Swagger api from the deploy server for frontend usage
+* npm run apilocal   --- fetches the up to date Swagger api from the local server for frontend usage
 
 ##Links##
-
 Nightly Builds:
 * [![Build Status](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/badge/icon)](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/)
 * [Current Version of "develop" Branch](http://buche.informatik.rwth-aachen.de:9080/lapps-0.3-SNAPSHOT/)
