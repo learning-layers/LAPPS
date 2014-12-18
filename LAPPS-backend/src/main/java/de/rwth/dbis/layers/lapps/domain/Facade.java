@@ -12,7 +12,7 @@ import de.rwth.dbis.layers.lapps.entity.Entity;
 
 public class Facade {
   private static Logger LOGGER = Logger.getLogger(Facade.class.getName());
-  private static EntityManager em = null;
+  private EntityManager em = null;
 
   public Facade() {}
 

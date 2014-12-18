@@ -37,7 +37,7 @@ public class TagsResource {
 
   private static final Logger LOGGER = Logger.getLogger(TagsResource.class.getName());
 
-  private static Facade entitiyFacade = new Facade();
+  private Facade entitiyFacade = new Facade();
 
   /**
    * Get all tags for an {@link App}.

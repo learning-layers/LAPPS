@@ -39,7 +39,7 @@ public class UsersResource {
 
   private static final Logger LOGGER = Logger.getLogger(UsersResource.class.getName());
 
-  private static Facade userFacade = new Facade();
+  private Facade userFacade = new Facade();
 
   /**
    * 
