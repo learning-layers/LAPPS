@@ -1,5 +1,7 @@
 package de.rwth.dbis.layers.lapps.domain;
 
+import java.util.List;
+
 import junit.framework.Assert;
 
 import org.junit.After;
@@ -50,9 +52,11 @@ public class PersistenceTest {
 
   private App loaded() {
     // load data:
-    User u = facade.load(User.class, this.user.getId());
+    List<User> users = facade.findByParam(User.class, "id", this.user.getId());
+    User u = users.get(0);
     Assert.assertEquals("Wrong user loaded!", this.user.getId(), u.getId());
-    App a = facade.load(App.class, this.app.getId());
+    List<App> apps = facade.findByParam(App.class, "id", this.app.getId());
+    App a = apps.get(0);
     Assert.assertEquals("Wrong app loaded!", this.app.getId(), a.getId());
     Assert.assertEquals("Creator of the loaded app is different than the saved user!",
         this.user.getId(), a.getCreator().getId());
@@ -75,7 +79,7 @@ public class PersistenceTest {
   @After
   public void dropData() {
     // delete data:
-    facade.delete(App.class, this.app.getId());
-    facade.delete(User.class, this.user.getId());
+    facade.deleteByParam(App.class, "id", this.app.getId());
+    facade.deleteByParam(User.class, "id", this.user.getId());
   }
 }
