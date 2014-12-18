@@ -4,23 +4,27 @@
       <carousel interval="interval"
                 on-carousel-change="onSlideChanged(nextSlide, direction)">
         <slide ng-repeat="app in apps" active="app.active">
-          <img ng-src="{{app.images[0]}}" width="1000" height="560"> <a href="#/apps/{{app.id}}"></a>
+          <img ng-src="{{app.image}}" width="1000" height="560"> <a href="#/apps/{{app.id}}"></a>
           <div class="carousel-caption">
 
-            <h1 class="hidden-xs">{{app.app.name}}</h1>
-            <h3 class="visible-xs">{{app.app.name}}</h3>
-            <p class="hidden-xs">{{app.shortDescription}}</p>
+            <h1 class="hidden-xs">{{app.name}}</h1>
+            <h3 class="visible-xs">{{app.name}}</h3>
           </div>
         </slide>
       </carousel>
     </div>
   </div>
-  <div class="col-md-3 featured-info-panel hidden-xs hidden-sm">
-    <h2>{{apps[currentSlide].app.name}}</h2>
-    <p class="description">{{apps[currentSlide].description}}</p>
-    <p class="text-center">
-      <a id="details-button" class="btn btn-success btn-lg"
-         href="#/apps/{{apps[currentSlide].id}}">Details</a>
-    </p>
+  <div class="thumbnail col-md-3 featured-info-panel hidden-xs hidden-sm">
+    <div class="title">
+      <h2>{{apps[currentSlide].name}}</h2>
+    </div>
+    <img ng-src="{{apps[currentSlide].thumbnail}}">
+    <!--<p class="description">{{apps[currentSlide].longDesccription}}</p>-->
+
+    
+    <p>{{apps[currentSlide].shortDescription}}</p>
+
+    <a id="details-button" class="btn btn-success btn-lg"
+       href="#/apps/{{apps[currentSlide].id}}">Details</a>
   </div>
 </div>
