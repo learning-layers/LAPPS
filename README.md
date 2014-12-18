@@ -46,7 +46,6 @@ LAPPS Frontend (run these commands from your project folder):
 * npm run apilocal   --- fetches the up to date Swagger api from the local server for frontend usage
 
 ##Links##
-
 Nightly Builds:
 * [![Build Status](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/badge/icon)](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/)
 * [Current Version of "develop" Branch](http://buche.informatik.rwth-aachen.de:9080/lapps-0.3-SNAPSHOT/)
