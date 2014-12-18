@@ -1,6 +1,7 @@
 package de.rwth.dbis.layers.lapps.entity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -31,6 +32,12 @@ public class User implements Entity, Comparable<User> {
   private String email = null;
   private String username = null;
   private Integer role = 0;
+
+  @Column(name = "date_registered")
+  private Date dateRegistered = new Date();
+  private String description = null;
+  private String website = null;
+
 
   @OneToMany(mappedBy = "creator")
   private List<App> apps = new ArrayList<App>();
@@ -80,6 +87,30 @@ public class User implements Entity, Comparable<User> {
 
   public Long getId() {
     return id;
+  }
+
+  public Date getDateRegistered() {
+    return dateRegistered;
+  }
+
+  public void setDateRegistered(Date dateRegistered) {
+    this.dateRegistered = dateRegistered;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public String getWebsite() {
+    return website;
+  }
+
+  public void setWebsite(String website) {
+    this.website = website;
   }
 
   @Override
