@@ -30,7 +30,7 @@ import de.rwth.dbis.layers.lapps.entity.App;
 import de.rwth.dbis.layers.lapps.entity.Tag;
 
 /**
- * Tag resource.
+ * Tags resource.
  */
 @Api(value = "/tags", description = "Tags resource", hidden = true)
 public class TagsResource {
