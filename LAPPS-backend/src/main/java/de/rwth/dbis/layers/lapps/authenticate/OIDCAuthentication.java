@@ -48,6 +48,10 @@ public class OIDCAuthentication {
    * @return
    */
   public static boolean isUser(String openIdToken) {
+    // no token provided
+    if (openIdToken == null) {
+      return false;
+    }
     // default testing token returns default testing id
     if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
       return true;
@@ -72,6 +76,10 @@ public class OIDCAuthentication {
    * @return
    */
   public static boolean isPendingDeveloper(String openIdToken) {
+    // no token provided
+    if (openIdToken == null) {
+      return false;
+    }
     // default testing token returns default testing id
     if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
       return true;
@@ -96,6 +104,10 @@ public class OIDCAuthentication {
    * @return
    */
   public static boolean isDeveloper(String openIdToken) {
+    // no token provided
+    if (openIdToken == null) {
+      return false;
+    }
     // default testing token returns default testing id
     if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
       return true;
@@ -120,6 +132,10 @@ public class OIDCAuthentication {
    * @return
    */
   public static boolean isAdmin(String openIdToken) {
+    // no token provided
+    if (openIdToken == null) {
+      return false;
+    }
     // default testing token returns default testing id
     if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
       return true;
