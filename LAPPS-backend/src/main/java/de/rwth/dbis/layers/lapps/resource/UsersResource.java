@@ -39,7 +39,7 @@ public class UsersResource {
 
   private static final Logger LOGGER = Logger.getLogger(UsersResource.class.getName());
 
-  private Facade userFacade = new Facade();
+  private Facade entityFacade = new Facade();
 
   /**
    * 
@@ -66,10 +66,10 @@ public class UsersResource {
           message = "Internal server problems")})
   public Response getAllUsers(
       @HeaderParam("accessToken") String accessToken,
-      @ApiParam(value = "Search query parameter", required = false) @QueryParam("search") String search,
+      @ApiParam(value = "Search query parameter for name, email", required = false) @QueryParam("search") String search,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
-      @ApiParam(value = "Sort by field", required = false, allowableValues = "email") @DefaultValue("email") @QueryParam("sortBy") String sortBy,
+      @ApiParam(value = "Sort by field", required = false, allowableValues = "name,dateCreated") @DefaultValue("name") @QueryParam("sortBy") String sortBy,
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
       @ApiParam(value = "Filter by field", required = false, allowableValues = "role") @DefaultValue("role") @QueryParam("filterBy") String filterBy,
       @ApiParam(value = "Filter value", required = false) @QueryParam("filterValue") String filterValue) {
@@ -80,11 +80,13 @@ public class UsersResource {
 
     List<User> entities;
     if (search == null) {
-      entities = (List<User>) userFacade.loadAll(User.class);
+      entities = (List<User>) entityFacade.loadAll(User.class);
     } else {
-      entities = (List<User>) userFacade.loadAll(User.class);
+      entities = (List<User>) entityFacade.findByParam(User.class, "name", search);
+      entities.addAll((List<User>) entityFacade.findByParam(User.class, "email", search));
     }
 
+    // TODO: check and use sort by field
     Collections.sort(entities);
     if (order.equalsIgnoreCase("desc")) {
       Collections.reverse(entities);
@@ -119,7 +121,7 @@ public class UsersResource {
    * 
    * Gets the user for a given oidcId.
    * 
-   * @param oidcId
+   * @param oidcId open ID connect id
    * 
    * @return Response with user as a JSON object.
    * 
@@ -136,7 +138,7 @@ public class UsersResource {
   public Response getUser(@PathParam("oidcId") Long oidcId) {
 
     // search for existing user
-    List<User> entities = userFacade.findByParam(User.class, "oidcId", oidcId);
+    List<User> entities = entityFacade.findByParam(User.class, "oidcId", oidcId);
     User user = null;
     if (entities.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
@@ -157,7 +159,7 @@ public class UsersResource {
    * Delete the user with the given oidcId.
    * 
    * @param accessToken openID connect token
-   * @param oidcId
+   * @param oidcId open ID connect id
    * 
    * @return Response
    * 
@@ -178,14 +180,15 @@ public class UsersResource {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
     // search for existing user
-    List<User> entities = userFacade.findByParam(User.class, "oidcId", oidcId);
+    List<User> entities = entityFacade.findByParam(User.class, "oidcId", oidcId);
+    User user = null;
     if (entities.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
-      // UserEntity user = entities.get(0);
+      user = entities.get(0);
     }
-    // TODO: delete user with help of userFacade
-    return Response.status(HttpStatusCode.NOT_IMPLEMENTED).build();
+    entityFacade.deleteByParam(User.class, "id", user.getId());
+    return Response.status(HttpStatusCode.OK).build();
   }
 
   /**
@@ -193,7 +196,7 @@ public class UsersResource {
    * Update the user with the given oidcId.
    * 
    * @param accessToken openID connect token
-   * @param oidcId
+   * @param oidcId open ID connect id
    * @param updatedUser as JSON
    * 
    * @return Response with updated User
@@ -222,13 +225,14 @@ public class UsersResource {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
     // search for existing user
-    List<User> entities = userFacade.findByParam(User.class, "oidcId", oidcId);
+    List<User> entities = entityFacade.findByParam(User.class, "oidcId", oidcId);
+    User user = null;
     if (entities.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
-      // UserEntity user = entities.get(0);
+      user = entities.get(0);
     }
-    // TODO: update user with help of userFacade
+    user = entityFacade.save(updatedUser);
     try {
       ObjectMapper mapper = new ObjectMapper();
       return Response.status(HttpStatusCode.NOT_IMPLEMENTED)
@@ -243,7 +247,7 @@ public class UsersResource {
    * 
    * Get all apps for the user with the given oidcId.
    * 
-   * @param oidcId
+   * @param oidcId open ID connect id
    * @param page number
    * @param pageLength number of users by page
    * 
