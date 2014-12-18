@@ -12,7 +12,8 @@
                   [
                       '$scope',
                       'swaggerApi',
-                      function($scope, swaggerApi) {
+                      'platform',
+                      function($scope, swaggerApi, platform) {
                         /**
                          * @field
                          * @type string
@@ -59,7 +60,7 @@
                           swaggerApi.apps
                                   .getAllApps({
                                     page: 1,
-                                    pageLength: 30
+                                    pageLength: 18
                                   })
                                   .then(
                                           function(data) {
@@ -74,8 +75,9 @@
                                                 }
                                               }
                                               $scope.apps[i].thumbnail = thumbnail;
+                                              $scope.apps[i].platformIcon = platform
+                                                      .getPlatformByName($scope.apps[i].platform).icon;
                                             }
-
                                           });
                         }
 

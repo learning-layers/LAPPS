@@ -90,6 +90,23 @@
                       }
                       return -1;
                     }
+
+                    /**
+                     * @function
+                     * @memberOf lapps.lappsServices.platform
+                     * @type {platform}
+                     * @param {string}
+                     *          name Platform name.
+                     * @description Returns the platform object with the given
+                     *              name.
+                     */
+                    this.getPlatformByName = function(name) {
+                      name = name.toLowerCase();
+                      for (var i = 0; i < this.platforms.length; i++) {
+                        if (this.platforms[i].name.toLowerCase() == name) { return this.platforms[i]; }
+                      }
+                      return -1;
+                    }
                     /**
                      * @function
                      * @type {platform}
