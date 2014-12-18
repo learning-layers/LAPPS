@@ -29,12 +29,13 @@ import com.wordnik.swagger.annotations.ApiResponses;
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
+import de.rwth.dbis.layers.lapps.entity.Tag;
 
 /**
- * Application resource (exposed at "apps" path). AppInstance refers to AppInstanceRessource.
+ * Applications resource (exposed at "apps" path).
  */
 @Path("/apps")
-@Api(value = "/apps", description = "Application resource")
+@Api(value = "/apps", description = "Applications resource")
 public class ApplicationsResource {
 
   private static final Logger LOGGER = Logger.getLogger(ApplicationsResource.class.getName());
@@ -62,10 +63,11 @@ public class ApplicationsResource {
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
   public Response getAllApps(
-      @ApiParam(value = "Search query parameter", required = false) @QueryParam("search") String search,
+      @ApiParam(value = "Search query parameter for name and tag", required = false) @QueryParam("search") String search,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of apps by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
-      @ApiParam(value = "Sort by field", required = false, allowableValues = "name") @DefaultValue("name") @QueryParam("sortBy") String sortBy,
+      @ApiParam(value = "Sort by field", required = false,
+          allowableValues = "name,platform,dateCreated,dateModified") @DefaultValue("name") @QueryParam("sortBy") String sortBy,
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
       @ApiParam(value = "Filter by field", required = false, allowableValues = "platform,creator") @QueryParam("filterBy") String filterBy,
       @ApiParam(value = "Filter value", required = false) @QueryParam("filterValue") String filterValue) {
@@ -74,11 +76,13 @@ public class ApplicationsResource {
       entities = (List<App>) entitiyFacade.loadAll(App.class);
     } else {
       entities = (List<App>) entitiyFacade.findByParam(App.class, "name", search);
+      // TODO: search for tag
     }
 
     Collections.sort(entities);
     if (order.equalsIgnoreCase("desc")) {
       Collections.reverse(entities);
+      // TODO: check and use sort by field
     }
 
     int numberOfPages = 1;
@@ -110,7 +114,7 @@ public class ApplicationsResource {
    * 
    * Gets the app for a given id.
    * 
-   * @param id
+   * @param id app id
    * 
    * @return Response with an app as a JSON object.
    * 
@@ -147,7 +151,7 @@ public class ApplicationsResource {
    * Create an app.
    * 
    * @param accessToken openID connect token
-   * @param createdApp as JSON
+   * @param createdApp app as JSON
    * 
    * @return Response
    */
@@ -169,12 +173,11 @@ public class ApplicationsResource {
     if (!OIDCAuthentication.isDeveloper(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
-
-    // TODO: create app with help of appFacade
+    createdApp = entitiyFacade.save(createdApp);
     try {
       ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.NOT_IMPLEMENTED)
-          .entity(mapper.writeValueAsBytes(createdApp)).build();
+      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(createdApp))
+          .build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
@@ -187,7 +190,7 @@ public class ApplicationsResource {
    * Delete the app with the given id.
    * 
    * @param accessToken openID connect token
-   * @param id
+   * @param id app id
    * 
    * @return Response
    */
@@ -209,14 +212,14 @@ public class ApplicationsResource {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
     List<App> apps = entitiyFacade.findByParam(App.class, "id", id);
-    // App app = null;
+    App app = null;
     if (apps.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
-      // app = apps.get(0);
+      app = apps.get(0);
     }
-    // TODO: delete app with help of appFacade
-    return Response.status(HttpStatusCode.NOT_IMPLEMENTED).build();
+    entitiyFacade.deleteByParam(Tag.class, "id", app.getId());
+    return Response.status(HttpStatusCode.OK).build();
   }
 
   /**
@@ -224,8 +227,8 @@ public class ApplicationsResource {
    * Update the app with the given id.
    * 
    * @param accessToken openID connect token
-   * @param id
-   * @param updatedApp as JSON
+   * @param id app id
+   * @param updatedApp app as JSON
    * 
    * @return Response
    */
@@ -253,17 +256,16 @@ public class ApplicationsResource {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
     List<App> apps = entitiyFacade.findByParam(App.class, "id", id);
-    // App app = null;
+    App app = null;
     if (apps.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
-      // app = apps.get(0);
+      app = apps.get(0);
     }
-    // TODO: update app with help of appFacade
+    app = entitiyFacade.save(updatedApp);
     try {
       ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.NOT_IMPLEMENTED)
-          .entity(mapper.writeValueAsBytes(updatedApp)).build();
+      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(app)).build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();

@@ -2,24 +2,30 @@ package de.rwth.dbis.layers.lapps.resource;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.logging.Logger;
+
+import javax.ws.rs.client.WebTarget;
+
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.rwth.dbis.layers.lapps.Main;
+import de.rwth.dbis.layers.lapps.domain.Facade;
+import de.rwth.dbis.layers.lapps.entity.App;
 
 /**
- * Application Resource Test Class
+ * Applications Resource Test Class
  * 
  */
 public class ApplicationsResourceTest {
 
   private HttpServer server;
-
-  // private WebTarget target;
-
-  // private static final Logger LOGGER = Logger.getLogger(UsersResource.class.getName());
+  private WebTarget target;
+  private static final Logger LOGGER = Logger.getLogger(ApplicationsResource.class.getName());
+  private Facade entityFacade = new Facade();
+  private App app = null;
 
 
   @Before
@@ -36,9 +42,26 @@ public class ApplicationsResourceTest {
     server.shutdownNow();
   }
 
+  @Test
+  public void testGetAllApps() {
+    // TODO:
+    assertTrue(true);
+  }
 
   @Test
-  public void testSomething() {
+  public void testGetApp() {
+    // TODO:
+    assertTrue(true);
+  }
+
+  @Test
+  public void testDeleteApp() {
+    // TODO:
+    assertTrue(true);
+  }
+
+  @Test
+  public void testUpdateApp() {
     // TODO:
     assertTrue(true);
   }
