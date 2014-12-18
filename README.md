@@ -35,7 +35,7 @@ LAPPS Backend (run these commands from your project folder):
 * mvn javadoc:javadoc   --- generates JavaDoc documentation
 * mvn package           --- generate a servlet that can be deployed to an application server
 * mvn test -Dtest=Utils --- runs a "test" that generates mockup data in the database
-* These commands also work inside Eclipse (Run -> Maven build..), then leave away the mvn prefix.
+These commands also work inside Eclipse (Run -> Maven build..), then leave away the mvn prefix.
 
 LAPPS Frontend (run these commands from your project folder):
 * npm install        --- install dependencies (will be done automatically when running the start command)
