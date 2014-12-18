@@ -55,11 +55,7 @@ public class TagsResourceTest {
     LOGGER.info("App created: " + app);
 
     LOGGER.info("Creating a new user...");
-    String username = "test_" + DataGeneratorUtils.generateRandomInt(0, 3000);
-    user =
-        new User(new Long(DataGeneratorUtils.generateRandomInt(0, 3000)), username, username
-            + "@test.com");
-    user = entityFacade.save(user);
+    user = entityFacade.save(DataGeneratorUtils.getRandomDeveloperUser());
     app.setCreator(user);
     LOGGER.info("User created: " + user);
 

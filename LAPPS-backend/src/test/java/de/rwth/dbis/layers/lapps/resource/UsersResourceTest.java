@@ -22,6 +22,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import de.rwth.dbis.layers.lapps.DataGeneratorUtils;
 import de.rwth.dbis.layers.lapps.Main;
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.Facade;
@@ -36,7 +37,7 @@ public class UsersResourceTest {
   private HttpServer server;
   private WebTarget target;
   private static final Logger LOGGER = Logger.getLogger(UsersResource.class.getName());
-  private Facade userFacade = new Facade();
+  private Facade facade = new Facade();
   private User user = null;
 
   @Before
@@ -48,15 +49,14 @@ public class UsersResourceTest {
     target = c.target(Main.BASE_URI);
 
     LOGGER.info("Creating a new user...");
-    user = new User(new Long(1234567), "testuser", "test@lapps.com");
-    user = userFacade.save(user);
+    user = facade.save(DataGeneratorUtils.getRandomDeveloperUser());
     LOGGER.info("User created: " + user);
   }
 
   @After
   public void tearDown() throws Exception {
     LOGGER.info("Deleting old user data...");
-    userFacade.deleteByParam(User.class, "oidcId", 1234567L);
+    facade.deleteByParam(User.class, "id", user.getId());
     LOGGER.info("User data deleted.");
     server.shutdownNow();
   }
@@ -109,9 +109,9 @@ public class UsersResourceTest {
     MediaType responseMediaType = response.getMediaType();
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
     String responseContent = response.readEntity(String.class);
-    assertEquals(new String(
-        "{\"oidcId\":1234567,\"email\":\"test@lapps.com\",\"username\":\"testuser\",\"role\":0}"),
-        responseContent);
+    assertTrue(responseContent.contains("{\"oidcId\":" + user.getOidcId() + ",\"email\":\""
+        + user.getEmail() + "\",\"username\":\"" + user.getUsername() + "\",\"role\":"
+        + user.getRole() + ","));
   }
 
   /**

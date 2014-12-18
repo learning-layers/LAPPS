@@ -52,8 +52,9 @@ public class DataGenerator {
       String name = userNames[i];
       long oidcId = name.hashCode();
       String email = name.replace(" ", "").toLowerCase() + "@test.foobar";
-      User user = new User(oidcId, name, email);
-      user.setRole(2);
+      String website = "http://" + name.replace(" ", "") + ".something";
+      String description = "This is the personal description of " + name + "!";
+      User user = new User(oidcId, name, email, description, website, User.DEVELOPER);
 
       user = facade.save(user);
       users[i] = user;
@@ -68,7 +69,7 @@ public class DataGenerator {
       // TODO: add the other 3 additional fields
       currentApp.setDownloadUrl(DataGeneratorUtils.getRandomUrl());
       currentApp.setLicense("Copyright 2014");// check here for DB restrictions?
-      currentApp.setLongDesccription(DataGeneratorUtils.getRandomLongDescription());
+      currentApp.setLongDescription(DataGeneratorUtils.getRandomLongDescription());
       currentApp.setMinPlatformRequired(DataGeneratorUtils.getRandomMinPlatform());
       currentApp.setRating(DataGeneratorUtils.getRandomRating());
       currentApp.setSize(DataGeneratorUtils.getRandomSize());
@@ -76,11 +77,8 @@ public class DataGenerator {
       currentApp.setSupportUrl(DataGeneratorUtils.getRandomUrl());
       currentApp.setVersion(DataGeneratorUtils.getRandomVersion());
 
-
-
       User currentUser = users[RandomNumberGenerator.getRandomInt(0, users.length - 1)];
       currentApp.setCreator(currentUser);
-
 
       DataGeneratorUtils.getRandomThumbnailUrl();
       Artifact thumbnail = new Artifact("thumbnail", DataGeneratorUtils.getRandomThumbnailUrl());
@@ -90,7 +88,7 @@ public class DataGenerator {
 
       currentApp.addArtifact(thumbnail);
 
-      // add images /*
+      // add images
       String[] images = DataGeneratorUtils.getRandomImageUrls(4);
       for (int j = 0; j < images.length; j++) {
         Artifact imga = new Artifact("image/png", images[j]);
@@ -98,30 +96,11 @@ public class DataGenerator {
         currentApp.addArtifact(imga);
       }
 
-
-
-      /*
-       * System.out.println(currentApp.getName()); System.out.println(currentApp.getPlatform());
-       * System.out.println(currentApp.getShortDescription());
-       * System.out.println(currentApp.getDownloadUrl());
-       * System.out.println(currentApp.getLicense());
-       * System.out.println(currentApp.getLongDesccription());
-       * System.out.println(currentApp.getMinPlatformRequired());
-       * System.out.println(currentApp.getRating()); System.out.println(currentApp.getSize());
-       * System.out.println(currentApp.getSourceUrl());
-       * System.out.println(currentApp.getSupportUrl());
-       * System.out.println(currentApp.getVersion());
-       * System.out.println(currentApp.getCreator().getUsername());
-       */
-
-      // add tags
       String[] tags = DataGeneratorUtils.getRandomTags(2, 10);
 
       for (int j = 0; j < tags.length; j++) {
         currentApp.addTag(new Tag(tags[j]));
       }
-
-
 
       currentApp = facade.save(currentApp);
       apps.add(currentApp);

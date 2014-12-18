@@ -244,7 +244,7 @@ public class OIDCAuthentication {
    * @return the user
    */
   private static User createNewUser(long oidc_id, String mail, String userName) {
-    User user = new User(oidc_id, userName, mail);
+    User user = new User(oidc_id, userName, mail, null, null, User.USER);
     user = facade.save(user);
     return user;
   }
