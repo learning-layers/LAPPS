@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.rwth.dbis.layers.lapps.DataGeneratorUtils.RandomNumberGenerator;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
 import de.rwth.dbis.layers.lapps.entity.Artifact;
@@ -19,7 +20,7 @@ import de.rwth.dbis.layers.lapps.entity.User;
 public class DataGenerator {
   private static Logger LOGGER = Logger.getLogger(DataGenerator.class.getName());
   private static Facade facade = new Facade();
-  private static int DEFAULT_APP_COUNT = 30;
+  private static int DEFAULT_APP_COUNT = 100;
   private static int appCount = DEFAULT_APP_COUNT;
 
   public static void main(String[] args) {
@@ -36,37 +37,86 @@ public class DataGenerator {
 
   private static List<App> generateApps(int howMany) {
     List<App> apps = new ArrayList<App>();
-    final int random = DataGeneratorUtils.generateRandomInt(0, 3000);
+    String[] userNames =
+        new String[] {"Malcolm Reynolds", "Zoe Washburne", "Hoban Washburne", "Inara Serra",
+            "Jayne Cobb", "Kaylee Frye"};
+    User[] users = new User[userNames.length];
+    for (int i = 0; i < userNames.length; i++) {
+
+      String name = userNames[i];
+      long oidcId = name.hashCode();
+      String email = name.replace(" ", "").toLowerCase() + "@test.foobar";
+      User user = new User(oidcId, name, email);
+      user.setRole(2);
+
+      user = facade.save(user);
+      users[i] = user;
+    }
+
     for (int i = 0; i < howMany; i++) {
       // init the app
-      String appName = DataGeneratorUtils.getRandomName();
+
       App currentApp =
-          new App(appName, DataGeneratorUtils.getRandomPlatform(),
-              DataGeneratorUtils.getRandomIpsumBlock());
-      // TODO: add the other 3 additional fields (shortDescription, platform)
+          new App(DataGeneratorUtils.getRandomName(), DataGeneratorUtils.getRandomPlatform(),
+              DataGeneratorUtils.getRandomShortDescription());
+      // TODO: add the other 3 additional fields
       currentApp.setDownloadUrl(DataGeneratorUtils.getRandomUrl());
-      currentApp.setLicense("License");
-      currentApp.setLongDesccription("Long descr.");
-      currentApp.setMinPlatformRequired("> 2.1");
-      currentApp.setRating((double) DataGeneratorUtils.generateRandomInt(0, 10));
-      currentApp.setSize(DataGeneratorUtils.generateRandomInt(0, 1000));
-      currentApp.setSourceUrl("src_url");
-      currentApp.setSupportUrl("supp_url");
-      currentApp.setVersion(DataGeneratorUtils.generateRandomInt(1, 5) + ".9");
-      // init the owner
-      int userRandom = random + i;
-      User currentUser =
-          new User(new Long(userRandom), "username" + userRandom, "username" + userRandom
-              + "@test.com");
-      currentUser = facade.save(currentUser);
+      currentApp.setLicense("Copyright 2014");// check here for DB restrictions?
+      currentApp.setLongDesccription(DataGeneratorUtils.getRandomLongDescription());
+      currentApp.setMinPlatformRequired(DataGeneratorUtils.getRandomMinPlatform());
+      currentApp.setRating(DataGeneratorUtils.getRandomRating());
+      currentApp.setSize(DataGeneratorUtils.getRandomSize());
+      currentApp.setSourceUrl(DataGeneratorUtils.getRandomUrl());
+      currentApp.setSupportUrl(DataGeneratorUtils.getRandomUrl());
+      currentApp.setVersion(DataGeneratorUtils.getRandomVersion());
+
+
+
+      User currentUser = users[RandomNumberGenerator.getRandomInt(0, users.length - 1)];
       currentApp.setCreator(currentUser);
-      // add image pair artifact
-      String[] pair = DataGeneratorUtils.getImagePair();
-      currentApp.addArtifact(new Artifact("thumbnail", pair[0]));
-      currentApp.addArtifact(new Artifact("image/png", pair[1]));
+
+
+      DataGeneratorUtils.getRandomThumbnailUrl();
+      Artifact thumbnail = new Artifact("thumbnail", DataGeneratorUtils.getRandomThumbnailUrl());
+
+      thumbnail.setDescription(DataGeneratorUtils.getRandomImageDescription());// please check for
+                                                                               // max length in DB ?
+
+      currentApp.addArtifact(thumbnail);
+
+      // add images /*
+      String[] images = DataGeneratorUtils.getRandomImageUrls(4);
+      for (int j = 0; j < images.length; j++) {
+        Artifact imga = new Artifact("image/png", images[j]);
+        imga.setDescription(DataGeneratorUtils.getRandomImageDescription());
+        currentApp.addArtifact(imga);
+      }
+
+
+
+      /*
+       * System.out.println(currentApp.getName()); System.out.println(currentApp.getPlatform());
+       * System.out.println(currentApp.getShortDescription());
+       * System.out.println(currentApp.getDownloadUrl());
+       * System.out.println(currentApp.getLicense());
+       * System.out.println(currentApp.getLongDesccription());
+       * System.out.println(currentApp.getMinPlatformRequired());
+       * System.out.println(currentApp.getRating()); System.out.println(currentApp.getSize());
+       * System.out.println(currentApp.getSourceUrl());
+       * System.out.println(currentApp.getSupportUrl());
+       * System.out.println(currentApp.getVersion());
+       * System.out.println(currentApp.getCreator().getUsername());
+       */
+
       // add tags
-      currentApp.addTag(new Tag("tag" + DataGeneratorUtils.generateRandomInt(0, 5)));
-      currentApp.addTag(new Tag("tag" + DataGeneratorUtils.generateRandomInt(0, 5)));
+      String[] tags = DataGeneratorUtils.getRandomTags(2, 10);
+
+      for (int j = 0; j < tags.length; j++) {
+        currentApp.addTag(new Tag(tags[j]));
+      }
+
+
+
       currentApp = facade.save(currentApp);
       apps.add(currentApp);
     }

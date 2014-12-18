@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Random;
 
+import org.junit.Test;
+
 public class Utils {
   public static final String DELETE_USERS_QUERY = "delete UserEntity";
   public static final String DELETE_APPS_QUERY = "delete AppEntity";
@@ -32,6 +34,11 @@ public class Utils {
     return list.remove(generateRandomInt(0, list.size()));
   }
 
+  // run mvn test -Dtest=Utils to generate mockup data in DB
+  @Test
+  public void generate() {
+    DataGenerator.main(new String[] {"100"});
+  }
   /*
    * @Test public void mockupAppGenerator() { for (int i = 0; i < 2; i++) { //
    * System.out.println(DataGeneratorUtils.getRandomName());

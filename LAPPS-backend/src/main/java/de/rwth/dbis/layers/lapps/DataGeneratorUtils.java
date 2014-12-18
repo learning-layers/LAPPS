@@ -22,25 +22,25 @@ public class DataGeneratorUtils {
       "Moon", "Europa", "Triton", "Pluto", "Eris", "Titania", "Rhea", "Oberon", "Iapetus",
       "Makemake", "Haumea", "Charon", "Umbriel", "Ariel", "Dione", "Quaoar", "Tethys", "Sedna",
       "Ceres", "Orcus", "Salacia", "Varda", "Dysnomia", "Varuna", "Ixion", "Chaos", "Pallas",
-      "Vesta", "Enceladus", "Miranda", "Huya", "Hygiea", "Proteus", "Mimas", "Hiʻiaka", "Vanth",
-      "Ilmarë", "Nereid", "Interamnia", "Europa", "Davida", "Sylvia", "Actaea", "Cybele", "Juno",
-      "Hyperion", "Eunomia", "Camilla", "Euphrosyne", "Psyche", "Chariklo", "Sila", "Bamberga",
-      "Patientia", "Chiron", "Thisbe", "Hektor", "Ceto", "Herculina", "Doris", "Nunam", "Eugenia",
-      "Phoebe", "Amphitrite", "Bienor", "Deucalion", "Diotima", "Egeria", "Fortuna", "Aurora",
-      "Iris", "Daphne", "Themis", "Alauda", "Larissa", "Ursula", "Hermione", "Palma", "Metis",
-      "Nemesis", "Hebe", "Pholus", "Bertha", "Freia", "Elektra", "Rhadamanthus", "Janus",
-      "Aletheia", "Galatea", "Teharonhiawako", "Typhon", "Lachesis", "Winchester", "Hilda",
-      "Himalia", "Namaka", "Puck", "Aegle", "Germania", "Prokne", "Stereoskopia", "Amalthea",
-      "Agamemnon", "Kalliope", "Borasisi", "Siegena", "Elpis", "Diomedes", "Gyptis", "Aspasia",
-      "Dioretsa", "Ida", "Comas Solà", "Atlas", "Elatus", "Perdita", "Pan", "Linus", "Ananke",
-      "Telesto", "Phobos", "Paaliaq", "Francisco", "Calypso", "Leda", "Ferdinand", "Margaret",
-      "Medusa", "Romulus", "Ymir", "Trinculo", "Cupid", "Euler", "Adrastea", "Kiviuq", "Herschel",
-      "Tarvos", "Masursky", "Comet Comas Solà", "Bestla", "Kerberos", "Petit-Prince", "Deimos",
-      "Gaspra", "Ijiraq", "Halley's Comet", "Styx", "Mab", "Erriapus", "Misterrogers",
-      "Callirrhoe", "Themisto", "Daphnis", "Remus", "Toutatis", "Šteins", "Phaethon", "Cruithne",
-      "Annefrank", "Pallene", "Polydeuces", "Comet Churyumov–Gerasimenko", "Methone", "Magellan",
-      "Braille", "Geographos", "Apollo", "Astronautica", "Dactyl", "Icarus", "Castalia", "Nyx",
-      "Hypnos", "Aten", "Golevka", "Itokawa", "Aegaeon", "Nereus", "Apophis", "Duende"};
+      "Vesta", "Enceladus", "Miranda", "Huya", "Hygiea", "Proteus", "Mimas", "Vanth", "Nereid",
+      "Interamnia", "Europa", "Davida", "Sylvia", "Actaea", "Cybele", "Juno", "Hyperion",
+      "Eunomia", "Camilla", "Euphrosyne", "Psyche", "Chariklo", "Sila", "Bamberga", "Patientia",
+      "Chiron", "Thisbe", "Hektor", "Ceto", "Herculina", "Doris", "Nunam", "Eugenia", "Phoebe",
+      "Amphitrite", "Bienor", "Deucalion", "Diotima", "Egeria", "Fortuna", "Aurora", "Iris",
+      "Daphne", "Themis", "Alauda", "Larissa", "Ursula", "Hermione", "Palma", "Metis", "Nemesis",
+      "Hebe", "Pholus", "Bertha", "Freia", "Elektra", "Rhadamanthus", "Janus", "Aletheia",
+      "Galatea", "Teharonhiawako", "Typhon", "Lachesis", "Winchester", "Hilda", "Himalia",
+      "Namaka", "Puck", "Aegle", "Germania", "Prokne", "Stereoskopia", "Amalthea", "Agamemnon",
+      "Kalliope", "Borasisi", "Siegena", "Elpis", "Diomedes", "Gyptis", "Aspasia", "Dioretsa",
+      "Ida", "Atlas", "Elatus", "Perdita", "Pan", "Linus", "Ananke", "Telesto", "Phobos",
+      "Paaliaq", "Francisco", "Calypso", "Leda", "Ferdinand", "Margaret", "Medusa", "Romulus",
+      "Ymir", "Trinculo", "Cupid", "Euler", "Adrastea", "Kiviuq", "Herschel", "Tarvos", "Masursky",
+      "Bestla", "Kerberos", "Petit-Prince", "Deimos", "Gaspra", "Ijiraq", "Halley's Comet", "Styx",
+      "Mab", "Erriapus", "Misterrogers", "Callirrhoe", "Themisto", "Daphnis", "Remus", "Toutatis",
+      "Šteins", "Phaethon", "Cruithne", "Annefrank", "Pallene", "Polydeuces",
+      "Comet Churyumov–Gerasimenko", "Methone", "Magellan", "Braille", "Geographos", "Apollo",
+      "Astronautica", "Dactyl", "Icarus", "Castalia", "Nyx", "Hypnos", "Aten", "Golevka",
+      "Itokawa", "Aegaeon", "Nereus", "Apophis", "Duende"};
   private final static String[] nameSuffixes = new String[] {"", "", "", "", "", "", "", "App",
       "App", "App", "Application", "Tool", "Beta"};
 
@@ -248,7 +248,7 @@ public class DataGeneratorUtils {
    * @return a random urk
    */
   public static String getRandomUrl() {
-    String google = "https://www.google.com/search?q=";
+    String google = "http://www.google.com/search?q=";
     String url =
         names[RandomNumberGenerator.getRandomInt(0, names.length - 1)] + " "
             + nameSuffixes[RandomNumberGenerator.getRandomInt(0, nameSuffixes.length - 1)];
@@ -406,7 +406,7 @@ public class DataGeneratorUtils {
    * @return a random description for an image
    */
   public static String getRandomImageDescription() {
-    int length = RandomNumberGenerator.getRandomInt(5, 18);
+    int length = RandomNumberGenerator.getRandomInt(5, 12);
     return getRandomText(length, 1);
   }
 
