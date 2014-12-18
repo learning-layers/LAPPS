@@ -13,6 +13,7 @@
                       '$scope',
                       'swaggerApi',
                       function($scope, swaggerApi) {
+
                         /**
                          * @field
                          * @type app[]
@@ -28,7 +29,7 @@
                          * @description Time in ms to wait until the image in
                          *              the carousel is changed.
                          */
-                        $scope.interval = 400000000;
+                        $scope.interval = 4000;
                         /**
                          * @field
                          * @type number
@@ -69,7 +70,10 @@
                         };
 
                         swaggerApi.apps
-                                .getAllApps()
+                                .getAllApps({
+                                  page: 1,
+                                  pageLength: 10
+                                })
                                 .then(
                                         function(data) {
                                           $scope.apps = data.slice(0, 5);

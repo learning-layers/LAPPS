@@ -521,14 +521,16 @@ h1, h2, h3, h4, h5 {
 }
 
 .featured-info-panel img {
+  float: none;
   
-  margin: 0 10px;
   width: 150px;
 }
 
 .featured-info-panel p {
   clear:both;
-  padding: 10px 10px;
+  padding: 5px 10px;
+  overflow: auto;
+  max-height:160px;
 }
 
 .featured-info-panel {

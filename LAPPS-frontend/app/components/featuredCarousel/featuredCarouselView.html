@@ -19,9 +19,12 @@
       <h2>{{apps[currentSlide].name}}</h2>
     </div>
     <img ng-src="{{apps[currentSlide].thumbnail}}">
+
     <!--<p class="description">{{apps[currentSlide].longDesccription}}</p>-->
 
-    
+    <span class="vspacer05 text-center">
+      <star-rating value="{{apps[currentSlide].rating}}"></star-rating>
+    </span>
     <p>{{apps[currentSlide].shortDescription}}</p>
 
     <a id="details-button" class="btn btn-success btn-lg"
