@@ -264,7 +264,7 @@ public class UsersResource {
       @PathParam("oidcId") long oidcId,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength) {
-    return new ApplicationResource().getAllApps(null, page, pageLength, null, null, "Creator",
+    return new ApplicationsResource().getAllApps(null, page, pageLength, null, null, "Creator",
         String.valueOf(oidcId));
   }
 
