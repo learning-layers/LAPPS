@@ -39,7 +39,7 @@ public class ApplicationResource {
 
   private static final Logger LOGGER = Logger.getLogger(ApplicationResource.class.getName());
 
-  private static Facade entitiyFacade = new Facade();
+  private Facade entitiyFacade = new Facade();
 
   /**
    * Get all apps.
