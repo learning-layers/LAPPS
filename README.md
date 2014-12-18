@@ -15,7 +15,7 @@ Newer versions should also work fine.
 ##Configuration##
 Configure Eclipse:
 * Import https://google-styleguide.googlecode.com/svn/trunk/eclipse-java-google-style.xml as Eclipse Java format (Preferences -> Java -> Code Style -> Formatter)
-* Configurate the Java -> Code Style (rest is Eclipse default):
+* Configure the Java -> Code Style (rest is Eclipse default):
   * Enable "Format source code"
   * Enable "Remove unused imports"
 * Configure the Java -> Editor -> Save Actions (rest is Eclipse default):
