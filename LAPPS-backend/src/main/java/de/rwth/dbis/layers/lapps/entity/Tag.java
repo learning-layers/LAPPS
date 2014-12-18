@@ -14,7 +14,6 @@ public class Tag implements Entity {
   private static final long serialVersionUID = 5120490367130075580L;
   @Id
   @GeneratedValue
-  @JsonIgnore
   private Long id = 0L;
   private String value = "";
   @ManyToOne
