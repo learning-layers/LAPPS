@@ -53,6 +53,7 @@ public class TagsResource {
   @ApiOperation(value = "Get all tags for an app", response = Tag.class, responseContainer = "List")
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
   public Response getAllTags(
@@ -60,12 +61,11 @@ public class TagsResource {
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of tags by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength) {
 
-    App app = entitiyFacade.load(App.class, appId);
-
-    if (app == null) {
+    List<App> apps = entitiyFacade.findByParam(App.class, "id", appId);
+    if (apps.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
-
+      App app = apps.get(0);
       List<Tag> tagEntities = app.getTags();
 
       int numberOfPages = 1;
@@ -116,12 +116,11 @@ public class TagsResource {
   public Response createTag(@PathParam("appId") long appId, @ApiParam(value = "Tag entity as JSON",
       required = true) Tag createdTag) {
 
-    App app = entitiyFacade.load(App.class, appId);
-
-    if (app == null) {
+    List<App> apps = entitiyFacade.findByParam(App.class, "id", appId);
+    if (apps.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
-
+      App app = apps.get(0);
       createdTag.setApp(app);
       entitiyFacade.save(createdTag);
 
@@ -152,9 +151,7 @@ public class TagsResource {
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
-      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App or tag of app not found"),
-      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
-          message = "Currently, this method is not implemented")})
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App or tag of app not found")})
   public Response deleteTag(@HeaderParam("accessToken") String accessToken,
       @PathParam("appId") long appId, @PathParam("id") long id) {
 
@@ -163,12 +160,11 @@ public class TagsResource {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
 
-    App app = entitiyFacade.load(App.class, appId);
-
-    if (app == null) {
+    List<App> apps = entitiyFacade.findByParam(App.class, "id", appId);
+    if (apps.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
-
+      App app = apps.get(0);
       List<Tag> tagEntities = app.getTags();
       Tag tag = null;
       for (Tag tagTmp : tagEntities) {

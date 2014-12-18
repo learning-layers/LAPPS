@@ -39,7 +39,7 @@ public class ApplicationResource {
 
   private static final Logger LOGGER = Logger.getLogger(ApplicationResource.class.getName());
 
-  private static Facade appInstanceFacade = new Facade();
+  private static Facade entitiyFacade = new Facade();
 
   /**
    * Get all apps.
@@ -71,9 +71,9 @@ public class ApplicationResource {
       @ApiParam(value = "Filter value", required = false) @QueryParam("filterValue") String filterValue) {
     List<App> entities;
     if (search == null) {
-      entities = (List<App>) appInstanceFacade.loadAll(App.class);
+      entities = (List<App>) entitiyFacade.loadAll(App.class);
     } else {
-      entities = (List<App>) appInstanceFacade.findByParam(App.class, "name", search);
+      entities = (List<App>) entitiyFacade.findByParam(App.class, "name", search);
     }
 
     Collections.sort(entities);
@@ -126,9 +126,12 @@ public class ApplicationResource {
           message = "Internal server problems")})
   public Response getApp(@PathParam("id") Long id) {
 
-    App app = appInstanceFacade.load(App.class, id);
-    if (app == null) {
+    List<App> apps = entitiyFacade.findByParam(App.class, "id", id);
+    App app = null;
+    if (apps.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
+    } else {
+      app = apps.get(0);
     }
     try {
       ObjectMapper mapper = new ObjectMapper();
@@ -205,9 +208,12 @@ public class ApplicationResource {
     if (!OIDCAuthentication.isAdmin(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
-    App app = appInstanceFacade.load(App.class, id);
-    if (app == null) {
+    List<App> apps = entitiyFacade.findByParam(App.class, "id", id);
+    // App app = null;
+    if (apps.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
+    } else {
+      // app = apps.get(0);
     }
     // TODO: delete app with help of appFacade
     return Response.status(HttpStatusCode.NOT_IMPLEMENTED).build();
@@ -246,9 +252,12 @@ public class ApplicationResource {
     if (!OIDCAuthentication.isAdmin(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
-    App app = appInstanceFacade.load(App.class, id);
-    if (app == null) {
+    List<App> apps = entitiyFacade.findByParam(App.class, "id", id);
+    // App app = null;
+    if (apps.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
+    } else {
+      // app = apps.get(0);
     }
     // TODO: update app with help of appFacade
     try {
