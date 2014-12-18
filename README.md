@@ -42,6 +42,8 @@ LAPPS Frontend (run these commands from your project folder):
 * npm run protractor --- start e2e tests (start the server with npm start first in another console)  
 * npm run doc 		 --- create jsdoc documentation in out/
 * npm run deploy	 --- create a deployable containing minified files in deploy/
+* npm run api        --- fetches the up to date Swagger api from the deploy server for usage in the frontend
+* npm run apilocal   --- fetches the up to date Swagger api from the local server for usage in the frontend
 
 ##Links##
 
