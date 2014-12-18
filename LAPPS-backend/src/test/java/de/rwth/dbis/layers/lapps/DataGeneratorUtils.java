@@ -6,16 +6,6 @@ import java.util.Random;
 import de.rwth.dbis.layers.lapps.entity.User;
 
 public class DataGeneratorUtils {
-  /**
-   * Generates a random integer in a range (min-max)
-   * 
-   * @param min Minimal range value
-   * @param max Maximal range value
-   * @return an int in the range (min-max)
-   */
-  public static int generateRandomInt(int min, int max) {
-    return (int) (min + Math.random() * (max - min - 1));
-  }
 
   private final static String[] names = new String[] {"Sun", "Jupiter", "Saturn", "Uranus",
       "Neptune", "Earth", "Venus", "Mars", "Ganymede", "Titan", "Mercury", "Callisto", "Io",
@@ -274,7 +264,6 @@ public class DataGeneratorUtils {
    * @return a random version number x.x.x
    */
   public static String getRandomVersion() {
-
     return Integer.toString(RandomNumberGenerator.getRandomInt(0, 5)) + "."
         + Integer.toString(RandomNumberGenerator.getRandomInt(0, 9)) + "."
         + Integer.toString(RandomNumberGenerator.getRandomInt(0, 9));
@@ -296,7 +285,6 @@ public class DataGeneratorUtils {
    * @return a random rating
    */
   public static double getRandomRating() {
-
     return (double) (RandomNumberGenerator.getRandomInt(0, 10) / 2d);
   }
 
@@ -306,7 +294,6 @@ public class DataGeneratorUtils {
    * @return a random size
    */
   public static int getRandomSize() {
-
     return RandomNumberGenerator.getRandomInt(200, 100000);
   }
 
@@ -318,7 +305,6 @@ public class DataGeneratorUtils {
    * @return array of random tags
    */
   public static String[] getRandomTags(int min, int max) {
-
     int amount = RandomNumberGenerator.getRandomInt(min, max);
     String[] tags = new String[amount];
     for (int i = 0; i < tags.length; i++) {
@@ -431,7 +417,7 @@ public class DataGeneratorUtils {
    */
   public static String[] getImagePair() {
     String[] pair = new String[2];
-    int index = generateRandomInt(1, images.length - 1);
+    int index = RandomNumberGenerator.getRandomInt(1, images.length - 1);
     if (index % 2 == 1) {
       pair[0] = images[index - 1];
       pair[1] = images[index];
@@ -448,22 +434,24 @@ public class DataGeneratorUtils {
    * @return a random platform
    */
   public static String getRandomPlatform() {
-    int index = generateRandomInt(0, platforms.length - 1);
+    int index = RandomNumberGenerator.getRandomInt(0, platforms.length - 1);
     return platforms[index];
   }
 
   /**
-   * Generates a random user
+   * Generates a random (unique-)user with developer rights. Can (and should) be used for testing.
    * 
    * @return a random user
    */
-  public static User getRandomUser() {
-
-    String name = userNames[RandomNumberGenerator.getRandomInt(0, userNames.length - 1)];
+  public static User getRandomDeveloperUser() {
+    String name =
+        userNames[RandomNumberGenerator.getRandomInt(0, userNames.length - 1)]
+            + RandomNumberGenerator.getRandomInt(0, 10000);
     long oidcId = name.hashCode();
     String email = name.replace(" ", "").toLowerCase() + "@test.foobar";
-    User user = new User(oidcId, name, email);
-    user.setRole(2);
+    String website = "http://" + name.replace(" ", "") + ".something";
+    String description = "This is the personal description of " + name + "!";
+    User user = new User(oidcId, name, email, description, website, User.DEVELOPER);
     return user;
   }
 

@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.rwth.dbis.layers.lapps.DataGeneratorUtils;
+import de.rwth.dbis.layers.lapps.DataGeneratorUtils.RandomNumberGenerator;
 import de.rwth.dbis.layers.lapps.entity.App;
 import de.rwth.dbis.layers.lapps.entity.Artifact;
 import de.rwth.dbis.layers.lapps.entity.Tag;
@@ -20,18 +21,15 @@ public class PersistenceTest {
   @Before
   public void initData() {
     // generate and save data:
-    String username = "test_" + DataGeneratorUtils.generateRandomInt(0, 3000);
-    this.user =
-        facade.save(new User(new Long(DataGeneratorUtils.generateRandomInt(0, 3000)), username,
-            username + "@ok.com"));
+    this.user = facade.save(DataGeneratorUtils.getRandomDeveloperUser());
     App app = new App("Test App", "platform", "Lorem ipsum...");
     app.setCreator(this.user);
-    app.addArtifact(new Artifact("image", DataGeneratorUtils.generateRandomInt(0, 3000)
+    app.addArtifact(new Artifact("image", RandomNumberGenerator.getRandomInt(0, 3000)
         + "@image.com"));
-    app.addArtifact(new Artifact("image", DataGeneratorUtils.generateRandomInt(0, 3000)
+    app.addArtifact(new Artifact("image", RandomNumberGenerator.getRandomInt(0, 3000)
         + "@image.com"));
-    app.addTag(new Tag("tag_" + DataGeneratorUtils.generateRandomInt(0, 3000)));
-    app.addTag(new Tag("tag_" + DataGeneratorUtils.generateRandomInt(0, 3000)));
+    app.addTag(new Tag("tag_" + RandomNumberGenerator.getRandomInt(0, 3000)));
+    app.addTag(new Tag("tag_" + RandomNumberGenerator.getRandomInt(0, 3000)));
     this.app = facade.save(app);
   }
 
@@ -64,9 +62,8 @@ public class PersistenceTest {
   private void modified(App a) {
     // modify/update data:
     a.setName("modified");
-    a.addArtifact(new Artifact("image", DataGeneratorUtils.generateRandomInt(0, 3000)
-        + "@image.com"));
-    a.addTag(new Tag("tag_" + DataGeneratorUtils.generateRandomInt(0, 3000)));
+    a.addArtifact(new Artifact("image", RandomNumberGenerator.getRandomInt(0, 3000) + "@image.com"));
+    a.addTag(new Tag("tag_" + RandomNumberGenerator.getRandomInt(0, 3000)));
     a = facade.save(a);
     Assert.assertNotSame("Both apps still have the same names!", a.getName(), this.app.getName());
     Assert.assertEquals("Unexpected artifact count! Check your collection loading strategy!", 3, a

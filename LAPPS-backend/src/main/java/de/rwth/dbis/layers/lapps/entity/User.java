@@ -44,10 +44,16 @@ public class User implements Entity, Comparable<User> {
 
   public User() {}
 
-  public User(Long oidcId, String username, String email) {
+  public User(Long oidcId, String username, String email, String description, String website,
+      int role) {
     this.setOidcId(oidcId);
     this.setUsername(username);
     this.setEmail(email);
+    this.setDescription(description);
+    this.setWebsite(website);
+    if (role == USER || role == PENDING_DEVELOPER || role == DEVELOPER || role == ADMIN) {
+      this.role = role;
+    }
   }
 
   public Long getOidcId() {
@@ -91,10 +97,6 @@ public class User implements Entity, Comparable<User> {
 
   public Date getDateRegistered() {
     return dateRegistered;
-  }
-
-  public void setDateRegistered(Date dateRegistered) {
-    this.dateRegistered = dateRegistered;
   }
 
   public String getDescription() {
