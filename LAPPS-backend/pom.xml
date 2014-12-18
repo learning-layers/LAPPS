@@ -165,14 +165,14 @@
             </plugin>
             
             <!-- Exclude embedded server starter from webapp -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<packagingExcludes>**/Main.class</packagingExcludes>
-				</configuration>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <packagingExcludes>**/Main.class</packagingExcludes>
+                </configuration>
+            </plugin>
 			
             <!-- Deploy webapp to Tomcat -->
             <plugin>
