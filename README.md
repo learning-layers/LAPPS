@@ -29,12 +29,12 @@ Configure Eclipse:
 
 ##Build##
 LAPPS Backend (run these commands from your project folder):
-* mvn clean             --- clean
-* mvn test              --- test backend
-* mvn exec:java         --- compile and start on Jetty (port 8080, execute in LAPPS-backend folder)
-* mvn javadoc:javadoc   --- generates JavaDoc documentation
-* mvn package           --- generate a servlet that can be deployed to an application server
-* mvn test -Dtest=Utils --- runs a "test" that generates mockup data in the database  
+* mvn clean                     --- clean
+* mvn test                      --- test backend
+* mvn exec:java                 --- compile and start on Jetty (port 8080, execute in LAPPS-backend folder)
+* mvn javadoc:javadoc           --- generates JavaDoc documentation
+* mvn package                   --- generate a servlet that can be deployed to an application server
+* mvn test -Dtest=DataGenerator --- generates mockup data in the database  
 These commands also work inside Eclipse, then leave away the mvn prefix.
 
 LAPPS Frontend (run these commands from your project folder):

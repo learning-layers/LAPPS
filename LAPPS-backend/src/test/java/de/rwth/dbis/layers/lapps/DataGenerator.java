@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.junit.Test;
+
 import de.rwth.dbis.layers.lapps.DataGeneratorUtils.RandomNumberGenerator;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
@@ -13,9 +15,7 @@ import de.rwth.dbis.layers.lapps.entity.Tag;
 import de.rwth.dbis.layers.lapps.entity.User;
 
 /**
- * Generates some dummy data based on the count of apps requested.
- * 
- * @param 1 - the count of apps requested
+ * Helper class to generate dummy data.
  */
 public class DataGenerator {
   private static Logger LOGGER = Logger.getLogger(DataGenerator.class.getName());
@@ -23,6 +23,12 @@ public class DataGenerator {
   private static int DEFAULT_APP_COUNT = 100;
   private static int appCount = DEFAULT_APP_COUNT;
 
+
+  /**
+   * Generates some dummy data based on the count of apps requested.
+   * 
+   * @param args - the number of apps requested
+   */
   public static void main(String[] args) {
     if (args[0] != null && args[0] != "") {
       appCount = Integer.parseInt(args[0]);
@@ -128,4 +134,13 @@ public class DataGenerator {
     facade.deleteAll(App.class);
   }
 
+  /**
+   * This method runs the mockup data class as a test.
+   * 
+   * Use "mvn test -Dtest=DataGenerator" to generate mockup data in the database.
+   */
+  @Test
+  public void generate() {
+    DataGenerator.main(new String[] {"100"});
+  }
 }

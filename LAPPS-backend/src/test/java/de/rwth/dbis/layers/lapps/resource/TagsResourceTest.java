@@ -23,8 +23,8 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import de.rwth.dbis.layers.lapps.DataGeneratorUtils;
 import de.rwth.dbis.layers.lapps.Main;
-import de.rwth.dbis.layers.lapps.Utils;
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
@@ -55,8 +55,10 @@ public class TagsResourceTest {
     LOGGER.info("App created: " + app);
 
     LOGGER.info("Creating a new user...");
-    String username = "test_" + Utils.generateRandomInt(0, 3000);
-    user = new User(new Long(Utils.generateRandomInt(0, 3000)), username, username + "@test.com");
+    String username = "test_" + DataGeneratorUtils.generateRandomInt(0, 3000);
+    user =
+        new User(new Long(DataGeneratorUtils.generateRandomInt(0, 3000)), username, username
+            + "@test.com");
     user = entityFacade.save(user);
     app.setCreator(user);
     LOGGER.info("User created: " + user);
