@@ -3,13 +3,13 @@
     <div class="title">
       <!--<img ng-src="{{user.avatar}}">-->
       <h2>
-        <span>{{user.name}}</span>
+        <span>{{user.username}}</span>
       </h2>
     </div>
 
     <div class="container">
       <div class="col-md-3 col-sm-5 text-center avatar">
-        <a href="https://secure.gravatar.com" class="img-circle" ng-style="{'background-image':'url({{user.avatar}})'}"></a>
+        <a href="https://secure.gravatar.com" class="img-circle" back-img="{{user.avatar}}"></a>
       </div>
       <div class="col-md-3 col-sm-7">
         <hr class="visible-xs" />
@@ -18,40 +18,42 @@
             <dfn><span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>Role</dfn>
           </dt>
           <dd>
-            {{user.role}}
+            {{user.roleName}} m {{user.isDeveloper}}
           </dd>
 
           <dt>
             <dfn><span class="glyphicon glyphicon-time"></span><span class="hspacer05"></span>Member since</dfn>
           </dt>
           <dd>
-            {{user.memberSince}}
+            {{user.memberScince}}
           </dd>
 
-          <dt ng-show="{{isDeveloper()||isAdmin()||visitorIsAdmin()}}">
+          <dt>
             <dfn><span class="glyphicon glyphicon-envelope"></span><span class="hspacer05"></span>Email</dfn>
           </dt>
-          <dd ng-show="{{isDeveloper()||isAdmin()||visitorIsAdmin()}}">
+          <dd>
             <a href="mailto:{{user.email}}">{{user.email}}</a>
           </dd>
-
-          <dt ng-show="{{isDeveloper()}}">
-            <dfn><span class="glyphicon glyphicon-home"></span><span class="hspacer05"></span>Homepage</dfn>
+          
+          
+          <dt ng-if="isDeveloper()">
+              <dfn><span class=" glyphicon glyphicon-home">
+            </span><span class="hspacer05"></span>Homepage</dfn>
           </dt>
-          <dd ng-show="{{isDeveloper()}}">
-            <a ng-show="mayEdit()" editable-url="user.homepage" onaftersave="updateUser()" href="{{user.homepage||'about:blank'}}">{{user.homepage||'about:blank'}}</a>
-            <a ng-hide="mayEdit()" href="{{user.homepage||'about:blank'}}">{{user.homepage||'about:blank'}}</a>
+          <dd ng-if="isDeveloper()">
+            <a ng-show="mayEdit()" editable-url="user.website" onaftersave="updateUser()" href="{{user.website||'about:blank'}}">{{user.website||'about:blank'}}</a>
+            <a ng-hide="mayEdit()" href="{{user.website||'about:blank'}}">{{user.website||'about:blank'}}</a>
           </dd>
-
-          <dt ng-show="{{isDeveloper()}}">
+          
+          <dt ng-if="isDeveloper()">
             <dfn><span class="glyphicon glyphicon-upload"></span><span class="hspacer05"></span>Apps uploaded</dfn>
           </dt>
-          <dd ng-show="{{isDeveloper()}}">
+          <dd ng-if="isDeveloper()">
             <a href="#">See {{user.name}}'s apps</a>
           </dd>
         </dl>
       </div>
-      <div class="col-md-6 col-sm-12" ng-show="{{isDeveloper()}}">
+      <div class="col-md-6 col-sm-12" ng-if="isDeveloper()">
         <dl>
           <dt>
             <dfn><span class="glyphicon glyphicon-pencil"></span><span class="hspacer05"></span>Description</dfn>

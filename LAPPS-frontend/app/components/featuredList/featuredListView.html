@@ -21,9 +21,13 @@
           <div class="app-list-item">
             <a href="#/apps/{{app.id}}"></a>
             <div class="thumbnail">
-              <h3 class="single-line">{{app.name}} <i class="fa {{app.platformIcon}} pull-left"></i></h3>
+              <h3 class="single-line">
+                {{app.name}}
+                <i class="fa {{app.platformObj.icon}} pull-left"></i>
+                <i ng-show="app.platformObj.isMobile" class="fa fa-mobile pull-left"></i>
+              </h3>
               <div class="image-container">
-                <img ng-src="{{app.thumbnail}}" alt ="cats">
+                <img ng-src="{{app.thumbnail}}" alt="cats">
               </div>
               <div class="caption">
 

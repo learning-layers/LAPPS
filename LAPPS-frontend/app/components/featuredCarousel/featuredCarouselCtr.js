@@ -29,7 +29,7 @@
                          * @description Time in ms to wait until the image in
                          *              the carousel is changed.
                          */
-                        $scope.interval = 4000;
+                        $scope.interval = 7000;
                         /**
                          * @field
                          * @type number
@@ -46,11 +46,7 @@
                          *          nextSlide The next slide in the carousel.
                          * @param {object}
                          *          direction The direction of the slide change.
-                         * @description Converts size in KB to MB with 1 digit
-                         *              after the comma. If size is less than
-                         *              1024 the value is not changed. The
-                         *              string MB or KB is appended to the
-                         *              result (12.5 MB).
+                         * @description Keeps track of the current slide index.
                          */
                         $scope.onSlideChanged = function(nextSlide, direction) {
                           if (direction == 'next') {

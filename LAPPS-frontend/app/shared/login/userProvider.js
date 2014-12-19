@@ -94,7 +94,22 @@
                              *              requests.
                              */
                             token: '',
-
+                            /**
+                             * @function
+                             * @memberOf lapps.lappsServices.user
+                             * @type {string}
+                             * @param {number}
+                             *          id role id
+                             * @description Converts a role id to a role string
+                             *              for representation.
+                             */
+                            roleIdToRoleName: function(id) {
+                              if (id == 1) { return 'User'; }
+                              if (id == 2) { return 'Dev. Applicant'; }
+                              if (id == 3) { return 'Developer'; }
+                              if (id == 4) { return 'Admin'; }
+                              return 'User';
+                            },
                             /**
                              * @function
                              * @memberOf lapps.lappsServices.user
@@ -213,21 +228,33 @@
                              * @function
                              * @type boolean
                              * @memberOf lapps.lappsServices.user
+                             * @param {number}
+                             *          id role id (optional)
                              * @description True if the user has the role of an
                              *              administrator
                              */
-                            isAdmin: function() {
-                              return this.role.toLowerCase().indexOf('admin') == 0;
+                            isAdmin: function(id) {
+                              if (typeof id === 'undefined' || id === null) {
+                                return this.role == 4;
+                              } else {
+                                return id == 4;
+                              }
                             },
                             /**
                              * @function
                              * @type boolean
                              * @memberOf lapps.lappsServices.user
+                             * @param {number}
+                             *          id role id (optional)
                              * @description True if the user has the role of a
                              *              developer
                              */
-                            isDeveloper: function() {
-                              return this.role.toLowerCase().indexOf('dev') == 0;
+                            isDeveloper: function(id) {
+                              if (typeof id === 'undefined' || id === null) {
+                                return this.role == 3;
+                              } else {
+                                return id == 3;
+                              }
                             },
                             /**
                              * @function

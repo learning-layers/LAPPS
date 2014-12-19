@@ -14,8 +14,8 @@
                       'swaggerApi',
                       '$routeParams',
                       'user',
-                      function($scope, swaggerApi, $routeParams, user) {
-
+                      'platform',
+                      function($scope, swaggerApi, $routeParams, user, platform) {
                         if ($routeParams.query) {
                           $scope.searchQuery = $routeParams.query;
                         } else {
@@ -36,7 +36,27 @@
                          * @description The state of the advanced search area.
                          */
                         $scope.collapsed = true;
+                        /**
+                         * @function
+                         * @type string
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @param {number}
+                         *          utc timestamp.
+                         * @description Converts timestamp in date string
+                         *              day-month-year.
+                         */
+                        $scope.convertDate = function(utc) {
+                          var d = new Date(utc);
+                          var m_names = new Array("January", "February",
+                                  "March", "April", "May", "June", "July",
+                                  "August", "September", "October", "November",
+                                  "December");
 
+                          var curr_date = d.getDate();
+                          var curr_month = d.getMonth();
+                          var curr_year = d.getFullYear();
+                          return (curr_date + "-" + m_names[curr_month] + "-" + curr_year);
+                        }
                         /**
                          * @function
                          * @memberOf lapps.lappsControllers.searchPageCtrl
@@ -45,33 +65,33 @@
                          *              results.
                          */
                         $scope.search = function() {
-
                           // swaggerApi.users.getAllUsers({'accessToken':user.token}).then(function(data2){
-
                           swaggerApi.apps
                                   .getAllApps({
                                     search: $scope.searchQuery
                                   })
                                   .then(
-                                          function(appList) {
-                                            for (var i = 0; i < appList.length; i++) {
-                                              swaggerApi.apps
-                                                      .getApp(appList[i])
-                                                      .then(
-                                                              function(app) {
-                                                                $scope.apps
-                                                                        .push({
-                                                                          "id": app.id,
-                                                                          "name": app.name,
-                                                                          "shortDescription": "Test 1 2 3 4",
-                                                                          "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,",
-                                                                          "image": "http://lorempixel.com/500/280/",
-                                                                          "thumbnail": "http://lorempixel.com/150/150",
-                                                                          "rating": app.rating,
-                                                                          "commentsCount": "999",
-                                                                          "created": "1564"
-                                                                        });
-                                                              });
+                                          function(data) {
+                                            $scope.apps = data;
+
+                                            for (var i = 0; i < $scope.apps.length; i++) {
+                                              var thumbnail = '';
+                                              for (var j = 0; j < $scope.apps[i].artifacts.length; j++) {
+                                                if ($scope.apps[i].artifacts[j].type
+                                                        .indexOf('thumb') >= 0) {
+                                                  thumbnail = $scope.apps[i].artifacts[j].url;
+                                                  break;
+                                                }
+                                              }
+                                              $scope.apps[i].thumbnail = thumbnail;
+
+                                              $scope.apps[i].platformObj = platform
+                                                      .getPlatformByName($scope.apps[i].platform);
+
+                                              $scope.apps[i].dateCreated = $scope
+                                                      .convertDate($scope.apps[i].dateCreated);
+                                              $scope.apps[i].dateModified = $scope
+                                                      .convertDate($scope.apps[i].dateModified);
                                             }
                                           });
                         }

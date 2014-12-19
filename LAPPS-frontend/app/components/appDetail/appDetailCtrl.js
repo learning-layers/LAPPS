@@ -14,7 +14,8 @@
                       '$scope',
                       '$routeParams',
                       'swaggerApi',
-                      function($scope, $routeParams, swaggerApi) {
+                      'platform',
+                      function($scope, $routeParams, swaggerApi, platform) {
                         /**
                          * @field
                          * @type number
@@ -68,7 +69,7 @@
                          * @description Time in ms to wait until the image in
                          *              the carousel is changed.
                          */
-                        $scope.interval = 4000;
+                        $scope.interval = 7000;
 
                         /**
                          * @field
@@ -77,7 +78,7 @@
                          * @description Stores the app object retrieved from the
                          *              backend.
                          */
-                        $scope.appData = {};
+                        $scope.app = {};
 
                         marked.setOptions({
                           renderer: new marked.Renderer(),
@@ -151,6 +152,7 @@
                          *              result (12.5 MB).
                          */
                         $scope.convertSize = function(size) {
+
                           size = parseInt(size, 10);
                           if (size < 1024) {
                             return size + " KB";
@@ -181,6 +183,60 @@
                           var curr_year = d.getFullYear();
                           return (curr_date + "-" + m_names[curr_month] + "-" + curr_year);
                         }
+                        /**
+                         * @field
+                         * @type number
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Stores the currently displayed slide id
+                         *              in the carousel.
+                         */
+                        $scope.currentSlide = 0;
+
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @param {object}
+                         *          nextSlide The next slide in the carousel.
+                         * @param {object}
+                         *          direction The direction of the slide change.
+                         * @description Keeps track of the current slide index.
+                         */
+                        $scope.onSlideChanged = function(nextSlide, direction) {
+                          if (direction == 'next') {
+                            $scope.currentSlide = ($scope.currentSlide + 1)
+                                    % $scope.app.images.length;
+                          } else if (direction == 'prev') {
+                            $scope.currentSlide = ($scope.currentSlide - 1)
+                                    % $scope.app.images.length;
+                            if ($scope.currentSlide < 0) {
+                              $scope.currentSlide = $scope.app.images.length - 1;
+                            }
+                          }
+                        }
+                        /**
+                         * @function
+                         * @type string
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @param {string}
+                         *          url
+                         * @description Shortens a given urlby only displaying
+                         *              the TLD.
+                         */
+                        $scope.shortenUrl = function(url) {
+                          if (typeof url === 'undefined' || url === null) { return ''; }
+
+                          var urlCopy = url.substring(0);
+
+                          var wwwPos = urlCopy.indexOf('www.');
+                          if (wwwPos >= 0) {
+                            urlCopy = urlCopy.substring(wwwPos + 4);
+                          }
+                          var slashPos = urlCopy.indexOf('/');
+                          if (slashPos >= 0) {
+                            urlCopy = urlCopy.substring(0, slashPos);
+                          }
+                          return urlCopy;
+                        }
 
                         swaggerApi.apps
                                 .getApp({
@@ -188,25 +244,37 @@
                                 })
                                 .then(
                                         function(data) {
-                                          $scope.appData = data;
-                                          $scope.appData.longDescriptionMarkdown = marked($scope.appData.longDescription);
+                                          $scope.app = data;
+                                          $scope.app.longDescriptionMarkdown = marked($scope.app.longDescription);
                                           var thumbnail = '';
                                           var images = [];
-                                          for (var j = 0; j < $scope.appData.artifacts.length; j++) {
-                                            if ($scope.appData.artifacts[j].type
+                                          for (var j = 0; j < $scope.app.artifacts.length; j++) {
+                                            if ($scope.app.artifacts[j].type
                                                     .indexOf('thumb') >= 0) {
-                                              thumbnail = $scope.appData.artifacts[j].url;
-                                            } else if ($scope.appData.artifacts[j].type
+                                              thumbnail = $scope.app.artifacts[j].url;
+                                            } else if ($scope.app.artifacts[j].type
                                                     .indexOf('image') >= 0) {
                                               images
                                                       .push({
-                                                        url: $scope.appData.artifacts[j].url,
-                                                        description: $scope.appData.artifacts[j].description
+                                                        url: $scope.app.artifacts[j].url,
+                                                        description: $scope.app.artifacts[j].description
                                                       });
                                             }
                                           }
-                                          $scope.appData.thumbnail = thumbnail;
-                                          $scope.appData.images = images;
+                                          $scope.app.thumbnail = thumbnail;
+                                          $scope.app.images = images;
+                                          $scope.app.platformObj = platform
+                                                  .getPlatformByName($scope.app.platform);
+                                          $scope.app.sourceUrlShort = $scope
+                                                  .shortenUrl($scope.app.sourceUrl);
+                                          $scope.app.supportUrlShort = $scope
+                                                  .shortenUrl($scope.app.supportUrl);
+                                          $scope.size = $scope
+                                                  .convertSize($scope.size);
+                                          $scope.dateCreated = $scope
+                                                  .convertDate($scope.dateCreated);
+                                          $scope.dateModified = $scope
+                                                  .convertDate($scope.dateModified);
                                         });
                       }]);
 }).call(this);

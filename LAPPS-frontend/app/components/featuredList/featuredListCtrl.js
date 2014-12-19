@@ -75,8 +75,10 @@
                                                 }
                                               }
                                               $scope.apps[i].thumbnail = thumbnail;
-                                              $scope.apps[i].platformIcon = platform
-                                                      .getPlatformByName($scope.apps[i].platform).icon;
+
+                                              $scope.apps[i].platformObj = platform
+                                                      .getPlatformByName($scope.apps[i].platform);
+
                                             }
                                           });
                         }

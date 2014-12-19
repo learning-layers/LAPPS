@@ -21,44 +21,52 @@
                           id: 0,
                           name: 'iOS',
                           icon: 'fa-apple',
-                          agentRegEx: /(iPhone|iPad|iPod)/
+                          agentRegEx: /(iPhone|iPad|iPod)/,
+                          isMobile: true
                         },
                         {
                           id: 1,
                           name: 'Android',
                           icon: 'fa-android',
-                          agentRegEx: /Android/
+                          agentRegEx: /Android/,
+                          isMobile: true
                         },
                         {
                           id: 2,
                           name: 'Windows Phone',
                           icon: 'fa-windows',
-                          agentRegEx: /Windows Phone/
+                          agentRegEx: /Windows Phone/,
+                          isMobile: true
                         },
                         {
                           id: 3,
                           name: 'Web Apps',
                           icon: 'fa-globe',
+                          isMobile: false
                         },
                         {
                           id: 4,
                           name: 'Windows',
                           icon: 'fa-windows',
-                          agentRegEx: /(Windows NT|Windows 2000|Windows XP|Windows 7|Windows 8|Windows 10)/
+                          agentRegEx: /(Windows NT|Windows 2000|Windows XP|Windows 7|Windows 8|Windows 10)/,
+                          isMobile: false
                         }, {
                           id: 5,
                           name: 'Linux',
                           icon: 'fa-linux',
-                          agentRegEx: /(Linux|X11)/
+                          agentRegEx: /(Linux|X11)/,
+                          isMobile: false
                         }, {
                           id: 6,
                           name: 'Mac OS X',
                           icon: 'fa-apple',
-                          agentRegEx: /Mac OS X/
+                          agentRegEx: /Mac OS X/,
+                          isMobile: false
                         }, {
                           id: 7,
                           name: 'All Platforms',
                           icon: 'fa-circle-o',
+                          isMobile: false
                         }];
                     /**
                      * @field
@@ -146,6 +154,7 @@
 
                       window.localStorage['platform'] = this.currentPlatform.id;
                     }
+
                     /**
                      * @function
                      * @memberOf lapps.lappsServices.platform

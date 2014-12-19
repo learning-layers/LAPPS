@@ -1,6 +1,6 @@
-﻿<div class="row">
+﻿<div class="row carousel-row" >
   <div class="col-md-9">
-    <div id="featured-carousel">
+    <div id="featured-carousel" class="thumbnail">
       <carousel interval="interval"
                 on-carousel-change="onSlideChanged(nextSlide, direction)">
         <slide ng-repeat="app in apps" active="app.active">
@@ -18,16 +18,18 @@
     <div class="title">
       <h2>{{apps[currentSlide].name}}</h2>
     </div>
-    <img ng-src="{{apps[currentSlide].thumbnail}}">
+    
+      <img ng-src="{{apps[currentSlide].thumbnail}}">
 
-    <!--<p class="description">{{apps[currentSlide].longDesccription}}</p>-->
-
-    <span class="vspacer05 text-center">
-      <star-rating value="{{apps[currentSlide].rating}}"></star-rating>
-    </span>
-    <p>{{apps[currentSlide].shortDescription}}</p>
-
-    <a id="details-button" class="btn btn-success btn-lg"
-       href="#/apps/{{apps[currentSlide].id}}">Details</a>
+      <!--<p class="description">{{apps[currentSlide].longDesccription}}</p>-->
+    
+      <span class="vspacer05 text-center">
+        <star-rating value="{{apps[currentSlide].rating}}"></star-rating>
+      </span>
+      <p>{{apps[currentSlide].shortDescription}}</p>
+    
+      <a id="details-button" class="btn btn-success btn-lg"
+         href="#/apps/{{apps[currentSlide].id}}">Details</a>
+    
   </div>
 </div>

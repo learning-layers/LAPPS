@@ -73,20 +73,20 @@
       <div class="app-list-item">
         <a href="#/apps/{{app.id}}"></a>
         <div class="thumbnail">
-          <h3 class="single-line">{{app.name}}</h3>
+          <div class="title">
+            <h3 class="single-line">
+              <i class="fa {{app.platformObj.icon}} pull-left"></i>
+              <i ng-show="app.platformObj.isMobile" class="fa fa-mobile pull-left"></i>
+              {{app.name}}
+            </h3>
+          </div>
           <div class="image-container">
             <img ng-src="{{app.thumbnail}}" alt="cats">
           </div>
           <div class="caption">
 
-            <div class="rating-stars">
-              <span ng-repeat="n in [] | rangeFilter:app.rating"
-                    class="glyphicon glyphicon-star text-color-staryellow"></span><span ng-repeat="n in [] | rangeFilter:(5-app.rating)"
-                                                                                        class="glyphicon glyphicon-star-empty text-color-staryellow"></span>
-
-              <span class="hspacer05 text-color-paleblack ">({{app.commentsCount}})</span>
-            </div>
-            <p>{{app.description}}</p>
+            <star-rating value="{{app.rating}}"></star-rating>
+            <p>{{app.shortDescription}}</p>
           </div>
         </div>
       </div>

@@ -16,4 +16,5 @@
  * @property {string} icon The font-awesome icon to disply for this platform.
  * @property {string} agentRegEx The regular expresion to match in the user
  *           agent string for OS identification.
+ * @property {boolean} isMobile True if platform is for mobile devices
  */
