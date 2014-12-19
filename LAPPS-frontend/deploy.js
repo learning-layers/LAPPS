@@ -45,7 +45,7 @@
 
   var FILE_ENCODING = 'utf-8';
   var EOL = '\n';
-  var zipAll = true;
+  var zipAll = false;
 
   /*
    * requires
