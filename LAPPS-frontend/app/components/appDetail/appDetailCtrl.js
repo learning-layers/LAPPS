@@ -14,8 +14,8 @@
                       '$scope',
                       '$routeParams',
                       'swaggerApi',
-                      function($scope, $routeParams, swaggerApi) {
-
+                      'platform',
+                      function($scope, $routeParams, swaggerApi, platform) {
                         /**
                          * @field
                          * @type number
@@ -69,7 +69,7 @@
                          * @description Time in ms to wait until the image in
                          *              the carousel is changed.
                          */
-                        $scope.interval = 4000;
+                        $scope.interval = 7000;
 
                         /**
                          * @field
@@ -78,14 +78,9 @@
                          * @description Stores the app object retrieved from the
                          *              backend.
                          */
-                        $scope.appData = {};
-
-
-                        
-
+                        $scope.app = {};
 
                         marked.setOptions({
-
                           renderer: new marked.Renderer(),
                           gfm: true,
                           tables: true,
@@ -102,7 +97,6 @@
                          * @description Toggles
                          *              {@link lapps.lappsControllers.appDetailCtrl.$scope.collapsed}.
                          */
-                       
 
                         /**
                          * @function
@@ -158,6 +152,7 @@
                          *              result (12.5 MB).
                          */
                         $scope.convertSize = function(size) {
+
                           size = parseInt(size, 10);
                           if (size < 1024) {
                             return size + " KB";
@@ -188,121 +183,98 @@
                           var curr_year = d.getFullYear();
                           return (curr_date + "-" + m_names[curr_month] + "-" + curr_year);
                         }
-                        $scope.markdown = 'Dummy Description\n'
-                                + '=====\n'
-                                + '\n'
-                                + 'Culpa aute lorem commodo reprehenderit deserunt cillum ea voluptate fugiat in dolore pariatur. Excepteur esse.\n'
-                                + '\n'
-                                + '##Cupidatat Nisi##\n'
-                                + '* Fugiat sunt nostrud et do sed.\n'
-                                + '* Sed aliqua.\n'
-                                + '* Velit voluptate cupidatat.\n'
-                                + '* Ut qui duis aliqua.\n'
-                                + '* Ea ad consectetur quis pariatur. (http://nodejs.org/)\n'
-                                + '\n'
-                                + 'Velit voluptate cupidatat nisi ut dolor exercitation nostrud reprehenderit eiusmod aute ut fugiat dolore elit. Cillum dolore irure nostrud pariatur. Officia consequat. Fugiat sed dolor eu duis elit, consectetur ea.\n'
-                                + '\n'
-                                + '##Commodo Reprehenderit##\n'
-                                + 'Sunt excepteur aute:\n'
-                                + '* In laborum. Dolore consequat. Aliquip deserunt adipiscing anim pariatur. Sunt reprehenderit amet: https://www.google.com/laksjdalkjdlkjaslkdjalskdj\n'
-                                + '* Cillum fugiat sint pariatur:\n'
-                                + '  * Nulla ea ipsum reprehenderit lorem\n'
-                                
-                                + '* Cillum dolore irure nostrud pariatur:\n'
-                                + '  * Proident, exercitation anim in non labore.\n'
-                                + '  * Ea ad consectetur quis pariatur.\n'
-                                + '  * Aliquip laborum.\n' +
-                                + '\n'
-                                + 'Lbore commodo:\n'
-                                + '* http://google-styleguide.googlecode.com/svn/trunk/javaguide.html\n'
-                                + '* http://google-styleguide.googlecode.com/svn/trunk/htmlcssguide.xml\n'
-                                + '* http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml\n'
-                                + '* http://google-styleguide.googlecode.com/svn/trunk/angularjs-google-style.html\n';
+                        /**
+                         * @field
+                         * @type number
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Stores the currently displayed slide id
+                         *              in the carousel.
+                         */
+                        $scope.currentSlide = 0;
 
-                        $scope.randShortDescription = [
-                            'Culpa aute lorem commodo reprehenderit deserunt cillum ea voluptate fugiat in dolore pariatur. Excepteur esse.',
-                            'Aute exercitation nisi mollit eiusmod reprehenderit lorem laborum. Laboris qui aliquip occaecat ut elit, proident.',
-                            'In eiusmod velit ullamco labore do sint consectetur id minim quis anim ea dolore cupidatat.',
-                            'Fugiat sunt nostrud et do sed magna ex ipsum laborum. Laboris minim exercitation occaecat sit.',
-                            'Pariatur. Aliqua. Tempor culpa in deserunt anim consectetur fugiat sunt adipiscing aliquip amet, nisi dolore.',
-                            'Labore pariatur. Dolore esse excepteur laboris occaecat dolor cillum et duis est sit ipsum eu.',
-                            'Cillum dolore irure nostrud pariatur. Officia consequat. Fugiat sed dolor eu duis elit, consectetur ea.',
-                            'Sed aliqua. In laborum. Dolore consequat. Aliquip deserunt adipiscing anim pariatur. Sunt reprehenderit amet, ut.',
-                            'Ea ad consectetur quis pariatur. Anim nulla in eiusmod in excepteur nisi minim fugiat in.',
-                            'Dolore elit, amet, ad in nulla qui aliquip est eiusmod non excepteur minim ipsum exercitation.',
-                            'Esse nulla irure excepteur velit minim nisi in labore nostrud non sint occaecat amet, reprehenderit.',
-                            'Enim eu cupidatat id voluptate nisi deserunt tempor est ex officia ut aute ipsum exercitation.',
-                            'Sint mollit voluptate qui sunt excepteur aute quis labore pariatur. Dolore adipiscing dolor esse magna.',
-                            'Ex consectetur enim non labore elit, nulla ea ipsum reprehenderit lorem duis adipiscing eu laboris.',
-                            'Velit voluptate cupidatat nisi ut dolor exercitation nostrud reprehenderit eiusmod aute ut fugiat dolore elit.',
-                            'Velit veniam, et quis fugiat ut ut amet, eu anim exercitation irure lorem labore commodo.',
-                            'Proident, exercitation anim in non labore sunt do lorem ea laborum. Amet, ut ut enim.',
-                            'Ut qui duis aliqua. Cillum fugiat sint pariatur. Irure do officia laboris in commodo incididunt.',
-                            'Velit sint aliqua. Sunt officia in aute anim consequat. Ullamco lorem ut consectetur dolor sit.',
-                            'Aliquip laborum. Ut aute dolor reprehenderit dolore nostrud est eiusmod sunt ipsum non consectetur do.'];
-                        $scope.appData.descriptionMarkDown = marked($scope.markdown);
-                        var short = $scope.randShortDescription[Math.floor(Math
-                                .random()
-                                * $scope.randShortDescription.length)];
-                        $scope.appData.shortDescription = short;
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @param {object}
+                         *          nextSlide The next slide in the carousel.
+                         * @param {object}
+                         *          direction The direction of the slide change.
+                         * @description Keeps track of the current slide index.
+                         */
+                        $scope.onSlideChanged = function(nextSlide, direction) {
+                          if (direction == 'next') {
+                            $scope.currentSlide = ($scope.currentSlide + 1)
+                                    % $scope.app.images.length;
+                          } else if (direction == 'prev') {
+                            $scope.currentSlide = ($scope.currentSlide - 1)
+                                    % $scope.app.images.length;
+                            if ($scope.currentSlide < 0) {
+                              $scope.currentSlide = $scope.app.images.length - 1;
+                            }
+                          }
+                        }
+                        /**
+                         * @function
+                         * @type string
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @param {string}
+                         *          url
+                         * @description Shortens a given urlby only displaying
+                         *              the TLD.
+                         */
+                        $scope.shortenUrl = function(url) {
+                          if (typeof url === 'undefined' || url === null) { return ''; }
+
+                          var urlCopy = url.substring(0);
+
+                          var wwwPos = urlCopy.indexOf('www.');
+                          if (wwwPos >= 0) {
+                            urlCopy = urlCopy.substring(wwwPos + 4);
+                          }
+                          var slashPos = urlCopy.indexOf('/');
+                          if (slashPos >= 0) {
+                            urlCopy = urlCopy.substring(0, slashPos);
+                          }
+                          return urlCopy;
+                        }
+
                         swaggerApi.apps
                                 .getApp({
                                   id: +$scope.appId
                                 })
                                 .then(
                                         function(data) {
-                                          $scope.appData = data;
-                                          var short = $scope.randShortDescription[Math
-                                                  .floor(Math.random()
-                                                          * $scope.randShortDescription.length)];
-                                          $scope.appData.shortDescription = short;
-                                          var long = '';
-                                          for (var j = 0; j < 60; j++) {
-                                            var item = $scope.randShortDescription[Math
-                                                    .floor(Math.random()
-                                                            * $scope.randShortDescription.length)];
-                                            long += item
-                                                    + ((Math.random() > 0.9)
-                                                            ? '\n\n' : ' ');
-                                          }
-                                          $scope.appData.description = $scope.markdown;
-                                          var developer = $scope.randShortDescription[Math
-                                                  .floor(Math.random()
-                                                          * $scope.randShortDescription.length)];
-                                          $scope.appData.descriptionMarkDown = marked($scope.appData.description);
-
-                                          $scope.appData.developedBy = developer
-                                                  .split(' ').slice(0, 2).join(
-                                                          ' ');
-                                          $scope.appData.rating = Math
-                                                  .floor(Math.random() * 5);
-                                          $scope.appData.tags = developer
-                                                  .split(' ');
-                                          $scope.appData.license = 'Copyright Me 2014';
-                                          $scope.appData.supportPage = 'http://www.google.com';
-                                          $scope.appData.images = [];
-                                          for (var k = 0; k < $scope.appData.artifacts.length; k++) {
-                                            var item = $scope.appData.artifacts[k];
-                                            if (item.artifact.type
-                                                    .indexOf('image') > -1) {
-                                              $scope.appData.images
-                                                      .push(item.url);
-                                              $scope.appData.images
-                                                      .push('http://i.imgur.com/yrxhYri.jpg');
-                                              $scope.appData.images
-                                                      .push('http://i.imgur.com/AvW7ZGH.jpg');
-
-                                              $scope.appData.images = $scope.appData.images
-                                                      .filter(function(item,
-                                                              pos, self) {
-                                                        return self
-                                                                .indexOf(item) == pos;
-                                                      })
-                                            } else if (item.artifact.type
-                                                    .indexOf('thumbnail') > -1) {
-                                              $scope.appData.thumbnail = item.url;
+                                          $scope.app = data;
+                                          $scope.app.longDescriptionMarkdown = marked($scope.app.longDescription);
+                                          var thumbnail = '';
+                                          var images = [];
+                                          for (var j = 0; j < $scope.app.artifacts.length; j++) {
+                                            if ($scope.app.artifacts[j].type
+                                                    .indexOf('thumb') >= 0) {
+                                              thumbnail = $scope.app.artifacts[j].url;
+                                            } else if ($scope.app.artifacts[j].type
+                                                    .indexOf('image') >= 0) {
+                                              images
+                                                      .push({
+                                                        url: $scope.app.artifacts[j].url,
+                                                        description: $scope.app.artifacts[j].description
+                                                      });
                                             }
                                           }
+                                          $scope.app.thumbnail = thumbnail;
+                                          $scope.app.images = images;
+                                          $scope.app.platformObj = platform
+                                                  .getPlatformByName($scope.app.platform);
+                                          $scope.app.sourceUrlShort = $scope
+                                                  .shortenUrl($scope.app.sourceUrl);
+                                          $scope.app.supportUrlShort = $scope
+                                                  .shortenUrl($scope.app.supportUrl);
+                                          $scope.size = $scope
+                                                  .convertSize($scope.size);
+                                          $scope.dateCreated = $scope
+                                                  .convertDate($scope.dateCreated);
+                                          $scope.dateModified = $scope
+                                                  .convertDate($scope.dateModified);
                                         });
                       }]);
 }).call(this);
