@@ -59,6 +59,9 @@
     }).when('/search', {
       templateUrl: 'components/searchPage/searchPageView.html',
       controller: 'searchPageCtrl'
+    }).when('/upload', {
+      templateUrl: 'components/uploadPage/uploadPageView.html',
+      controller: 'uploadPageCtrl'
     }).when('/users/:userId', {
       templateUrl: 'components/userPage/userPageView.html',
       controller: 'userPageCtrl'
@@ -68,6 +71,6 @@
   }]);
   lappsApp.run(['editableOptions', function(editableOptions) {
     editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2',
-                                    // 'default'
+    // 'default'
   }]);
 }).call(this);

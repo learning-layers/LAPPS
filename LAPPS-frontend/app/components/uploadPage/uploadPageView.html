@@ -1,0 +1,125 @@
+ <div class="container">
+     <div class="jumbotron">
+        <form name = "uploadForm" novalidate>
+      	  <div class="row">
+             <div class="col-md-12">
+                <h2>General Information</h2>
+             </div>
+        	 </div>
+             <div class="general-info"> 
+                    <h4>App Name</h4>
+                    <div class="row">
+                            <div class="form-group col-lg-7" validate-input>
+                                <input type="text" class="form-control" placeholder="i.e Expert App" name="name" ng-model="newapp.name" required>
+                            </div>
+                        </div>
+                    <h4>Platform</h4>
+                    <div class="row">
+                   	    <div class = "col-lg-7">
+							<custom-dropdown data-menu-type="button" select-val="selected_status = selectedVal" preselected-item="selected_status" data-dropdown-data="platforms" ng-model = "app.plaftorm"></custom-dropdown>
+                   		</div>
+                    </div>
+                 <h4>Download Url</h4>
+                 <div class="row">              
+               		  <div class="form-group col-lg-7" validate-input>
+                             <input type="text" class="form-control" ng-model="newapp.download" name = "download" required>
+                      </div>
+                    </div>
+                 <h4>Supported Versions</h4>
+                 <div class="row">              
+               		  <div class="form-group col-lg-7" validate-input>
+                             <input type="text" class="form-control" ng-model="newapp.supportedVersions" name = "supportedVersions" required>
+                      </div>
+                    </div>
+                    <h4>Short Description</h4>
+                    <div class="row">
+                            <div class="form-group col-lg-7" validate-input>
+                                <input type="text" class="form-control" ng-model="newapp.shortDescription" name = "shortDescription" required>
+                            </div>
+                    </div>
+                    <h4>Long Description</h4>
+                    <div class="row">
+                            <div class="form-group col-lg-7" validate-input>
+                                <textarea class="form-control custom-control long-description" rows="3" nd-model = "newapp.longDescription" name = "longDescription" required></textarea>
+                            </div>
+                    </div>
+                 	<h4>Release Date</h4>
+                    <div class="row">
+                            <div class="form-group col-lg-7" validate-input>
+                                <input type="date" class="form-control" nd-model="newapp.release" name = "release" required>
+                            </div>
+                    </div>
+                 	<h4>App Tags</h4>
+                    <div class="row">
+                            <div class="form-group col-lg-7" validate-input>
+                                <input type="text" class="form-control" placeholder="i.e help, ios" ng-model="tags" name = "tags" required>
+                            </div>
+               		 </div>
+           		 </div>
+                 <div class="row">
+                    <div class="col-md-12">
+                        <h2>Technical Details</h2>
+                    </div>
+                </div>
+            	<h4>Version</h4>
+            	<div class="row">
+                    <div class="form-group col-lg-7" validate-input>
+                        <input type="text" class="form-control" ng-model = "newapp.version" name = "version" required >
+                    </div>
+            	</div>
+            	<h4>Size</h4>
+          	    <div class="row">
+                    <div class="form-group col-lg-7" validate-input>
+                        <input type="text" class="form-control" ng-model = "newapp.size" name = "size" required >
+                    </div>
+            	</div>	
+	            <h4>Source</h4>
+           		 <div class="row">
+                    <div class="form-group col-lg-7" >
+                        <input type="text" class="form-control"  ng-model = "newapp.source" name = "source">
+                    </div>
+           		 </div>
+           		 <h4>License</h4>
+            	<div class="row">
+                    <div class="form-group col-lg-7" validate-input>
+                        <input type="text" class="form-control" ng-model = "newapp.license" name = "license" required>
+                    </div>
+                </div>
+            	<h4>Support Page</h4>
+            	<div class="row">
+                    <div class="form-group col-lg-7" validate-input>
+                        <input type="text" class="form-control" ng-model = "newapp.supportPage" name = "supportPage" required>
+                    </div>
+                </div>
+            	<h4>Last Update</h4>
+            	<div class="row">
+                    <div class="form-group col-lg-7">
+                        <input type="date" class="form-control" ng-model = "newapp.lastUpdate" name = "lastUpdate" >
+                    </div>
+                </div>
+            <div class="row">
+                    <div class="col-md-12">
+                        <h2>Media</h2>
+                    </div>
+            </div>
+            <h4>Video URL</h4>
+            <div class="row">
+                    <div class="form-group col-lg-7">
+                        <input type="text" class="form-control" ng-model = "newapp.video" name = "video">
+                    </div>
+            </div>
+            <h4>Image URL</h4>
+            <div class="row">
+                    <div class="form-group col-lg-7">
+                        <input type="text" class="form-control" ng-model = "newapp.image" name = "image">
+                    </div>
+            </div>
+			<br/>
+			<div class="row">
+                <div class="col-lg-7">
+                    <button type="button" id = "submitButton" class="btn btn-submit" ng-click = "createNewApp()">Save</button>
+                </div>
+            </div>
+          	</form>		
+           </div>
+        </div>
