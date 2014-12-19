@@ -35,13 +35,17 @@
             }];
 
             $scope.createNewApp = function() {
-              /* create json for new app */
+              $scope.$broadcast('show-errors-check-validity');
+
+              if ($scope.userForm.$valid) {
+                alert('User saved');
+                $scope.reset();
+              }
 
               $scope.newapp.tags = $scope.tags.split(',');
-
+              /* create json for new app */
               var data = $scope.newapp;
 
-              /* post to server */
-            }
+            };
           }]);
 }).call(this);

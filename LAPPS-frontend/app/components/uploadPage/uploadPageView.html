@@ -11,6 +11,7 @@
                     <div class="row">
                             <div class="form-group col-lg-7" validate-input>
                                 <input type="text" class="form-control" placeholder="i.e Expert App" name="name" ng-model="newapp.name" required>
+                                <p class="help-block" ng-if="uploadForm.name.$error.required">The App's name is required</p>
                             </div>
                         </div>
                     <h4>Platform</h4>
@@ -23,24 +24,28 @@
                  <div class="row">              
                		  <div class="form-group col-lg-7" validate-input>
                              <input type="text" class="form-control" ng-model="newapp.download" name = "download" required>
+                             <p class="help-block" ng-if="uploadForm.download.$error.required">Download URL is required</p>
                       </div>
                     </div>
                  <h4>Supported Versions</h4>
                  <div class="row">              
                		  <div class="form-group col-lg-7" validate-input>
                              <input type="text" class="form-control" ng-model="newapp.supportedVersions" name = "supportedVersions" required>
+                             <p class="help-block" ng-if="uploadForm.supportedVersions.$error.required">App supported versions are required</p>
                       </div>
                     </div>
                     <h4>Short Description</h4>
                     <div class="row">
                             <div class="form-group col-lg-7" validate-input>
                                 <input type="text" class="form-control" ng-model="newapp.shortDescription" name = "shortDescription" required>
+                                <p class="help-block" ng-if="uploadForm.shortDescription.$error.required">Short description is required</p>
                             </div>
                     </div>
                     <h4>Long Description</h4>
                     <div class="row">
                             <div class="form-group col-lg-7" validate-input>
                                 <textarea class="form-control custom-control long-description" rows="3" nd-model = "newapp.longDescription" name = "longDescription" required></textarea>
+                                <p class="help-block" ng-if="uploadForm.longDescription.$error.required">Long description is required</p>
                             </div>
                     </div>
                  	<h4>Release Date</h4>
@@ -53,6 +58,7 @@
                     <div class="row">
                             <div class="form-group col-lg-7" validate-input>
                                 <input type="text" class="form-control" placeholder="i.e help, ios" ng-model="tags" name = "tags" required>
+                                <p class="help-block" ng-if="uploadForm.tags.$error.required">Tags are required</p>
                             </div>
                		 </div>
            		 </div>
@@ -65,12 +71,14 @@
             	<div class="row">
                     <div class="form-group col-lg-7" validate-input>
                         <input type="text" class="form-control" ng-model = "newapp.version" name = "version" required >
+                        <p class="help-block" ng-if="uploadForm.version.$error.required">Versions are required</p>
                     </div>
             	</div>
             	<h4>Size</h4>
           	    <div class="row">
                     <div class="form-group col-lg-7" validate-input>
                         <input type="text" class="form-control" ng-model = "newapp.size" name = "size" required >
+                        <p class="help-block" ng-if="uploadForm.size.$error.required">Size of app is required</p>
                     </div>
             	</div>	
 	            <h4>Source</h4>
@@ -83,12 +91,14 @@
             	<div class="row">
                     <div class="form-group col-lg-7" validate-input>
                         <input type="text" class="form-control" ng-model = "newapp.license" name = "license" required>
+                        <p class="help-block" ng-if="uploadForm.license.$error.required">License information is required</p>
                     </div>
                 </div>
             	<h4>Support Page</h4>
             	<div class="row">
                     <div class="form-group col-lg-7" validate-input>
                         <input type="text" class="form-control" ng-model = "newapp.supportPage" name = "supportPage" required>
+                        <p class="help-block" ng-if="uploadForm.supportPage.$error.required">Support Page information is required</p>
                     </div>
                 </div>
             	<h4>Last Update</h4>
@@ -106,6 +116,12 @@
             <div class="row">
                     <div class="form-group col-lg-7">
                         <input type="text" class="form-control" ng-model = "newapp.video" name = "video">
+                    </div>
+            </div>
+            <h4>Thumbnail URL</h4>
+            <div class="row">
+                    <div class="form-group col-lg-7">
+                        <input type="text" class="form-control" ng-model = "newapp.image" name = "image">
                     </div>
             </div>
             <h4>Image URL</h4>
