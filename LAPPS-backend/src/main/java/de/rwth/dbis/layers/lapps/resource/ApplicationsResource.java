@@ -29,7 +29,6 @@ import com.wordnik.swagger.annotations.ApiResponses;
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
-import de.rwth.dbis.layers.lapps.entity.Tag;
 
 /**
  * Applications resource (exposed at "apps" path).
@@ -218,7 +217,7 @@ public class ApplicationsResource {
     } else {
       app = apps.get(0);
     }
-    entitiyFacade.deleteByParam(Tag.class, "id", app.getId());
+    entitiyFacade.deleteByParam(App.class, "id", app.getId());
     return Response.status(HttpStatusCode.OK).build();
   }
 
@@ -262,7 +261,9 @@ public class ApplicationsResource {
     } else {
       app = apps.get(0);
     }
-    app = entitiyFacade.save(updatedApp);
+    // TODO: update the app with the given updatedApp
+    app.setName(updatedApp.getName());
+    app = entitiyFacade.save(app);
     try {
       ObjectMapper mapper = new ObjectMapper();
       return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(app)).build();
