@@ -54,12 +54,15 @@ public class TagsResourceTest {
     app = entityFacade.save(app);
     LOGGER.info("App created: " + app);
 
-    LOGGER.info("Creating a new user...");
+    LOGGER.info("Creating a new user as creator of the TestApp...");
     user = entityFacade.save(DataGeneratorUtils.getRandomDeveloperUser());
     app.setCreator(user);
     LOGGER.info("User created: " + user);
 
-    LOGGER.info("Creating a new tag...");
+    app = entityFacade.save(app);
+    LOGGER.info("App updated with creator");
+
+    LOGGER.info("Creating a new tag for the TestApp...");
     tag = new Tag("TestTag");
     tag.setApp(app);
     tag = entityFacade.save(tag);
@@ -84,7 +87,7 @@ public class TagsResourceTest {
   }
 
   /**
-   * Test to see if a list of tags can be retrieved. Checks, if the tag previously created is in the
+   * Test to see if a list of tags can be retrieved. Checks, if the previously created tag is in the
    * list.
    */
   @Test
@@ -103,16 +106,16 @@ public class TagsResourceTest {
       assertTrue(tags.isArray());
       Iterator<JsonNode> tagIterator = tags.iterator();
       // check if previously created tag can be found
-      JsonNode retrievedTag = null;
+      JsonNode retrievedTags = null;
       while (tagIterator.hasNext()) {
         // go through the list until our tag is found
-        retrievedTag = tagIterator.next();
-        if (retrievedTag.get("value").toString().equals("\"" + tag.getValue().toString() + "\"")) {
+        retrievedTags = tagIterator.next();
+        if (retrievedTags.get("value").toString().equals("\"" + tag.getValue().toString() + "\"")) {
           break;
         }
       }
       // this is only false if tag was not in list
-      assertEquals("\"" + tag.getValue().toString() + "\"", retrievedTag.get("value").toString());
+      assertEquals("\"" + tag.getValue().toString() + "\"", retrievedTags.get("value").toString());
     } catch (Exception e) {
       e.printStackTrace();
       fail("JSON parsing failed with " + e.getMessage());
@@ -135,10 +138,10 @@ public class TagsResourceTest {
       assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
       String responseContent = response.readEntity(String.class);
       ObjectMapper mapper = new ObjectMapper();
-      JsonNode tag;
-      tag = mapper.readTree(responseContent);
-      assertTrue(!tag.isNull());
-      assertEquals("\"" + newTag.getValue().toString() + "\"", tag.get("value").toString());
+      JsonNode retrievedTag;
+      retrievedTag = mapper.readTree(responseContent);
+      assertTrue(!retrievedTag.isNull());
+      assertEquals("\"" + newTag.getValue().toString() + "\"", retrievedTag.get("value").toString());
     } catch (Exception e) {
       e.printStackTrace();
       fail("JSON parsing failed with " + e.getMessage());
@@ -160,21 +163,19 @@ public class TagsResourceTest {
     assertEquals(HttpStatusCode.OK, response.getStatus());
 
     response =
-        target.path("apps/" + app.getId() + "/tags").request(MediaType.APPLICATION_JSON)
-            .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).get();
+        target.path("apps/" + app.getId() + "/tags").request(MediaType.APPLICATION_JSON).get();
     assertEquals(HttpStatusCode.OK, response.getStatus());
     MediaType responseMediaType = response.getMediaType();
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
     String responseContent = response.readEntity(String.class);
     ObjectMapper mapper = new ObjectMapper();
-    JsonNode tags;
+    JsonNode retrievedTags;
     try {
-      tags = mapper.readTree(responseContent);
-      assertFalse(tags.isNull());
-      assertTrue(tags.isArray());
-      Iterator<JsonNode> tagIterator = tags.iterator();
+      retrievedTags = mapper.readTree(responseContent);
+      assertFalse(retrievedTags.isNull());
+      assertTrue(retrievedTags.isArray());
+      Iterator<JsonNode> tagIterator = retrievedTags.iterator();
       assertFalse(tagIterator.hasNext());
-
     } catch (Exception e) {
       e.printStackTrace();
       fail("JSON parsing failed with " + e.getMessage());
