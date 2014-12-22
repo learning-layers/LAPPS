@@ -232,11 +232,13 @@ public class UsersResource {
     } else {
       user = entities.get(0);
     }
-    user = entityFacade.save(updatedUser);
+    // TODO: update the user with the given updatedUser
+    user.setUsername(updatedUser.getUsername());
+    user = entityFacade.save(user);
     try {
       ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.NOT_IMPLEMENTED)
-          .entity(mapper.writeValueAsBytes(updatedUser)).build();
+      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(updatedUser))
+          .build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
