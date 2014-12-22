@@ -75,12 +75,12 @@ public class UsersResourceTest {
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
     String responseContent = response.readEntity(String.class);
     ObjectMapper mapper = new ObjectMapper();
-    JsonNode users;
+    JsonNode retrievedUsers;
     try {
-      users = mapper.readTree(responseContent);
-      assertTrue(!users.isNull());
-      assertTrue(users.isArray());
-      Iterator<JsonNode> userIterator = users.iterator();
+      retrievedUsers = mapper.readTree(responseContent);
+      assertTrue(!retrievedUsers.isNull());
+      assertTrue(retrievedUsers.isArray());
+      Iterator<JsonNode> userIterator = retrievedUsers.iterator();
       // check if previously created user can be found
       JsonNode retrievedUser = null;
       while (userIterator.hasNext()) {
@@ -115,30 +115,45 @@ public class UsersResourceTest {
   }
 
   /**
-   * Tries to delete the previously created user. Currently should result in a not implemented
-   * return.
+   * Tries to delete the previously created user.
    */
   @Test
   public void testDeleteUser() {
     Response response =
         target.path("users/" + user.getOidcId()).request()
             .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
-    assertEquals(HttpStatusCode.NOT_IMPLEMENTED, response.getStatus());
+    assertEquals(HttpStatusCode.OK, response.getStatus());
+
+    response = target.path("users/" + user.getOidcId()).request((MediaType.APPLICATION_JSON)).get();
+    assertEquals(HttpStatusCode.NOT_FOUND, response.getStatus());
   }
 
   /**
-   * Tries to update the previously created user. Currently should result in a not implemented
-   * return.
+   * Tries to update the previously created user.
    */
   @Test
   public void testUpdateUser() {
-    User updatedUser = user;
-    updatedUser.setEmail("new@mail.com");
+    user.setUsername("UpdatedUser");
     Response response =
         target.path("users/" + user.getOidcId()).request()
             .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
-            .put(entity(updatedUser, MediaType.APPLICATION_JSON));
-    assertEquals(HttpStatusCode.NOT_IMPLEMENTED, response.getStatus());
+            .put(entity(user, MediaType.APPLICATION_JSON));
+    assertEquals(HttpStatusCode.OK, response.getStatus());
+
+    response = target.path("users/" + user.getOidcId()).request(MediaType.APPLICATION_JSON).get();
+    assertEquals(HttpStatusCode.OK, response.getStatus());
+    MediaType responseMediaType = response.getMediaType();
+    assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
+    String responseContent = response.readEntity(String.class);
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode retrievedUser;
+    try {
+      retrievedUser = mapper.readTree(responseContent);
+      assertEquals("\"" + user.getUsername() + "\"", retrievedUser.get("username").toString());
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("JSON parsing failed with " + e.getMessage());
+    }
   }
 
   /**
