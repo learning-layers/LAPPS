@@ -31,6 +31,7 @@ import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
 import de.rwth.dbis.layers.lapps.entity.User;
+import de.rwth.dbis.layers.lapps.entity.User.DateRegisteredComparator;
 
 /**
  * Users resource (exposed at "users" path).
@@ -71,7 +72,8 @@ public class UsersResource {
       @ApiParam(value = "Search query parameter for username, email", required = false) @QueryParam("search") String search,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
-      @ApiParam(value = "Sort by field", required = false, allowableValues = "username,dateCreated") @DefaultValue("username") @QueryParam("sortBy") String sortBy,
+      @ApiParam(value = "Sort by field", required = false,
+          allowableValues = "username,dateRegistered") @DefaultValue("username") @QueryParam("sortBy") String sortBy,
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
       @ApiParam(value = "Filter by field", required = false, allowableValues = "role") @DefaultValue("role") @QueryParam("filterBy") String filterBy,
       @ApiParam(value = "Filter value", required = false) @QueryParam("filterValue") String filterValue) {
@@ -94,8 +96,11 @@ public class UsersResource {
       }
     }
 
-    // TODO: check and use sort by field
-    Collections.sort(entities);
+    if (sortBy.equalsIgnoreCase("username")) {
+      Collections.sort(entities);
+    } else if (sortBy.equalsIgnoreCase("dateRegistered")) {
+      Collections.sort(entities, new DateRegisteredComparator());
+    }
     if (order.equalsIgnoreCase("desc")) {
       Collections.reverse(entities);
     }

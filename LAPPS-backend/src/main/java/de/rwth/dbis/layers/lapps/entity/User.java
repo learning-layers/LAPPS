@@ -1,6 +1,7 @@
 package de.rwth.dbis.layers.lapps.entity;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -136,6 +137,19 @@ public class User implements Entity, Comparable<User> {
       return 1;
     } else {
       return this.getEmail().compareToIgnoreCase(o.getEmail());
+    }
+  }
+
+  public static class DateRegisteredComparator implements Comparator<User> {
+    @Override
+    public int compare(User arg0, User arg1) {
+      if (arg0.getDateRegistered() == null) {
+        return -1;
+      } else if (arg1.getDateRegistered() == null) {
+        return 1;
+      } else {
+        return arg0.getDateRegistered().compareTo(arg1.getDateRegistered());
+      }
     }
   }
 
