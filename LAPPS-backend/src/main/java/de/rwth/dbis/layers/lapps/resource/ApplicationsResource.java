@@ -18,6 +18,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.dozer.DozerBeanMapper;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wordnik.swagger.annotations.Api;
@@ -262,11 +264,13 @@ public class ApplicationsResource {
       app = apps.get(0);
     }
     // TODO: update the app with the given updatedApp
-    app.setName(updatedApp.getName());
+    // app.setName(updatedApp.getName());
+    DozerBeanMapper dozerMapper = new DozerBeanMapper();
+    dozerMapper.map(updatedApp, app);
     app = entitiyFacade.save(app);
     try {
-      ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(app)).build();
+      ObjectMapper objectMapper = new ObjectMapper();
+      return Response.status(HttpStatusCode.OK).entity(objectMapper.writeValueAsBytes(app)).build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();

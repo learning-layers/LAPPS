@@ -17,6 +17,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.dozer.DozerBeanMapper;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wordnik.swagger.annotations.Api;
@@ -232,12 +234,12 @@ public class UsersResource {
     } else {
       user = entities.get(0);
     }
-    // TODO: update the user with the given updatedUser
-    user.setUsername(updatedUser.getUsername());
+    DozerBeanMapper dozerMapper = new DozerBeanMapper();
+    dozerMapper.map(updatedUser, user);
     user = entityFacade.save(user);
     try {
-      ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(updatedUser))
+      ObjectMapper objectMapper = new ObjectMapper();
+      return Response.status(HttpStatusCode.OK).entity(objectMapper.writeValueAsBytes(updatedUser))
           .build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
