@@ -263,8 +263,6 @@ public class ApplicationsResource {
     } else {
       app = apps.get(0);
     }
-    // TODO: update the app with the given updatedApp
-    // app.setName(updatedApp.getName());
     DozerBeanMapper dozerMapper = new DozerBeanMapper();
     dozerMapper.map(updatedApp, app);
     app = entitiyFacade.save(app);
