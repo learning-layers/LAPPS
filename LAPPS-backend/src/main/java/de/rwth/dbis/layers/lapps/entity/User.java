@@ -116,6 +116,19 @@ public class User implements Entity, Comparable<User> {
   }
 
   @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    } else if (obj == this) {
+      return true;
+    } else if (obj instanceof User) {
+      return ((User) obj).getId().equals(this.getId());
+    } else {
+      return false;
+    }
+  }
+
+  @Override
   public int compareTo(User o) {
     if (this.getEmail() == null) {
       return -1;

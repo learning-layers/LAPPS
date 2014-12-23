@@ -216,6 +216,19 @@ public class App implements Entity, Comparable<App> {
   }
 
   @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    } else if (obj == this) {
+      return true;
+    } else if (obj instanceof App) {
+      return ((App) obj).getId().equals(this.getId());
+    } else {
+      return false;
+    }
+  }
+
+  @Override
   public int compareTo(App o) {
     if (this.getName() == null) {
       return -1;
