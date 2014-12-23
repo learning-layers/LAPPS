@@ -18,6 +18,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.dozer.DozerBeanMapper;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wordnik.swagger.annotations.Api;
@@ -29,6 +31,10 @@ import com.wordnik.swagger.annotations.ApiResponses;
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
+import de.rwth.dbis.layers.lapps.entity.App.DateCreatedComparator;
+import de.rwth.dbis.layers.lapps.entity.App.DateModifiedComparator;
+import de.rwth.dbis.layers.lapps.entity.App.PlatformComparator;
+import de.rwth.dbis.layers.lapps.entity.Tag;
 
 /**
  * Applications resource (exposed at "apps" path).
@@ -75,13 +81,26 @@ public class ApplicationsResource {
       entities = (List<App>) entitiyFacade.loadAll(App.class);
     } else {
       entities = (List<App>) entitiyFacade.findByParam(App.class, "name", search);
-      // TODO: search for tag
+      List<Tag> tagEntities = (List<Tag>) entitiyFacade.findByParam(Tag.class, "value", search);
+      for (Tag tag : tagEntities) {
+        App app = tag.getApp();
+        if (!entities.contains(app)) {
+          entities.add(app);
+        }
+      }
     }
 
-    Collections.sort(entities);
+    if (sortBy.equalsIgnoreCase("name")) {
+      Collections.sort(entities);
+    } else if (sortBy.equalsIgnoreCase("platform")) {
+      Collections.sort(entities, new PlatformComparator());
+    } else if (sortBy.equalsIgnoreCase("dateCreated")) {
+      Collections.sort(entities, new DateCreatedComparator());
+    } else if (sortBy.equalsIgnoreCase("dateModified")) {
+      Collections.sort(entities, new DateModifiedComparator());
+    }
     if (order.equalsIgnoreCase("desc")) {
       Collections.reverse(entities);
-      // TODO: check and use sort by field
     }
 
     int numberOfPages = 1;
@@ -261,12 +280,12 @@ public class ApplicationsResource {
     } else {
       app = apps.get(0);
     }
-    // TODO: update the app with the given updatedApp
-    app.setName(updatedApp.getName());
+    DozerBeanMapper dozerMapper = new DozerBeanMapper();
+    dozerMapper.map(updatedApp, app);
     app = entitiyFacade.save(app);
     try {
-      ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(app)).build();
+      ObjectMapper objectMapper = new ObjectMapper();
+      return Response.status(HttpStatusCode.OK).entity(objectMapper.writeValueAsBytes(app)).build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();

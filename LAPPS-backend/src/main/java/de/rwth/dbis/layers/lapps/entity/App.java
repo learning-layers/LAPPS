@@ -1,6 +1,7 @@
 package de.rwth.dbis.layers.lapps.entity;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -215,6 +216,29 @@ public class App implements Entity, Comparable<App> {
     return id;
   }
 
+  /**
+   * 
+   * Override equals for an {@link App} using field id.
+   *
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    } else if (obj == this) {
+      return true;
+    } else if (obj instanceof App) {
+      return ((App) obj).getId().equals(this.getId());
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * 
+   * Override compare for an {@link App} using field name.
+   *
+   */
   @Override
   public int compareTo(App o) {
     if (this.getName() == null) {
@@ -223,6 +247,60 @@ public class App implements Entity, Comparable<App> {
       return 1;
     } else {
       return this.getName().compareToIgnoreCase(o.getName());
+    }
+  }
+
+  /**
+   * 
+   * DateCreatedComparator for {@link App} using field platform.
+   *
+   */
+  public static class PlatformComparator implements Comparator<App> {
+    @Override
+    public int compare(App arg0, App arg1) {
+      if (arg0.getPlatform() == null) {
+        return -1;
+      } else if (arg1.getPlatform() == null) {
+        return 1;
+      } else {
+        return arg0.getPlatform().compareToIgnoreCase(arg1.getPlatform());
+      }
+    }
+  }
+
+  /**
+   * 
+   * DateCreatedComparator for {@link App} using field dateCreated.
+   *
+   */
+  public static class DateCreatedComparator implements Comparator<App> {
+    @Override
+    public int compare(App arg0, App arg1) {
+      if (arg0.getDateCreated() == null) {
+        return -1;
+      } else if (arg1.getDateCreated() == null) {
+        return 1;
+      } else {
+        return arg0.getDateCreated().compareTo(arg1.getDateCreated());
+      }
+    }
+  }
+
+  /**
+   * 
+   * DateModifiedComparator for {@link App} using field dateModified.
+   *
+   */
+  public static class DateModifiedComparator implements Comparator<App> {
+    @Override
+    public int compare(App arg0, App arg1) {
+      if (arg0.getDateModified() == null) {
+        return -1;
+      } else if (arg1.getDateModified() == null) {
+        return 1;
+      } else {
+        return arg0.getDateModified().compareTo(arg1.getDateModified());
+      }
     }
   }
 }

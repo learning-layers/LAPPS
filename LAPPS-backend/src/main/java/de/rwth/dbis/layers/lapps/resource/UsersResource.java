@@ -17,6 +17,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.dozer.DozerBeanMapper;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wordnik.swagger.annotations.Api;
@@ -29,6 +31,7 @@ import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
 import de.rwth.dbis.layers.lapps.entity.User;
+import de.rwth.dbis.layers.lapps.entity.User.DateRegisteredComparator;
 
 /**
  * Users resource (exposed at "users" path).
@@ -66,10 +69,11 @@ public class UsersResource {
           message = "Internal server problems")})
   public Response getAllUsers(
       @HeaderParam("accessToken") String accessToken,
-      @ApiParam(value = "Search query parameter for name, email", required = false) @QueryParam("search") String search,
+      @ApiParam(value = "Search query parameter for username, email", required = false) @QueryParam("search") String search,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
-      @ApiParam(value = "Sort by field", required = false, allowableValues = "name,dateCreated") @DefaultValue("name") @QueryParam("sortBy") String sortBy,
+      @ApiParam(value = "Sort by field", required = false,
+          allowableValues = "username,dateRegistered") @DefaultValue("username") @QueryParam("sortBy") String sortBy,
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
       @ApiParam(value = "Filter by field", required = false, allowableValues = "role") @DefaultValue("role") @QueryParam("filterBy") String filterBy,
       @ApiParam(value = "Filter value", required = false) @QueryParam("filterValue") String filterValue) {
@@ -82,12 +86,21 @@ public class UsersResource {
     if (search == null) {
       entities = (List<User>) entityFacade.loadAll(User.class);
     } else {
-      entities = (List<User>) entityFacade.findByParam(User.class, "name", search);
-      entities.addAll((List<User>) entityFacade.findByParam(User.class, "email", search));
+      entities = (List<User>) entityFacade.findByParam(User.class, "username", search);
+      List<User> additionalEntities =
+          ((List<User>) entityFacade.findByParam(User.class, "email", search));
+      for (User user : additionalEntities) {
+        if (!entities.contains(user)) {
+          entities.add(user);
+        }
+      }
     }
 
-    // TODO: check and use sort by field
-    Collections.sort(entities);
+    if (sortBy.equalsIgnoreCase("username")) {
+      Collections.sort(entities);
+    } else if (sortBy.equalsIgnoreCase("dateRegistered")) {
+      Collections.sort(entities, new DateRegisteredComparator());
+    }
     if (order.equalsIgnoreCase("desc")) {
       Collections.reverse(entities);
     }
@@ -232,12 +245,12 @@ public class UsersResource {
     } else {
       user = entities.get(0);
     }
-    // TODO: update the user with the given updatedUser
-    user.setUsername(updatedUser.getUsername());
+    DozerBeanMapper dozerMapper = new DozerBeanMapper();
+    dozerMapper.map(updatedUser, user);
     user = entityFacade.save(user);
     try {
-      ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(updatedUser))
+      ObjectMapper objectMapper = new ObjectMapper();
+      return Response.status(HttpStatusCode.OK).entity(objectMapper.writeValueAsBytes(updatedUser))
           .build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());

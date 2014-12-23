@@ -1,6 +1,7 @@
 package de.rwth.dbis.layers.lapps.entity;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -115,14 +116,55 @@ public class User implements Entity, Comparable<User> {
     this.website = website;
   }
 
+  /**
+   * 
+   * Override equals for an {@link User} using field id.
+   *
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    } else if (obj == this) {
+      return true;
+    } else if (obj instanceof User) {
+      return ((User) obj).getId().equals(this.getId());
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * 
+   * Override compareTo for an {@link User} using field id.
+   *
+   */
   @Override
   public int compareTo(User o) {
-    if (this.getEmail() == null) {
+    if (this.getId() == null) {
       return -1;
-    } else if (o.getEmail() == null) {
+    } else if (o.getId() == null) {
       return 1;
     } else {
-      return this.getEmail().compareToIgnoreCase(o.getEmail());
+      return this.getId().compareTo(o.getId());
+    }
+  }
+
+  /**
+   * 
+   * DateRegisteredComparator for {@link User} using field dateRegistered.
+   *
+   */
+  public static class DateRegisteredComparator implements Comparator<User> {
+    @Override
+    public int compare(User arg0, User arg1) {
+      if (arg0.getDateRegistered() == null) {
+        return -1;
+      } else if (arg1.getDateRegistered() == null) {
+        return 1;
+      } else {
+        return arg0.getDateRegistered().compareTo(arg1.getDateRegistered());
+      }
     }
   }
 
