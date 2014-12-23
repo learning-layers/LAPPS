@@ -68,10 +68,10 @@ public class UsersResource {
           message = "Internal server problems")})
   public Response getAllUsers(
       @HeaderParam("accessToken") String accessToken,
-      @ApiParam(value = "Search query parameter for name, email", required = false) @QueryParam("search") String search,
+      @ApiParam(value = "Search query parameter for username, email", required = false) @QueryParam("search") String search,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
-      @ApiParam(value = "Sort by field", required = false, allowableValues = "name,dateCreated") @DefaultValue("name") @QueryParam("sortBy") String sortBy,
+      @ApiParam(value = "Sort by field", required = false, allowableValues = "username,dateCreated") @DefaultValue("username") @QueryParam("sortBy") String sortBy,
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
       @ApiParam(value = "Filter by field", required = false, allowableValues = "role") @DefaultValue("role") @QueryParam("filterBy") String filterBy,
       @ApiParam(value = "Filter value", required = false) @QueryParam("filterValue") String filterValue) {
@@ -84,8 +84,14 @@ public class UsersResource {
     if (search == null) {
       entities = (List<User>) entityFacade.loadAll(User.class);
     } else {
-      entities = (List<User>) entityFacade.findByParam(User.class, "name", search);
-      entities.addAll((List<User>) entityFacade.findByParam(User.class, "email", search));
+      entities = (List<User>) entityFacade.findByParam(User.class, "username", search);
+      List<User> additionalEntities =
+          ((List<User>) entityFacade.findByParam(User.class, "email", search));
+      for (User user : additionalEntities) {
+        if (!entities.contains(user)) {
+          entities.add(user);
+        }
+      }
     }
 
     // TODO: check and use sort by field
