@@ -116,6 +116,11 @@ public class User implements Entity, Comparable<User> {
     this.website = website;
   }
 
+  /**
+   * 
+   * Override equals for an {@link User} using field id.
+   *
+   */
   @Override
   public boolean equals(Object obj) {
     if (obj == null) {
@@ -129,17 +134,27 @@ public class User implements Entity, Comparable<User> {
     }
   }
 
+  /**
+   * 
+   * Override compareTo for an {@link User} using field id.
+   *
+   */
   @Override
   public int compareTo(User o) {
-    if (this.getEmail() == null) {
+    if (this.getId() == null) {
       return -1;
-    } else if (o.getEmail() == null) {
+    } else if (o.getId() == null) {
       return 1;
     } else {
-      return this.getEmail().compareToIgnoreCase(o.getEmail());
+      return this.getId().compareTo(o.getId());
     }
   }
 
+  /**
+   * 
+   * DateRegisteredComparator for {@link User} using field dateRegistered.
+   *
+   */
   public static class DateRegisteredComparator implements Comparator<User> {
     @Override
     public int compare(User arg0, User arg1) {

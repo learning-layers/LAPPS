@@ -216,6 +216,11 @@ public class App implements Entity, Comparable<App> {
     return id;
   }
 
+  /**
+   * 
+   * Override equals for an {@link App} using field id.
+   *
+   */
   @Override
   public boolean equals(Object obj) {
     if (obj == null) {
@@ -229,6 +234,11 @@ public class App implements Entity, Comparable<App> {
     }
   }
 
+  /**
+   * 
+   * Override compare for an {@link App} using field name.
+   *
+   */
   @Override
   public int compareTo(App o) {
     if (this.getName() == null) {
@@ -240,6 +250,11 @@ public class App implements Entity, Comparable<App> {
     }
   }
 
+  /**
+   * 
+   * DateCreatedComparator for {@link App} using field platform.
+   *
+   */
   public static class PlatformComparator implements Comparator<App> {
     @Override
     public int compare(App arg0, App arg1) {
@@ -253,6 +268,11 @@ public class App implements Entity, Comparable<App> {
     }
   }
 
+  /**
+   * 
+   * DateCreatedComparator for {@link App} using field dateCreated.
+   *
+   */
   public static class DateCreatedComparator implements Comparator<App> {
     @Override
     public int compare(App arg0, App arg1) {
@@ -266,6 +286,11 @@ public class App implements Entity, Comparable<App> {
     }
   }
 
+  /**
+   * 
+   * DateModifiedComparator for {@link App} using field dateModified.
+   *
+   */
   public static class DateModifiedComparator implements Comparator<App> {
     @Override
     public int compare(App arg0, App arg1) {
