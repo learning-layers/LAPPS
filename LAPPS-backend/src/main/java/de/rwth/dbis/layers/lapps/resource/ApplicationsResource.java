@@ -31,6 +31,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
+import de.rwth.dbis.layers.lapps.entity.Tag;
 
 /**
  * Applications resource (exposed at "apps" path).
@@ -77,7 +78,13 @@ public class ApplicationsResource {
       entities = (List<App>) entitiyFacade.loadAll(App.class);
     } else {
       entities = (List<App>) entitiyFacade.findByParam(App.class, "name", search);
-      // TODO: search for tag
+      List<Tag> tagEntities = (List<Tag>) entitiyFacade.findByParam(Tag.class, "value", search);
+      for (Tag tag : tagEntities) {
+        App app = tag.getApp();
+        if (!entities.contains(app)) {
+          entities.add(app);
+        }
+      }
     }
 
     Collections.sort(entities);
