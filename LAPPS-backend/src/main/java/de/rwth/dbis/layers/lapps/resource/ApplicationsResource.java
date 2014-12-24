@@ -294,6 +294,48 @@ public class ApplicationsResource {
 
   /**
    * 
+   * Get all platform versions for an app.
+   * 
+   * @param appId app id
+   * 
+   * @return Response with all platform versions as a JSON array.
+   * 
+   */
+  @GET
+  @Path("/{appId}/platforms")
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiOperation(value = "Get all platform versions for an app", response = App.class,
+      responseContainer = "List")
+  @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
+      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
+          message = "Internal server problems")})
+  public Response getAllPlatformsForApp(@PathParam("appId") Long appId) {
+
+    // find app
+    List<App> apps = entitiyFacade.findByParam(App.class, "id", appId);
+    App app = null;
+    if (apps.isEmpty()) {
+      return Response.status(HttpStatusCode.NOT_FOUND).build();
+    } else {
+      app = apps.get(0);
+    }
+
+    // find all platform versions for the app
+    List<App> entities = entitiyFacade.findByParam(App.class, "name", app.getName());
+
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(entities)).build();
+    } catch (JsonProcessingException e) {
+      LOGGER.warning(e.getMessage());
+      return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+  /**
+   * 
    * Tag subresource. Leads to {@link TagsResource}.
    * 
    * @return TagsResource
