@@ -37,7 +37,7 @@ import de.rwth.dbis.layers.lapps.entity.User.DateRegisteredComparator;
  * Users resource (exposed at "users" path).
  */
 @Path("/users")
-@Api(value = "/users", description = "User resource")
+@Api(value = "/users", description = "Users resource")
 public class UsersResource {
 
   private static final Logger LOGGER = Logger.getLogger(UsersResource.class.getName());
