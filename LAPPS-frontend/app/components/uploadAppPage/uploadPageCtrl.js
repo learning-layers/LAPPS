@@ -7,6 +7,14 @@
   angular.module('lappsControllers').controller('uploadPageCtrl',
           ['$scope', '$http', function($scope, $http) {
 
+            $scope.items = [{
+              'functionName': 'addAnother()',
+              'buttonName': 'Add'
+            }, {
+              'functionName': 'addAnother()',
+              'buttonName': 'Add'
+            }];
+
             $scope.videolink = "http://www.youtube.com/embed/oHg5SJYRHA0";
 
             $scope.tags = " ";
@@ -46,6 +54,18 @@
               /* create json for new app */
               var data = $scope.newapp;
 
+            };
+
+            $scope.removeCurrent = function() {
+
+            };
+
+            $scope.addAnother = function() {
+              alert("Hecks to the yea!");
+              $scope.items.push({
+                'functionName': 'removeCurrent()',
+                'buttonName': 'Remove'
+              });
             };
           }]);
 }).call(this);
