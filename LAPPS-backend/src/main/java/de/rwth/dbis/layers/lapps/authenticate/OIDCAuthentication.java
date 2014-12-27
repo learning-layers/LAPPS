@@ -21,6 +21,7 @@ import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 
 import de.rwth.dbis.layers.lapps.domain.Facade;
+import de.rwth.dbis.layers.lapps.entity.App;
 import de.rwth.dbis.layers.lapps.entity.User;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
@@ -144,6 +145,64 @@ public class OIDCAuthentication {
     try {
       User user = authenticate(openIdToken);
       if (user.getRole() == User.ADMIN) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (OIDCException e) {
+      return false;
+    }
+  }
+
+  /**
+   * Returns true, if the given token belongs to a user that has created the app with the given id.
+   * 
+   * @param id The app id
+   * @param openIdToken
+   * @return
+   */
+  public static boolean isCreatorOfApp(App app, String openIdToken) {
+    // no token provided
+    if (openIdToken == null) {
+      return false;
+    }
+    // default testing token returns default testing id
+    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
+      return true;
+    }
+
+    try {
+      User user = authenticate(openIdToken);
+      if (app.getCreator() == user) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (OIDCException e) {
+      return false;
+    }
+  }
+
+  /**
+   * Returns true, if the given token belongs to a user with the given id.
+   * 
+   * @param oidcId the oidcId of the user
+   * @param openIdToken
+   * @return
+   */
+  public static boolean isSameUser(Long oidcId, String openIdToken) {
+    // no token provided
+    if (openIdToken == null) {
+      return false;
+    }
+    // default testing token returns default testing id
+    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
+      return true;
+    }
+
+    try {
+      User user = authenticate(openIdToken);
+      if (user.getId() == oidcId) {
         return true;
       } else {
         return false;

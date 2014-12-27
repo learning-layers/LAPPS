@@ -218,17 +218,9 @@ public class ApplicationsResource {
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
-      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
-      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
-          message = "Currently, this method is not implemented")})
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found")})
   public Response deleteApp(@HeaderParam("accessToken") String accessToken, @PathParam("id") Long id) {
 
-    // TODO: Check, if the user is creator of the app (also ok)
-
-    // If not, check, if the user has admin rights
-    if (!OIDCAuthentication.isAdmin(accessToken)) {
-      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
-    }
     List<App> apps = entitiyFacade.findByParam(App.class, "id", id);
     App app = null;
     if (apps.isEmpty()) {
@@ -236,6 +228,15 @@ public class ApplicationsResource {
     } else {
       app = apps.get(0);
     }
+    // Check, if user is creator of the app
+    if (OIDCAuthentication.isCreatorOfApp(app, accessToken)) {
+      // If not, check, if the user has admin rights
+      if (!OIDCAuthentication.isAdmin(accessToken)) {
+        return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+      }
+    }
+
+
     entitiyFacade.deleteByParam(App.class, "id", app.getId());
     return Response.status(HttpStatusCode.OK).build();
   }
@@ -267,12 +268,6 @@ public class ApplicationsResource {
       @PathParam("id") Long id,
       @ApiParam(value = "App entity as JSON", required = true) App updatedApp) {
 
-    // TODO: Check, if the user is creator of the app (also ok)
-
-    // If not, check, if the user has admin rights
-    if (!OIDCAuthentication.isAdmin(accessToken)) {
-      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
-    }
     List<App> apps = entitiyFacade.findByParam(App.class, "id", id);
     App app = null;
     if (apps.isEmpty()) {
@@ -280,6 +275,14 @@ public class ApplicationsResource {
     } else {
       app = apps.get(0);
     }
+    // Check, if user is creator of app
+    if (OIDCAuthentication.isCreatorOfApp(app, accessToken)) {
+      // If not, check, if the user has admin rights
+      if (!OIDCAuthentication.isAdmin(accessToken)) {
+        return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+      }
+    }
+
     DozerBeanMapper dozerMapper = new DozerBeanMapper();
     dozerMapper.map(updatedApp, app);
     app = entitiyFacade.save(app);

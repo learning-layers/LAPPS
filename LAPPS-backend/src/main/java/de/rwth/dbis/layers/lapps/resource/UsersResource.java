@@ -231,11 +231,12 @@ public class UsersResource {
       @PathParam("oidcId") Long oidcId,
       @ApiParam(value = "User entity as JSON", required = true) User updatedUser) {
 
-    // TODO: Check if the user is himself (also ok)
-
-    // If not, check, if the user has admin rights
-    if (!OIDCAuthentication.isAdmin(accessToken)) {
-      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+    // Check, if updating user is oneself
+    if (!OIDCAuthentication.isSameUser(oidcId, accessToken)) {
+      // If not, check, if the user has admin rights
+      if (!OIDCAuthentication.isAdmin(accessToken)) {
+        return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+      }
     }
     // search for existing user
     List<User> entities = entityFacade.findByParam(User.class, "oidcId", oidcId);
