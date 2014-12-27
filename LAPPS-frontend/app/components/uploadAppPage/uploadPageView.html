@@ -120,8 +120,9 @@
             </div>
             <h4>Thumbnail URL</h4>
             <div class="row">
-                    <div class="form-group col-lg-7">
-                        <input type="text" class="form-control" ng-model = "newapp.image" name = "image">
+                    <div class="form-group col-lg-7" validate-input>
+                        <input type="text" class="form-control" ng-model = "newapp.image" name = "thumbnail-image" required>
+                        <p class="help-block" ng-if="uploadForm.thumbnail-image.$error.required">Thumbnail is required</p>
                     </div>
             </div>
             <h4>Image URL</h4>
@@ -129,6 +130,7 @@
                     <div class="form-group col-lg-7">
                         <input type="text" class="form-control" ng-model = "newapp.image" name = "image">
                     </div>
+                    <button type="button" class="hidden-xs" id = "addAnotherButton" class="btn btn-info" ng-click = "#">Add another</button>
             </div>
 			<br/>
 			<div class="row">

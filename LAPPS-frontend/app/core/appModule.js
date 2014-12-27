@@ -60,8 +60,11 @@
       templateUrl: 'components/searchPage/searchPageView.html',
       controller: 'searchPageCtrl'
     }).when('/upload', {
-      templateUrl: 'components/uploadPage/uploadPageView.html',
+      templateUrl: 'components/uploadAppPage/uploadPageView.html',
       controller: 'uploadPageCtrl'
+    }).when('/edit', {
+      templateUrl: 'components/editAppPage/editPageView.html',
+      controller: 'editPageCtrl'
     }).when('/users/:userId', {
       templateUrl: 'components/userPage/userPageView.html',
       controller: 'userPageCtrl'
