@@ -183,9 +183,7 @@ public class UsersResource {
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
-      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
-      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
-          message = "Currently, this method is not implemented")})
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found")})
   public Response deleteUser(@HeaderParam("accessToken") String accessToken,
       @PathParam("oidcId") Long oidcId) {
     // Check, if the user has admin rights
@@ -224,9 +222,7 @@ public class UsersResource {
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
-          message = "Internal server problems"),
-      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
-          message = "Currently, this method is not implemented")})
+          message = "Internal server problems")})
   public Response updateUser(@HeaderParam("accessToken") String accessToken,
       @PathParam("oidcId") Long oidcId,
       @ApiParam(value = "User entity as JSON", required = true) User updatedUser) {

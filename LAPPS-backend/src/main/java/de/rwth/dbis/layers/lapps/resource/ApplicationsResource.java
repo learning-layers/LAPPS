@@ -181,9 +181,7 @@ public class ApplicationsResource {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
-          message = "Internal server problems"),
-      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
-          message = "Currently, this method is not implemented")})
+          message = "Internal server problems")})
   public Response createApp(@HeaderParam("accessToken") String accessToken, @ApiParam(
       value = "App entity as JSON", required = true) App createdApp) {
 
@@ -229,7 +227,7 @@ public class ApplicationsResource {
       app = apps.get(0);
     }
     // Check, if user is creator of the app
-    if (OIDCAuthentication.isCreatorOfApp(app, accessToken)) {
+    if (!OIDCAuthentication.isCreatorOfApp(app, accessToken)) {
       // If not, check, if the user has admin rights
       if (!OIDCAuthentication.isAdmin(accessToken)) {
         return Response.status(HttpStatusCode.UNAUTHORIZED).build();
@@ -261,9 +259,7 @@ public class ApplicationsResource {
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
-          message = "Internal server problems"),
-      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
-          message = "Currently, this method is not implemented")})
+          message = "Internal server problems")})
   public Response updateApp(@HeaderParam("accessToken") String accessToken,
       @PathParam("id") Long id,
       @ApiParam(value = "App entity as JSON", required = true) App updatedApp) {
@@ -276,7 +272,7 @@ public class ApplicationsResource {
       app = apps.get(0);
     }
     // Check, if user is creator of app
-    if (OIDCAuthentication.isCreatorOfApp(app, accessToken)) {
+    if (!OIDCAuthentication.isCreatorOfApp(app, accessToken)) {
       // If not, check, if the user has admin rights
       if (!OIDCAuthentication.isAdmin(accessToken)) {
         return Response.status(HttpStatusCode.UNAUTHORIZED).build();
