@@ -79,6 +79,11 @@ h1, h2, h3, h4, h5 {
   padding: 0 5px;
 }
 
+.hspacer06 {
+  padding: 0 5px;
+  font-size: 10px;
+}
+
 .hspacer1 {
   padding: 0 10px;
 }

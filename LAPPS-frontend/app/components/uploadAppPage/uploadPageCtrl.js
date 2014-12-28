@@ -43,18 +43,26 @@
             }];
 
             $scope.createNewApp = function() {
-              $scope.$broadcast('show-errors-check-validity');
 
-              if ($scope.userForm.$valid) {
-                alert('User saved');
+              console.log($scope.uploadForm.$valid);
+              // $scope.$broadcast('show-errors-check-validity');
+
+              if ($scope.uploadForm.$valid) {
+                alert('App Saved');
                 $scope.reset();
               }
-
-              $scope.newapp.tags = $scope.tags.split(',');
               /* create json for new app */
               var data = $scope.newapp;
 
             };
+
+            $scope.reset = function() {
+              $scope.$broadcast('show-errors-reset');
+              $scope.newapp = {
+                name: '',
+                email: ''
+              };
+            }
 
             $scope.removeCurrent = function() {
 

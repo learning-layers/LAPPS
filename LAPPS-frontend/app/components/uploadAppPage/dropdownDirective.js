@@ -35,9 +35,21 @@
                             break;
                           }
                         }
-                        scope.selectVal = function(item) {
+                        scope.selectVal = function(clickedItem) {
+                          switch (attrs.menuType) {
+                          case "button":
+                            $('button.button-label', element).html(
+                                    clickedItem.name);
+                            break;
+                          default:
+                            $('a.dropdown-toggle', element)
+                                    .html(
+                                            '<b class="caret"></b> '
+                                                    + clickedItem.name);
+                            break;
+                          }
                           scope.doSelect({
-                            selectedVal: item.name
+                            selectedVal: clickedItem.id
                           });
                         };
                         scope.selectVal(scope.bSelectedItem);
