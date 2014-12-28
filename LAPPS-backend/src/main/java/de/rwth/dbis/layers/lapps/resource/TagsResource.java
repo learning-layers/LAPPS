@@ -95,7 +95,7 @@ public class TagsResource {
   }
 
   /**
-   * Create a tag for an {@link App}
+   * Create a tag for an {@link App}.
    * 
    * @param appId app id
    * @param createdTag tag to create as JSON
@@ -110,9 +110,7 @@ public class TagsResource {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
-          message = "Internal server problems"),
-      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
-          message = "Currently, this method is not implemented")})
+          message = "Internal server problems")})
   public Response createTag(@PathParam("appId") long appId, @ApiParam(value = "Tag entity as JSON",
       required = true) Tag createdTag) {
 
@@ -136,7 +134,7 @@ public class TagsResource {
   }
 
   /**
-   * Delete the tag with the given id for an {@link App}
+   * Delete the tag with the given id for an {@link App}.
    * 
    * @param accessToken openID connect token
    * @param appId app id

@@ -117,7 +117,7 @@ public class ApplicationsResourceTest {
           break;
         }
       }
-      // this is only false if tag was not in list
+      // this is only false if app was not in list
       assertEquals(app.getId().toString(), retrievedApp.get("id").toString());
     } catch (Exception e) {
       e.printStackTrace();
