@@ -162,8 +162,8 @@ public class OIDCAuthentication {
    * @return
    */
   public static boolean isCreatorOfApp(App app, String openIdToken) {
-    // no token provided
-    if (openIdToken == null) {
+    // no token or no app provided
+    if (openIdToken == null || app == null) {
       return false;
     }
     // default testing token returns default testing id
