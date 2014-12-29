@@ -7,12 +7,14 @@
   angular.module('lappsControllers').controller('uploadPageCtrl',
           ['$scope', '$http', function($scope, $http) {
 
-            $scope.items = [{
-              'functionName': 'addAnother()',
-              'buttonName': 'Add'
-            }, {
-              'functionName': 'addAnother()',
-              'buttonName': 'Add'
+            var counter = 0;
+
+            var currentIndex = 0;
+
+            $scope.images = [{
+              id: 0,
+              buttonName: "add",
+              buttonTitle: 'Add'
             }];
 
             $scope.videolink = "http://www.youtube.com/embed/oHg5SJYRHA0";
@@ -64,16 +66,30 @@
               };
             }
 
-            $scope.removeCurrent = function() {
-
+            $scope.addAnotherField = function($event) {
+              alert($event.currentTarget.id);
+              if ($event.currentTarget.name == "add") {
+                counter++;
+                $scope.images.push({
+                  id: counter,
+                  buttonName: 'remove' + counter,
+                  buttonTitle: 'Remove'
+                });
+              } else {
+                $scope.findElementInArray($event.currentTarget.id);
+                $scope.images.splice(currentIndex, 1);
+              }
+              $event.preventDefault();
             };
 
-            $scope.addAnother = function() {
-              alert("Hecks to the yea!");
-              $scope.items.push({
-                'functionName': 'removeCurrent()',
-                'buttonName': 'Remove'
-              });
+            $scope.findElementInArray = function(index) {
+              for (var i = 0; i < $scope.images.length; i++) {
+                if ($scope.images[i].id == index) {
+                  currentIndex = $scope.images.indexOf($scope.images[i]);
+                }
+              }
             };
+
           }]);
+
 }).call(this);
