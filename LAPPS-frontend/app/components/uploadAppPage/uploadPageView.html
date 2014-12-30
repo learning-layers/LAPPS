@@ -13,7 +13,8 @@
                             <p class="help-block" ng-messages="uploadForm.app-name.$error.required">The App's name is required</p>
                     </div>
                     <div class ="form-group">
-				   		 <custom-dropdown data-menu-type="button" select-val="selected_status = selectedVal" preselected-item="selected_status" data-dropdown-data="platforms" ng-model = "app.plaftorm"></custom-dropdown>
+				   		 <custom-dropdown data-menu-type="button" select-val="selected_status = selectedVal" name = "platform" preselected-item="selected_status" data-dropdown-data="platforms" ng-model = "app.plaftorm" required></custom-dropdown>
+				   		 <p class="help-block" ng-messages="uploadForm.platform.$error.required">The App's name is required</p>
                	    </div>
                		<div class="form-group" validate-input>
                		  		<label>Download Url</label>  
@@ -42,7 +43,7 @@
                     </div>
                     <div class="form-group" validate-input>
                       	     <label>App Tags</label>
-                             <input type="text" class="form-control" placeholder="i.e help, ios" ng-model="tags" name = "tags" required>
+                             <input type="text" class="form-control" placeholder="i.e help, ios" ng-model="newapp.tags" name = "tags" required>
                              <p class="help-block" ng-messages="uploadForm.tags.$error.required">Tags are required</p>
                     </div>
                     <div class="col-md-12">
@@ -99,7 +100,8 @@
            		 	<div class="form-group ">
                     		<button type="button" id = "submitButton" class="btn btn-default" ng-click = "createNewApp()"  >Save</button>
                     </div>	    
-          		</form>		
+          		</form>	
+          		<p>{{newapp}}</p>	
            </div>
        </div>
     </div>

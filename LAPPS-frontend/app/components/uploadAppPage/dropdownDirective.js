@@ -21,10 +21,10 @@
                         var html = '';
                         switch (attrs.menuType) {
                         case "button":
-                          html += '<div class="btn-group"><button class="btn button-label btn-default">Platforms</button><button class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>';
+                          html += '<div class="btn-group"><button class="btn button-label btn-default">Platforms</button><button class="btn btn-default dropdown-toggle" name ="platform" data-toggle="dropdown" required><span class="caret"></span></button>';
                           break;
                         default:
-                          html += '<div class="dropdown"><a class="dropdown-toggle" role="button" data-toggle="dropdown"  href="javascript:;">Dropdown<b class="caret"></b></a>';
+                          html += '<div class="dropdown"><a class="dropdown-toggle" role="button" data-toggle="dropdown"  href="javascript:;">Dropdown<b class="caret" required></b></a>';
                           break;
                         }
                         html += '<ul class="dropdown-menu"><li ng-repeat="item in items"><a tabindex="-1" data-ng-click="selectVal(item)" ng-model = "newapp.platform">{{item.name}}</a></li></ul></div>';
