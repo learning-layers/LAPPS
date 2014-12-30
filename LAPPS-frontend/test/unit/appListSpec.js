@@ -33,11 +33,14 @@ describe(
                     var scope, ctrl, $httpBackend;
 
                     beforeEach(inject(function(_$httpBackend_, $rootScope,
-                            $controller, swagger2HttpBackend) {
+                            $controller, swagger2HttpBackend, platform) {
                       $httpBackend = _$httpBackend_;
                       var apiRequest = swagger2HttpBackend.getRequest(
                               'apps.getAllApps', {
-                                search: ''
+                                search: '',
+                                page: 1,
+                                filterBy: 'platform',
+                                filterValue: platform.currentPlatform.name
                               });
                       $httpBackend
                               .expectGET(apiRequest.url)

@@ -12,7 +12,8 @@
                   [
                       '$scope',
                       'swaggerApi',
-                      function($scope, swaggerApi) {
+                      'platform',
+                      function($scope, swaggerApi, platform) {
 
                         /**
                          * @field
@@ -88,6 +89,8 @@
                                             }
                                             $scope.apps[i].image = image;
                                             $scope.apps[i].thumbnail = thumbnail;
+                                            $scope.apps[i].platformObj = platform
+                                                    .getPlatformByName($scope.apps[i].platform);
                                           }
                                         });
                       }]);

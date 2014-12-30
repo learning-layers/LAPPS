@@ -20,52 +20,60 @@
                         {
                           id: 0,
                           name: 'iOS',
-                          icon: 'fa-apple',
+                          icon: 'icon-apple-store',
+                          downloadBadge: 'badge-apple',
                           agentRegEx: /(iPhone|iPad|iPod)/,
                           isMobile: true
                         },
                         {
                           id: 1,
                           name: 'Android',
-                          icon: 'fa-android',
+                          icon: 'icon-android',
+                          downloadBadge: 'badge-android',
                           agentRegEx: /Android/,
                           isMobile: true
                         },
                         {
                           id: 2,
                           name: 'Windows Phone',
-                          icon: 'fa-windows',
+                          icon: 'icon-ms-store',
                           agentRegEx: /Windows Phone/,
+                          downloadBadge: 'badge-windows',
                           isMobile: true
                         },
                         {
                           id: 3,
                           name: 'Web Apps',
-                          icon: 'fa-globe',
+                          icon: 'fa fa-globe',
+                          downloadBadge: 'badge-webapp',
                           isMobile: false
                         },
                         {
                           id: 4,
                           name: 'Windows',
-                          icon: 'fa-windows',
+                          icon: 'fa fa-windows',
+                          downloadBadge: 'badge-default',
                           agentRegEx: /(Windows NT|Windows 2000|Windows XP|Windows 7|Windows 8|Windows 10)/,
                           isMobile: false
                         }, {
                           id: 5,
                           name: 'Linux',
-                          icon: 'fa-linux',
+                          icon: 'icon-tux',
+                          downloadBadge: 'badge-default',
                           agentRegEx: /(Linux|X11)/,
                           isMobile: false
                         }, {
                           id: 6,
                           name: 'Mac OS X',
-                          icon: 'fa-apple',
+                          icon: 'icon-finder',
+                          downloadBadge: 'badge-default',
                           agentRegEx: /Mac OS X/,
                           isMobile: false
                         }, {
                           id: 7,
                           name: 'All Platforms',
-                          icon: 'fa-circle-o',
+                          icon: 'fa fa-circle-o',
+                          downloadBadge: 'badge-default',
                           isMobile: false
                         }];
                     /**

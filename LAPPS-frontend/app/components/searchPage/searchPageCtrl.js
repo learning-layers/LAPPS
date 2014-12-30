@@ -15,11 +15,33 @@
                       '$routeParams',
                       'user',
                       'platform',
-                      function($scope, swaggerApi, $routeParams, user, platform) {
+                      '$location',
+
+                      function($scope, swaggerApi, $routeParams, user,
+                              platform, $location) {
+
+                        /**
+                         * @field
+                         * @type string
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @description Stores the current search query
+                         */
+                        $scope.searchQuery = '';
+
                         if ($routeParams.query) {
                           $scope.searchQuery = $routeParams.query;
-                        } else {
-                          $scope.searchQuery = '';
+                        }
+
+                        /**
+                         * @field
+                         * @type number
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @description Stores the current page of search
+                         *              results
+                         */
+                        $scope.currentPage = 1;
+                        if ($routeParams.page) {
+                          $scope.currentPage = +$routeParams.page;
                         }
                         /**
                          * @field
@@ -57,18 +79,38 @@
                           var curr_year = d.getFullYear();
                           return (curr_date + "-" + m_names[curr_month] + "-" + curr_year);
                         }
+
                         /**
                          * @function
                          * @memberOf lapps.lappsControllers.searchPageCtrl
                          * @description Searches using the current query
-                         *              settings. And loads a list of apps as
+                         *              settings and loads a list of apps as
+                         *              results. Sets currentPage to 1.
+                         */
+                        $scope.newSearch = function() {
+                          $scope.currentPage = 1;
+                          $location.path('/search/' + $scope.searchQuery);
+                          $location.search('page', 1);
+                          $scope.search();
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @description Searches using the current query
+                         *              settings and loads a list of apps as
                          *              results.
                          */
+
                         $scope.search = function() {
                           // swaggerApi.users.getAllUsers({'accessToken':user.token}).then(function(data2){
+
                           swaggerApi.apps
                                   .getAllApps({
-                                    search: $scope.searchQuery
+                                    search: $scope.searchQuery,
+                                    filterBy: 'platform',
+                                    filterValue: platform.currentPlatform.name,
+                                    page: $scope.currentPage,
+                                    pageLength: 10
                                   })
                                   .then(
                                           function(data) {
@@ -108,6 +150,13 @@
                           } else {
                             $scope.collapsed = true;
                           }
+                        }
+
+                        $scope.changePage = function(pageNumber) {
+                          $scope.currentPage = pageNumber;
+                          $location.search('page', pageNumber);
+                          $scope.search();
+
                         }
                         $scope.search();
                       }]);

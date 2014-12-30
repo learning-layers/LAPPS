@@ -172,6 +172,14 @@
                   if (right > 0) {// not collapsed
                     $('.search-bar.hidden-xs').css('left', right + 'px');
                   }
+                  elem = $('.navbar-right');
+
+                  var left = elem.width();
+
+                  if (left > 0) {// not collapsed
+                    $('.search-bar.hidden-xs').css('right', left + 'px');
+                  }
+
                 }
 
                 user.init($scope.loginCallback);
