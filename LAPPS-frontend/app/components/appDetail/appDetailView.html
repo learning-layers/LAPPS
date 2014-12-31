@@ -7,9 +7,9 @@
     <div class="col-md-12 thumbnail" id="app-description">
       <div class="title">
         <h2>
-          <i class="fa {{app.platformObj.icon}} pull-left"></i>
-          <i ng-show="app.platformObj.isMobile" class="fa fa-mobile pull-left"></i>{{app.name}} <span>
-            from <a href="#/users/{{app.creator.oidcId}}">{{app.creator.username}}</a>
+          <i class="{{app.platformObj.icon}} pull-left"></i>
+         {{app.name}} <span>
+            by <a href="#/users/{{app.creator.oidcId}}">{{app.creator.username}}</a>
           </span>
         </h2>
       </div>
@@ -22,19 +22,13 @@
 
         <img ng-src="{{app.thumbnail}}" class="img-detail">
         <div class="caption">
-          <a href="{{app.downloadUrl}}" id="download-button" class="btn btn-success">
-            <h4>
-              <span class="glyphicon glyphicon glyphicon-download-alt"></span> Download
-            </h4>
-          </a>
+          <a href="{{app.downloadUrl}}" id="download-button" class="{{app.platformObj.downloadBadge}}"></a>
           <div class="app-meta-data  text-color-paleblack">
             <div id="app-rating">
               <star-rating value="{{app.rating}}"></star-rating><span class="hspacer05"></span>
             </div>
             <div id="app-tags">
-              <span class="hspacer05 hidden-xs"></span> <span class="glyphicon glyphicon-tags text-color-grey "></span> <span class="hspacer05"></span><span ng-repeat="tag in (app.tags) | limitTo : tagLimit">
-                <a href="tags/{{tag.value}}">{{tag.value}}</a>{{$last ? '' : ', '}}
-              </span> <a class="tag-expander" ng-hide="$scope.DEFAULT_TAGS>=app.tags.length" ng-click="expandCollapseTags()" href="javascript:void(0)"> ... </a>
+              <tags value="{{app.tags}}"></tags>
             </div>
           </div>
           <div class="vspacer05"></div>
@@ -52,6 +46,7 @@
     </div>
   </div>
 </div>
+
 <div class="row">
   <div class="col-md-12">
 
@@ -76,6 +71,12 @@
           <dfn><i class="fa fa-puzzle-piece"></i><span class="hspacer05"></span>Platform</dfn>
         </dt>
         <dd>{{app.platformObj.name}}</dd>
+        <dt>
+          <dfn><i class="fa fa-plus-square"></i><span class="hspacer05"></span>Also available on</dfn>
+        </dt>
+
+        <dd ng-repeat="alternative in alternativePlatforms"><a href="#/apps/{{alternative.id}}">{{alternative.platform}}</a></dd>
+
         <div ng-if="app.sourceUrl">
           <dt>
             <dfn><i class="fa fa-code-fork"></i><span class="hspacer05"></span>Source Code</dfn>
@@ -92,17 +93,17 @@
           <dt>
             <dfn><i class="fa fa-arrows-h"></i><span class="hspacer05"></span>Size</dfn>
           </dt>
-          <dd>{{app.size}}</dd>
+          <dd>{{size}}</dd>
         </div>
         <dt>
           <dfn><i class="fa fa-calendar-o"></i><span class="hspacer05"></span>Release</dfn>
         </dt>
-        <dd>{{app.dateCreated}}</dd>
+        <dd>{{dateCreated}}</dd>
 
         <dt>
           <dfn><i class="fa fa-calendar"></i><span class="hspacer05"></span>Last update</dfn>
         </dt>
-        <dd>{{app.dateModified}}</dd>
+        <dd>{{dateModified}}</dd>
         <dt>
           <dfn><i class="fa fa-copyright"></i><span class="hspacer05"></span>License</dfn>
         </dt>

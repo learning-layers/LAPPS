@@ -11,7 +11,7 @@
                 ng-class="{'caret-reversed': !collapsed}"></span>
         </h3>
         <button class="advanced-search-btn btn btn-default btn-primary hidden-lg hidden-md hidden-xs"
-                ng-class="{'hidden': collapsed}" ng-click="search()">
+                ng-class="{'hidden': collapsed}" ng-click="newSearch()">
           <span class="glyphicon glyphicon-search"></span> Search
         </button>
       </div>
@@ -21,11 +21,11 @@
           <div class="input-group">
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-font"></span>
-            </span> <input ng-enter="search()" ng-model="searchQuery" type="text"
-                           class="form-control" id="has-title" placeholder="myApp" ">
+            </span> <input ng-enter="newSearch()" ng-model="searchQuery" type="text"
+       class="form-control" id="has-title" placeholder="myApp" ">
           </div>
         </div>
-        <div class="form-group col-md-12 col-sm-6 col-lg-12">
+        <!--<div class="form-group col-md-12 col-sm-6 col-lg-12">
           <label for="has-tags">Tagged as</label>
           <div class="input-group">
             <span class="input-group-addon">
@@ -34,14 +34,14 @@
                            class="form-control" id="has-tags"
                            placeholder="mobile medicine food">
           </div>
-        </div>
+        </div>-->
         <div class="form-group col-md-12 col-sm-6 col-lg-12">
           <label for="has-author">Created by</label>
           <div class="input-group">
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-user"></span>
-            </span> <input ng-enter="search()" type="text"
-                           class="form-control" id="has-author" placeholder="john doe">
+            </span> <input ng-enter="newSearch()" type="text"
+       class="form-control" id="has-author" placeholder="john doe">
           </div>
         </div>
         <div class="form-group col-md-12 col-sm-6 col-lg-12">
@@ -52,15 +52,14 @@
             </span> <select class="form-control" id="sort-by">
               <option>Age</option>
               <option>Rating</option>
-              <option>Comments</option>
               <option>Author</option>
               <option>Title</option>
-              <option>None</option>
+              <option>Random</option>
             </select>
           </div>
         </div>
         <div class="col-xs-12 visible-lg visible-md visible-xs">
-          <button ng-click="search()"
+          <button ng-click="newSearch()"
                   class="advanced-search-btn btn btn-default btn-primary btn-block">
             <span class="glyphicon glyphicon-search"></span> Search
           </button>
@@ -75,8 +74,8 @@
         <div class="thumbnail">
           <div class="title">
             <h3 class="single-line">
-              <i class="fa {{app.platformObj.icon}} pull-left"></i>
-              <i ng-show="app.platformObj.isMobile" class="fa fa-mobile pull-left"></i>
+              <i class="{{app.platformObj.icon}} pull-left"></i>
+
               {{app.name}}
             </h3>
           </div>
@@ -84,30 +83,32 @@
             <img ng-src="{{app.thumbnail}}" alt="cats">
           </div>
           <div class="caption">
+            <div class="inline-block">
+              <star-rating class="pull-left" value="{{app.rating}}"></star-rating> <span class="hspacer05 pull-left"></span>   <tags class="pull-left" value="{{app.tags}}" nolink="true" min="30" max="30"></tags>
 
-            <star-rating value="{{app.rating}}"></star-rating>
+            </div>
+            <span class="vspacer03"></span>
             <p>{{app.shortDescription}}</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="row hidden">
+    <div class="row">
       <div class="col-xs-12 text-center">
         <ul class="pagination">
-          <li class="disabled">
-            <a href="#">
+          <li ng-class="{'disabled':currentPage==1}">
+            <a href="javascript:void(0)" ng-click="changePage(1)">
               <span class="glyphicon glyphicon-step-backward"></span>
             </a>
           </li>
-          <li class="active"><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">...</a></li>
-          <li><a href="#">100</a></li>
+          <li ng-click="changePage(n+(currentPage>3?currentPage-3:1))"
+              ng-class="{'active':n+(currentPage>3?currentPage-3:1)==currentPage}" ng-repeat="n in [] | rangeFilter:6">
+            <a href="javascript:void(0)">{{n+(currentPage>3?currentPage-3:1)}}</a>
+          </li>
           <li>
-            <a href="#">
-              <span class="glyphicon glyphicon-step-forward"></span>
-            </a>
+            <!--<a href="javascript:void(0)">
+        <span class="glyphicon glyphicon-step-forward"></span>
+      </a>-->
           </li>
         </ul>
       </div>

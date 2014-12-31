@@ -29,6 +29,10 @@ h1, h2, h3, h4, h5 {
   position: relative;
 }
 
+.inline-block {
+  display: inline-block;
+}
+
 .dotdotdot {
   background-color: #666;
   width: 6px;
@@ -78,14 +82,17 @@ h1, h2, h3, h4, h5 {
 /* spacing start */
 .hspacer05 {
   padding: 0 5px;
+  height: 1px;
 }
 
 .hspacer1 {
   padding: 0 10px;
+  height: 1px;
 }
 
 .hspacer2 {
   padding: 0 20px;
+  height: 1px;
 }
 
 .vbar:before {
@@ -171,12 +178,18 @@ h1, h2, h3, h4, h5 {
 
 .search-bar {
   left: 370px;
-  right: 180px;
+  right: 270px;
   position: absolute;
 }
 
+  .search-bar .navbar-form {
+    padding: 0;
+  }
+
   .search-bar .input-group-btn:last-child > .btn,
-  .search-bar .input-group-btn:last-child > .btn-group {
+  .search-bar .input-group-btn:last-child > .btn-group,
+  .search-bar-xs .input-group-btn:last-child > .btn,
+  .search-bar-xs .input-group-btn:last-child > .btn-group {
     height: 34px;
   }
 
@@ -196,11 +209,14 @@ h1, h2, h3, h4, h5 {
   }
 
 #sign-in-button {
-  margin-right: 10px;
-  margin-left: 10px;
+  margin-left:5px;
+  margin-right:5px;
 }
 
-  #sign-in-button button {
+  #sign-in-button .login {
+  }
+
+  #sign-in-button .logout {
     width: 160px;
     overflow: hidden;
     -ms-text-overflow: ellipsis;
@@ -209,11 +225,11 @@ h1, h2, h3, h4, h5 {
     padding-right: 30px;
   }
 
-    #sign-in-button button.dropdown-toggle {
+    #sign-in-button .logout.dropdown-toggle {
       text-align: left;
     }
 
-    #sign-in-button button .caret {
+    #sign-in-button .logout .caret {
       position: absolute;
       right: 23px;
       top: 23px;
@@ -575,9 +591,9 @@ h1, h2, h3, h4, h5 {
   clear: both;
   padding: 5px 10px;
   overflow: auto;
-  position:absolute;
-  top:238px;
-  bottom:56px;
+  position: absolute;
+  top: 238px;
+  bottom: 56px;
 }
 
 .featured-info-panel {
@@ -586,7 +602,6 @@ h1, h2, h3, h4, h5 {
   right: 15px;
   bottom: 0;
   top: 0;
-  
 }
 
   .featured-info-panel .description {
@@ -601,6 +616,7 @@ h1, h2, h3, h4, h5 {
     max-height: 200px;
     white-space: pre-wrap;
   }
+
 @media (max-width: 991px) {
   .row.carousel-row {
     padding-right: 0;
@@ -608,7 +624,6 @@ h1, h2, h3, h4, h5 {
 }
 /*smartphone size start*/
 @media (max-width: 768px) {
-  
   .carousel-caption {
     background: none;
   }
@@ -787,8 +802,11 @@ h1, h2, h3, h4, h5 {
     width: 50%;
   }
 
-  #app-description .caption .tag-expander {
+  .tag-expander {
     font-size: large;
+  }
+  .tag {
+    font-size:smaller;
   }
 
 #app-images {
@@ -898,8 +916,7 @@ h1, h2, h3, h4, h5 {
 
 #download-button {
   float: right;
-  margin-left: 5px;
-  margin-top: -5px;
+  margin-left: 15px;
   margin-bottom: 8px;
   display: block;
 }
@@ -944,6 +961,7 @@ dd {
 
   #app-technical-detail dl {
     padding: 10px;
+    margin-bottom:0;
   }
 
     #app-technical-detail dl dd {

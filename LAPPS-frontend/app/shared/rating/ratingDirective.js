@@ -1,7 +1,7 @@
 ﻿/**
  * @class starRating
  * @memberOf lapps.lappsDirectives
- * @description This directive is a template for the header.
+ * @description This directive is shows the rating of an app.
  */
 (function() {
   angular.module('lappsDirectives').directive('starRating', function() {

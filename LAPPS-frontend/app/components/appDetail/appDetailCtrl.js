@@ -16,23 +16,7 @@
                       'swaggerApi',
                       'platform',
                       function($scope, $routeParams, swaggerApi, platform) {
-                        /**
-                         * @field
-                         * @type number
-                         * @memberOf lapps.lappsControllers.appDetailCtrl
-                         * @description Maximum amount of tags, that can be
-                         *              displayed in the app details.
-                         */
-                        $scope.MAX_TAGS = 999;
 
-                        /**
-                         * @field
-                         * @type number
-                         * @memberOf lapps.lappsControllers.appDetailCtrl
-                         * @description Amount of tags displayed in the app
-                         *              details in collapsed state.
-                         */
-                        $scope.DEFAULT_TAGS = 5;
                         /**
                          * @field
                          * @type string
@@ -57,15 +41,6 @@
                          * @field
                          * @type number
                          * @memberOf lapps.lappsControllers.appDetailCtrl
-                         * @description Current limit on the amount of tags to
-                         *              display.
-                         */
-                        $scope.tagLimit = $scope.DEFAULT_TAGS;
-
-                        /**
-                         * @field
-                         * @type number
-                         * @memberOf lapps.lappsControllers.appDetailCtrl
                          * @description Time in ms to wait until the image in
                          *              the carousel is changed.
                          */
@@ -79,6 +54,16 @@
                          *              backend.
                          */
                         $scope.app = {};
+
+                        /**
+                         * @field
+                         * @type object
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Stores information about alternative
+                         *              platforms for this app
+                         */
+
+                        $scope.alternativePlatforms = [];
 
                         marked.setOptions({
                           renderer: new marked.Renderer(),
@@ -125,22 +110,6 @@
 
                         /**
                          * @function
-                         * @memberOf lapps.lappsControllers.appDetailCtrl
-                         * @description Toggles
-                         *              {@link lapps.lappsControllers.appDetailCtrl.$scope.tagLimit}
-                         *              to change the amount of currently
-                         *              displayed tags.
-                         */
-                        $scope.expandCollapseTags = function() {
-                          if ($scope.tagLimit == $scope.DEFAULT_TAGS) {
-                            $scope.tagLimit = $scope.MAX_TAGS;
-                          } else {
-                            $scope.tagLimit = $scope.DEFAULT_TAGS;
-                          }
-                        }
-
-                        /**
-                         * @function
                          * @type string
                          * @memberOf lapps.lappsControllers.appDetailCtrl
                          * @param {number|string}
@@ -152,7 +121,6 @@
                          *              result (12.5 MB).
                          */
                         $scope.convertSize = function(size) {
-
                           size = parseInt(size, 10);
                           if (size < 1024) {
                             return size + " KB";
@@ -269,12 +237,33 @@
                                                   .shortenUrl($scope.app.sourceUrl);
                                           $scope.app.supportUrlShort = $scope
                                                   .shortenUrl($scope.app.supportUrl);
+
                                           $scope.size = $scope
-                                                  .convertSize($scope.size);
+                                                  .convertSize($scope.app.size);
+
                                           $scope.dateCreated = $scope
-                                                  .convertDate($scope.dateCreated);
+                                                  .convertDate($scope.app.dateCreated);
                                           $scope.dateModified = $scope
-                                                  .convertDate($scope.dateModified);
+                                                  .convertDate($scope.app.dateModified);
                                         });
+                        swaggerApi.apps.getAllPlatformsForApp({
+                          appId: +$scope.appId
+                        }).then(function(data) {
+                          for (var i = 0; i < data.length; i++) {
+                            if ($scope.appId != data[i].id) {
+                              $scope.alternativePlatforms.push({
+                                id: data[i].id,
+                                platform: data[i].platform
+                              });
+                            }
+                          }
+
+                          if ($scope.alternativePlatforms.length <= 0) {
+                            $scope.alternativePlatforms.push({
+                              id: $scope.appId,
+                              platform: '-'
+                            });
+                          }
+                        });
                       }]);
 }).call(this);
