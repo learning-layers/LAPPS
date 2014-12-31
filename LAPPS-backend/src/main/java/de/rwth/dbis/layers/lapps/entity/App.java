@@ -252,7 +252,7 @@ public class App implements Entity, Comparable<App> {
 
   /**
    * 
-   * DateCreatedComparator for {@link App} using field platform.
+   * PlatformComparator for {@link App} using field platform.
    *
    */
   public static class PlatformComparator implements Comparator<App> {
@@ -264,6 +264,23 @@ public class App implements Entity, Comparable<App> {
         return 1;
       } else {
         return arg0.getPlatform().compareToIgnoreCase(arg1.getPlatform());
+      }
+    }
+  }
+  /**
+   * 
+   * RatingComparator for {@link App} using field rating.
+   *
+   */
+  public static class RatingComparator implements Comparator<App> {
+    @Override
+    public int compare(App arg0, App arg1) {
+      if (arg0.getRating() == null) {
+        return -1;
+      } else if (arg1.getRating() == null) {
+        return 1;
+      } else {
+        return arg0.getRating().compareTo(arg1.getRating());
       }
     }
   }
@@ -303,4 +320,5 @@ public class App implements Entity, Comparable<App> {
       }
     }
   }
+
 }
