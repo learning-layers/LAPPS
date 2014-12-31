@@ -1,6 +1,7 @@
 package de.rwth.dbis.layers.lapps.resource;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -34,6 +35,7 @@ import de.rwth.dbis.layers.lapps.entity.App;
 import de.rwth.dbis.layers.lapps.entity.App.DateCreatedComparator;
 import de.rwth.dbis.layers.lapps.entity.App.DateModifiedComparator;
 import de.rwth.dbis.layers.lapps.entity.App.PlatformComparator;
+import de.rwth.dbis.layers.lapps.entity.App.RatingComparator;
 import de.rwth.dbis.layers.lapps.entity.Tag;
 
 /**
@@ -72,9 +74,10 @@ public class ApplicationsResource {
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of apps by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
       @ApiParam(value = "Sort by field", required = false,
-          allowableValues = "name,platform,dateCreated,dateModified") @DefaultValue("name") @QueryParam("sortBy") String sortBy,
+          allowableValues = "name,platform,rating,dateCreated,dateModified,random") @DefaultValue("name") @QueryParam("sortBy") String sortBy,
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
-      @ApiParam(value = "Filter by field", required = false, allowableValues = "platform,creator") @QueryParam("filterBy") String filterBy,
+      @ApiParam(value = "Filter by field", required = false,
+          allowableValues = "platform,creator,minRating,minDateCreated,minDateModified") @QueryParam("filterBy") String filterBy,
       @ApiParam(value = "Filter value", required = false) @QueryParam("filterValue") String filterValue) {
     List<App> entities;
     if (search == null) {
@@ -90,14 +93,105 @@ public class ApplicationsResource {
       }
     }
 
+    // filter before sorting
+    if (filterBy != null && filterValue != null) {
+      String[] filters = filterBy.split(";");
+      String[] values = filterValue.split(";");
+
+      int min = Math.min(values.length, filters.length); // we need pairs, so if the user did not
+                                                         // provide equal amount of key/value pairs,
+                                                         // take the minimum.
+      for (int i = 0; i < min; i++) {
+        filters[i] = filters[i].toLowerCase();
+        boolean isLong = false;
+        long longVal = 0;
+        try {
+          longVal = Long.parseLong(values[i]);
+          isLong = true;
+        } catch (NumberFormatException e) {
+          isLong = false;
+        }
+
+        boolean isDouble = false;
+        double doubleVal = 0;
+        try {
+          doubleVal = Double.parseDouble(values[i]);
+          isDouble = true;
+        } catch (NumberFormatException e) {
+          isDouble = false;
+        }
+
+        switch (filters[i]) {
+          case "platform":
+            for (Iterator<App> iterator = entities.iterator(); iterator.hasNext();) {
+              App app = iterator.next();
+              if (!app.getPlatform().equalsIgnoreCase(values[i])) {// if not specified platform,
+                                                                   // remove
+                iterator.remove();
+              }
+            }
+            break;
+          case "creator":
+            for (Iterator<App> iterator = entities.iterator(); iterator.hasNext();) {
+              App app = iterator.next();
+              if (!isLong && !app.getCreator().getUsername().equalsIgnoreCase(values[i])) {
+                // if user asks for name and name does not match
+                iterator.remove();
+              } else if (isLong && app.getCreator().getOidcId() != longVal) { // if user asks for id
+                iterator.remove();
+              }
+            }
+            break;
+          case "minrating":
+            if (isDouble) { // don't bother if filter value is not a double
+              for (Iterator<App> iterator = entities.iterator(); iterator.hasNext();) {
+                App app = iterator.next();
+                if (app.getRating() < doubleVal) {
+                  iterator.remove();
+                }
+              }
+            }
+
+            break;
+          case "mindatecreated":
+            if (isLong) { // don't bother if filter value is not a long
+              for (Iterator<App> iterator = entities.iterator(); iterator.hasNext();) {
+                App app = iterator.next();
+                if (app.getDateCreated().getTime() < longVal) { // if too old, remove
+                  iterator.remove();
+                }
+              }
+            }
+            break;
+
+          case "mindatemodified":
+            if (isLong) { // don't bother if filter value is not a long
+              for (Iterator<App> iterator = entities.iterator(); iterator.hasNext();) {
+                App app = iterator.next();
+                if (app.getDateModified().getTime() < longVal) { // if too old, remove
+                  iterator.remove();
+                }
+              }
+            }
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
     if (sortBy.equalsIgnoreCase("name")) {
       Collections.sort(entities);
     } else if (sortBy.equalsIgnoreCase("platform")) {
       Collections.sort(entities, new PlatformComparator());
+    } else if (sortBy.equalsIgnoreCase("rating")) {
+      Collections.sort(entities, new RatingComparator());
     } else if (sortBy.equalsIgnoreCase("dateCreated")) {
       Collections.sort(entities, new DateCreatedComparator());
     } else if (sortBy.equalsIgnoreCase("dateModified")) {
       Collections.sort(entities, new DateModifiedComparator());
+    } else if (sortBy.equalsIgnoreCase("random")) { // just shuffle
+      Collections.shuffle(entities);
     }
     if (order.equalsIgnoreCase("desc")) {
       Collections.reverse(entities);
