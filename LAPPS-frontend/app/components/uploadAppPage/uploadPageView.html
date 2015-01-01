@@ -3,7 +3,7 @@
      <div class="jumbotron">
     	 <div class="row"> 
      		<div class = col-lg-7>
-        		<form name = "uploadForm" id = "uploadForm"  novalidate>
+        		<form name = "uploadForm" id = "uploadForm" ng-submit = "createNewApp();"  novalidate>
       	            <div class="col-md-12">
              			    <h2>General Information</h2>
         	 	    </div>  	 	                
@@ -103,7 +103,7 @@
                     	</div>
            		 	</div>
            		 	<div class="form-group ">
-                    		<button type="button" id = "submitButton" class="btn btn-default" ng-click = "createNewApp()"  >Save</button>
+                    		<input type="submit" value="Save" />
                     </div>	    
           		</form>	
           		<p>{{newapp}}</p>	

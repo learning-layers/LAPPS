@@ -1,0 +1,31 @@
+<div class="row">
+  <div class="col-md-12 thumbnail" id="appEdit">
+    <div class="title">
+      <h2>
+        <span>{{app.name}}</span>
+      </h2>
+    </div>
+    <div class="container">
+      <div class="col-md-3 col-sm-7">
+        <hr class="visible-xs" />
+        <dl>
+          <dt>
+            <dfn><span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>Platform</dfn>
+          </dt>
+          <dd>
+             <a href="#" editable-select="app.platform" ng-model = "app.platform"  e-ng-options="p.name as p.name for p in platforms">
+   			 {{ showPlatform() }}
+  			 </a>
+          </dd>
+
+          <dt>
+            <dfn><span class="glyphicon glyphicon-time"></span><span class="hspacer05"></span>Supported platform version</dfn>
+          </dt>
+          <dd>
+          <a href="#" editable-text="app.supportedPlatformVersion" ng-model = "app.supportedPlatformVersion">{{ app.supportedPlatformVersion || app.supportedPlatformVersion }}</a>
+          </dd>
+
+         </div>
+    </div>
+  </div>
+</div>

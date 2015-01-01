@@ -11,8 +11,8 @@
                   [
                       '$scope',
                       '$http',
-                      function($scope, $http) {
-
+                      function($scope, $routeParams, $http) {
+                        // app tags
                         this.appTags = "";
 
                         var counter = 0;
@@ -21,7 +21,7 @@
 
                         $scope.newFields = [{
                           id: 0,
-                          buttonName: "add",
+                          buttonName: 'add',
                           buttonTitle: 'Add'
                         }];
 
@@ -82,24 +82,24 @@
                         $scope.createNewApp = function() {
 
                           if ($scope.uploadForm.$valid) {
-                            /* split tags */
+                            // split tags
                             $scope.newapp.tags = $scope.appTags.split(',');
-                            /* create new artifacts from each image url */
+                            // create new artifacts from each image url
                             for (var i = 0; i < $scope.images.length; i++) {
                               $scope.newapp.artifacts.push({
                                 url: $scope.images[i],
-                                type: "image"
+                                type: 'image'
                               })
                             }
-                            /* create another artifact for video */
+                            // create another artifact for video
                             $scope.newapp.artifacts.push({
                               url: $scope.videoUrl,
-                              type: "video"
+                              type: 'video'
                             })
 
                             alert('App Saved');
                             $scope.reset();
-                            /* create json for new app */
+                            // create json for new app
                             var data = $scope.newapp;
                           }
 
@@ -135,7 +135,7 @@
                         }
 
                         $scope.addAnotherField = function($event) {
-                          if ($event.currentTarget.name == "add") {
+                          if ($event.currentTarget.name == 'add') {
                             counter++;
                             $scope.newFields.push({
                               id: counter,
