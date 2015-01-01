@@ -1,5 +1,5 @@
 /**
- * @class userPage
+ * @class validation
  * @memberof lapps.lappsDirectives
  * @description This directive is used for validation of required inputs.
  */

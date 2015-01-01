@@ -13,6 +13,8 @@
                       '$http',
                       function($scope, $http) {
 
+                        this.appTags = "";
+
                         var counter = 0;
 
                         var currentIndex = 0;
@@ -24,8 +26,6 @@
                         }];
 
                         this.videoUrl = "";
-
-                        $scope.tags = " ";
 
                         $scope.images = [];
 
@@ -74,26 +74,34 @@
                               icon: 'fa-circle-o',
                             }];
 
+                        $scope.newapp = {
+                          artifacts: [],
+                          tags: []
+                        };
+
                         $scope.createNewApp = function() {
-                          /* create new artifacts from each image url */
-                          for (var i = 0; i < $scope.images.length; i++) {
-                            $scope.artifacts.push({
-                              url: $scope.images[i],
-                              type: "image"
-                            })
-                          }
-                          /* create another artifact for video */
-                          $scope.artifacts.push({
-                            url: $scope.videoUrl,
-                            type: "video"
-                          })
 
                           if ($scope.uploadForm.$valid) {
+                            /* split tags */
+                            $scope.newapp.tags = $scope.appTags.split(',');
+                            /* create new artifacts from each image url */
+                            for (var i = 0; i < $scope.images.length; i++) {
+                              $scope.newapp.artifacts.push({
+                                url: $scope.images[i],
+                                type: "image"
+                              })
+                            }
+                            /* create another artifact for video */
+                            $scope.newapp.artifacts.push({
+                              url: $scope.videoUrl,
+                              type: "video"
+                            })
+
                             alert('App Saved');
                             $scope.reset();
+                            /* create json for new app */
+                            var data = $scope.newapp;
                           }
-                          /* create json for new app */
-                          var data = $scope.newapp;
 
                         };
 

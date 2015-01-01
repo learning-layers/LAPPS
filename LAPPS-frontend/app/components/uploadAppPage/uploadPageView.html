@@ -47,7 +47,7 @@
                     </div>
                     <div class="form-group" validate-input>
                       	     <label>App Tags</label>
-                             <input type="text" class="form-control" placeholder="i.e help, ios" ng-model="newapp.tags" ng-pattern="[a-z ,]*$" name = "tags" required>
+                             <input type="text" class="form-control" placeholder="i.e help, ios" ng-model="appTags" ng-pattern="[a-z ,]*$" name = "tags" required>
                              <p class="help-block" ng-messages="uploadForm.tags.$error.required">Tags are required</p>
                              <p class="help-block" ng-messages="uploadForm.tags.$error.pattern">Only a-z , allowed</p>
                     </div>
