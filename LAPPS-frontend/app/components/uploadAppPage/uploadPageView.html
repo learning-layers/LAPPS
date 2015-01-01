@@ -47,8 +47,9 @@
                     </div>
                     <div class="form-group" validate-input>
                       	     <label>App Tags</label>
-                             <input type="text" class="form-control" placeholder="i.e help, ios" ng-model="newapp.tags" name = "tags" required>
+                             <input type="text" class="form-control" placeholder="i.e help, ios" ng-model="newapp.tags" ng-pattern="[a-z ,]*$" name = "tags" required>
                              <p class="help-block" ng-messages="uploadForm.tags.$error.required">Tags are required</p>
+                             <p class="help-block" ng-messages="uploadForm.tags.$error.pattern">Only a-z , allowed</p>
                     </div>
                     <div class="col-md-12">
                         <h2>Technical Details</h2>
@@ -87,18 +88,18 @@
                     </div>
                     <div class="form-group ">
                     		<label>Video URL</label>
-                        	<input type="text" class="form-control" ng-model = "newapp.video" name = "video">
+                        	<input type="text" class="form-control" ng-model = "videoLink" name = "video">
                     </div>
                     <div class="form-group" validate-input>
                     		<label>Thumbnail URL</label>
                         	<input type="text" class="form-control" ng-model = "newapp.thumbnail" name = "thumbnail" required>
                         	<p class="help-block" ng-messages="uploadForm.thumbnail.$error.required">Thumbnail is required</p>
                     </div>
-                    <div id ="newField" ng-repeat = "image in images">
+                    <div id ="newImgField" ng-repeat = "newField in newFields track by $index">
             			<label>Image URL</label>
-                    	<div class="form-group" id = {{image.id}} >
-                        	<input type="text" class="form-control">
-                         	<button type="button" id ={{image.id}} class="hidden-xs hspacer05" class="btn btn-info" name ="{{image.buttonName}}" ng-click = "addAnotherField($event)" >{{image.buttonTitle}}</button>
+                    	<div class="form-group" id = {{newField.id}} >
+                        	<input type="text" class="form-control" ng-model = "images[$index]">
+                         	<button type="button" id ={{newField.id}} class="hidden-xs hspacer05" class="btn btn-info" name ="{{newField.buttonName}}" ng-click = "addAnotherField($event)" >{{newField.buttonTitle}}</button>
                     	</div>
            		 	</div>
            		 	<div class="form-group ">

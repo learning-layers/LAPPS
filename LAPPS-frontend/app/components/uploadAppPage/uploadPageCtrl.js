@@ -13,21 +13,21 @@
                       '$http',
                       function($scope, $http) {
 
-                        $scope.selectedValue = "";
-
                         var counter = 0;
 
                         var currentIndex = 0;
 
-                        $scope.images = [{
+                        $scope.newFields = [{
                           id: 0,
                           buttonName: "add",
                           buttonTitle: 'Add'
                         }];
 
-                        $scope.videolink = "http://www.youtube.com/embed/oHg5SJYRHA0";
+                        this.videoUrl = "";
 
                         $scope.tags = " ";
+
+                        $scope.images = [];
 
                         this.platforms = [
                             {
@@ -75,9 +75,18 @@
                             }];
 
                         $scope.createNewApp = function() {
-
-                          console.log($scope.uploadForm.$valid);
-                          // $scope.$broadcast('show-errors-check-validity');
+                          /* create new artifacts from each image url */
+                          for (var i = 0; i < $scope.images.length; i++) {
+                            $scope.artifacts.push({
+                              url: $scope.images[i],
+                              type: "image"
+                            })
+                          }
+                          /* create another artifact for video */
+                          $scope.artifacts.push({
+                            url: $scope.videoUrl,
+                            type: "video"
+                          })
 
                           if ($scope.uploadForm.$valid) {
                             alert('App Saved');
@@ -91,32 +100,52 @@
                         $scope.reset = function() {
                           $scope.$broadcast('show-errors-reset');
                           $scope.newapp = {
-                            name: '',
-                            email: ''
+                            id: ' ', // have to get latest id?
+                            name: ' ',
+                            platform: ' ',
+                            supportedPlatformVersion: ' ',
+                            downloadUrl: ' ',
+                            version: ' ',
+                            sizeKB: 0,
+                            sourceUrl: ' ',
+                            supportUrl: ' ',
+                            developer: {
+                              name: ' ',
+                              oidcId: 0
+                            },
+                            rating: 0,
+                            tags: [],
+                            dateCreated: ' ',
+                            dateModified: ' ',
+                            licence: ' ',
+                            shortDescription: ' ',
+                            longDescription: ' ',
+                            thumbnail: ' ',
+                            artifacts: []
+
                           };
                         }
 
                         $scope.addAnotherField = function($event) {
-                          alert($event.currentTarget.id);
                           if ($event.currentTarget.name == "add") {
                             counter++;
-                            $scope.images.push({
+                            $scope.newFields.push({
                               id: counter,
                               buttonName: 'remove' + counter,
                               buttonTitle: 'Remove'
                             });
                           } else {
                             $scope.findElementInArray($event.currentTarget.id);
-                            $scope.images.splice(currentIndex, 1);
+                            $scope.newFields.splice(currentIndex, 1);
                           }
                           $event.preventDefault();
                         };
 
                         $scope.findElementInArray = function(index) {
-                          for (var i = 0; i < $scope.images.length; i++) {
-                            if ($scope.images[i].id == index) {
-                              currentIndex = $scope.images
-                                      .indexOf($scope.images[i]);
+                          for (var i = 0; i < $scope.newFields.length; i++) {
+                            if ($scope.newFields[i].id == index) {
+                              currentIndex = $scope.newFields
+                                      .indexOf($scope.newFields[i]);
                             }
                           }
                         };
