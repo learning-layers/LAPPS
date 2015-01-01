@@ -922,3 +922,7 @@ dd {
 .long-description {
 	resize: none;
 }
+
+.dropdownWidth {
+	width: 200px;
+}
