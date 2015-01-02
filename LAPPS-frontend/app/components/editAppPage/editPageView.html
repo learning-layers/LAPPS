@@ -6,26 +6,145 @@
       </h2>
     </div>
     <div class="container">
-      <div class="col-md-3 col-sm-7">
-        <hr class="visible-xs" />
+      <div id =  "GeneralData" class="col-md-3 col-sm-7">
+      <h4>General Information</h4>
         <dl>
           <dt>
-            <dfn><span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>Platform</dfn>
+            <dfn><span class="glyphicon glyphicon-ok-circle"></span><span class="hspacer05"></span>Platform</dfn>
           </dt>
           <dd>
-             <a href="#" editable-select="app.platform" ng-model = "app.platform"  e-ng-options="p.name as p.name for p in platforms">
+             <a href="#" editable-select="app.platform"  e-ng-options="p.name as p.name for p in platforms" >
    			 {{ showPlatform() }}
   			 </a>
           </dd>
-
+          
           <dt>
-            <dfn><span class="glyphicon glyphicon-time"></span><span class="hspacer05"></span>Supported platform version</dfn>
+            <dfn><span class="glyphicon glyphicon-ok-circle"></span><span class="hspacer05"></span>Supported platform version</dfn>
           </dt>
           <dd>
-          <a href="#" editable-text="app.supportedPlatformVersion" ng-model = "app.supportedPlatformVersion">{{ app.supportedPlatformVersion || app.supportedPlatformVersion }}</a>
+          <a href="#" editable-text="app.supportedPlatformVersion" onbeforesave="validateInput($data)">{{ app.supportedPlatformVersion || 'empty' }}</a>
           </dd>
+          
+          <dt>
+            <dfn><span class="glyphicon glyphicon-download"></span><span class="hspacer05"></span>Download URL</dfn>
+          </dt>
+          <dd>
+          <a href="#" editable-url="app.downloadUrl" onbeforesave="validateInput($data)">{{ app.downloadUrl || 'empty' }}</a>
+          </dd>
+          
+          <dt>
+            <dfn><span class="glyphicon glyphicon-time"></span><span class="hspacer05"></span>Release Date</dfn>
+          </dt>
+          <dd>
+          <a href="#" editable-date="app.dateCreated" onbeforesave="validateInput($data)">{{ app.dateCreated | date:"dd/MM/yyyy" || app.dateCreated  }}</a>
+          </dd>
+          
+          <dt>
+            <dfn><span class="glyphicon glyphicon-pencil"></span><span class="hspacer05"></span>Short Description</dfn>
+          </dt>
+          <dd>
+          <a href="#" editable-text="app.shortDescription" onbeforesave="validateInput($data)" >{{ app.shortDescription || 'empty'}}</a>
+          </dd>
+          
+          <dt>
+            <dfn><span class="glyphicon glyphicon-tags"></span><span class="hspacer05"></span>Tags</dfn>
+          </dt>
+          <dd>
+          <a href="#" editable-text="appTags" onbeforesave="validateInput($data)">{{ appTags|| 'empty' }}</a>
+          </dd>
+                   
+          </dl>
+          </div>
+          
+          <div class="col-md-6 col-sm-12">
+          <br/>
+          <br/>
+          <dt>
+            <dfn><span class="glyphicon glyphicon-pencil"></span><span class="hspacer05"></span>Long Description</dfn>
+          </dt>
+          <dd>
+          <a href="#" editable-textarea="app.longDescription"  e-rows="8" e-style="width:100%" onbeforesave="validateInput($data)">{{ app.longDescription || 'empty' }}</a>
+          </dd>  
+          </div>
+          
+          <div id = "TechnicalData" class = "col-md-3 col-sm-7">
+          
+          <h4>Technical Details</h4>
+          <dl>
+          
+          <dt>
+            <dfn><span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>Current Version</dfn>
+          </dt>
+          <dd>
+              <a href="#" editable-text="app.version" onbeforesave="validateInput($data)" >{{ app.version || 'empty' }}</a>
+          </dd>
+          
+          <dt>
+            <dfn><span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>Size</dfn>
+          </dt>
+          <dd>
+              <a href="#" editable-text="app.sizeKB" onbeforesave="validateInput($data)" >{{ app.sizeKB || 'empty' }}</a>
+          </dd>
+          
+          <dt>
+            <dfn><span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>Source</dfn>
+          </dt>
+          <dd>
+              <a href="#" editable-url="app.sourceUrl" >{{ app.sourceUrl || 'empty' }}</a>
+          </dd>
+          
+          <dt>
+            <dfn><span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>Licence</dfn>
+          </dt>
+          <dd>
+              <a href="#" editable-text="app.licence" onbeforesave="validateInput($data)" >{{ app.licence || 'empty' }}</a>
+          </dd>
+          
+          <dt>
+            <dfn><span class="glyphicon glyphicon-cog"></span><span class="hspacer05"></span>Support Page</dfn>
+          </dt>
+          <dd>
+              <a href="#" editable-url="app.supportUrl" >{{ app.supportUrl || 'empty'  }}</a>
+          </dd>
+          
+          <dt>
+            <dfn><span class="glyphicon glyphicon-time"></span><span class="hspacer05"></span>Last Update Date</dfn>
+          </dt>
+          <dd>
+          <a href="#" editable-date="app.dateModified" onbeforesave="validateInput($data)">{{ app.dateModified | date:"dd/MM/yyyy" || 'empty' }}</a>
+          </dd>
+          
+          </dl>
+		  </div>
+		  
+		  <div id = "MediaData" class = "col-md-7">
+		  <h4>Media</h4>
+		  <dl>
+		  
+		  <dt>
+            <dfn><span class="glyphicon glyphicon-picture"></span><span class="hspacer05"></span>Thumbnail</dfn>
+          </dt>
+          <dd>
+          <a href="#" editable-url="app.thumbnail" onbeforesave="validateInput($data)">{{ app.thumbnail || 'empty' }} </a>
+          </dd>
+		  
+		  <dt>
+            <dfn><span class="glyphicon glyphicon-facetime-video"></span><span class="hspacer05"></span>Video</dfn>
+          </dt>
+          <dd>
+          <a href="#" editable-url="app.thumbnail" >{{ app.thumbnail || 'empty' }} </a>
+          </dd>
+          
+          <dt>
+            <dfn><span class="glyphicon glyphicon-picture"></span><span class="hspacer05"></span>Images</dfn>
+          </dt>
+          <dd>
+          <a href="#" editable-url="app.thumbnail" >{{ app.thumbnail || 'empty' }} </a>
+          </dd>
+		  
+		  </dl>
+		  </div>
 
-         </div>
     </div>
   </div>
 </div>

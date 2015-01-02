@@ -926,3 +926,11 @@ dd {
 .dropdownWidth {
 	width: 200px;
 }
+
+/* app edit page starts here */
+
+#edit-description {
+	position: absolute;
+	float: right;
+	
+}
