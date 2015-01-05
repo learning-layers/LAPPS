@@ -76,9 +76,11 @@ public class ApplicationsResource {
       @ApiParam(value = "Sort by field", required = false,
           allowableValues = "name,platform,rating,dateCreated,dateModified,random") @DefaultValue("name") @QueryParam("sortBy") String sortBy,
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
-      @ApiParam(value = "Filter by field", required = false,
-          allowableValues = "platform,creator,minRating,minDateCreated,minDateModified") @QueryParam("filterBy") String filterBy,
-      @ApiParam(value = "Filter value", required = false) @QueryParam("filterValue") String filterValue) {
+      @ApiParam(
+          value = "Filter by field : platform, creator, minRating, minDateCreated ,minDateModified. Multiple fields can be used with ; as separator.",
+          required = false) @QueryParam("filterBy") String filterBy, @ApiParam(
+          value = "Filter value. When using multiple filters, values can be separated by ; ",
+          required = false) @QueryParam("filterValue") String filterValue) {
     List<App> entities;
     if (search == null) {
       entities = (List<App>) entitiyFacade.loadAll(App.class);
@@ -134,10 +136,14 @@ public class ApplicationsResource {
           case "creator":
             for (Iterator<App> iterator = entities.iterator(); iterator.hasNext();) {
               App app = iterator.next();
-              if (!isLong && !app.getCreator().getUsername().equalsIgnoreCase(values[i])) {
+              if (!isLong
+                  && (app.getCreator() == null || !app.getCreator().getUsername()
+                      .equalsIgnoreCase(values[i]))) {
                 // if user asks for name and name does not match
                 iterator.remove();
-              } else if (isLong && app.getCreator().getOidcId() != longVal) { // if user asks for id
+              } else if (isLong
+                  && (app.getCreator() == null || app.getCreator().getOidcId() != longVal)) {
+                // if user asks for id
                 iterator.remove();
               }
             }
