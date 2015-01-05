@@ -155,7 +155,7 @@ public class ApplicationsResourceTest {
   public void testCreateApp() {
     App newApp = null;
     try {
-      newApp = new App("NewApp", "iOS", "NewApp");
+      newApp = new App("NewAppCreateTest", "iOS", "NewApp");
       Response response =
           target.path("apps").request()
               .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
@@ -173,8 +173,8 @@ public class ApplicationsResourceTest {
       e.printStackTrace();
       fail("JSON parsing failed with " + e.getMessage());
     } finally {
-      LOGGER.info("Deleting old app data...");
-      entityFacade.deleteByParam(App.class, "id", newApp.getId());
+      LOGGER.info("Deleting created app data...");
+      entityFacade.deleteByParam(App.class, "name", "NewAppCreateTest");
       LOGGER.info("App data deleted.");
     }
   }
