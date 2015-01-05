@@ -62,6 +62,9 @@
       templateUrl: 'components/searchPage/searchPageView.html',
       controller: 'searchPageCtrl',
       reloadOnSearch: false
+    }).when('/upload', {
+      templateUrl: 'components/uploadPage/uploadPageView.html',
+      controller: 'uploadPageCtrl'
     }).when('/users/:userId', {
       templateUrl: 'components/userPage/userPageView.html',
       controller: 'userPageCtrl'

@@ -1,0 +1,113 @@
+ 
+ <div class="container">
+     <div class="jumbotron">
+    	 <div class="row"> 
+     		<div class = col-lg-7>
+        		<form name = "uploadForm" id = "uploadForm" ng-submit = "createNewApp();"  novalidate>
+      	            <div class="col-md-12">
+             			    <h2>General Information</h2>
+        	 	    </div>  	 	                
+                     <div class="form-group" validate-input>
+                   			<span class="glyphicon glyphicon-file"></span><span class="hspacer06"></span>Name 
+                            <input type="text" class="form-control" placeholder="i.e Expert App" name="app-name" ng-model="newapp.name" required>
+                            <p class="help-block" ng-messages="uploadForm.app-name.$error.required">The App's name is required</p>
+                     </div>
+                     <div class ="form-group" validate-input>
+        	 	   		    <span class="fa fa-circle-o"></span><span class="hspacer05"></span>Platform					  
+  					  	    <select class="form-control btn btn-default dropdown-toggle dropdownWidth" name = "platform"  data-toggle="dropdown" ng-model="newapp.platform">
+        						<option ng-repeat="platform in platforms" value="{{platform.name}}">{{platform.name}}
+        						</option>     						
+      				 		</select>
+      				 		<p class="help-block" ng-messages="uploadForm.platform.$error.required">Platform is required</p>	
+      				 </div>
+      				 <div class="form-group" validate-input>
+               		         <span class="glyphicon glyphicon-ok-circle"></span><span class="hspacer05"></span>Supported platform version
+                             <input type="text" class="form-control" ng-model="newapp.supportedPlatformVersion" name = "supportedPlatformVersion" required>
+                             <p class="help-block" ng-messages="uploadForm.supportedPlatformVersion.$error.required">Supported platform versions are required</p>
+                    </div>	
+               		 <div class="form-group" validate-input>
+               		  		<span class="glyphicon glyphicon-download"></span><span class="hspacer05"></span>Download URL 
+                            <input type="text" class="form-control" ng-model="newapp.downloadUrl" name = "downloadUrl" required>
+                            <p class="help-block" ng-messages ="uploadForm.downloadUrl.$error.required">Download URL is required</p>
+                     </div>          
+                    <div class="form-group" validate-input>
+                          	    <span class="glyphicon glyphicon-pencil"></span><span class="hspacer05"></span>Short Description
+                                <input type="text" class="form-control" ng-model="newapp.shortDescription" name = "shortDescription" required>
+                                <p class="help-block" ng-messages="uploadForm.shortDescription.$error.required">Short description is required</p>
+                    </div>
+                    <div class="form-group" validate-input>
+                                <span class="glyphicon glyphicon-pencil"></span><span class="hspacer05"></span>Long Description
+                                <textarea class="form-control custom-control long-description" rows="3" nd-model = "newapp.longDescription" name = "longDescription" required></textarea>
+                                <p class="help-block" ng-messages="uploadForm.longDescription.$error.required">Long description is required</p>
+                    </div>
+                    <div class="form-group" validate-input>
+                   			    <span class="glyphicon glyphicon-time"></span><span class="hspacer05"></span>Release Date
+                                <input type="date" class="form-control" nd-model="newapp.dateCreated" name = "dateCreated" required>
+                                <p class="help-block" ng-messages="uploadForm.dateCreated.$error.required">Please choose a valid date</p>
+                    </div>
+                    <div class="form-group" validate-input>
+                      	     	<span class="glyphicon glyphicon-tags"></span><span class="hspacer05"></span>Tags
+                             	<input type="text" class="form-control" placeholder="i.e help, ios" ng-model="appTags" ng-pattern="[a-z ,]*$" name = "tags" required>
+                             	<p class="help-block" ng-messages="uploadForm.tags.$error.required">Tags are required</p>
+                             	<p class="help-block" ng-messages="uploadForm.tags.$error.pattern">Only a-z , allowed</p>
+                    </div>
+                    <div class="col-md-12">
+                        <h2>Technical Details</h2>
+                    </div>
+                    <div class="form-group" validate-input>
+                    		<span class="glyphicon glyphicon-check"></span><span class="hspacer05"></span>Version
+                        	<input type="text" class="form-control" ng-model = "newapp.version" name = "version" required >
+                        	<p class="help-block" ng-messages="uploadForm.version.$error.required">Versions are required</p>
+                    </div>
+                    <div class="form-group" validate-input>
+          	        		<span class="glyphicon glyphicon-hdd"></span><span class="hspacer05"></span>Size
+                        	<input type="text" class="form-control" ng-model = "newapp.sizeKB" name = "sizeKB" required >
+                        	<p class="help-block" ng-messages="uploadForm.sizeKB.$error.required">Size of app is required</p>
+                    </div>
+                    <div class="form-group" >
+                   		    <span class="glyphicon glyphicon-link"></span><span class="hspacer05"></span>Source
+                        	<input type="text" class="form-control"  ng-model = "newapp.sourceUrl" name = "sourceUrl">
+                    </div>
+           		 	<div class="form-group " validate-input>
+                    		<span class="glyphicon glyphicon-list-alt"></span><span class="hspacer05"></span>Licence
+                        	<input type="text" class="form-control" ng-model = "newapp.licence" name = "licence" required>
+                        	<p class="help-block" ng-messages="uploadForm.licence.$error.required">Licence information is required</p>
+                    </div>
+                    <div class="form-group" validate-input>
+                    		<span class="glyphicon glyphicon-cog"></span><span class="hspacer05"></span>Support Page
+                        	<input type="text" class="form-control" ng-model = "newapp.supportUrl" name = "supportUrl" required>
+                        	<p class="help-block" ng-messages="uploadForm.supportUrl.$error.required">Support Page information is required</p>
+                    </div>
+                    <div class="form-group">
+                    		<span class="glyphicon glyphicon-time"></span><span class="hspacer05"></span>Last Update Date
+                        	<input type="date" class="form-control" ng-model = "newapp.dateModified" name = "dateModified" >
+                        	<p class="help-block" ng-messages="uploadForm.dateModified.$error.required">Please choose valid date</p>
+                    </div>
+                    <div class="col-md-12">
+                        <h2>Media</h2>
+                    </div>
+                    <div class="form-group ">
+                    		<span class="glyphicon glyphicon-facetime-video"></span><span class="hspacer05"></span>Video
+                        	<input type="text" class="form-control" ng-model = "videoLink" name = "video">
+                    </div>
+                    <div class="form-group" validate-input>
+                    		<span class="glyphicon glyphicon-picture"></span><span class="hspacer05"></span>Thumbnail
+                        	<input type="text" class="form-control" ng-model = "newapp.thumbnail" name = "thumbnail" required>
+                        	<p class="help-block" ng-messages="uploadForm.thumbnail.$error.required">Thumbnail is required</p>
+                    </div>
+                    <div id ="newImgField" ng-repeat = "newField in newFields track by $index">
+            			<span class="glyphicon glyphicon-picture"></span><span class="hspacer05"></span>Images
+                    	<div class="form-group" id = {{newField.id}} >
+                        	<input type="text" class="form-control" ng-model = "images[$index]">
+                         	<button type="button" id ={{newField.id}} class="hidden-xs hspacer05" class="btn btn-info" name ="{{newField.buttonName}}" ng-click = "addAnotherField($event)" >{{newField.buttonTitle}}</button>
+                    	</div>
+           		 	</div>
+           		 	<div class="form-group ">
+                    		<input type="submit" value="Save" />
+                    </div>	    
+          		</form>	
+          		<p>{{newapp}}</p>	
+           </div>
+       </div>
+    </div>
+</div>

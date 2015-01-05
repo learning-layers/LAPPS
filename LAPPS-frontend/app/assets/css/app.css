@@ -85,6 +85,11 @@ h1, h2, h3, h4, h5 {
   height: 1px;
 }
 
+.hspacer06 {
+  padding: 0 5px;
+  font-size: 10px;
+}
+
 .hspacer1 {
   padding: 0 10px;
   height: 1px;
@@ -1014,3 +1019,34 @@ dd {
 }
 /*xeditable end*/
 /*user page end*/
+
+/*app upload page starts here*/
+
+.form-group .help-block {
+  display: none;
+}
+ 
+.form-group.has-error .help-block {
+  display: block;
+  font-size: 14px;
+}
+
+.long-description {
+	resize: none;
+}
+
+.dropdownWidth {
+	width: 200px;
+}
+
+/* app edit page starts here */
+
+#edit-description {
+	position: absolute;
+	float: right;
+	
+}
+
+.hspacer07 {
+	margin-left: 25px;	
+}
