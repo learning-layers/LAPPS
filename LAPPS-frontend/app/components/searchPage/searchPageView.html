@@ -22,7 +22,7 @@
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-font"></span>
             </span> <input ng-enter="newSearch()" ng-model="searchQuery" type="text"
-       class="form-control" id="has-title" placeholder="myApp" ">
+                           class="form-control" id="has-title" placeholder="myApp" ">
           </div>
         </div>
         <!--<div class="form-group col-md-12 col-sm-6 col-lg-12">
@@ -41,7 +41,7 @@
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-user"></span>
             </span> <input ng-enter="newSearch()" type="text"
-       class="form-control" id="has-author" placeholder="john doe">
+                           class="form-control" id="has-author" placeholder="john doe">
           </div>
         </div>
         <div class="form-group col-md-12 col-sm-6 col-lg-12">
@@ -49,12 +49,13 @@
           <div class="input-group">
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-sort-by-attributes"></span>
-            </span> <select class="form-control" id="sort-by">
-              <option>Age</option>
-              <option>Rating</option>
-              <option>Author</option>
-              <option>Title</option>
-              <option>Random</option>
+            </span> <select ng-model="sortBy" class="form-control" id="sort-by" ng-change="newSearch()">
+              <option>name</option>
+              <option>newest</option>
+              <option>last updated</option>
+              <option>rating</option>
+              <option>platform</option>
+              <option>random</option>
             </select>
           </div>
         </div>
@@ -76,7 +77,9 @@
             <h3 class="single-line">
               <i class="{{app.platformObj.icon}} pull-left"></i>
 
-              {{app.name}}
+              {{app.name}} <span>
+                by {{app.creator.username}}
+              </span>
             </h3>
           </div>
           <div class="image-container">
@@ -85,7 +88,6 @@
           <div class="caption">
             <div class="inline-block">
               <star-rating class="pull-left" value="{{app.rating}}"></star-rating> <span class="hspacer05 pull-left"></span>   <tags class="pull-left" value="{{app.tags}}" nolink="true" min="30" max="30"></tags>
-
             </div>
             <span class="vspacer03"></span>
             <p>{{app.shortDescription}}</p>
@@ -102,13 +104,19 @@
             </a>
           </li>
           <li ng-click="changePage(n+(currentPage>3?currentPage-3:1))"
-              ng-class="{'active':n+(currentPage>3?currentPage-3:1)==currentPage}" ng-repeat="n in [] | rangeFilter:6">
+              ng-class="{'active':n+(currentPage>3?currentPage-3:1)==currentPage}" ng-repeat="n in [] | rangeFilter: currentPage>3?Math.min(maxDisplayPage,(4+maxPage-currentPage)):Math.min(maxDisplayPage,maxPage)">
             <a href="javascript:void(0)">{{n+(currentPage>3?currentPage-3:1)}}</a>
+          </li>
+          <li ng-show="maxPage>maxDisplayPage"><a href="javascript:void(0)">...</a></li>
+          <li ng-show="maxPage>maxDisplayPage" ng-click="changePage(maxPage)"
+              ng-class="{'active':currentPage==maxPage}">
+
+            <a href="javascript:void(0)">{{maxPage}}</a>
           </li>
           <li>
             <!--<a href="javascript:void(0)">
-        <span class="glyphicon glyphicon-step-forward"></span>
-      </a>-->
+              <span class="glyphicon glyphicon-step-forward"></span>
+            </a>-->
           </li>
         </ul>
       </div>

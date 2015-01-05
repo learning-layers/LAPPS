@@ -7,8 +7,8 @@
 (function() {
   angular.module('lappsControllers').controller(
           'headerCtrl',
-          ['$scope', '$location', 'user', 'platform', '$timeout',
-              function($scope, $location, user, platform, $timeout) {
+          ['$scope', '$location', 'user', 'platform', '$timeout', "$route",
+              function($scope, $location, user, platform, $timeout, $route) {
                 var SIGN_IN = 'Sign in';
                 var SIGN_OUT = 'Sign out';
                 /**
@@ -125,6 +125,7 @@
                   // (we need the new width of the element)
                   // due to queue 0 is enough waiting time
                   $timeout($scope.adjustPositions, 0);
+                  $route.reload();
                 }
                 /**
                  * @function

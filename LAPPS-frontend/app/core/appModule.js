@@ -49,7 +49,8 @@
   lappsApp.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/apps', {
       templateUrl: 'components/welcomePage/welcomePageView.html',
-      controller: 'welcomePageCtrl'
+      controller: 'welcomePageCtrl',
+      reloadOnSearch: false
     }).when('/apps/:appId', {
       templateUrl: 'components/appDetail/appDetailView.html',
       controller: 'appDetailCtrl'

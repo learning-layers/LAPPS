@@ -80,8 +80,8 @@
                                     oidcId: +$scope.userId,
                                   })
                                   .then(
-                                          function(data) {
-                                            $scope.user = data;
+                                          function(response) {
+                                            $scope.user = response.data;
                                             $scope.user.roleName = user
                                                     .roleIdToRoleName($scope.user.role);
                                             $scope.user.memberScince = $scope

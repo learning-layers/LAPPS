@@ -66,14 +66,24 @@
                           $('.featured-info-panel').toggle();
                         };
 
+                        var apiParams = {
+                          page: 1,
+                          pageLength: 5,
+                          sortBy: 'random',
+                          filterBy: 'minrating',
+                          filterValue: '3'
+                        };
+                        if (platform.currentPlatform.isAllPlatforms !== true) {
+                          apiParams.filterBy += ';platform';
+                          apiParams.filterValue += ';'
+                                  + platform.currentPlatform.name;
+                        }
+
                         swaggerApi.apps
-                                .getAllApps({
-                                  page: 1,
-                                  pageLength: 10
-                                })
+                                .getAllApps(apiParams)
                                 .then(
-                                        function(data) {
-                                          $scope.apps = data.slice(0, 5);
+                                        function(response) {
+                                          $scope.apps = response.data;
                                           for (var i = 0; i < $scope.apps.length; i++) {
                                             var image = '';
                                             var thumbnail = '';

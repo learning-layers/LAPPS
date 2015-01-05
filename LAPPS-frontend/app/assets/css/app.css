@@ -715,10 +715,11 @@ h1, h2, h3, h4, h5 {
   border-radius: 4px;
 }
 
-#app-description .title h2 span {
+.title h2 span,
+.title h3 span {
   margin-left: 10px;
   font-size: 12px;
-  color: #999;
+  
   white-space: nowrap;
 }
 

@@ -1,6 +1,6 @@
 ﻿<span class="glyphicon glyphicon-tags text-color-grey "></span>
 <span class="hspacer05"></span><span class="tag" ng-repeat="tag in tags | limitTo : tagLimit">
 
-  <a ng-hide="noLink" href="#/tags/{{tag.value}}">{{tag.value}}</a><span ng-show="noLink">{{tag.value}}</span>{{$last ? '' : ', '}}
+  <a ng-hide="noLink" href="#/search/{{tag.value}}">{{tag.value}}</a><span ng-show="noLink">{{tag.value}}</span>{{$last ? '' : ', '}}
 </span>
 <a class="tag-expander" ng-show="tags.length>minLimit" ng-click="tagLimit<maxLimit?tagLimit=maxLimit:tagLimit=minLimit" href="javascript:void(0)"> ... </a>

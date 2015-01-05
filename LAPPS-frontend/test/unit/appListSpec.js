@@ -39,6 +39,7 @@ describe(
                               'apps.getAllApps', {
                                 search: '',
                                 page: 1,
+                                sortBy: 'name',
                                 filterBy: 'platform',
                                 filterValue: platform.currentPlatform.name
                               });
