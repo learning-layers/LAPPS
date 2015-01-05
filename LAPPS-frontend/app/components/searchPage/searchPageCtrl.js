@@ -19,7 +19,14 @@
 
                       function($scope, swaggerApi, $routeParams, user,
                               platform, $location) {
-
+                        /**
+                         * @field
+                         * @type object
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @description Just gets the Math object into the scope
+                         *              for use in bindings
+                         */
+                        $scope.Math = window.Math;
                         /**
                          * @field
                          * @type string
@@ -31,7 +38,17 @@
                         if ($routeParams.query) {
                           $scope.searchQuery = $routeParams.query;
                         }
-
+                        /**
+                         * @field
+                         * @type string
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @description Saves the user input on how to sort the
+                         *              search results.
+                         */
+                        $scope.sortBy = 'name';
+                        if ($routeParams.sortBy) {
+                          $scope.sortBy = $routeParams.sortBy;
+                        }
                         /**
                          * @field
                          * @type number
@@ -43,6 +60,22 @@
                         if ($routeParams.page) {
                           $scope.currentPage = +$routeParams.page;
                         }
+                        /**
+                         * @field
+                         * @type number
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @description Stores the amount of pages of the
+                         *              current search result
+                         */
+                        $scope.maxPage = 1;
+                        /**
+                         * @field
+                         * @type number
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @description Max amount of pages to display in the
+                         *              page selector
+                         */
+                        $scope.maxDisplayPage = 6;
                         /**
                          * @field
                          * @type app[]
@@ -91,6 +124,8 @@
                           $scope.currentPage = 1;
                           $location.path('/search/' + $scope.searchQuery);
                           $location.search('page', 1);
+                          $location.search('sortBy', $scope.sortBy
+                                  .toLowerCase());
                           $scope.search();
                         }
                         /**
@@ -103,18 +138,48 @@
 
                         $scope.search = function() {
                           // swaggerApi.users.getAllUsers({'accessToken':user.token}).then(function(data2){
+                          var apiParams = {
+                            search: $scope.searchQuery,
+                            page: $scope.currentPage,
+                            pageLength: 10
+                          };
+                          switch ($scope.sortBy) {
+                          case 'name':
+                            apiParams.sortBy = 'name';
+                            break;
+                          case 'platform':
+                            apiParams.sortBy = 'platform';
+                            break;
+                          case 'rating':
+                            apiParams.sortBy = 'rating';
+                            apiParams.order = 'desc';
+                            break;
+                          case 'newest':
+                            apiParams.sortBy = 'dateCreated';
+                            apiParams.order = 'desc';
+                            break;
+                          case 'random':
+                            apiParams.sortBy = 'platform';
+                            break;
+                          case 'last updated':
+                            apiParams.sortBy = 'dateModified';
+                            apiParams.order = 'desc';
+                            break;
+                          default:
+                            apiParams.sortBy = 'name';
 
+                          }
+                          if (platform.currentPlatform.isAllPlatforms !== true) {
+                            apiParams.filterBy = 'platform';
+                            apiParams.filterValue = platform.currentPlatform.name;
+                          }
                           swaggerApi.apps
-                                  .getAllApps({
-                                    search: $scope.searchQuery,
-                                    filterBy: 'platform',
-                                    filterValue: platform.currentPlatform.name,
-                                    page: $scope.currentPage,
-                                    pageLength: 10
-                                  })
+                                  .getAllApps(apiParams)
                                   .then(
-                                          function(data) {
-                                            $scope.apps = data;
+                                          function(response) {
+                                            $scope.apps = response.data;
+                                            $scope.maxPage = +response
+                                                    .headers('numberOfPages');
 
                                             for (var i = 0; i < $scope.apps.length; i++) {
                                               var thumbnail = '';
@@ -153,10 +218,10 @@
                         }
 
                         $scope.changePage = function(pageNumber) {
-                          $scope.currentPage = pageNumber;
+
+                          $scope.currentPage = +pageNumber;
                           $location.search('page', pageNumber);
                           $scope.search();
-
                         }
                         $scope.search();
                       }]);

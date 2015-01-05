@@ -13,14 +13,18 @@
                       '$scope',
                       'swaggerApi',
                       'platform',
-                      function($scope, swaggerApi, platform) {
+                      '$routeParams',
+                      '$location',
+                      function($scope, swaggerApi, platform, $routeParams,
+                              $location) {
                         /**
                          * @field
                          * @type string
                          * @memberOf lapps.lappsControllers.featuredListCtrl
                          * @description 'The currently active tab (new or top)
                          */
-                        $scope.currentTab = '';
+                        $scope.currentTab = 'new';
+
                         /**
                          * @field
                          * @type app[]
@@ -39,9 +43,9 @@
                          *              a new list of apps from the backend.
                          */
                         $scope.setTab = function(tab) {
-                          if ((tab == 'top' || tab == 'new')
-                                  && $scope.currentTab != tab) {
+                          if ((tab == 'top' || tab == 'new')) {
                             $scope.currentTab = tab;
+                            $location.search('tab', tab);
                             $scope.getApps(tab);
                           }
                         }
@@ -57,14 +61,23 @@
                          *              apps are fetched.
                          */
                         $scope.getApps = function(tab) {
+
+                          var apiParams = {
+                            page: 1,
+                            pageLength: 18,
+                            order: 'desc',
+                            sortBy: tab == 'top' ? 'rating' : 'dateCreated',
+
+                          };
+                          if (platform.currentPlatform.isAllPlatforms !== true) {
+                            apiParams.filterBy = 'platform';
+                            apiParams.filterValue = platform.currentPlatform.name;
+                          }
                           swaggerApi.apps
-                                  .getAllApps({
-                                    page: 1,
-                                    pageLength: 18
-                                  })
+                                  .getAllApps(apiParams)
                                   .then(
-                                          function(data) {
-                                            $scope.apps = data;
+                                          function(response) {
+                                            $scope.apps = response.data;
                                             for (var i = 0; i < $scope.apps.length; i++) {
                                               var thumbnail = '';
                                               for (var j = 0; j < $scope.apps[i].artifacts.length; j++) {
@@ -82,7 +95,11 @@
                                             }
                                           });
                         }
+                        if ($routeParams.tab) {
+                          $scope.setTab($routeParams.tab);
+                        } else {
+                          $scope.setTab('new');
+                        }
 
-                        $scope.setTab('new');
                       }]);
 }).call(this);

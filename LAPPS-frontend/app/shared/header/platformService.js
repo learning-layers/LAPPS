@@ -74,7 +74,9 @@
                           name: 'All Platforms',
                           icon: 'fa fa-circle-o',
                           downloadBadge: 'badge-default',
-                          isMobile: false
+                          isMobile: false,
+                          isAllPlatforms: true
+
                         }];
                     /**
                      * @field

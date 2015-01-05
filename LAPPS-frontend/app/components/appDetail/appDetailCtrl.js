@@ -211,8 +211,8 @@
                                   id: +$scope.appId
                                 })
                                 .then(
-                                        function(data) {
-                                          $scope.app = data;
+                                        function(response) {
+                                          $scope.app = response.data;
                                           $scope.app.longDescriptionMarkdown = marked($scope.app.longDescription);
                                           var thumbnail = '';
                                           var images = [];
@@ -248,12 +248,12 @@
                                         });
                         swaggerApi.apps.getAllPlatformsForApp({
                           appId: +$scope.appId
-                        }).then(function(data) {
-                          for (var i = 0; i < data.length; i++) {
-                            if ($scope.appId != data[i].id) {
+                        }).then(function(response) {
+                          for (var i = 0; i < response.data.length; i++) {
+                            if ($scope.appId != response.data[i].id) {
                               $scope.alternativePlatforms.push({
-                                id: data[i].id,
-                                platform: data[i].platform
+                                id: response.data[i].id,
+                                platform: response.data[i].platform
                               });
                             }
                           }
