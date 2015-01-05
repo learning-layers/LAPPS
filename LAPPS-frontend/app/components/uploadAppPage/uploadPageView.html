@@ -8,12 +8,12 @@
              			    <h2>General Information</h2>
         	 	    </div>  	 	                
                      <div class="form-group" validate-input>
-                   			<span class="glyphicon glyphicon-user"></span><span class="hspacer06"></span>Name 
+                   			<span class="glyphicon glyphicon-file"></span><span class="hspacer06"></span>Name 
                             <input type="text" class="form-control" placeholder="i.e Expert App" name="app-name" ng-model="newapp.name" required>
                             <p class="help-block" ng-messages="uploadForm.app-name.$error.required">The App's name is required</p>
                      </div>
                      <div class ="form-group" validate-input>
-        	 	   		    <span class="glyphicon glyphicon-ok-circle"></span><span class="hspacer06"></span>Platform 					  
+        	 	   		    <span class="fa fa-circle-o"></span><span class="hspacer05"></span>Platform					  
   					  	    <select class="form-control btn btn-default dropdown-toggle dropdownWidth" name = "platform"  data-toggle="dropdown" ng-model="newapp.platform">
         						<option ng-repeat="platform in platforms" value="{{platform.name}}">{{platform.name}}
         						</option>     						
