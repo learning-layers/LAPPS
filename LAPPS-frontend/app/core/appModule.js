@@ -63,11 +63,14 @@
       controller: 'searchPageCtrl',
       reloadOnSearch: false
     }).when('/upload', {
-      templateUrl: 'components/uploadPage/uploadPageView.html',
+      templateUrl: 'components/uploadAppPage/uploadPageView.html',
       controller: 'uploadPageCtrl'
     }).when('/users/:userId', {
       templateUrl: 'components/userPage/userPageView.html',
       controller: 'userPageCtrl'
+    }).when('/apps/:appId/edit', {
+      templateUrl: 'components/editAppPage/editPageView.html',
+      controller: 'editPageCtrl'
     }).otherwise({
       redirectTo: '/apps'
     });
