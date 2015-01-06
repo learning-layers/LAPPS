@@ -81,6 +81,8 @@
 
                         $scope.createNewApp = function() {
 
+                          $scope.$broadcast('show-errors-check-validity');
+
                           if ($scope.uploadForm.$valid) {
                             // split tags
                             $scope.newapp.tags = $scope.appTags.split(',');

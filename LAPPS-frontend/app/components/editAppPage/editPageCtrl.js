@@ -20,6 +20,11 @@
                       function($scope, $filter, $routeParams, user, $http,
                               swaggerApi, md5) {
 
+                        $scope.appid = $routeParams.appid;
+
+                        alert(appid);
+                        alert($routeParams);
+
                         $scope.appTags = '';
 
                         $scope.app = {};

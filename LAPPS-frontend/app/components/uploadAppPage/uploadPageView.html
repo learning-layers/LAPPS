@@ -1,49 +1,48 @@
  
- <div class="container">
+ <div class="container" >
      <div class="jumbotron">
     	 <div class="row"> 
-     		<div class = col-lg-7>
-        		<form name = "uploadForm" id = "uploadForm" ng-submit = "createNewApp();" >
+     		<div class = col-lg-7 >
+        		<form name = "uploadForm" ng-submit = "createNewApp();" >
       	            <div class="col-md-12">
              			    <h2>General Information</h2>
         	 	    </div>  	 	                
                      <div class="form-group" validate-input>
                    			<b><i class="fa fa-plus"></i><span class="hspacer06"></span>Name</b>
-                            <input type="text" class="form-control" placeholder="i.e Expert App" name="app-name" ng-model="newapp.name" required>
-                            <p class="help-block" ng-messages="uploadForm.app-name.$error.required">The App's name is required</p>
+                            <input type="text" class="form-control" placeholder="i.e Expert App" name="appname" ng-model="newapp.name" required>
+                            <p class="help-block" ng-show="uploadForm.appname.$error.required">The App's name is required</p>
                      </div>
                      <div class ="form-group" validate-input>
         	 	   		   <b><i class="fa fa-puzzle-piece"></i><span class="hspacer05"></span>Platform</b>					  
-  					  	    <select class="form-control btn btn-default dropdown-toggle dropdownWidth" name = "platform"  data-toggle="dropdown" ng-model="newapp.platform">
+  					  	    <select class="form-control btn btn-default dropdown-toggle dropdownWidth" name = "platform-name"  data-toggle="dropdown" ng-model="newapp.platform">
         						<option ng-repeat="platform in platforms" value="{{platform.name}}">{{platform.name}}
         						</option>     						
       				 		</select>
-      				 		<p class="help-block" ng-messages="uploadForm.platform.$error.required">Platform is required</p>	
       				 </div>
                      <div class="form-group" validate-input>
                		         <b><i class="fa fa-cogs"></i><span class="hspacer05"></span>Supported platform version</b>
                              <input type="text" class="form-control" ng-model="newapp.supportedPlatformVersion" name = "supportedPlatformVersion" required>
-                             <p class="help-block" ng-messages="uploadForm.supportedPlatformVersion.$error.required">Supported platform versions are required</p>
+                             <p class="help-block" ng-show="uploadForm.supportedPlatformVersion.$error.required">Supported platform versions are required</p>
                      </div>	
                		 <div class="form-group" validate-input>
                		  		<b><i class="fa fa-download"></i><span class="hspacer05"></span>Download URL</b> 
                             <input type="text" class="form-control" ng-model="newapp.downloadUrl" name = "downloadUrl" required>
-                            <p class="help-block" ng-messages ="uploadForm.downloadUrl.$error.required">Download URL is required</p>
+                            <p class="help-block" ng-show ="uploadForm.downloadUrl.$error.required">Download URL is required</p>
                      </div>          
                     <div class="form-group" validate-input>
                           	    <b><i class="fa fa-pencil"></i><span class="hspacer05"></span>Short Description</b>
                                 <input type="text" class="form-control" ng-model="newapp.shortDescription" name = "shortDescription" required>
-                                <p class="help-block" ng-messages="uploadForm.shortDescription.$error.required">Short description is required</p>
+                                <p class="help-block" ng-show="uploadForm.shortDescription.$error.required">Short description is required</p>
                     </div>
                     <div class="form-group" validate-input>
                                 <b><i class="fa fa-pencil"></i><span class="hspacer05"></span>Long Description</b>
                                 <textarea class="form-control custom-control long-description" rows="3" nd-model = "newapp.longDescription" name = "longDescription" required></textarea>
-                                <p class="help-block" ng-messages="uploadForm.longDescription.$error.required">Long description is required</p>
+                                <p class="help-block" ng-show="uploadForm.longDescription.$error.required">Long description is required</p>
                     </div>
                     <div class="form-group" validate-input>
                       	     	<b><i class="fa fa-tags"></i><span class="hspacer05"></span>Tags</b>
                              	<input type="text" class="form-control" placeholder="i.e help, ios" ng-model="appTags" ng-pattern="[a-z ,]*$" name = "tags" required>
-                             	<p class="help-block" ng-messages="uploadForm.tags.$error.required">Tags are required</p>
+                             	<p class="help-block" ng-show="uploadForm.tags.$error.required">Tags are required</p>
                              	<p class="help-block" ng-messages="uploadForm.tags.$error.pattern">Only a-z , allowed</p>
                     </div>
                     <div class="col-md-12">
@@ -52,12 +51,12 @@
                     <div class="form-group" validate-input>
                     		<b><i class="fa fa-level-up"></i><span class="hspacer05"></span>Version</b>
                         	<input type="text" class="form-control" ng-model = "newapp.version" name = "version" required >
-                        	<p class="help-block" ng-messages="uploadForm.version.$error.required">Versions are required</p>
+                        	<p class="help-block" ng-show="uploadForm.version.$error.required">Versions are required</p>
                     </div>
                     <div class="form-group" validate-input>
           	        		<b><i class="fa fa-arrows-h"></i><span class="hspacer05"></span>Size</b>
                         	<input type="text" class="form-control" ng-model = "newapp.sizeKB" name = "sizeKB" required >
-                        	<p class="help-block" ng-messages="uploadForm.sizeKB.$error.required">Size of app is required</p>
+                        	<p class="help-block" ng-show="uploadForm.sizeKB.$error.required">Size of app is required</p>
                     </div>
                     <div class="form-group" >
                    		    <b><i class="fa fa-code-fork"></i><span class="hspacer05"></span>Source Code</b>
@@ -66,29 +65,30 @@
            		 	<div class="form-group " validate-input>
                     		<b><i class="fa fa-copyright"></i><span class="hspacer05"></span>License</b>
                         	<input type="text" class="form-control" ng-model = "newapp.license" name = "license" required>
-                        	<p class="help-block" ng-messages="uploadForm.license.$error.required">License information is required</p>
+                        	<p class="help-block" ng-show="uploadForm.license.$error.required">License information is required</p>
                     </div>
                     <div class="form-group" validate-input>
                     		<b><i class="fa fa-life-ring"></i><span class="hspacer05"></span>Support page</b>
                         	<input type="text" class="form-control" ng-model = "newapp.supportUrl" name = "supportUrl" required>
-                        	<p class="help-block" ng-messages="uploadForm.supportUrl.$error.required">Support Page information is required</p>
+                        	<p class="help-block" ng-show="uploadForm.supportUrl.$error.required">Support Page information is required</p>
                     </div>
                     <div class="form-group">
                     		<b><i class="fa fa-calendar"></i><span class="hspacer05"></span>Last update</b>
                         	<input type="date" class="form-control" ng-model = "newapp.dateModified" name = "dateModified" >
-                        	<p class="help-block" ng-messages="uploadForm.dateModified.$error.required">Please choose valid date</p>
+                        	<p class="help-block" ng-show="uploadForm.dateModified.$error.required">Please choose valid date</p>
                     </div>
                     <div class="col-md-12">
                         <h2>Media</h2>
                     </div>
-                    <div class="form-group ">
+                    <div class="form-group" ng-class="{ 'has-error': uploadForm.video.$invalid && uploadForm.video.$dirty }">
                     		<b><i class="fa fa-file-video-o"></i><span class="hspacer05"></span>Video</b>
-                        	<input type="url" class="form-control" ng-model = "videoLink" name = "video" type="url" data-bv-uri-message="The website address is not valid">
+                        	<input class="form-control" type="url"  ng-model = "videoLink" name = "video" >
+                        	<span class="help-block" ng-show="uploadForm.video.$error.url">Not valid url!</span>                      	
                     </div>
                     <div class="form-group" validate-input>
                     		<b><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Thumbnail</b>
                         	<input type="text" class="form-control" ng-model = "newapp.thumbnail" name = "thumbnail" required>
-                        	<p class="help-block" ng-messages="uploadForm.thumbnail.$error.required">Thumbnail is required</p>
+                        	<span class="help-block" ng-show="uploadForm.thumbnail.$error.required">Thumbnail is required</span>
                     </div>
                     <div id ="newImgField" ng-repeat = "newField in newFields track by $index">
             			<b><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Images</b>
@@ -101,6 +101,9 @@
                     		<input type="submit" value="Save" />
                     </div>	    
           		</form>	
+        </div>
+    </div>
+</form>
           		<p>{{newapp}}</p>	
            </div>
        </div>

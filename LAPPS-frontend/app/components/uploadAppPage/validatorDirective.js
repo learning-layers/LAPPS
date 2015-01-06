@@ -9,7 +9,7 @@
             return {
               restrict: 'A',
               require: '^form',
-              link: function(scope, el, attrs) {
+              link: function(scope, el, attrs, formCtrl) {
 
                 // find the text box element, which has the 'name' attribute
                 var inputElement = el[0].querySelector("[name]");
