@@ -44,7 +44,7 @@
                             tags: ['advertisement', 'ios', 'help'],
                             dateCreated: new Date(2013, 4, 15),
                             dateModified: new Date(2014, 11, 09),
-                            licence: 'Best Ads LLC',
+                            license: 'Best Ads LLC',
                             shortDescription: 'Shows current most popular apps',
                             longDescription: 'Advertising is a form of marketing communication used to persuade an audience to take or continue some action, usually with respect to a commercial offering, or political or ideological support. In Latin, ad vertere means "to turn toward".[1] The purpose of advertising may also be to reassure employees or shareholders that a company is viable or successful. Advertising messages are usually paid for by sponsors and viewed via various old media; including mass media such as newspaper, magazines, television advertisement, radio advertisement, outdoor advertising or direct mail; or new media such as blogs, websites or text messages.'
 

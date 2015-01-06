@@ -2,7 +2,7 @@
   <div class="col-md-12 thumbnail" id="appEdit">
     <div class="title">
       <h2>
-        <span>{{app.name}}</span>
+        {{app.name}}
       </h2>
     </div>
     <div class="container">
@@ -12,7 +12,7 @@
       </div>
         <dl>
           <dt>
-            <dfn><span class="fa fa-circle-o"></span><span class="hspacer05"></span>Platform</dfn>
+            <dfn><i class="fa fa-puzzle-piece"></i><span class="hspacer05"></span>Platform</dfn>
           </dt>
           <dd class ="hspacer07">
              <a href="#" editable-select="app.platform"  e-ng-options="p.name as p.name for p in platforms" >
@@ -21,34 +21,34 @@
           </dd>
           
           <dt>
-            <dfn><span class="glyphicon glyphicon-ok-circle"></span><span class="hspacer05"></span>Supported platform version</dfn>
+            <dfn><i class="fa fa-cogs"></i><span class="hspacer05"></span>Supported platform version</dfn>
           </dt>
           <dd class ="hspacer07">
           <a href="#"  editable-text="app.supportedPlatformVersion" onbeforesave="validateInput($data)">{{ app.supportedPlatformVersion || 'empty' }}</a>
           </dd>
           <dt>
-            <dfn><span class="glyphicon glyphicon-download"></span><span class="hspacer05"></span>Download URL</dfn>
+            <dfn><i class="fa fa-download"></i><span class="hspacer05"></span>Download URL</dfn>
           </dt>
           <dd class ="hspacer07">
           <a href="#" editable-url="app.downloadUrl" onbeforesave="validateInput($data)">{{ app.downloadUrl || 'empty' }}</a>
           </dd>
           
           <dt>
-            <dfn><span class="glyphicon glyphicon-time"></span><span class="hspacer05"></span>Release Date</dfn>
+            <dfn><i class="fa fa-calendar"></i><span class="hspacer05"></span>Release Date</dfn>
           </dt>
           <dd class ="hspacer07">
           <a href="#" editable-date="app.dateCreated" onbeforesave="validateInput($data)">{{ app.dateCreated | date:"dd/MM/yyyy" || app.dateCreated  }}</a>
           </dd>
           
           <dt>
-            <dfn><span class="glyphicon glyphicon-pencil"></span><span class="hspacer05"></span>Short Description</dfn>
+            <dfn><i class="fa fa-pencil"></i><span class="hspacer05"></span>Short Description</dfn>
           </dt>
           <dd class ="hspacer07">
           <a href="#" editable-text="app.shortDescription" onbeforesave="validateInput($data)" >{{ app.shortDescription || 'empty'}}</a>
           </dd>
           
           <dt>
-            <dfn><span class="glyphicon glyphicon-tags"></span><span class="hspacer05"></span>Tags</dfn>
+            <dfn><i class="fa fa-tags"></i><span class="hspacer05"></span>Tags</dfn>
           </dt>
           <dd class ="hspacer07">
           <a href="#" editable-text="appTags" onbeforesave="validateInput($data)">{{ appTags|| 'empty' }}</a>
@@ -62,7 +62,7 @@
           <br/>
           <br/>
           <dt>
-            <dfn><span class="glyphicon glyphicon-pencil"></span><span class="hspacer05"></span>Long Description</dfn>
+            <dfn><i class="fa fa-pencil"></i><span class="hspacer05"></span>Long Description</dfn>
           </dt>
           <dd class ="hspacer07">
           <a href="#" editable-textarea="app.longDescription"  e-rows="8" e-style="width:100%" onbeforesave="validateInput($data)">{{ app.longDescription || 'empty' }}</a>
@@ -76,42 +76,42 @@
           <dl>
           
           <dt>
-            <dfn><span class="glyphicon glyphicon-check"></span><span class="hspacer05"></span>Current Version</dfn>
+            <dfn><i class="fa fa-level-up"></i><span class="hspacer05"></span>Version</dfn>
           </dt>
           <dd class ="hspacer07">
               <a href="#" editable-text="app.version" onbeforesave="validateInput($data)" >{{ app.version || 'empty' }}</a>
           </dd>
           
           <dt>
-            <dfn><span class="glyphicon glyphicon-hdd"></span><span class="hspacer05"></span>Size</dfn>
+            <dfn><i class="fa fa-arrows-h"></i><span class="hspacer05"></span>Size</dfn>
           </dt>
           <dd class ="hspacer07"> 
               <a href="#" editable-text="app.sizeKB" onbeforesave="validateInput($data)" >{{ app.sizeKB || 'empty' }}</a>
           </dd>
           
           <dt>
-            <dfn><span class="glyphicon glyphicon-link"></span><span class="hspacer05"></span>Source</dfn>
+            <dfn><i class="fa fa-code-fork"></i><span class="hspacer05"></span>Source Code</dfn>
           </dt>
           <dd class ="hspacer07">
               <a href="#" editable-url="app.sourceUrl" >{{ app.sourceUrl || 'empty' }}</a>
           </dd>
           
           <dt>
-            <dfn><span class="glyphicon glyphicon-list-alt"></span><span class="hspacer05"></span>Licence</dfn>
+            <dfn><i class="fa fa-copyright"></i><span class="hspacer05"></span>License</dfn>
           </dt>
           <dd class ="hspacer07">
-              <a href="#" editable-text="app.licence" onbeforesave="validateInput($data)" >{{ app.licence || 'empty' }}</a>
+              <a href="#" editable-text="app.license" onbeforesave="validateInput($data)" >{{ app.license || 'empty' }}</a>
           </dd>
           
           <dt>
-            <dfn><span class="glyphicon glyphicon-cog"></span><span class="hspacer05"></span>Support Page</dfn>
+            <dfn><i class="fa fa-life-ring"></i><span class="hspacer05"></span>Support page</dfn>
           </dt>
           <dd class ="hspacer07">
               <a href="#" editable-url="app.supportUrl" >{{ app.supportUrl || 'empty'  }}</a>
           </dd>
           
           <dt>
-            <dfn><span class="glyphicon glyphicon-time"></span><span class="hspacer05"></span>Last Update Date</dfn>
+            <dfn><i class="fa fa-calendar"></i><span class="hspacer05"></span>Last update</dfn>
           </dt>
           <dd class ="hspacer07">
           <a href="#" editable-date="app.dateModified" onbeforesave="validateInput($data)">{{ app.dateModified | date:"dd/MM/yyyy" || 'empty' }}</a>
@@ -127,21 +127,21 @@
 		  <dl>
 		  
 		  <dt>
-            <dfn><span class="glyphicon glyphicon-picture"></span><span class="hspacer05"></span>Thumbnail</dfn>
+            <dfn><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>ThumbnailThumbnail</dfn>
           </dt>
           <dd class ="hspacer07">
           <a href="#" editable-url="app.thumbnail" onbeforesave="validateInput($data)">{{ app.thumbnail || 'empty' }} </a>
           </dd>
 		  
 		  <dt>
-            <dfn><span class="glyphicon glyphicon-facetime-video"></span><span class="hspacer05"></span>Video</dfn>
+            <dfn><i class="fa fa-file-video-o"></i><span class="hspacer05"></span>Video</dfn>
           </dt>
           <dd class ="hspacer07">
           <a href="#" editable-url="app.thumbnail" >{{ app.thumbnail || 'empty' }} </a>
           </dd>
           
           <dt >
-            <dfn><span class="glyphicon glyphicon-picture"></span><span class="hspacer05"></span>Images</dfn>
+            <dfn><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Images</dfn>
           </dt>
           <dd class ="hspacer07">
           <a href="#" editable-url="app.thumbnail" >{{ app.thumbnail || 'empty' }} </a>
