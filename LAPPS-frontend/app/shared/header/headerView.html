@@ -74,7 +74,7 @@
           <li>
 
             <div id="sign-in-button">
-              <button ng-show="!isloggedIn" ng-click="login()" type="button" class="login btn btn-default navbar-btn btn-small"><img src="assets/img/logos/layersLogo.svg" width="30" height="18" /><span class="hspacer05"></span><strong>Sign in with <i>Learning Layers</i></strong></button>
+              <button ng-hide="isloggedIn" ng-click="login()" type="button" class="login btn btn-default navbar-btn btn-small"><img src="assets/img/logos/layersLogo.svg" width="30" height="18" /><span class="hspacer05"></span><strong>Sign in with <i>Learning Layers</i></strong></button>
 
               <button ng-show="isloggedIn" type="button" class="logout btn btn-primary dropdown-toggle navbar-btn btn-small" data-toggle="dropdown" aria-expanded="false">
                 <span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>{{userData.preferred_username}}<span class="caret"></span>

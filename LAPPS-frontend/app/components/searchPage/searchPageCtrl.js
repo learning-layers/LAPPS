@@ -42,6 +42,18 @@
                          * @field
                          * @type string
                          * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @descriptiion If searched for a user, the user name
+                         *               is stored here.
+                         */
+                        $scope.searchUser = '';
+
+                        if ($routeParams.user) {
+                          $scope.searchUser = $routeParams.user;
+                        }
+                        /**
+                         * @field
+                         * @type string
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
                          * @description Saves the user input on how to sort the
                          *              search results.
                          */
@@ -113,6 +125,11 @@
                           return (curr_date + "-" + m_names[curr_month] + "-" + curr_year);
                         }
 
+                        $scope.listAppsByUser = function(usr) {
+                          $scope.searchUser = usr;
+
+                          $scope.search();
+                        }
                         /**
                          * @function
                          * @memberOf lapps.lappsControllers.searchPageCtrl
@@ -126,8 +143,10 @@
                           $location.search('page', 1);
                           $location.search('sortBy', $scope.sortBy
                                   .toLowerCase());
+                          $location.search('user', $scope.searchUser);
                           $scope.search();
                         }
+
                         /**
                          * @function
                          * @memberOf lapps.lappsControllers.searchPageCtrl
@@ -143,6 +162,7 @@
                             page: $scope.currentPage,
                             pageLength: 10
                           };
+
                           switch ($scope.sortBy) {
                           case 'name':
                             apiParams.sortBy = 'name';
@@ -172,6 +192,16 @@
                           if (platform.currentPlatform.isAllPlatforms !== true) {
                             apiParams.filterBy = 'platform';
                             apiParams.filterValue = platform.currentPlatform.name;
+                          }
+
+                          if ($scope.searchUser.trim() != '') {
+                            apiParams.filterBy = apiParams.filterBy
+                                    ? apiParams.filterBy + ';creator'
+                                    : 'creator';
+                            apiParams.filterValue = apiParams.filterValue
+                                    ? apiParams.filterValue + ';'
+                                            + $scope.searchUser
+                                    : $scope.searchUser;
                           }
                           swaggerApi.apps
                                   .getAllApps(apiParams)

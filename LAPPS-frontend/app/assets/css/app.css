@@ -67,6 +67,24 @@ h1, h2, h3, h4, h5 {
     margin-left: 5px;
   }
 
+.input-group input {
+  height: 100% !important;
+}
+
+.videoWrapper {
+  position: relative;
+  padding-bottom: 56%; /* 16:9 */
+  height: 0;
+}
+
+  .videoWrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
 @media (max-width: 768px) {
   .thumbnail .caption {
     padding-left: 0;
@@ -77,6 +95,7 @@ h1, h2, h3, h4, h5 {
     /*overflow: hidden;*/
   }
 }
+
 /* general end*/
 
 /* spacing start */
@@ -209,8 +228,8 @@ h1, h2, h3, h4, h5 {
   }
 
 #sign-in-button {
-  margin-left:5px;
-  margin-right:5px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
   #sign-in-button .login {
@@ -528,6 +547,23 @@ h1, h2, h3, h4, h5 {
   position: relative;
 }
 
+.carousel-control {
+  top: 50%;
+  bottom: 50%;
+}
+
+  .carousel-control .glyphicon-chevron-right,
+  .carousel-control .glyphicon-chevron-left {
+    opacity: 0.5;    
+  }
+
+@media (min-width: 768px) {
+  .carousel-control .glyphicon-chevron-right,
+  .carousel-control .glyphicon-chevron-left {    
+    font-size: 50px;
+  }
+}
+
 .carousel-inner a {
   position: absolute;
   width: 50%;
@@ -698,6 +734,28 @@ h1, h2, h3, h4, h5 {
 #search-filter .advanced-search-container {
   position: relative;
 }
+
+#search-results .app-list-item .thumbnail .image-container > img {
+  width: 110px;
+  height: 110px;
+}
+
+#search-results .app-list-item .thumbnail .caption {
+  left: 122px;
+}
+
+  #search-results .app-list-item .thumbnail .caption p {
+    -webkit-line-clamp: 4;
+    max-height: 80px;
+  }
+
+#search-results .app-list-item .thumbnail {
+  height: 176px;
+}
+
+#search-results .app-list-item {
+  height: 186px;
+}
 /* search end */
 
 /* detail page start*/
@@ -719,7 +777,6 @@ h1, h2, h3, h4, h5 {
 .title h3 span {
   margin-left: 10px;
   font-size: 12px;
-  
   white-space: nowrap;
 }
 
@@ -803,12 +860,13 @@ h1, h2, h3, h4, h5 {
     width: 50%;
   }
 
-  .tag-expander {
-    font-size: large;
-  }
-  .tag {
-    font-size:smaller;
-  }
+.tag-expander {
+  font-size: large;
+}
+
+.tag {
+  font-size: smaller;
+}
 
 #app-images {
   padding-left: 0;
@@ -962,7 +1020,7 @@ dd {
 
   #app-technical-detail dl {
     padding: 10px;
-    margin-bottom:0;
+    margin-bottom: 0;
   }
 
     #app-technical-detail dl dd {

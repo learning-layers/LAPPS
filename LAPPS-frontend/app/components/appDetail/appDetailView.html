@@ -8,7 +8,7 @@
       <div class="title">
         <h2>
           <i class="{{app.platformObj.icon}} pull-left"></i>
-         {{app.name}} <span>
+          {{app.name}} <span>
             by <a href="#/users/{{app.creator.oidcId}}">{{app.creator.username}}</a>
           </span>
         </h2>
@@ -52,12 +52,18 @@
 
     <div class="col-md-9" id="app-images">
       <div id="featured-carousel" class="thumbnail">
-        <carousel interval="interval" on-carousel-change="onSlideChanged(nextSlide, direction)">
+        <carousel interval="interval" on-carousel-change="onSlideChanged(nextSlide, direction)" ng-click="stopCarousel()">
+          <slide ng-repeat="video in app.videos">
+            <div class="videoWrapper">
+              <iframe width="560" height="315" ng-src="{{video.url}}" frameborder="0" allowfullscreen onload="iFrameVideoLoaded();"></iframe>
+            </div>
+          </slide>
           <slide ng-repeat=" image in app.images">
             <img ng-src="{{image.url}}" width="1000" height="560">
           </slide>
         </carousel>
-        <p>{{app.images[currentSlide].description}}</p>
+        
+        <p>{{(currentSlide< app.videos.length)?app.videos[currentSlide].description:app.images[currentSlide-app.videos.length].description}}</p>
       </div>
     </div>
 
@@ -71,6 +77,10 @@
           <dfn><i class="fa fa-puzzle-piece"></i><span class="hspacer05"></span>Platform</dfn>
         </dt>
         <dd>{{app.platformObj.name}}</dd>
+        <dt>
+          <dfn><i class="fa fa-cogs"></i><span class="hspacer05"></span>Supported Platform Versions</dfn>
+        </dt>
+        <dd>{{app.minPlatformRequired}}</dd>
         <dt>
           <dfn><i class="fa fa-plus-square"></i><span class="hspacer05"></span>Also available on</dfn>
         </dt>
@@ -101,7 +111,7 @@
         <dd>{{dateCreated}}</dd>
 
         <dt>
-          <dfn><i class="fa fa-calendar"></i><span class="hspacer05"></span>Last update</dfn>
+          <dfn><i class="fa fa-calendar"></i><span class="hspacer05"></span>Last Update</dfn>
         </dt>
         <dd>{{dateModified}}</dd>
         <dt>
@@ -109,7 +119,7 @@
         </dt>
         <dd>{{app.license}}</dd>
         <dt>
-          <dfn><i class="fa fa-life-ring"></i><span class="hspacer05"></span>Support page</dfn>
+          <dfn><i class="fa fa-life-ring"></i><span class="hspacer05"></span>Support Page</dfn>
         </dt>
         <dd>
           <a href="{{app.supportUrl}}">{{app.supportUrlShort}}</a>

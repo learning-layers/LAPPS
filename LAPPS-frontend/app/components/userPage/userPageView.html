@@ -49,7 +49,7 @@
             <dfn><span class="glyphicon glyphicon-upload"></span><span class="hspacer05"></span>Apps uploaded</dfn>
           </dt>
           <dd ng-if="isDeveloper()">
-            <a href="#">See {{user.name}}'s apps</a>
+            <a href="#/search?user={{user.oidcId}}">See {{user.username}}'s apps</a>
           </dd>
         </dl>
       </div>

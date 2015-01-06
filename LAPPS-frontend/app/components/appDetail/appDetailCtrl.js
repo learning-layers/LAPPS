@@ -15,8 +15,9 @@
                       '$routeParams',
                       'swaggerApi',
                       'platform',
-                      function($scope, $routeParams, swaggerApi, platform) {
-
+                      '$document',
+                      function($scope, $routeParams, swaggerApi, platform,
+                              $document) {
                         /**
                          * @field
                          * @type string
@@ -172,14 +173,22 @@
                         $scope.onSlideChanged = function(nextSlide, direction) {
                           if (direction == 'next') {
                             $scope.currentSlide = ($scope.currentSlide + 1)
-                                    % $scope.app.images.length;
+                                    % ($scope.app.images.length + $scope.app.videos.length);
                           } else if (direction == 'prev') {
                             $scope.currentSlide = ($scope.currentSlide - 1)
-                                    % $scope.app.images.length;
+                                    % ($scope.app.images.length + $scope.app.videos.length);
                             if ($scope.currentSlide < 0) {
-                              $scope.currentSlide = $scope.app.images.length - 1;
+                              $scope.currentSlide = ($scope.app.images.length + $scope.app.videos.length) - 1;
                             }
                           }
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Stops the automatic carousel rotation
+                         */
+                        $scope.stopCarousel = function() {
+                          $scope.interval = -1;
                         }
                         /**
                          * @function
@@ -216,6 +225,10 @@
                                           $scope.app.longDescriptionMarkdown = marked($scope.app.longDescription);
                                           var thumbnail = '';
                                           var images = [];
+                                          var videos = [];
+                                          // videos.push({ url:
+                                          // '//www.youtube.com/embed/tHwntRpLobU',
+                                          // description: 'Maru' });
                                           for (var j = 0; j < $scope.app.artifacts.length; j++) {
                                             if ($scope.app.artifacts[j].type
                                                     .indexOf('thumb') >= 0) {
@@ -227,10 +240,19 @@
                                                         url: $scope.app.artifacts[j].url,
                                                         description: $scope.app.artifacts[j].description
                                                       });
+                                            } else if ($scope.app.artifacts[j].type
+                                                    .indexOf('video') >= 0) {
+                                              videos
+                                                      .push({
+                                                        url: $scope.app.artifacts[j].url,
+                                                        description: $scope.app.artifacts[j].description
+                                                      });
                                             }
                                           }
+
                                           $scope.app.thumbnail = thumbnail;
                                           $scope.app.images = images;
+                                          $scope.app.videos = videos;
                                           $scope.app.platformObj = platform
                                                   .getPlatformByName($scope.app.platform);
                                           $scope.app.sourceUrlShort = $scope
@@ -263,7 +285,35 @@
                               id: $scope.appId,
                               platform: '-'
                             });
+                          } else {
+                            $scope.alternativePlatforms.sort(comparePlaftorms);
                           }
                         });
+                        // important to get click events from iframes:
+                        // when starting a video: stop carousel
+                        window.iFrameVideoLoaded = function() {
+                          var iFrameChildren = $document.find('iframe')
+                                  .contents();
+                          iFrameChildren.on('click', $scope.stopCarousel);
+                        }
+                        /**
+                         * @function
+                         * @type number
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @param {object}
+                         *          a
+                         * @param {object}
+                         *          b
+                         * @description Compares the names of two platforms
+                         *              (case insensitive). Used for sorting.
+                         */
+                        function comparePlaftorms(a, b) {
+                          if (a.platform.toLowerCase() < b.platform
+                                  .toLowerCase()) return -1;
+                          if (a.platform.toLowerCase() > b.platform
+                                  .toLowerCase()) return 1;
+                          return 0;
+                        }
+
                       }]);
 }).call(this);
