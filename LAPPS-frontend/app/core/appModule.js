@@ -26,6 +26,7 @@
    * @class lapps.lappsApp
    * @memberOf lapps
    */
+
   var lappsFilters = angular.module('lappsAttibuteDirectives', []);
   /**
    * @class lapps.lappsApp
