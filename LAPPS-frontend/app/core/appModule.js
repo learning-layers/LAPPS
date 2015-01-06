@@ -69,6 +69,13 @@
       redirectTo: '/apps'
     });
   }]);
+
+  lappsApp.config([
+      '$sceDelegateProvider',
+      function($sceDelegateProvider) {
+        $sceDelegateProvider.resourceUrlWhitelist(['http://www.youtube.com/**',
+            'https://www.youtube.com/**', 'self']);
+      }]);
   lappsApp.run(['editableOptions', function(editableOptions) {
     editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2',
     // 'default'

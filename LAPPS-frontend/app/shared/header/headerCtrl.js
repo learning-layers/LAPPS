@@ -61,7 +61,9 @@
                  *              search parameters.
                  */
                 $scope.search = function() {
+
                   $location.path('/search/' + $scope.searchQuery);
+
                 }
                 /**
                  * @function
@@ -80,6 +82,7 @@
 
                   $scope.isloggedIn = success;
 
+                  $timeout($scope.adjustSearchBar, 100);
                   if (!success) {
                   } else {
                     $scope.userData = user.data;
@@ -180,7 +183,6 @@
                   if (left > 0) {// not collapsed
                     $('.search-bar.hidden-xs').css('right', left + 'px');
                   }
-
                 }
 
                 user.init($scope.loginCallback);
@@ -198,6 +200,9 @@
 
                 // when angularjs is ready working on the DOM
                 $scope.$on('$viewContentLoaded', function() {
+                  if ($location.path().indexOf('/search') < 0) {
+                    $scope.searchQuery = '';
+                  }
                   $scope.adjustPositions();
                   $scope.displayPlatfromHelper();
                 });
