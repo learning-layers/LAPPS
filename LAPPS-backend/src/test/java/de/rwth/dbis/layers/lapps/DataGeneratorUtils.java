@@ -71,7 +71,11 @@ public class DataGeneratorUtils {
       "http://i.imgur.com/Rx2YXQr.jpg", "http://i.imgur.com/xxAqUpz.jpg",
       "http://i.imgur.com/heSczUw.jpg"};
 
-
+  private final static String[] videos = new String[] {"//www.youtube.com/embed/Z9crdhewgkI",
+      "//www.youtube.com/embed/ndo3VqErbrM", "//www.youtube.com/embed/iP5eEbqqOqo",
+      "//www.youtube.com/embed/w8nJVWxWTVk", "//www.youtube.com/embed/1n7yMI5gzJ8",
+      "//www.youtube.com/embed/6lC2lbeY_rU", "//www.youtube.com/embed/tHwntRpLobU",
+      "//www.youtube.com/embed/f4wsJ0joBxg", "//www.youtube.com/embed/OpLU__bhu2w"};
 
   private static String[] platforms = new String[] {"iOS", "Android", "Windows Phone", "Web Apps",
       "Windows", "Linux", "Mac OS X"};
@@ -373,6 +377,16 @@ public class DataGeneratorUtils {
   public static String getRandomImageUrl() {
     int index = RandomNumberGenerator.getRandomInt(0, images.length / 2 - 1);
     return images[index * 2 + 1];
+  }
+
+  /**
+   * Generates a random video url for an app.
+   * 
+   * @return an url to a random video
+   */
+  public static String getRandomVideoUrl() {
+    int index = RandomNumberGenerator.getRandomInt(0, videos.length - 1);
+    return videos[index];
   }
 
   /**

@@ -88,6 +88,12 @@ public class DataGenerator {
 
       currentApp.addArtifact(thumbnail);
 
+      // add video
+      Artifact vida = new Artifact("video/youtube", DataGeneratorUtils.getRandomVideoUrl());
+      vida.setDescription(DataGeneratorUtils.getRandomImageDescription());
+      currentApp.addArtifact(vida);
+
+
       // add images
       String[] images = DataGeneratorUtils.getRandomImageUrls(4);
       for (int j = 0; j < images.length; j++) {
