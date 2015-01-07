@@ -157,7 +157,7 @@
 
           <dd class ="hspacer07" >
           		<div ng-repeat = "img in images track by $index">
-          			<img src = {{img.url}} class = "editableImg img-responsive" >
+          			<img src = {{img.url}} class = "editableImg" >
           			<label>Url: </label><a href="#" editable-url="img.url" >{{ img.url || 'empty' }} </a>
           			<br>
           			<label>Description: </label><a href="#" editable-text="img.description" >{{ img.description || 'empty' }} </a>

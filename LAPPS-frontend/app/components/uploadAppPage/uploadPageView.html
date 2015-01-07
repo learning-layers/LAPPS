@@ -3,13 +3,13 @@
      <div class="jumbotron">
     	 <div class="row"> 
      		<div class = col-lg-7 >
-        		<form name = "uploadForm" ng-submit = "createNewApp();" >
+        		<form name = "uploadForm" ng-submit = "createNewApp();" novalidate>
       	            <div class="col-md-12">
              			    <h2>General Information</h2>
         	 	    </div>  	 	                
-                     <div class="form-group" validate-input>
+                     <div class="form-group" validate-input >
                    			<b><i class="fa fa-plus"></i><span class="hspacer06"></span>Name</b>
-                            <input type="text" class="form-control" placeholder="i.e Expert App" name="appname" ng-model="newapp.name" required>
+                            <input type="text" class="form-control" placeholder="i.e Expert App" name="appname" maxlength="100" ng-model="newapp.name" required>
                             <p class="help-block" ng-show="uploadForm.appname.$error.required">The App's name is required</p>
                      </div>
                      <div class ="form-group" validate-input>
@@ -21,17 +21,18 @@
       				 </div>
                      <div class="form-group" validate-input>
                		         <b><i class="fa fa-cogs"></i><span class="hspacer05"></span>Supported platform version</b>
-                             <input type="text" class="form-control" ng-model="newapp.supportedPlatformVersion" name = "supportedPlatformVersion" required>
+                             <input type="text" class="form-control" ng-model="newapp.supportedPlatformVersion" maxlength="100" name = "supportedPlatformVersion" required>
                              <p class="help-block" ng-show="uploadForm.supportedPlatformVersion.$error.required">Supported platform versions are required</p>
                      </div>	
-               		 <div class="form-group" validate-input>
+               		 <div class="form-group" validate-input  ng-class="{ 'has-error': uploadForm.downloadUrl.$invalid && uploadForm.downloadUrl.$dirty }">
                		  		<b><i class="fa fa-download"></i><span class="hspacer05"></span>Download URL</b> 
-                            <input type="text" class="form-control" ng-model="newapp.downloadUrl" name = "downloadUrl" required>
+                            <input type="url" class="form-control" ng-model="newapp.downloadUrl" name = "downloadUrl" maxlength="100" required>
                             <p class="help-block" ng-show ="uploadForm.downloadUrl.$error.required">Download URL is required</p>
+                            <p class="help-block" ng-show="uploadForm.downloadUrl.$error.url">Invalid URL!</p> 
                      </div>          
                     <div class="form-group" validate-input>
                           	    <b><i class="fa fa-pencil"></i><span class="hspacer05"></span>Short Description</b>
-                                <input type="text" class="form-control" ng-model="newapp.shortDescription" name = "shortDescription" required>
+                                <input type="text" class="form-control" ng-model="newapp.shortDescription" name = "shortDescription" maxlength="100" required>
                                 <p class="help-block" ng-show="uploadForm.shortDescription.$error.required">Short description is required</p>
                     </div>
                     <div class="form-group" validate-input>
@@ -39,7 +40,7 @@
                                 <textarea class="form-control custom-control long-description" rows="3" nd-model = "newapp.longDescription" name = "longDescription" required></textarea>
                                 <p class="help-block" ng-show="uploadForm.longDescription.$error.required">Long description is required</p>
                     </div>
-                    <div class="form-group" validate-input>
+                    <div class="form-group" validate-input check-tags>
                       	     	<b><i class="fa fa-tags"></i><span class="hspacer05"></span>Tags</b>
                              	<input type="text" class="form-control" placeholder="i.e help, ios" ng-model="appTags" ng-pattern="[a-z ,]*$" name = "tags" required>
                              	<p class="help-block" ng-show="uploadForm.tags.$error.required">Tags are required</p>
@@ -50,27 +51,29 @@
                     </div>
                     <div class="form-group" validate-input>
                     		<b><i class="fa fa-level-up"></i><span class="hspacer05"></span>Version</b>
-                        	<input type="text" class="form-control" ng-model = "newapp.version" name = "version" required >
+                        	<input type="text" class="form-control" ng-model = "newapp.version" name = "version" maxlength="10" required >
                         	<p class="help-block" ng-show="uploadForm.version.$error.required">Versions are required</p>
                     </div>
                     <div class="form-group" validate-input>
           	        		<b><i class="fa fa-arrows-h"></i><span class="hspacer05"></span>Size</b>
-                        	<input type="text" class="form-control" ng-model = "newapp.sizeKB" name = "sizeKB" required >
-                        	<p class="help-block" ng-show="uploadForm.sizeKB.$error.required">Size of app is required</p>
+                        	<input type="text" class="form-control" ng-model = "newapp.size" name = "size" maxlength="10" required >
+                        	<p class="help-block" ng-show="uploadForm.size.$error.required">Size of app is required</p>
                     </div>
-                    <div class="form-group" >
+                    <div class="form-group"  ng-class="{ 'has-error': uploadForm.sourceUrl.$invalid && uploadForm.sourceUrl.$dirty }">
                    		    <b><i class="fa fa-code-fork"></i><span class="hspacer05"></span>Source Code</b>
-                        	<input type="text" class="form-control"  ng-model = "newapp.sourceUrl" name = "sourceUrl">
+                        	<input type="url" class="form-control"  ng-model = "newapp.sourceUrl" name = "sourceUrl" maxlength="100">
+                        	<p class="help-block" ng-show="uploadForm.sourceUrl.$error.url">Invalid URL!</p>
                     </div>
            		 	<div class="form-group " validate-input>
                     		<b><i class="fa fa-copyright"></i><span class="hspacer05"></span>License</b>
-                        	<input type="text" class="form-control" ng-model = "newapp.license" name = "license" required>
+                        	<input type="text" class="form-control" ng-model = "newapp.license" name = "license" maxlength="100" required>
                         	<p class="help-block" ng-show="uploadForm.license.$error.required">License information is required</p>
                     </div>
-                    <div class="form-group" validate-input>
+                    <div class="form-group" validate-input ng-class="{ 'has-error': uploadForm.supportUrl.$invalid && uploadForm.supportUrl.$dirty }">
                     		<b><i class="fa fa-life-ring"></i><span class="hspacer05"></span>Support page</b>
-                        	<input type="text" class="form-control" ng-model = "newapp.supportUrl" name = "supportUrl" required>
+                        	<input type="url" class="form-control" ng-model = "newapp.supportUrl" name = "supportUrl" maxlength="300" required>
                         	<p class="help-block" ng-show="uploadForm.supportUrl.$error.required">Support Page information is required</p>
+                        	<p class="help-block" ng-show="uploadForm.supportUrl.$error.url">Invalid URL!</p>
                     </div>
                     <div class="form-group">
                     		<b><i class="fa fa-calendar"></i><span class="hspacer05"></span>Last update</b>
@@ -82,30 +85,28 @@
                     </div>
                     <div class="form-group" ng-class="{ 'has-error': uploadForm.video.$invalid && uploadForm.video.$dirty }">
                     		<b><i class="fa fa-file-video-o"></i><span class="hspacer05"></span>Video</b>
-                        	<input class="form-control" type="url"  ng-model = "videoLink" name = "video" >
-                        	<span class="help-block" ng-show="uploadForm.video.$error.url">Not valid url!</span>                      	
+                        	<input class="form-control" type="url"  ng-model = "videoLink" name = "video" maxlength="300" >
+                        	<span class="help-block" ng-show="uploadForm.video.$error.url">Invalid URL!</span>                      	
                     </div>
                     <div class="form-group" validate-input>
                     		<b><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Thumbnail</b>
                         	<input type="text" class="form-control" ng-model = "newapp.thumbnail" name = "thumbnail" required>
                         	<span class="help-block" ng-show="uploadForm.thumbnail.$error.required">Thumbnail is required</span>
                     </div>
-                    <div id ="newImgField" ng-repeat = "newField in newFields track by $index">
-            			<b><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Images</b>
-                    	<div class="form-group" id = {{newField.id}} >
-                        	<input type="url" class="form-control" ng-model = "images[$index]">
-                         	<button type="button" id ={{newField.id}} class="hidden-xs hspacer05" class="btn btn-info" name ="{{newField.buttonName}}" ng-click = "addAnotherField($event)" >{{newField.buttonTitle}}</button>
+                    <b><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Images</b>
+                    <div id ="newImgField" ng-repeat = "newField in newFields track by $index">		
+                    	<div class="form-group" id = {{newField.id}}>
+                        	<span>Url</span><input type="url" class="form-control" name = url+{{newField.id}} ng-model = "images[$index].url" maxlength="300">                       	
                     	</div>
+                    	<span>Description</span><input type="text" class="form-control" ng-model = "images[$index].description" maxlength="100">
+                        <button type="button" id ={{newField.id}} class="btn btn-default" name ="{{newField.buttonName}}" ng-click = "addAnotherField($event)" >{{newField.buttonTitle}}</button>
            		 	</div>
            		 	<div class="form-group ">
-                    		<input type="submit" value="Save" />
+                    		<input type="submit" class = "btn btn-info" value="Save" />
                     </div>	    
-          		</form>	
-        </div>
-    </div>
-</form>
-          		<p>{{newapp}}</p>	
+          		 </form>	
+        		</div>
+   			 </div>
+          	<p>{{newapp}}</p>	
            </div>
        </div>
-    </div>
-</div>
