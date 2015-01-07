@@ -24,7 +24,7 @@
             <dfn><i class="fa fa-cogs"></i><span class="hspacer05"></span>Supported platform version</dfn>
           </dt>
           <dd class ="hspacer07">
-          <a href="#"  editable-text="app.supportedPlatformVersion" onbeforesave="validateInput($data)">{{ app.supportedPlatformVersion || 'empty' }}</a>
+          <a href="#"  editable-text="app.minPlatformRequired" onbeforesave="validateInput($data)">{{ app.minPlatformRequired|| 'empty' }}</a>
           </dd>
           <dt>
             <dfn><i class="fa fa-download"></i><span class="hspacer05"></span>Download URL</dfn>
@@ -37,36 +37,37 @@
             <dfn><i class="fa fa-calendar"></i><span class="hspacer05"></span>Release Date</dfn>
           </dt>
           <dd class ="hspacer07">
-          <a href="#" editable-date="app.dateCreated" onbeforesave="validateInput($data)">{{ app.dateCreated | date:"dd/MM/yyyy" || app.dateCreated  }}</a>
+          <p>{{ dateCreated | date:"dd/MM/yyyy" || app.dateCreated  }}</p>
           </dd>
           
           <dt>
             <dfn><i class="fa fa-pencil"></i><span class="hspacer05"></span>Short Description</dfn>
           </dt>
           <dd class ="hspacer07">
-          <a href="#" editable-text="app.shortDescription" onbeforesave="validateInput($data)" >{{ app.shortDescription || 'empty'}}</a>
+          	<a href="#" editable-text="app.shortDescription" onbeforesave="validateInput($data)" >{{ app.shortDescription || 'empty'}}</a>
           </dd>
           
           <dt>
             <dfn><i class="fa fa-tags"></i><span class="hspacer05"></span>Tags</dfn>
           </dt>
           <dd class ="hspacer07">
-          <a href="#" editable-text="appTags" onbeforesave="validateInput($data)">{{ appTags|| 'empty' }}</a>
+          		<a href="#" editable-text="appTags" onbeforesave="validateInput($data)">{{ appTags|| 'empty' }}</a>
           </dd>
-                   
-          </dl>
+          </dl>               
           </div>
           
-          <div class="col-md-6 col-sm-12">
-          <br/>
-          <br/>
-          <br/>
+          <div class="col-md-6">
+          <dl>
+          <br>
+          <br>
+          <br>
           <dt>
             <dfn><i class="fa fa-pencil"></i><span class="hspacer05"></span>Long Description</dfn>
           </dt>
           <dd class ="hspacer07">
           <a href="#" editable-textarea="app.longDescription"  e-rows="8" e-style="width:100%" onbeforesave="validateInput($data)">{{ app.longDescription || 'empty' }}</a>
-          </dd>  
+          </dd> 
+          </dl> 
           </div>
           
           <div id = "TechnicalData" class = "col-md-3 col-sm-7">
@@ -86,7 +87,7 @@
             <dfn><i class="fa fa-arrows-h"></i><span class="hspacer05"></span>Size</dfn>
           </dt>
           <dd class ="hspacer07"> 
-              <a href="#" editable-text="app.sizeKB" onbeforesave="validateInput($data)" >{{ app.sizeKB || 'empty' }}</a>
+              <a href="#" editable-text="size" onbeforesave="validateInput($data)" >{{ size || 'empty' }}</a>
           </dd>
           
           <dt>
@@ -114,42 +115,58 @@
             <dfn><i class="fa fa-calendar"></i><span class="hspacer05"></span>Last update</dfn>
           </dt>
           <dd class ="hspacer07">
-          <a href="#" editable-date="app.dateModified" onbeforesave="validateInput($data)">{{ app.dateModified | date:"dd/MM/yyyy" || 'empty' }}</a>
+          <a href="#" editable-date="dateModified" onbeforesave="validateInput($data)">{{ dateModified | date:"dd/MM/yyyy" || 'empty' }}</a>
           </dd>
           
           </dl>
 		  </div>
-		  
-		  <div id = "MediaData" class = "col-md-3">
+		  <br>
+		  <br>
+
+		  <div id = "MediaData" class = "col-sm-7">
 		  <div class = "title">
 		  <h4>Media</h4>
 		  </div>
 		  <dl>
 		  
 		  <dt>
-            <dfn><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>ThumbnailThumbnail</dfn>
+            <dfn><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Thumbnail</dfn>
           </dt>
           <dd class ="hspacer07">
-          <a href="#" editable-url="app.thumbnail" onbeforesave="validateInput($data)">{{ app.thumbnail || 'empty' }} </a>
+          		<img ng-src="{{thumbnail}}" class="img-thumbnail">
+          </dd>
+          <dd class ="hspacer07">          		
+          		<label>Url:</label><a href="#" editable-url="thumbnail" onbeforesave="validateInput($data)">{{ thumbnail || 'empty' }} </a>
           </dd>
 		  
 		  <dt>
             <dfn><i class="fa fa-file-video-o"></i><span class="hspacer05"></span>Video</dfn>
           </dt>
           <dd class ="hspacer07">
-          <a href="#" editable-url="app.thumbnail" >{{ app.thumbnail || 'empty' }} </a>
+                <div class="video-container">
+       				 <iframe class="editableImg" ng-src="{{video.url}}" frameborder="0 " allowfullscreen></iframe>
+      			</div>
+          		<label>Url:</label><a href="#" editable-url="video.url" >{{ video.url || 'empty' }} </a>
           </dd>
-          
-          <dt >
-            <dfn><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Images</dfn>
-          </dt>
           <dd class ="hspacer07">
-          <a href="#" editable-url="app.thumbnail" >{{ app.thumbnail || 'empty' }} </a>
+          		<label>Description:</label><a href="#" editable-text="video.description" >{{ video.description || 'empty' }} </a>
           </dd>
-		  
-		  </dl>
-		  </div>
+          <dt >
+            <dfn><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Carousel Images</dfn>
+          </dt>
 
+          <dd class ="hspacer07" >
+          		<div ng-repeat = "img in images track by $index">
+          			<img src = {{img.url}} class = "editableImg img-responsive" >
+          			<label>Url: </label><a href="#" editable-url="img.url" >{{ img.url || 'empty' }} </a>
+          			<br>
+          			<label>Description: </label><a href="#" editable-text="img.description" >{{ img.description || 'empty' }} </a>
+          		</div>
+          </dd>      
+		  </dl>
+		  <button class ="btn btn-default" type = "button" ng-click ="sendAppData()">Save</button>
+		  </div>
+			
     </div>
   </div>
-</div>
+ </div>

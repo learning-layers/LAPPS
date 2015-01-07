@@ -20,57 +20,13 @@
                       function($scope, $filter, $routeParams, user, $http,
                               swaggerApi, md5) {
 
-                        $scope.appid = $routeParams.appid;
+                        $scope.appId = $routeParams.appId;
 
-                        alert(appid);
-                        alert($routeParams);
-
-                        $scope.appTags = '';
+                        $scope.appTags = [];
 
                         $scope.app = {};
 
-                        $scope.fetchAppData = function() {
-
-                          $scope.app = {
-                            id: 1, // have to get latest id?
-                            name: 'Advertisement App',
-                            platform: 'iOS',
-                            supportedPlatformVersion: '5 and later',
-                            downloadUrl: 'www.apple.com',
-                            version: '1.2',
-                            sizeKB: 20,
-                            sourceUrl: 'www.github.com',
-                            supportUrl: 'www.advertisement.com',
-                            developer: {
-                              name: 'John',
-                              oidcId: 0
-                            },
-                            rating: 4,
-                            tags: ['advertisement', 'ios', 'help'],
-                            dateCreated: new Date(2013, 4, 15),
-                            dateModified: new Date(2014, 11, 09),
-                            license: 'Best Ads LLC',
-                            shortDescription: 'Shows current most popular apps',
-                            longDescription: 'Advertising is a form of marketing communication used to persuade an audience to take or continue some action, usually with respect to a commercial offering, or political or ideological support. In Latin, ad vertere means "to turn toward".[1] The purpose of advertising may also be to reassure employees or shareholders that a company is viable or successful. Advertising messages are usually paid for by sponsors and viewed via various old media; including mass media such as newspaper, magazines, television advertisement, radio advertisement, outdoor advertising or direct mail; or new media such as blogs, websites or text messages.'
-
-                                    + ' Commercial advertisers often seek to generate increased consumption of their products or services through "branding", which involves associating a product name or image with certain qualities in the minds of consumers. Non-commercial advertisers who spend money to advertise items other than a consumer product or service include political parties, interest groups, religious organizations and governmental agencies. Nonprofit organizations may rely on free modes of persuasion, such as a public service announcement (PSA).',
-                            thumbnail: 'https://s.gravatar.com/avatar/',
-                            artifacts: [{
-                              url: $scope.videoUrl,
-                              type: 'video'
-                            }, {
-                              url: $scope.videoUrl,
-                              type: 'video'
-
-                            }]
-
-                          };
-
-                          if ($scope.app.tags) {
-                            $scope.appTags = $scope.app.tags.join();
-                          }
-
-                        }
+                        $scope.size = '';
 
                         this.platforms = [
                             {
@@ -117,11 +73,108 @@
                               icon: 'fa-circle-o',
                             }];
 
+                        $scope.convertDate = function(utc) {
+                          var d = new Date(utc);
+                          var m_names = new Array("January", "February",
+                                  "March", "April", "May", "June", "July",
+                                  "August", "September", "October", "November",
+                                  "December");
+
+                          var curr_date = d.getDate();
+                          var curr_month = d.getMonth();
+                          var curr_year = d.getFullYear();
+                          return (curr_date + "-" + m_names[curr_month] + "-" + curr_year);
+                        }
+
+                        $scope.convertSize = function(size) {
+                          size = parseInt(size, 10);
+                          console.log('size:' + size);
+                          if (size < 1024) {
+                            return size + " KB";
+                          } else {
+                            var div = Math.floor(size / 1024);
+                            var rem = size % 1024;
+                            return div + "." + Math.round(rem / 100) + " MB";
+                          }
+                        }
+
+                        $scope.convertToSize = function(size) {
+
+                        }
+
+                        $scope.expandCollapseDescription = function() {
+                          if ($scope.collapsed) {
+                            $scope.collapsed = false;
+                          } else {
+                            $scope.collapsed = true;
+                          }
+                        }
+
+                        $scope.fetchApp = function() {
+                          // TODO: sync with actual user
+
+                          swaggerApi.apps
+                                  .getApp({
+                                    id: +$scope.appId,
+                                  })
+                                  .then(
+                                          function(response) {
+
+                                            console.log(response.data);
+                                            $scope.app = response.data;
+                                            $scope.size = $scope
+                                                    .convertSize($scope.app.size);
+                                            $scope.dateCreated = new Date(
+                                                    $scope
+                                                            .convertDate($scope.app.dateCreated));
+                                            $scope.dateModified = new Date(
+                                                    $scope
+                                                            .convertDate($scope.app.dateModified));
+                                            var tags = [];
+                                            for (var i = 0; i < $scope.app.tags.length; i++) {
+                                              tags
+                                                      .push($scope.app.tags[i].value);
+                                            }
+                                            $scope.appTags = tags.join();
+                                            var thumbnail = '';
+                                            var images = [];
+                                            var video = {
+                                              url: '',
+                                              description: '',
+                                              type: ''
+                                            };
+                                            for (var j = 0; j < $scope.app.artifacts.length; j++) {
+                                              if ($scope.app.artifacts[j].type
+                                                      .indexOf('thumb') >= 0) {
+                                                thumbnail = $scope.app.artifacts[j].url;
+                                              } else if ($scope.app.artifacts[j].type
+                                                      .indexOf('image') >= 0) {
+                                                images
+                                                        .push({
+                                                          url: $scope.app.artifacts[j].url,
+                                                          description: $scope.app.artifacts[j].description,
+                                                          type: 'image'
+                                                        });
+                                              } else if ($scope.app.artifacts[j].type
+                                                      .indexOf('video') >= 0) {
+                                                video.url = $scope.app.artifacts[j].url;
+                                                video.description = $scope.app.artifacts[j].description;
+                                                video.type = 'video';
+                                              }
+                                              ;
+                                            }
+                                            $scope.thumbnail = thumbnail;
+                                            $scope.images = images;
+                                            $scope.video = video;
+                                          });
+                        }
+
                         $scope.showPlatform = function() {
 
                           var selected = $filter('filter')($scope.platforms, {
                             name: $scope.app.platform
                           });
+                          $scope.chosenPlatform = selected[0].name;
                           return ($scope.app.platform && selected.length)
                                   ? selected[0].name : 'Not set';
 
@@ -133,7 +186,28 @@
 
                         }
 
-                        $scope.fetchAppData();
+                        // $scope.fetchAppData();
+                        $scope.fetchApp();
 
+                        $scope.sendAppData = function() {
+
+                          $scope.app.size = $scope.size * 1024;
+                          $scope.app.artifacts = [];
+                          for (var i = 0; i < $scope.images.length; i++) {
+                            $scope.app.artifacts.push($scope.images[i]);
+                          }
+                          $scope.platform = $scope.chosenPlatform;
+                          $scope.app.artifacts.push($scope.video);
+                          $scope.app.thumbnail = $scope.thumbnail;
+                          $scope.app.tags = $scope.appTags.split(',');
+                          console.log($scope.app);
+
+                          swaggerApi.apps.putApp({
+                            id: +$scope.appId,
+                            body: +$scope.app
+                          }).then(function(response) {
+                            console.log(response.data);
+                          });
+                        }
                       }]);
 }).call(this);

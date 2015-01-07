@@ -81,6 +81,7 @@
                                   })
                                   .then(
                                           function(response) {
+
                                             $scope.user = response.data;
                                             $scope.user.roleName = user
                                                     .roleIdToRoleName($scope.user.role);
