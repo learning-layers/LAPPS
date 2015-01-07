@@ -28,6 +28,8 @@
 
                         $scope.size = '';
 
+                        $scope.creator = {};
+
                         this.platforms = [
                             {
                               id: 0,
@@ -86,18 +88,6 @@
                           return (curr_date + "-" + m_names[curr_month] + "-" + curr_year);
                         }
 
-                        $scope.convertSize = function(size) {
-                          size = parseInt(size, 10);
-                          console.log('size:' + size);
-                          if (size < 1024) {
-                            return size + " KB";
-                          } else {
-                            var div = Math.floor(size / 1024);
-                            var rem = size % 1024;
-                            return div + "." + Math.round(rem / 100) + " MB";
-                          }
-                        }
-
                         $scope.convertToSize = function(size) {
 
                         }
@@ -120,13 +110,9 @@
                                   .then(
                                           function(response) {
 
-                                            console.log(response.data);
                                             $scope.app = response.data;
-                                            $scope.size = $scope
-                                                    .convertSize($scope.app.size);
-                                            $scope.dateCreated = new Date(
-                                                    $scope
-                                                            .convertDate($scope.app.dateCreated));
+                                            $scope.dateCreated = $scope
+                                                    .convertDate($scope.app.dateCreated);
                                             $scope.dateModified = new Date(
                                                     $scope
                                                             .convertDate($scope.app.dateModified));
@@ -136,7 +122,7 @@
                                                       .push($scope.app.tags[i].value);
                                             }
                                             $scope.appTags = tags.join();
-                                            var thumbnail = '';
+                                            var thumbnail = {};
                                             var images = [];
                                             var video = {
                                               url: '',
@@ -146,7 +132,9 @@
                                             for (var j = 0; j < $scope.app.artifacts.length; j++) {
                                               if ($scope.app.artifacts[j].type
                                                       .indexOf('thumb') >= 0) {
-                                                thumbnail = $scope.app.artifacts[j].url;
+                                                thumbnail.url = $scope.app.artifacts[j].url;
+                                                thumbnail.description = $scope.app.artifacts[j].description;
+                                                thumbnail.type = 'thumb';
                                               } else if ($scope.app.artifacts[j].type
                                                       .indexOf('image') >= 0) {
                                                 images
@@ -166,6 +154,8 @@
                                             $scope.thumbnail = thumbnail;
                                             $scope.images = images;
                                             $scope.video = video;
+
+                                            $scope.creator = $scope.app.creator;
                                           });
                         }
 
@@ -181,33 +171,52 @@
                         };
 
                         $scope.validateInput = function(data) {
-
                           if (!data) { return 'Input required'; }
-
                         }
 
-                        // $scope.fetchAppData();
-                        $scope.fetchApp();
+                        $scope.haha = function(data) {
+                          console.log("hahahahhaa");
+                        }
 
                         $scope.sendAppData = function() {
 
-                          $scope.app.size = $scope.size * 1024;
                           $scope.app.artifacts = [];
                           for (var i = 0; i < $scope.images.length; i++) {
                             $scope.app.artifacts.push($scope.images[i]);
                           }
                           $scope.platform = $scope.chosenPlatform;
                           $scope.app.artifacts.push($scope.video);
-                          $scope.app.thumbnail = $scope.thumbnail;
-                          $scope.app.tags = $scope.appTags.split(',');
-                          console.log($scope.app);
+                          $scope.app.artifacts.push($scope.thumbnail);
 
-                          swaggerApi.apps.putApp({
+                          var tempTags = [];
+                          $scope.app.tags = [];
+                          tempTags = $scope.appTags
+                                  .match(/(?=\S)[^,]+?(?=\s*(,|$))/g);
+                          for (var i = 0; i < tempTags.length; i++) {
+                            $scope.app.tags.push({
+                              id: i,
+                              value: tempTags[i]
+                            });
+                          }
+                          $scope.app.dateCreated = $scope.app.dateCreated
+                                  .toString();
+                          $scope.app.dateModified = Date.parse(
+                                  $scope.dateModified).toString();
+                          ;
+
+                          $scope.app.creator.dateRegistered = $scope.app.creator.dateRegistered
+                                  .toString();
+
+                          swaggerApi.apps.updateApp({
                             id: +$scope.appId,
-                            body: +$scope.app
+                            body: $scope.app
                           }).then(function(response) {
-                            console.log(response.data);
+
                           });
+
                         }
+
+                        $scope.fetchApp();
                       }]);
+
 }).call(this);
