@@ -21,28 +21,28 @@
       				 </div>
                      <div class="form-group" validate-input>
                		         <b><i class="fa fa-cogs"></i><span class="hspacer05"></span>Supported platform version</b>
-                             <input type="text" class="form-control" ng-model="newapp.supportedPlatformVersion" maxlength="100" name = "supportedPlatformVersion" data-toggle="tooltip" title="Minimum version of the platform on which app will be supported." tooltip required>
-                             <p class="help-block" ng-show="uploadForm.supportedPlatformVersion.$error.required">Supported platform versions are required.</p>
+                             <input type="text" class="form-control" ng-model="newapp.minPlatformRequired" maxlength="100" name = "minPlatformRequired" data-toggle="tooltip" title="Minimum version of the platform on which app will be supported." tooltip required>
+                             <p class="help-block" ng-show="uploadForm.minPlatformRequired.$error.required">Minimum supported platform version required.</p>
                      </div>	
                		 <div class="form-group" validate-input  ng-class="{ 'has-error': uploadForm.downloadUrl.$invalid && uploadForm.downloadUrl.$dirty }">
                		  		<b><i class="fa fa-download"></i><span class="hspacer05"></span>Download URL</b> 
-                            <input type="url" class="form-control" ng-model="newapp.downloadUrl" name = "downloadUrl" maxlength="300" required>
+                            <input type="url" class="form-control" ng-model="newapp.downloadUrl" name = "downloadUrl" maxlength="300" data-toggle="tooltip" title="Url to the download page on corresponding app store" tooltip required>
                             <p class="help-block" ng-show ="uploadForm.downloadUrl.$error.required">Download URL is required.</p>
                             <p class="help-block" ng-show="uploadForm.downloadUrl.$error.url">Invalid URL.</p> 
                      </div>          
                     <div class="form-group" validate-input>
                           	    <b><i class="fa fa-pencil"></i><span class="hspacer05"></span>Short Description</b>
-                                <input type="text" class="form-control" ng-model="newapp.shortDescription" name = "shortDescription" maxlength="200" data-toggle="tooltip" title="Short description about the app." tooltip required>
+                                <input type="text" class="form-control" ng-model="newapp.shortDescription" name = "shortDescription" maxlength="200" data-toggle="tooltip" title="Short description about the app." ng-valid = "haha()" tooltip required>
                                 <p class="help-block" ng-show="uploadForm.shortDescription.$error.required">Short description is required.</p>
                     </div>
                     <div class="form-group" validate-input>
                                 <b><i class="fa fa-pencil"></i><span class="hspacer05"></span>Long Description</b>
-                                <textarea class="form-control custom-control long-description" rows="3" nd-model = "newapp.longDescription" name = "longDescription" required></textarea>
+                                <textarea class="form-control custom-control long-description" rows="10" nd-model = "newapp.longDescription" name = "longDescription" required></textarea>
                                 <p class="help-block" ng-show="uploadForm.longDescription.$error.required">Long description is required.</p>
                     </div>
                     <div class="form-group" validate-input >
                       	     	<b><i class="fa fa-tags"></i><span class="hspacer05"></span>Tags</b>
-                             	<input type="text" class="form-control"ng-model="appTags" ng-pattern="[a-z ,]*$" name = "tags" ng-trim = "true" check-tags maxlength = "300" data-toggle="tooltip" title="Tags should be separated by comma. i.e tag1, tag2 etc" tooltip required>
+                             	<input type="text" class="form-control" ng-model="tags.value" ng-pattern="[a-z ,]*$" name ="tags" value="hahahaha" maxlength = "300" data-toggle="tooltip" title="Tags should be separated by comma. i.e tag1, tag2 etc" tooltip required>
                              	<p class="help-block" ng-show="uploadForm.tags.$error.required">Tags are required.</p>
                              	<p class="help-block" ng-messages="uploadForm.tags.$error.pattern">Only a-z , allowed.</p>
                     </div>
@@ -56,7 +56,7 @@
                     </div>
                     <div class="form-group" validate-input>
           	        		<b><i class="fa fa-arrows-h"></i><span class="hspacer05"></span>Size</b>
-                        	<input type="text" class="form-control" ng-model = "newapp.size" name = "size" maxlength="10" ng-pattern="[0-9]*$"  data-toggle="tooltip" title="Size of the app in KB. Only integer should be entered" tooltip  required >
+                        	<input type="text" class="form-control" ng-model = "size.value" name = "size" maxlength="10" ng-pattern="[0-9]*$"  data-toggle="tooltip" title="Size of the app in KB. Only integer should be entered" tooltip  required >
                         	<p class="help-block" ng-show="uploadForm.size.$error.required">Size of app is required.</p>
                         	<p class="help-block" ng-messages = "uploadForm.size.$error.pattern">Please enter only integer.</p>
                     </div>
@@ -72,13 +72,13 @@
                     </div>
                     <div class="form-group" validate-input ng-class="{ 'has-error': uploadForm.supportUrl.$invalid && uploadForm.supportUrl.$dirty }">
                     		<b><i class="fa fa-life-ring"></i><span class="hspacer05"></span>Support page</b>
-                        	<input type="url" class="form-control" ng-model = "newapp.supportUrl" name = "supportUrl" maxlength="300" required>
+                        	<input type="url" class="form-control" ng-model = "newapp.supportUrl" name = "supportUrl" maxlength="300" data-toggle="tooltip" title="Support page of the app." tooltip  required>
                         	<p class="help-block" ng-show="uploadForm.supportUrl.$error.required">Support Page information is required</p>
                         	<p class="help-block" ng-show="uploadForm.supportUrl.$error.url">Invalid URL!</p>
                     </div>
                     <div class="form-group">
                     		<b><i class="fa fa-calendar"></i><span class="hspacer05"></span>Last update</b>
-                        	<input type="date" class="form-control" ng-model = "newapp.dateModified" name = "dateModified" >
+                        	<input type="date" class="form-control" ng-model = "dateModified" name = "dateModified" >
                         	<p class="help-block" ng-show="uploadForm.dateModified.$error.required">Please choose valid date</p>
                     </div>
                     <div class="col-md-12">
@@ -86,21 +86,22 @@
                     </div>
                     <div class="form-group" ng-class="{ 'has-error': uploadForm.video.$invalid && uploadForm.video.$dirty }">
                     		<b><i class="fa fa-file-video-o"></i><span class="hspacer05"></span>Video</b>
-                        	<input class="form-control" type="url"  ng-model = "videoLink" name = "video" maxlength="300" data-toggle="tooltip" title="Url of app related video on Youtube." tooltip >
+                        	<input class="form-control" type="url"  ng-model = "video.url" name = "video" maxlength="300" data-toggle="tooltip" title="Url of app related video on Youtube." tooltip >
+                        	<span>Description</span><input type="text" class="form-control" ng-model = "video.description" maxlength="100" data-toggle="tooltip" title="Description that will be displayed below the Video in Carousel." tooltip >
                         	<span class="help-block" ng-show="uploadForm.video.$error.url">Invalid URL!</span>                      	
                     </div>
                     <div class="form-group" validate-input>
                     		<b><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Thumbnail</b>
-                        	<input type="text" class="form-control" ng-model = "newapp.thumbnail" name = "thumbnail" required>
+                        	<input type="text" class="form-control" ng-model = "thumbnail" name = "thumbnail" data-toggle="tooltip" title="Thumbnail for the app." tooltip required>
                         	<span class="help-block" ng-show="uploadForm.thumbnail.$error.required">Thumbnail is required</span>
                     </div>
                     <b><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Images</b>
                     <div id ="newImgField" ng-repeat = "newField in newFields track by $index">	
                     	
                     	<div class="form-group" id = {{newField.id}}>
-                        	<span>Url</span><input type="url" class="form-control" name = url+{{newField.id}} ng-model = "images[$index].url"  maxlength="300" data-toggle="tooltip" title="Url of the Image of carousel." tooltip >                       	
+                        	<span>Url</span><input type="url" class="form-control" name = url+{{newField.id}} ng-model = "images[$index].url"  maxlength="300" data-toggle="tooltip" title="Url of the Image of Carousel." tooltip >                       	
                     	</div>
-                    	<span>Description</span><input type="text" class="form-control" ng-model = "images[$index].description" maxlength="100">
+                    	<span>Description</span><input type="text" class="form-control" ng-model = "images[$index].description" maxlength="100" data-toggle="tooltip" title="Description that will be displayed below the Image in Carousel." tooltip >
                         <button type="button" id ={{newField.id}} class="btn btn-default" name ="{{newField.buttonName}}" ng-click = "addAnotherField($event)" >{{newField.buttonTitle}}</button>
                        
            		 	</div>
@@ -109,8 +110,8 @@
                     		<input type="submit" class = "btn btn-info" value="Save" />
                     </div>	    
           		 </form>	
+          		 <p>{{newapp}}</p>
         		</div>
-   			 </div>
-          	<p>{{newapp}}</p>	
+   			 </div>	
            </div>
        </div>

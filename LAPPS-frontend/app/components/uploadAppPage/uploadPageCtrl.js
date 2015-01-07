@@ -11,13 +11,47 @@
                   [
                       '$scope',
                       '$http',
-                      function($scope, $routeParams, $http) {
+                      'swaggerApi',
+                      function($scope, $http, swaggerApi) {
+
+                        $scope.newapp = {
+                          "id": 0,
+                          "name": "",
+                          "platform": "",
+                          "minPlatformRequired": "",
+                          "downloadUrl": "",
+                          "version": "",
+                          "size": 0,
+                          "sourceUrl": "",
+                          "supportUrl": "",
+                          "rating": 0,
+                          "dateCreated": "",
+                          "dateModified": "",
+                          "license": "",
+                          "shortDescription": "",
+                          "longDescription": "",
+                          "creator": {
+                            "oidcId": 0,
+                            "email": "",
+                            "username": "",
+                            "role": 0,
+                            "dateRegistered": "",
+                            "description": "",
+                            "website": ""
+                          },
+                          "artifacts": [],
+                          "tags": []
+                        }
                         // app tags
-                        this.appTags = "";
+                        $scope.tags = {};
+
+                        $scope.size = {};
 
                         var counter = 0;
 
                         var currentIndex = 0;
+
+                        $scope.dateModified = '';
 
                         $scope.newFields = [{
                           id: 0,
@@ -25,7 +59,9 @@
                           buttonTitle: 'Add'
                         }];
 
-                        this.videoUrl = "";
+                        $scope.video = {};
+
+                        $scope.thumbnail;
 
                         $scope.images = [];
 
@@ -81,60 +117,69 @@
 
                         $scope.createNewApp = function() {
 
-                          $scope.$broadcast('show-errors-check-validity');
+                          // $scope.$broadcast('show-errors-check-validity');
 
-                          if ($scope.uploadForm.$valid) {
-                            // split tags
-                            $scope.newapp.tags = $scope.appTags.split(',');
-                            // create new artifacts from each image url
-                            for (var i = 0; i < $scope.images.length; i++) {
-                              $scope.newapp.artifacts.push({
-                                url: $scope.images[i],
-                                type: 'image'
-                              })
+                          // if ($scope.uploadForm.$valid) {
+
+                          // split and get rid of white spaces
+                          console.log("tags:" + $scope.tags.value);
+                          if ($scope.tags.value) {
+                            var tempTags = [];
+                            tempTags = $scope.tags.value
+                                    .match(/(?=\S)[^,]+?(?=\s*(,|$))/g);
+
+                            for (var i = 0; i < tempTags.length; i++) {
+                              $scope.newapp.tags.push({
+                                id: $scope.hashCode(tempTags[i]),
+                                value: tempTags[i]
+                              });
                             }
-                            // create another artifact for video
-                            $scope.newapp.artifacts.push({
-                              url: $scope.videoUrl,
-                              type: 'video'
-                            })
-
-                            alert('App Saved');
-                            $scope.reset();
-                            // create json for new app
-                            var data = $scope.newapp;
                           }
 
+                          // create new artifacts from each image url
+
+                          for (var i = 0; i < $scope.images.length; i++) {
+                            $scope.newapp.artifacts.push({
+                              url: $scope.images[i].url,
+                              description: $scope.images[i].description,
+                              type: 'image'
+                            })
+                          }
+                          // create another artifact for video
+                          if ($scope.video.url) {
+                            $scope.newapp.artifacts.push({
+                              url: $scope.video.url,
+                              description: $scope.video.description,
+                              type: 'video'
+                            })
+                          }
+                          // create another artifact for thumbnail
+                          $scope.newapp.artifacts.push({
+                            url: $scope.thumbnail,
+                            description: '',
+                            type: 'thumb'
+                          })
+                          if ($scope.dateModified) {
+                            console.log("not empty");
+                            $scope.newapp.dateModified = Date.parse(
+                                    $scope.dateModified).toString();
+                          }
+
+                          $scope.newapp.size = parseInt($scope.size.value);
+                          console.log($scope.newapp);
+
+                          // post json
+                          swaggerApi.apps.createApp({
+                            accessToken: 'test_token',
+                            body: $scope.newapp
+                          }).then(function(response) {
+
+                          });
+
+                          // $scope.reset();
+                          // }
+
                         };
-
-                        $scope.reset = function() {
-                          $scope.$broadcast('show-errors-reset');
-                          $scope.newapp = {
-                            id: ' ', // have to get latest id?
-                            name: ' ',
-                            platform: ' ',
-                            supportedPlatformVersion: ' ',
-                            downloadUrl: ' ',
-                            version: ' ',
-                            sizeKB: 0,
-                            sourceUrl: ' ',
-                            supportUrl: ' ',
-                            developer: {
-                              name: ' ',
-                              oidcId: 0
-                            },
-                            rating: 0,
-                            tags: [],
-                            dateCreated: ' ',
-                            dateModified: ' ',
-                            licence: ' ',
-                            shortDescription: ' ',
-                            longDescription: ' ',
-                            thumbnail: ' ',
-                            artifacts: []
-
-                          };
-                        }
 
                         $scope.addAnotherField = function($event) {
                           if ($event.currentTarget.name == 'add') {
@@ -159,6 +204,49 @@
                             }
                           }
                         };
+                        $scope.reset = function() {
+
+                          $scope.newapp = {
+                            "id": 0,
+                            "name": "",
+                            "platform": "",
+                            "minPlatformRequired": "",
+                            "downloadUrl": "",
+                            "version": "",
+                            "size": 0,
+                            "sourceUrl": "",
+                            "supportUrl": "",
+                            "rating": 0,
+                            "dateCreated": "",
+                            "dateModified": "",
+                            "license": "",
+                            "shortDescription": "",
+                            "longDescription": "",
+                            "creator": {
+                              "oidcId": 0,
+                              "email": "",
+                              "username": "",
+                              "role": 0,
+                              "dateRegistered": "",
+                              "description": "",
+                              "website": ""
+                            },
+                            "artifacts": [],
+                            "tags": []
+                          }
+                        }
+
+                        $scope.hashCode = function(str) {
+                          var hashValue = 0;
+                          if (str.length == 0) return hashValue;
+                          for (i = 0; i < str.length; i++) {
+                            char = str.charCodeAt(i);
+                            hashValue = ((hashValue << 5) - hashValue) + char;
+                            hashValue = hashValue & hashValue;
+                          }
+                          console.log("hashvalue:" + hashValue);
+                          return hashValue;
+                        }
 
                       }]);
 
