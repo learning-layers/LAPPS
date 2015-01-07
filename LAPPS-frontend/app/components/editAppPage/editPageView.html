@@ -1,6 +1,5 @@
 <div class="row">
   <div class="col-md-12 thumbnail" id="appEdit">
-  <form name = "editForm">
     <div class="title">
       <h2>
         <a href="#"  editable-text="app.name" onbeforesave="validateInput($data)" e-maxlength ="100">{{ app.name|| 'empty' }}</a>
@@ -144,8 +143,8 @@
             <dfn><i class="fa fa-file-video-o"></i><span class="hspacer05"></span>Video</dfn>
           </dt>
           <dd class ="hspacer07">
-                <div class="video-container">
-       				 <iframe class="editableImg" ng-src="{{video.url}}" frameborder="0 " allowfullscreen></iframe>
+                <div class="videoWrapper">
+       				 <iframe class="editableImg" ng-src="{{video.url}}" frameborder="0 " allowfullscreen ></iframe>
       			</div>
           		<label>Url:</label><a href="#" editable-url="video.url" e-maxlength = "300">{{ video.url || 'empty' }} </a>
           </dd>
@@ -168,6 +167,5 @@
 		  <button class ="btn btn-default" type = "button" ng-click ="sendAppData()">Save</button>
 		  </div>	
     </div>
-    </form>
   </div>
  </div>

@@ -208,6 +208,7 @@
                                   .toString();
 
                           swaggerApi.apps.updateApp({
+                            accessToken: 'test_token',
                             id: +$scope.appId,
                             body: $scope.app
                           }).then(function(response) {
