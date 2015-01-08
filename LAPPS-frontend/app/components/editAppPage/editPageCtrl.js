@@ -90,21 +90,6 @@
                           return (curr_date + "-" + m_names[curr_month] + "-" + curr_year);
                         }
 
-                        marked.setOptions({
-                          renderer: new marked.Renderer(),
-                          gfm: true,
-                          tables: true,
-                          breaks: false,
-                          pedantic: false,
-                          sanitize: true,
-                          smartLists: true,
-                          smartypants: false
-                        });
-
-                        $scope.convertToSize = function(size) {
-
-                        }
-
                         $scope.expandCollapseDescription = function() {
                           if ($scope.collapsed) {
                             $scope.collapsed = false;
@@ -165,7 +150,8 @@
                                               ;
                                             }
 
-                                            $scope.markdownLongDescription = marked($scope.app.longDescription);
+                                            $scope.size = $scope.app.size;
+
                                             $scope.thumbnail = thumbnail;
                                             $scope.images = images;
                                             $scope.video = video;
@@ -189,17 +175,6 @@
                           if (!data) { return 'Input required'; }
                         }
 
-                        $scope.hashCode = function(str) {
-                          var hashValue = 0;
-                          if (str.length == 0) return hashValue;
-                          for (i = 0; i < str.length; i++) {
-                            char = str.charCodeAt(i);
-                            hashValue = ((hashValue << 5) - hashValue) + char;
-                            hashValue = hashValue & hashValue;
-                          }
-                          return hashValue;
-                        }
-
                         $scope.sendAppData = function() {
 
                           $scope.app.artifacts = [];
@@ -216,7 +191,6 @@
                                   .match(/(?=\S)[^,]+?(?=\s*(,|$))/g);
                           for (var i = 0; i < tempTags.length; i++) {
                             $scope.app.tags.push({
-                              id: $scope.hashCode(tempTags[i]),
                               value: tempTags[i]
                             });
                           }
@@ -226,14 +200,18 @@
                                   $scope.dateModified).toString();
                           ;
 
+                          $scope.app.size = parseInt($scope.size);
+
                           $scope.app.creator.dateRegistered = $scope.app.creator.dateRegistered
                                   .toString();
-                          $scope.app.longDescription = $scope.markdownLongDescription;
 
+                          // console.log($scope.app);
                           swaggerApi.apps.updateApp({
                             accessToken: 'test_token',
                             id: +$scope.appId,
                             body: $scope.app
+                          }).then(function(response) {
+                            alert('Success');
                           });
 
                         }

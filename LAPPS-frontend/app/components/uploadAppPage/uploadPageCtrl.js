@@ -154,7 +154,6 @@
 
                               for (var i = 0; i < tempTags.length; i++) {
                                 $scope.newapp.tags.push({
-                                  id: $scope.hashCode(tempTags[i]),
                                   value: tempTags[i]
                                 });
                               }
@@ -257,17 +256,6 @@
                             "artifacts": [],
                             "tags": []
                           }
-                        }
-
-                        $scope.hashCode = function(str) {
-                          var hashValue = 0;
-                          if (str.length == 0) return hashValue;
-                          for (i = 0; i < str.length; i++) {
-                            char = str.charCodeAt(i);
-                            hashValue = ((hashValue << 5) - hashValue) + char;
-                            hashValue = hashValue & hashValue;
-                          }
-                          return hashValue;
                         }
 
                       }]);

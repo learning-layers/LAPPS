@@ -7,9 +7,9 @@
       	            <div class="col-md-12">
              			    <h2>General Information</h2>
         	 	    </div>  	 	                
-                     <div class="form-group" validate-input >
+                     <div class="form-group" validate-input  >
                    			<b><i class="fa fa-plus"></i><span class="hspacer06"></span>Name</b>
-                            <input type="text" class="form-control" name="appname" maxlength="100" ng-model="newapp.name" data-toggle="tooltip" title="Name of the application!" tooltip required>
+                            <input type="text" class="form-control" name="appname" maxlength="100" ng-model="newapp.name" data-toggle="tooltip" title="Name of the application!" tooltip  required>
                             <p class="help-block" ng-show="uploadForm.appname.$error.required">The App's name is required.</p>
                      </div>
                      <div class ="form-group" validate-input>
@@ -85,10 +85,11 @@
                         <h2>Media</h2>
                     </div>
                     <div class="form-group" ng-class="{ 'has-error': uploadForm.video.$invalid && uploadForm.video.$dirty }">
-                    		<b><i class="fa fa-file-video-o"></i><span class="hspacer05"></span>Video</b>
+                    		<b><i class="fa fa-file-video-o"></i><span class="hspacer05"></span>Video</b>                   		
                         	<input class="form-control" type="url"  ng-model = "video.url" name = "video" maxlength="300" data-toggle="tooltip" title="Url of app related video on Youtube." tooltip >
+                        	<span class="help-block" ng-show="uploadForm.video.$error.url">Invalid URL!</span>
                         	<span>Description</span><input type="text" class="form-control" ng-model = "video.description" maxlength="100" data-toggle="tooltip" title="Description that will be displayed below the Video in Carousel." tooltip >
-                        	<span class="help-block" ng-show="uploadForm.video.$error.url">Invalid URL!</span>                      	
+                        	                      	
                     </div>
                     <div class="form-group" validate-input>
                     		<b><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Thumbnail</b>
@@ -97,10 +98,14 @@
                     </div>
                     <b><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Images</b>
                     <div id ="newImgField" ng-repeat = "newField in newFields track by $index">	
-                    	
-                    	<div class="form-group" id = {{newField.id}}>
-                        	<span>Url</span><input type="url" class="form-control" name = url+{{newField.id}} ng-model = "images[$index].url"  maxlength="300" data-toggle="tooltip" title="Url of the Image of Carousel." tooltip >                       	
-                    	</div>
+                           	
+                    	 <ng-form name="urlForm"  >
+                    	 <div class = "form-group" ng-class="{ 'has-error': urlForm.imgUrl.$invalid && urlForm.imgUrl.$dirty }">
+                        	<span>Url</span><input type="url" class="form-control" name = "imgUrl" ng-model = "images[$index].url"  maxlength="300" data-toggle="tooltip" title="Url of the Image of Carousel." tooltip >    
+                        	<span class="help-block" ng-show="urlForm.imgUrl.$error.url">Invalid Url!</span>  
+                        	</div>
+                       	 </ng-form>                 	
+                   	
                     	<span>Description</span><input type="text" class="form-control" ng-model = "images[$index].description" maxlength="100" data-toggle="tooltip" title="Description that will be displayed below the Image in Carousel." tooltip >
                         <button type="button" id ={{newField.id}} class="btn btn-default" name ="{{newField.buttonName}}" ng-click = "addAnotherField($event)" >{{newField.buttonTitle}}</button>
                        

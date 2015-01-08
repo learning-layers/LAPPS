@@ -56,7 +56,7 @@
           </dl>               
           </div>
           
-          <div class="col-md-6" id = "longDescriptionMarkdown">
+          <div class="col-md-6" >
           <dl>
           <br>
           <br>
@@ -65,7 +65,7 @@
             <dfn><i class="fa fa-pencil"></i><span class="hspacer05"></span>Long Description</dfn>
           </dt>
           <dd class ="hspacer07" >
-          <span editable-textarea="markdownLongDescription" e-form="longDescForm" ng-bind-html="markdownLongDescription | unsafe" e-rows="20" e-style="width:180%" onbeforesave="validateInput($data)" e-maxlength = "10000">{{ markdownLongDescription || 'empty' }}</span>
+          <span editable-textarea="app.longDescription" e-form="longDescForm" e-rows="20" e-style="width:180%" onbeforesave="validateInput($data)" e-maxlength = "10000">{{ app.longDescription || 'empty' }}</span>
           </dd>  
 		  <dd class ="hspacer07">
 				<button class="btn btn-default" ng-click="longDescForm.$show()" ng-hide="longDescForm.$visible">
@@ -93,7 +93,7 @@
             <dfn><i class="fa fa-arrows-h"></i><span class="hspacer05"></span>Size(KB)</dfn>
           </dt>
           <dd class ="hspacer07"> 
-              <a href="#" editable-text="app.size" onbeforesave="validateInput($data)"  e-maxlength = "10">{{ app.size || 'empty' }}</a>
+              <a href="#" editable-text="size" onbeforesave="validateInput($data)"  e-maxlength = "10">{{ size || 'empty' }}</a>
           </dd>
           
           <dt>
