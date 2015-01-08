@@ -106,7 +106,7 @@
                       for (var i = 0; i < this.platforms.length; i++) {
                         if (this.platforms[i].id == id) { return this.platforms[i]; }
                       }
-                      return -1;
+                      return null;
                     }
 
                     /**
@@ -123,7 +123,7 @@
                       for (var i = 0; i < this.platforms.length; i++) {
                         if (this.platforms[i].name.toLowerCase() == name) { return this.platforms[i]; }
                       }
-                      return -1;
+                      return null;
                     }
                     /**
                      * @function

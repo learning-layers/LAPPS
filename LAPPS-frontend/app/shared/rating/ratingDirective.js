@@ -10,7 +10,14 @@
       templateUrl: 'shared/rating/ratingView.html',
       link: function(scope, iElement, iAttrs, ctrl) {
         iAttrs.$observe('value', function(value) {
-          scope.value = window.Math.ceil(parseFloat(value));
+
+          var f = parseFloat(value);
+          if (f > 5) {
+            f = 5;
+          } else if (f < 0) {
+            f = 0;
+          }
+          scope.value = window.Math.ceil(f);
         });
       }
     };

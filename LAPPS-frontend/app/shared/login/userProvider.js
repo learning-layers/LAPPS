@@ -148,7 +148,7 @@
                                                               self.token = window.localStorage['access_token'];// needed
                                                               // for
                                                               // requests
-                                                              getDatabaseUserInfo();
+                                                              // getDatabaseUserInfo();
                                                               self
                                                                       .loginCallback(true);
                                                             } else {

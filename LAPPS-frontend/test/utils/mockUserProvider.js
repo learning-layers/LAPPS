@@ -26,6 +26,13 @@
         },
         signedIn: true,
         token: 'asdasd',
+        roleIdToRoleName: function(id) {
+          if (id == 1) { return 'User'; }
+          if (id == 2) { return 'Dev. Applicant'; }
+          if (id == 3) { return 'Developer'; }
+          if (id == 4) { return 'Admin'; }
+          return 'User';
+        },
         init: function(loginCallback) {
           loginCallback(true);
         },
@@ -37,6 +44,20 @@
         },
         getAccessToken: function() {
           return window.localStorage['access_token'];
+        },
+        isAdmin: function(id) {
+          if (typeof id === 'undefined' || id === null) {
+            return this.role == 4;
+          } else {
+            return id == 4;
+          }
+        },
+        isDeveloper: function(id) {
+          if (typeof id === 'undefined' || id === null) {
+            return this.role == 3;
+          } else {
+            return id == 3;
+          }
         }
       }
     }];

@@ -17,8 +17,9 @@
                       '$http',
                       'swaggerApi',
                       'md5',
+                      'convert',
                       function($scope, $routeParams, user, $http, swaggerApi,
-                              md5) {
+                              md5, convert) {
                         /**
                          * @field
                          * @type string
@@ -43,27 +44,6 @@
                          */
                         $scope.avatarSize = 150;
 
-                        /**
-                         * @function
-                         * @type string
-                         * @memberOf lapps.lappsControllers.appDetailCtrl
-                         * @param {number}
-                         *          utc timestamp.
-                         * @description Converts timestamp in date string
-                         *              day-month-year.
-                         */
-                        $scope.convertDate = function(utc) {
-                          var d = new Date(utc);
-                          var m_names = new Array("January", "February",
-                                  "March", "April", "May", "June", "July",
-                                  "August", "September", "October", "November",
-                                  "December");
-
-                          var curr_date = d.getDate();
-                          var curr_month = d.getMonth();
-                          var curr_year = d.getFullYear();
-                          return (curr_date + "-" + m_names[curr_month] + "-" + curr_year);
-                        }
                         $scope.user.avatar = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QAJwBxAIVCQz2jAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAB3RJTUUH3gwJFTshNi7riQAAAg5JREFUOMutkr1rFGEQh595d/dub0MSv4iI1xwIBoTgR87CSo1/gIo2XqukuwiChyjaqbE8TCEIghC1kFiksxUCsoVV/Aia84JfScw3WXN3uzsW7umJBgX9NTMDM8/7e4eBf5QABOWcNPOW2FQE4BUr6wMSSBewAcgAFhADDa9YGQ/KOZPUv4AkKOcGgAvA5+S1CNAEbpL6pFesTAblnHjFirYCTF2sm5Nue1ZhwqAqEBo0FAiBKIkjQTl3JQESlHM/f+HiyPEt83a6q2/p/eUDKzN9dWM8VGxQFSTujGrVdBwtKmwGznnFymhzd3L+0YnTQD+glqqEYuifftHtaGxanKoiVkdUn0rH4YLARoVrwKgBuXPj2MM88ECN1gWVoa273ry1O61QrUxNbTdUkzKoBsbOzjluz6zjti1bqb3el8UlAei9fi/l2PXuWuie3Z0dO5pxVtIg7KzNWwdXp+x5y9V3Tnv8OrUp/pRyV9usYNoiDoyJ7kp+cLgfONO0Ciquveb0ZMd2/DiIb4uP1WhQ7wgmZno+NKJ0XYgfG+CWXyr0AlcBG4S1MNN4WjnyfHZ120KsotPL2Tm/euiVXz38cvxjb7URpYb80qn9ilwSgPzgMH6pQJLvAW4nhyMtFixgAHjilwrfZ2ygdRi/VHgG7MsPDm8H7ieQgl8qTDV7/qjfNa03KH8Labr87/oKw03euhH4vI8AAAAASUVORK5CYII=';
                         /**
                          * @function
@@ -84,8 +64,8 @@
                                             $scope.user = response.data;
                                             $scope.user.roleName = user
                                                     .roleIdToRoleName($scope.user.role);
-                                            $scope.user.memberScince = $scope
-                                                    .convertDate($scope.user.dateRegistered);
+                                            $scope.user.memberScince = convert
+                                                    .date($scope.user.dateRegistered);
                                             $scope.user.avatar = 'https://s.gravatar.com/avatar/'
                                                     + md5
                                                             .createHash($scope.user.email
@@ -97,29 +77,7 @@
                                                     + '&d=identicon';
 
                                           });
-                          /*
-                           * $scope.user.role = 'Developer'; $scope.user.name =
-                           * 'John Doe'; $scope.user.email =
-                           * 'john@mail1.foobar'; $scope.user.homepage =
-                           * 'https://www.google.com'; $scope.user.memberSince =
-                           * '13-November-14'; $scope.user.description = 'Lorem
-                           * ipsum dolor sit amet, consetetur sadipscing elitr,
-                           * sed diam nonumy eirmod tempor invidunt ut labore et
-                           * dolore magna aliquyam erat, sed diam voluptua. At
-                           * vero eos et accusam et justo duo dolores et ea
-                           * rebum. Stet clita kasd gubergren, no sea takimata
-                           * sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                           * dolor sit amet, consetetur sadipscing elitr, sed
-                           * diam nonumy eirmod tempor invidunt ut labore et
-                           * dolore magna aliquyam erat, sed diam voluptua. At
-                           * vero eos et accusam et justo duo dolores et ea
-                           * rebum. Stet clita kasd gubergren, no sea takimata
-                           * sanctus est.'; $scope.user.avatar =
-                           * 'https://s.gravatar.com/avatar/' +
-                           * md5.createHash($scope.user.email.trim()
-                           * .toLowerCase() || $scope.user.name) + '?s=' +
-                           * $scope.avatarSize + '&d=identicon';
-                           */
+
                         }
                         /**
                          * @function
