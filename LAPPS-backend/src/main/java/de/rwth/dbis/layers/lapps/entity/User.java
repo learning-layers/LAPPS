@@ -96,6 +96,10 @@ public class User implements Entity, Comparable<User> {
     return id;
   }
 
+  public void deleteId() {
+    id = 0L;
+  }
+
   public Date getDateRegistered() {
     return dateRegistered;
   }

@@ -216,6 +216,10 @@ public class App implements Entity, Comparable<App> {
     return id;
   }
 
+  public void deleteId() {
+    id = 0L;
+  }
+
   /**
    * 
    * Override equals for an {@link App} using field id.

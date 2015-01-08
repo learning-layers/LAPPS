@@ -289,6 +289,7 @@ public class ApplicationsResource {
     if (!OIDCAuthentication.isDeveloper(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
+    createdApp.deleteId();
     createdApp = entitiyFacade.save(createdApp);
     try {
       ObjectMapper mapper = new ObjectMapper();

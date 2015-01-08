@@ -49,4 +49,8 @@ public class Tag implements Entity {
   public Long getId() {
     return id;
   }
+
+  public void deleteId() {
+    id = 0L;
+  }
 }
