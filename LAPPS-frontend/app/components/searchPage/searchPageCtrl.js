@@ -16,9 +16,9 @@
                       'user',
                       'platform',
                       '$location',
-
+                      'convert',
                       function($scope, swaggerApi, $routeParams, user,
-                              platform, $location) {
+                              platform, $location, convert) {
                         /**
                          * @field
                          * @type object
@@ -103,28 +103,14 @@
                          * @description The state of the advanced search area.
                          */
                         $scope.collapsed = true;
+
                         /**
                          * @function
-                         * @type string
-                         * @memberOf lapps.lappsControllers.appDetailCtrl
-                         * @param {number}
-                         *          utc timestamp.
-                         * @description Converts timestamp in date string
-                         *              day-month-year.
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @param {object}
+                         *          usr user
+                         * @description Shows only app results of user ust
                          */
-                        $scope.convertDate = function(utc) {
-                          var d = new Date(utc);
-                          var m_names = new Array("January", "February",
-                                  "March", "April", "May", "June", "July",
-                                  "August", "September", "October", "November",
-                                  "December");
-
-                          var curr_date = d.getDate();
-                          var curr_month = d.getMonth();
-                          var curr_year = d.getFullYear();
-                          return (curr_date + "-" + m_names[curr_month] + "-" + curr_year);
-                        }
-
                         $scope.listAppsByUser = function(usr) {
                           $scope.searchUser = usr;
 
@@ -225,10 +211,10 @@
                                               $scope.apps[i].platformObj = platform
                                                       .getPlatformByName($scope.apps[i].platform);
 
-                                              $scope.apps[i].dateCreated = $scope
-                                                      .convertDate($scope.apps[i].dateCreated);
-                                              $scope.apps[i].dateModified = $scope
-                                                      .convertDate($scope.apps[i].dateModified);
+                                              $scope.apps[i].dateCreated = convert
+                                                      .date($scope.apps[i].dateCreated);
+                                              $scope.apps[i].dateModified = convert
+                                                      .date($scope.apps[i].dateModified);
                                             }
                                           });
                         }

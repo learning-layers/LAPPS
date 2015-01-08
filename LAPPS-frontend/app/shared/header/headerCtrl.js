@@ -7,8 +7,14 @@
 (function() {
   angular.module('lappsControllers').controller(
           'headerCtrl',
-          ['$scope', '$location', 'user', 'platform', '$timeout', "$route",
-              function($scope, $location, user, platform, $timeout, $route) {
+          [
+              '$scope',
+              '$location',
+              'user',
+              'platform',
+              '$interval',
+              "$route",
+              function($scope, $location, user, platform, $interval, $route) {
                 var SIGN_IN = 'Sign in';
                 var SIGN_OUT = 'Sign out';
                 /**
@@ -82,7 +88,7 @@
 
                   $scope.isloggedIn = success;
 
-                  $timeout($scope.adjustSearchBar, 100);
+                  $interval($scope.adjustSearchBar, 100, 1);
                   if (!success) {
                   } else {
                     $scope.userData = user.data;
@@ -127,7 +133,7 @@
                   // needed to wait after rendering of the element is finished
                   // (we need the new width of the element)
                   // due to queue 0 is enough waiting time
-                  $timeout($scope.adjustPositions, 0);
+                  $interval($scope.adjustPositions, 0, 1);
                   $route.reload();
                 }
                 /**
@@ -137,13 +143,15 @@
                  *              time. If yes, displays a helping notification on
                  *              how to change the platform filter.
                  */
-                $scope.displayPlatfromHelper = function() {
-                  if (!window.localStorage['firstVisit']) {
+                $scope.displayPlatformHelper = function() {
+                  if (!window.localStorage['firstVisit']
+                          || window.localStorage['firstVisit'] == 'false') {
+
                     $scope.helperTextVisible = true;
                     window.localStorage['firstVisit'] = true;
-                    $timeout(function() {
+                    $interval(function() {
                       $scope.helperTextVisible = false
-                    }, 15000);
+                    }, 15000, 1);
                   }
                 }
                 /**
@@ -154,13 +162,15 @@
                  */
                 $scope.adjustPlatformHelperArrow = function() {
                   var elem = $('#platform-selector');
-                  var center = elem.offset().left + elem.width() / 2;
-                  if (center > 0) {// not collapsed
-                    $('#help-text > .arrow-up').css('left', center + 'px');
-                  } else {
-                    elem = $('.navbar-header > .navbar-toggle');
-                    center = elem.offset().left + elem.width() / 2;
-                    $('#help-text > .arrow-up').css('left', center + 'px');
+                  if (elem) {
+                    var center = elem.offset().left + elem.width() / 2;
+                    if (center > 0) {// not collapsed
+                      $('#help-text > .arrow-up').css('left', center + 'px');
+                    } else {
+                      elem = $('.navbar-header > .navbar-toggle');
+                      center = elem.offset().left + elem.width() / 2;
+                      $('#help-text > .arrow-up').css('left', center + 'px');
+                    }
                   }
                 }
                 /**
@@ -172,16 +182,18 @@
                  */
                 $scope.adjustSearchBar = function() {
                   var elem = $('.navbar-nav > li:last-child');
-                  var right = elem.position().left + elem.width();
-                  if (right > 0) {// not collapsed
-                    $('.search-bar.hidden-xs').css('left', right + 'px');
-                  }
-                  elem = $('.navbar-right');
+                  if (elem) {
+                    var right = elem.position().left + elem.width();
+                    if (right > 0) {// not collapsed
+                      $('.search-bar.hidden-xs').css('left', right + 'px');
+                    }
+                    elem = $('.navbar-right');
 
-                  var left = elem.width();
+                    var left = elem.width();
 
-                  if (left > 0) {// not collapsed
-                    $('.search-bar.hidden-xs').css('right', left + 'px');
+                    if (left > 0) {// not collapsed
+                      $('.search-bar.hidden-xs').css('right', left + 'px');
+                    }
                   }
                 }
 
@@ -204,7 +216,7 @@
                     $scope.searchQuery = '';
                   }
                   $scope.adjustPositions();
-                  $scope.displayPlatfromHelper();
+                  $scope.displayPlatformHelper();
                 });
               }]);
 }).call(this);

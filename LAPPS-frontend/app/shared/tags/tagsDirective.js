@@ -9,13 +9,13 @@
       restrict: 'E',
       templateUrl: 'shared/tags/tagsView.html',
       link: function(scope, iElement, iAttrs, ctrl) {
-        scope.minLimit = iAttrs.min | 5;
+        scope.minLimit = +iAttrs.min || 5;
         scope.noLink = false;
         if (iAttrs.nolink) {
           scope.noLink = iAttrs.nolink;
         }
         scope.tagLimit = scope.minLimit;
-        scope.maxLimit = iAttrs.max | 20;
+        scope.maxLimit = +iAttrs.max || 20;
         iAttrs.$observe('value', function(value) {
           if (value) {
             scope.tags = JSON.parse(value);

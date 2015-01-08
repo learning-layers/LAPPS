@@ -16,8 +16,9 @@
                       'swaggerApi',
                       'platform',
                       '$document',
+                      'convert',
                       function($scope, $routeParams, swaggerApi, platform,
-                              $document) {
+                              $document, convert) {
                         /**
                          * @field
                          * @type string
@@ -66,16 +67,18 @@
 
                         $scope.alternativePlatforms = [];
 
-                        marked.setOptions({
-                          renderer: new marked.Renderer(),
-                          gfm: true,
-                          tables: true,
-                          breaks: false,
-                          pedantic: false,
-                          sanitize: true,
-                          smartLists: true,
-                          smartypants: false
-                        });
+                        if (marked) {
+                          marked.setOptions({
+                            renderer: new marked.Renderer(),
+                            gfm: true,
+                            tables: true,
+                            breaks: false,
+                            pedantic: false,
+                            sanitize: true,
+                            smartLists: true,
+                            smartypants: false
+                          });
+                        }
 
                         /**
                          * @function
@@ -83,24 +86,6 @@
                          * @description Toggles
                          *              {@link lapps.lappsControllers.appDetailCtrl.$scope.collapsed}.
                          */
-
-                        /**
-                         * @function
-                         * @memberOf lapps.lappsControllers.appDetailCtrl
-                         * @description Toggles
-                         *              {@link lapps.lappsControllers.appDetailCtrl.$scope.collapsed}.
-                         */
-
-                        marked.setOptions({
-                          renderer: new marked.Renderer(),
-                          gfm: true,
-                          tables: true,
-                          breaks: false,
-                          pedantic: false,
-                          sanitize: true,
-                          smartLists: true,
-                          smartypants: false
-                        });
                         $scope.expandCollapseDescription = function() {
                           if ($scope.collapsed) {
                             $scope.collapsed = false;
@@ -109,49 +94,6 @@
                           }
                         }
 
-                        /**
-                         * @function
-                         * @type string
-                         * @memberOf lapps.lappsControllers.appDetailCtrl
-                         * @param {number|string}
-                         *          size size in KB to convert to MB.
-                         * @description Converts size in KB to MB with 1 digit
-                         *              after the comma. If size is less than
-                         *              1024 the value is not changed. The
-                         *              string MB or KB is appended to the
-                         *              result (12.5 MB).
-                         */
-                        $scope.convertSize = function(size) {
-                          size = parseInt(size, 10);
-                          if (size < 1024) {
-                            return size + " KB";
-                          } else {
-                            var div = Math.floor(size / 1024);
-                            var rem = size % 1024;
-                            return div + "." + Math.round(rem / 100) + " MB";
-                          }
-                        }
-                        /**
-                         * @function
-                         * @type string
-                         * @memberOf lapps.lappsControllers.appDetailCtrl
-                         * @param {number}
-                         *          utc timestamp.
-                         * @description Converts timestamp in date string
-                         *              day-month-year.
-                         */
-                        $scope.convertDate = function(utc) {
-                          var d = new Date(utc);
-                          var m_names = new Array("January", "February",
-                                  "March", "April", "May", "June", "July",
-                                  "August", "September", "October", "November",
-                                  "December");
-
-                          var curr_date = d.getDate();
-                          var curr_month = d.getMonth();
-                          var curr_year = d.getFullYear();
-                          return (curr_date + "-" + m_names[curr_month] + "-" + curr_year);
-                        }
                         /**
                          * @field
                          * @type number
@@ -190,31 +132,22 @@
                         $scope.stopCarousel = function() {
                           $scope.interval = -1;
                         }
-                        /**
-                         * @function
-                         * @type string
-                         * @memberOf lapps.lappsControllers.appDetailCtrl
-                         * @param {string}
-                         *          url
-                         * @description Shortens a given urlby only displaying
-                         *              the TLD.
-                         */
-                        $scope.shortenUrl = function(url) {
-                          if (typeof url === 'undefined' || url === null) { return ''; }
 
-                          var urlCopy = url.substring(0);
+                        var entityMap = {
+                          "&": "&amp;",
+                          "<": "&lt;",
+                          ">": "&gt;",
+                          '"': '&quot;',
+                          "'": '&#39;',
+                          "/": '&#x2F;'
+                        };
 
-                          var wwwPos = urlCopy.indexOf('www.');
-                          if (wwwPos >= 0) {
-                            urlCopy = urlCopy.substring(wwwPos + 4);
-                          }
-                          var slashPos = urlCopy.indexOf('/');
-                          if (slashPos >= 0) {
-                            urlCopy = urlCopy.substring(0, slashPos);
-                          }
-                          return urlCopy;
+                        function escapeHtml(string) {
+                          return String(string).replace(/[&<>"'\/]/g,
+                                  function(s) {
+                                    return entityMap[s];
+                                  });
                         }
-
                         swaggerApi.apps
                                 .getApp({
                                   id: +$scope.appId
@@ -222,7 +155,16 @@
                                 .then(
                                         function(response) {
                                           $scope.app = response.data;
-                                          $scope.app.longDescriptionMarkdown = marked($scope.app.longDescription);
+                                          if (marked) {
+                                            $scope.app.longDescriptionMarkdown = marked($scope.app.longDescription);
+                                          } else {// since marked cannot safely
+                                                  // escape malicius html and
+                                                  // angularjs is told to accept
+                                                  // the output, escape it
+                                                  // explicitly
+                                            $scope.app.longDescriptionMarkdown = escapeHtml($scope.app.longDescription);
+                                          }
+
                                           var thumbnail = '';
                                           var images = [];
                                           var videos = [];
@@ -255,18 +197,18 @@
                                           $scope.app.videos = videos;
                                           $scope.app.platformObj = platform
                                                   .getPlatformByName($scope.app.platform);
-                                          $scope.app.sourceUrlShort = $scope
-                                                  .shortenUrl($scope.app.sourceUrl);
-                                          $scope.app.supportUrlShort = $scope
-                                                  .shortenUrl($scope.app.supportUrl);
+                                          $scope.app.sourceUrlShort = convert
+                                                  .url($scope.app.sourceUrl);
+                                          $scope.app.supportUrlShort = convert
+                                                  .url($scope.app.supportUrl);
 
-                                          $scope.size = $scope
-                                                  .convertSize($scope.app.size);
+                                          $scope.size = convert
+                                                  .size($scope.app.size);
 
-                                          $scope.dateCreated = $scope
-                                                  .convertDate($scope.app.dateCreated);
-                                          $scope.dateModified = $scope
-                                                  .convertDate($scope.app.dateModified);
+                                          $scope.dateCreated = convert
+                                                  .date($scope.app.dateCreated);
+                                          $scope.dateModified = convert
+                                                  .date($scope.app.dateModified);
                                         });
                         swaggerApi.apps.getAllPlatformsForApp({
                           appId: +$scope.appId
