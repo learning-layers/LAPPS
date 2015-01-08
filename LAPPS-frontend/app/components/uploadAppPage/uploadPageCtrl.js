@@ -15,7 +15,9 @@
                       'user',
                       function($scope, $http, swaggerApi, user) {
 
-                        // $scope.userId = user.oidcData.clientId;
+                        $scope.userId = 390532463;
+
+                        $scope.showImg = false;
 
                         $scope.newapp = {
                           "id": 0,
@@ -64,9 +66,13 @@
 
                         $scope.video = {};
 
-                        $scope.thumbnail;
+                        $scope.thumbnail = {};
 
                         $scope.images = [];
+
+                        $scope.update = function() {
+                          $scope.showImg = true;
+                        }
 
                         this.platforms = [
                             {
@@ -113,11 +119,6 @@
                               icon: 'fa-circle-o',
                             }];
 
-                        $scope.newapp = {
-                          artifacts: [],
-                          tags: []
-                        };
-
                         $scope.fetchUserData = function() {
 
                           swaggerApi.users
@@ -127,14 +128,13 @@
                                   .then(
                                           function(response) {
 
-                                            $scope.newapp.creator.iodcId = user.oidcData.clientId;
+                                            $scope.newapp.creator.oidcId = $scope.userId;
                                             $scope.currentUser = response.data;
                                             $scope.newapp.creator.email = $scope.currentUser.email;
                                             $scope.newapp.creator.username = $scope.currentUser.username;
-                                            $scope.newapp.creator.role = user
-                                                    .roleIdToRoleName($scope.currentUser.role);
-                                            $scope.newapp.creator.memberScince = $scope.currentUser.dateRegistered;
-                                            $scope.newapp.website = $scope.currentUser.website;
+                                            $scope.newapp.creator.role = $scope.currentUser.role;
+                                            $scope.newapp.creator.dateRegistered = $scope.currentUser.dateRegistered;
+                                            $scope.newapp.creator.website = $scope.currentUser.website;
 
                                           });
                         }
@@ -144,6 +144,10 @@
                           // $scope.$broadcast('show-errors-check-validity');
 
                           if ($scope.uploadForm.$valid) {
+
+                            $scope.newapp.creator.oidcId = $scope.userId;
+
+                            // $scope.fetchUserData();
 
                             // split and get rid of white spaces
                             console.log("tags:" + $scope.tags.value);
@@ -178,7 +182,7 @@
                             }
                             // create another artifact for thumbnail
                             $scope.newapp.artifacts.push({
-                              url: $scope.thumbnail,
+                              url: $scope.thumbnail.url,
                               description: '',
                               type: 'thumb'
                             })

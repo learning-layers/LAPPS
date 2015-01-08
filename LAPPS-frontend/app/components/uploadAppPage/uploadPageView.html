@@ -67,7 +67,7 @@
                     </div>
            		 	<div class="form-group " validate-input>
                     		<b><i class="fa fa-copyright"></i><span class="hspacer05"></span>License</b>
-                        	<input type="text" class="form-control" ng-model = "newapp.license" name = "license" maxlength="100" required>
+                        	<input type="text" class="form-control" ng-model = "newapp.license" name = "license" maxlength="30" required>
                         	<p class="help-block" ng-show="uploadForm.license.$error.required">License information is required</p>
                     </div>
                     <div class="form-group" validate-input ng-class="{ 'has-error': uploadForm.supportUrl.$invalid && uploadForm.supportUrl.$dirty }">
@@ -93,15 +93,16 @@
                     </div>
                     <div class="form-group" validate-input>
                     		<b><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Thumbnail</b>
-                        	<input type="text" class="form-control" ng-model = "thumbnail" name = "thumbnail" data-toggle="tooltip" title="Thumbnail for the app." tooltip required>
+                        	<input type="text" class="form-control" ng-model = "thumbnail.url" name = "thumbnail" data-toggle="tooltip" title="Thumbnail for the app." tooltip required>
                         	<span class="help-block" ng-show="uploadForm.thumbnail.$error.required">Thumbnail is required</span>
                     </div>
                     <b><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Images</b>
                     <div id ="newImgField" ng-repeat = "newField in newFields track by $index">	
                            	
-                    	 <ng-form name="urlForm"  >
+                    	 <ng-form name="urlForm">
                     	 <div class = "form-group" ng-class="{ 'has-error': urlForm.imgUrl.$invalid && urlForm.imgUrl.$dirty }">
-                        	<span>Url</span><input type="url" class="form-control" name = "imgUrl" ng-model = "images[$index].url"  maxlength="300" data-toggle="tooltip" title="Url of the Image of Carousel." tooltip >    
+                    	 	<img ng-src = "{{images[$index].url}}" ng-show = "showImg==true" class = "editableImg">
+                        	<span>Url</span><input type="url" class="form-control" name = "imgUrl" ng-model = "images[$index].url"  maxlength="300" data-toggle="tooltip" title="Url of the Image of Carousel." ng-change="update()" show-image tooltip >    
                         	<span class="help-block" ng-show="urlForm.imgUrl.$error.url">Invalid Url!</span>  
                         	</div>
                        	 </ng-form>                 	
@@ -115,7 +116,6 @@
                     		<input type="submit" class = "btn btn-info" value="Save" />
                     </div>	    
           		 </form>	
-          		 <p>{{newapp}}</p>
         		</div>
    			 </div>	
            </div>
