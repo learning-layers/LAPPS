@@ -15,7 +15,7 @@
                       'user',
                       function($scope, $http, swaggerApi, user) {
 
-                        $scope.userId = user.oidcData.clientId;
+                        // $scope.userId = user.oidcData.clientId;
 
                         $scope.newapp = {
                           "id": 0,
@@ -267,7 +267,6 @@
                             hashValue = ((hashValue << 5) - hashValue) + char;
                             hashValue = hashValue & hashValue;
                           }
-                          console.log("hashvalue:" + hashValue);
                           return hashValue;
                         }
 

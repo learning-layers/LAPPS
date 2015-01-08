@@ -28,6 +28,8 @@
 
                         $scope.size = '';
 
+                        $scope.markdownLongDescription = '';
+
                         $scope.creator = {};
 
                         this.platforms = [
@@ -87,6 +89,17 @@
                           var curr_year = d.getFullYear();
                           return (curr_date + "-" + m_names[curr_month] + "-" + curr_year);
                         }
+
+                        marked.setOptions({
+                          renderer: new marked.Renderer(),
+                          gfm: true,
+                          tables: true,
+                          breaks: false,
+                          pedantic: false,
+                          sanitize: true,
+                          smartLists: true,
+                          smartypants: false
+                        });
 
                         $scope.convertToSize = function(size) {
 
@@ -151,6 +164,8 @@
                                               }
                                               ;
                                             }
+
+                                            $scope.markdownLongDescription = marked($scope.app.longDescription);
                                             $scope.thumbnail = thumbnail;
                                             $scope.images = images;
                                             $scope.video = video;
@@ -182,7 +197,6 @@
                             hashValue = ((hashValue << 5) - hashValue) + char;
                             hashValue = hashValue & hashValue;
                           }
-                          console.log("hashvalue:" + hashValue);
                           return hashValue;
                         }
 
@@ -214,6 +228,7 @@
 
                           $scope.app.creator.dateRegistered = $scope.app.creator.dateRegistered
                                   .toString();
+                          $scope.app.longDescription = $scope.markdownLongDescription;
 
                           swaggerApi.apps.updateApp({
                             accessToken: 'test_token',

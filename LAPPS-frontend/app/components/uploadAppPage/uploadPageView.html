@@ -32,12 +32,12 @@
                      </div>          
                     <div class="form-group" validate-input>
                           	    <b><i class="fa fa-pencil"></i><span class="hspacer05"></span>Short Description</b>
-                                <input type="text" class="form-control" ng-model="newapp.shortDescription" name = "shortDescription" maxlength="200" data-toggle="tooltip" title="Short description about the app." ng-valid = "haha()" tooltip required>
+                                <input type="text" class="form-control" ng-model="newapp.shortDescription" name = "shortDescription" maxlength="200" data-toggle="tooltip" title="Short description about the app." tooltip required>
                                 <p class="help-block" ng-show="uploadForm.shortDescription.$error.required">Short description is required.</p>
                     </div>
                     <div class="form-group" validate-input>
                                 <b><i class="fa fa-pencil"></i><span class="hspacer05"></span>Long Description</b>
-                                <textarea class="form-control custom-control long-description" rows="10" nd-model = "newapp.longDescription" name = "longDescription" required></textarea>
+                                <textarea class="form-control custom-control long-description" rows="10" nd-model = "newapp.longDescription" name = "longDescription" data-toggle="tooltip" title="Markdown is supported for Long Description" tooltip required></textarea>
                                 <p class="help-block" ng-show="uploadForm.longDescription.$error.required">Long description is required.</p>
                     </div>
                     <div class="form-group" validate-input >

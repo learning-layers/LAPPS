@@ -56,7 +56,7 @@
           </dl>               
           </div>
           
-          <div class="col-md-6">
+          <div class="col-md-6" id = "longDescriptionMarkdown">
           <dl>
           <br>
           <br>
@@ -64,10 +64,16 @@
           <dt>
             <dfn><i class="fa fa-pencil"></i><span class="hspacer05"></span>Long Description</dfn>
           </dt>
-          <dd class ="hspacer07">
-          <a href="#" editable-textarea="app.longDescription"  e-rows="8" e-style="width:100%" onbeforesave="validateInput($data)" e-maxlength = "10000">{{ app.longDescription || 'empty' }}</a>
-          </dd> 
+          <dd class ="hspacer07" >
+          <span editable-textarea="markdownLongDescription" e-form="longDescForm" ng-bind-html="markdownLongDescription | unsafe" e-rows="20" e-style="width:180%" onbeforesave="validateInput($data)" e-maxlength = "10000">{{ markdownLongDescription || 'empty' }}</span>
+          </dd>  
+		  <dd class ="hspacer07">
+				<button class="btn btn-default" ng-click="longDescForm.$show()" ng-hide="longDescForm.$visible">
+    				edit
+  		  		</button>
+  		  		</dd>     
           </dl> 
+          		
           </div>
           
           <div id = "TechnicalData" class = "col-md-3 col-sm-7">
