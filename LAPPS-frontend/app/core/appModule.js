@@ -61,10 +61,17 @@
     }).when('/search', {
       templateUrl: 'components/searchPage/searchPageView.html',
       controller: 'searchPageCtrl',
-      reloadOnSearch: false
+      reloadOnSearch: false,
+      controller: 'searchPageCtrl'
+    }).when('/upload', {
+      templateUrl: 'components/uploadAppPage/uploadPageView.html',
+      controller: 'uploadPageCtrl'
     }).when('/users/:userId', {
       templateUrl: 'components/userPage/userPageView.html',
       controller: 'userPageCtrl'
+    }).when('/apps/:appId/edit', {
+      templateUrl: 'components/editAppPage/editPageView.html',
+      controller: 'editPageCtrl'
     }).otherwise({
       redirectTo: '/apps'
     });

@@ -9,7 +9,7 @@ exports.config = {
       args: ['--disable-web-security']
     }
   },
-
+  chromeOnly: true,
   baseUrl: 'http://localhost:8000/',
 
   framework: 'jasmine',
