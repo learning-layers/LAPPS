@@ -42,7 +42,7 @@
                     </div>
                     <div class="form-group" validate-input >
                       	     	<b><i class="fa fa-tags"></i><span class="hspacer05"></span>Tags</b>
-                             	<input type="text" class="form-control" ng-model="tags.value" ng-pattern="[a-z ,]*$" name ="tags" value="hahahaha" maxlength = "300" data-toggle="tooltip" title="Tags should be separated by comma. i.e tag1, tag2 etc" tooltip required>
+                             	<input type="text" class="form-control" ng-model="tags.value"  name ="tags" maxlength = "300" data-toggle="tooltip" title="Tags should be separated by comma. i.e tag1, tag2 etc" tooltip required>
                              	<p class="help-block" ng-show="uploadForm.tags.$error.required">Tags are required.</p>
                              	<p class="help-block" ng-messages="uploadForm.tags.$error.pattern">Only a-z , allowed.</p>
                     </div>
@@ -56,7 +56,7 @@
                     </div>
                     <div class="form-group" validate-input>
           	        		<b><i class="fa fa-arrows-h"></i><span class="hspacer05"></span>Size</b>
-                        	<input type="text" class="form-control" ng-model = "size.value" name = "size" maxlength="10" ng-pattern="[0-9]*$"  data-toggle="tooltip" title="Size of the app in KB. Only integer should be entered" tooltip  required >
+                        	<input type="text" class="form-control" ng-model = "size.value" name = "size" maxlength="10"   data-toggle="tooltip" title="Size of the app in KB. Only integer should be entered" tooltip  required >
                         	<p class="help-block" ng-show="uploadForm.size.$error.required">Size of app is required.</p>
                         	<p class="help-block" ng-messages = "uploadForm.size.$error.pattern">Please enter only integer.</p>
                     </div>
@@ -102,7 +102,7 @@
                     	 <ng-form name="urlForm">
                     	 <div class = "form-group" ng-class="{ 'has-error': urlForm.imgUrl.$invalid && urlForm.imgUrl.$dirty }">
                     	 	<img ng-src = "{{images[$index].url}}" ng-show = "showImg==true" class = "editableImg">
-                        	<span>Url</span><input type="url" class="form-control" name = "imgUrl" ng-model = "images[$index].url"  maxlength="300" data-toggle="tooltip" title="Url of the Image of Carousel." ng-change="update()" show-image tooltip >    
+                        	<span>Url</span><input type="url" class="form-control" name = "imgUrl" ng-model = "images[$index].url"  maxlength="300" data-toggle="tooltip" title="Url of the Image of Carousel." ng-change="update()"  tooltip show-review >    
                         	<span class="help-block" ng-show="urlForm.imgUrl.$error.url">Invalid Url!</span>  
                         	</div>
                        	 </ng-form>                 	

@@ -4,7 +4,7 @@
  * @description This directive is used for managing the template of uploadPage
  */
 (function() {
-  angular.module('lappsDirectives').directive('showImage', function() {
+  angular.module('lappsDirectives').directive('showReview', function() {
     return {
       restrict: 'A',
       require: 'ngModel',
