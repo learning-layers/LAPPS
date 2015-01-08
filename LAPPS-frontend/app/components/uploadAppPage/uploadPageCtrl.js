@@ -12,7 +12,10 @@
                       '$scope',
                       '$http',
                       'swaggerApi',
-                      function($scope, $http, swaggerApi) {
+                      'user',
+                      function($scope, $http, swaggerApi, user) {
+
+                        $scope.userId = user.oidcData.clientId;
 
                         $scope.newapp = {
                           "id": 0,
@@ -115,69 +118,89 @@
                           tags: []
                         };
 
+                        $scope.fetchUserData = function() {
+
+                          swaggerApi.users
+                                  .getUser({
+                                    oidcId: +$scope.userId,
+                                  })
+                                  .then(
+                                          function(response) {
+
+                                            $scope.newapp.creator.iodcId = user.oidcData.clientId;
+                                            $scope.currentUser = response.data;
+                                            $scope.newapp.creator.email = $scope.currentUser.email;
+                                            $scope.newapp.creator.username = $scope.currentUser.username;
+                                            $scope.newapp.creator.role = user
+                                                    .roleIdToRoleName($scope.currentUser.role);
+                                            $scope.newapp.creator.memberScince = $scope.currentUser.dateRegistered;
+                                            $scope.newapp.website = $scope.currentUser.website;
+
+                                          });
+                        }
+
                         $scope.createNewApp = function() {
 
                           // $scope.$broadcast('show-errors-check-validity');
 
-                          // if ($scope.uploadForm.$valid) {
+                          if ($scope.uploadForm.$valid) {
 
-                          // split and get rid of white spaces
-                          console.log("tags:" + $scope.tags.value);
-                          if ($scope.tags.value) {
-                            var tempTags = [];
-                            tempTags = $scope.tags.value
-                                    .match(/(?=\S)[^,]+?(?=\s*(,|$))/g);
+                            // split and get rid of white spaces
+                            console.log("tags:" + $scope.tags.value);
+                            if ($scope.tags.value) {
+                              var tempTags = [];
+                              tempTags = $scope.tags.value
+                                      .match(/(?=\S)[^,]+?(?=\s*(,|$))/g);
 
-                            for (var i = 0; i < tempTags.length; i++) {
-                              $scope.newapp.tags.push({
-                                id: $scope.hashCode(tempTags[i]),
-                                value: tempTags[i]
-                              });
+                              for (var i = 0; i < tempTags.length; i++) {
+                                $scope.newapp.tags.push({
+                                  id: $scope.hashCode(tempTags[i]),
+                                  value: tempTags[i]
+                                });
+                              }
                             }
-                          }
 
-                          // create new artifacts from each image url
+                            // create new artifacts from each image url
 
-                          for (var i = 0; i < $scope.images.length; i++) {
+                            for (var i = 0; i < $scope.images.length; i++) {
+                              $scope.newapp.artifacts.push({
+                                url: $scope.images[i].url,
+                                description: $scope.images[i].description,
+                                type: 'image'
+                              })
+                            }
+                            // create another artifact for video
+                            if ($scope.video.url) {
+                              $scope.newapp.artifacts.push({
+                                url: $scope.video.url,
+                                description: $scope.video.description,
+                                type: 'video'
+                              })
+                            }
+                            // create another artifact for thumbnail
                             $scope.newapp.artifacts.push({
-                              url: $scope.images[i].url,
-                              description: $scope.images[i].description,
-                              type: 'image'
+                              url: $scope.thumbnail,
+                              description: '',
+                              type: 'thumb'
                             })
+                            if ($scope.dateModified) {
+                              $scope.newapp.dateModified = Date.parse(
+                                      $scope.dateModified).toString();
+                            }
+
+                            $scope.newapp.size = parseInt($scope.size.value);
+
+                            // $scope.fetchUserData();
+                            console.log($scope.newapp);
+
+                            // post json
+                            swaggerApi.apps.createApp({
+                              accessToken: 'test_token',
+                              body: $scope.newapp
+                            });
+
+                            // $scope.reset();
                           }
-                          // create another artifact for video
-                          if ($scope.video.url) {
-                            $scope.newapp.artifacts.push({
-                              url: $scope.video.url,
-                              description: $scope.video.description,
-                              type: 'video'
-                            })
-                          }
-                          // create another artifact for thumbnail
-                          $scope.newapp.artifacts.push({
-                            url: $scope.thumbnail,
-                            description: '',
-                            type: 'thumb'
-                          })
-                          if ($scope.dateModified) {
-                            console.log("not empty");
-                            $scope.newapp.dateModified = Date.parse(
-                                    $scope.dateModified).toString();
-                          }
-
-                          $scope.newapp.size = parseInt($scope.size.value);
-                          console.log($scope.newapp);
-
-                          // post json
-                          swaggerApi.apps.createApp({
-                            accessToken: 'test_token',
-                            body: $scope.newapp
-                          }).then(function(response) {
-
-                          });
-
-                          // $scope.reset();
-                          // }
 
                         };
 

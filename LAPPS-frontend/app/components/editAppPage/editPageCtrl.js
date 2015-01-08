@@ -174,8 +174,16 @@
                           if (!data) { return 'Input required'; }
                         }
 
-                        $scope.haha = function(data) {
-                          console.log("hahahahhaa");
+                        $scope.hashCode = function(str) {
+                          var hashValue = 0;
+                          if (str.length == 0) return hashValue;
+                          for (i = 0; i < str.length; i++) {
+                            char = str.charCodeAt(i);
+                            hashValue = ((hashValue << 5) - hashValue) + char;
+                            hashValue = hashValue & hashValue;
+                          }
+                          console.log("hashvalue:" + hashValue);
+                          return hashValue;
                         }
 
                         $scope.sendAppData = function() {
@@ -211,22 +219,8 @@
                             accessToken: 'test_token',
                             id: +$scope.appId,
                             body: $scope.app
-                          }).then(function(response) {
-
                           });
 
-                        }
-
-                        $scope.hashCode = function(str) {
-                          var hashValue = 0;
-                          if (str.length == 0) return hashValue;
-                          for (i = 0; i < str.length; i++) {
-                            char = str.charCodeAt(i);
-                            hashValue = ((hashValue << 5) - hashValue) + char;
-                            hashValue = hashValue & hashValue;
-                          }
-                          console.log("hashvalue:" + hashValue);
-                          return hashValue;
                         }
 
                         $scope.fetchApp();
