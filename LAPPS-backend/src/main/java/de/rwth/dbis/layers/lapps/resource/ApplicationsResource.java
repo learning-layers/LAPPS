@@ -1,5 +1,6 @@
 package de.rwth.dbis.layers.lapps.resource;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +37,9 @@ import de.rwth.dbis.layers.lapps.entity.App.DateCreatedComparator;
 import de.rwth.dbis.layers.lapps.entity.App.DateModifiedComparator;
 import de.rwth.dbis.layers.lapps.entity.App.PlatformComparator;
 import de.rwth.dbis.layers.lapps.entity.App.RatingComparator;
+import de.rwth.dbis.layers.lapps.entity.Artifact;
 import de.rwth.dbis.layers.lapps.entity.Tag;
+import de.rwth.dbis.layers.lapps.entity.User;
 
 /**
  * Applications resource (exposed at "apps" path).
@@ -290,7 +293,38 @@ public class ApplicationsResource {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
     createdApp.deleteId();
+
+    // save child elements
+    User creator = createdApp.getCreator();
+    List<Artifact> artifacts = new ArrayList<Artifact>(createdApp.getArtifacts());
+    List<Tag> tags = new ArrayList<Tag>(createdApp.getTags());
+
+    // delete child elements from app
+    createdApp.getArtifacts().clear();
+    createdApp.getTags().clear();
+
+    // validate the existence of the creator
+    List<User> creatorList = entitiyFacade.findByParam(User.class, "oidcId", creator.getOidcId());
+    if (creatorList.size() != 1) {
+      return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
+    }
+    creator = creatorList.get(0);
+    if (creator.getRole() != User.DEVELOPER && creator.getRole() != User.ADMIN) {
+      return Response.status(HttpStatusCode.UNAUTHORIZED).build(); // TODO error description
+    }
+    createdApp.setCreator(creator);
+
     createdApp = entitiyFacade.save(createdApp);
+
+    for (Artifact newArtifact : artifacts) {
+      newArtifact.setBelongingTo(createdApp);
+      entitiyFacade.save(newArtifact);
+    }
+    for (Tag newTag : tags) {
+      newTag.setApp(createdApp);
+      entitiyFacade.save(newTag);
+    }
+
     try {
       ObjectMapper mapper = new ObjectMapper();
       return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(createdApp))

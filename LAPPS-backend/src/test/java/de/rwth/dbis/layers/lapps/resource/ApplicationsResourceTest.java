@@ -156,6 +156,7 @@ public class ApplicationsResourceTest {
     App newApp = null;
     try {
       newApp = new App("NewAppCreateTest", "iOS", "NewApp");
+      newApp.setCreator(user);
       Response response =
           target.path("apps").request()
               .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
