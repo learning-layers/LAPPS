@@ -1,0 +1,177 @@
+<div class="row">
+  <div class="col-md-12 thumbnail" id="appEdit">
+    <div class="title">
+      <h2>
+        <a href="#"  editable-text="app.name" onbeforesave="validateInput($data)" e-maxlength ="100">{{ app.name|| 'empty' }}</a>
+      </h2>
+    </div>
+    <div class="container">
+      <div id =  "GeneralData" class="col-md-3 col-sm-7">
+      <div class = "title">
+      <h4>General Information</h4>
+      </div>
+        <dl>
+          <dt>
+            <dfn><i class="fa fa-puzzle-piece"></i><span class="hspacer05"></span>Platform</dfn>
+          </dt>
+          <dd class ="hspacer07">
+             <a href="#" editable-select="app.platform"  e-ng-options="p.name as p.name for p in platforms">
+   			 {{ showPlatform() }}
+  			 </a>
+          </dd>
+          
+          <dt>
+            <dfn><i class="fa fa-cogs"></i><span class="hspacer05"></span>Supported platform version</dfn>
+          </dt>
+          <dd class ="hspacer07">
+          <a href="#"  editable-text="app.minPlatformRequired" onbeforesave="validateInput($data)" e-maxlength ="100">{{ app.minPlatformRequired|| 'empty' }}</a>
+          </dd>
+          <dt>
+            <dfn><i class="fa fa-download"></i><span class="hspacer05"></span>Download URL</dfn>
+          </dt>
+          <dd class ="hspacer07">
+          <a href="#" editable-url="app.downloadUrl" onbeforesave="validateInput($data)" e-maxlength ="300">{{ app.downloadUrl || 'empty' }}</a>
+          </dd>
+          
+          <dt>
+            <dfn><i class="fa fa-calendar"></i><span class="hspacer05"></span>Release Date</dfn>
+          </dt>
+          <dd class ="hspacer07">
+          <p>{{ dateCreated | date:"dd/MM/yyyy" || app.dateCreated  }}</p>
+          </dd>
+          
+          <dt>
+            <dfn><i class="fa fa-pencil"></i><span class="hspacer05"></span>Short Description</dfn>
+          </dt>
+          <dd class ="hspacer07">
+          	<a href="#" editable-text="app.shortDescription" onbeforesave="validateInput($data)" e-maxlength = "200">{{ app.shortDescription || 'empty'}}</a>
+          </dd>
+          
+          <dt>
+            <dfn><i class="fa fa-tags"></i><span class="hspacer05"></span>Tags</dfn>
+          </dt>
+          <dd class ="hspacer07">
+          		<a href="#" editable-text="appTags" onbeforesave="validateInput($data)" e-maxlength = "300" name = "tags">{{ appTags|| 'empty' }}</a>
+          </dd>
+          </dl>               
+          </div>
+          
+          <div class="col-md-6" >
+          <dl>
+          <br>
+          <br>
+          <br>
+          <dt>
+            <dfn><i class="fa fa-pencil"></i><span class="hspacer05"></span>Long Description</dfn>
+          </dt>
+          <dd class ="hspacer07" >
+          <span editable-textarea="app.longDescription" e-form="longDescForm" e-rows="20" e-style="width:180%" onbeforesave="validateInput($data)" e-maxlength = "10000">{{ app.longDescription || 'empty' }}</span>
+          </dd>  
+		  <dd class ="hspacer07">
+				<button class="btn btn-default" ng-click="longDescForm.$show()" ng-hide="longDescForm.$visible">
+    				edit
+  		  		</button>
+  		  		</dd>     
+          </dl> 
+          		
+          </div>
+          
+          <div id = "TechnicalData" class = "col-md-3 col-sm-7">
+          <div class = "title">
+          <h4>Technical Details</h4>
+          </div>
+          <dl>
+          
+          <dt>
+            <dfn><i class="fa fa-level-up"></i><span class="hspacer05"></span>Version</dfn>
+          </dt>
+          <dd class ="hspacer07">
+              <a href="#" editable-text="app.version" onbeforesave="validateInput($data)" e-maxlength = "10">{{ app.version || 'empty' }}</a>
+          </dd>
+          
+          <dt>
+            <dfn><i class="fa fa-arrows-h"></i><span class="hspacer05"></span>Size(KB)</dfn>
+          </dt>
+          <dd class ="hspacer07"> 
+              <a href="#" editable-text="size" onbeforesave="validateInput($data)"  e-maxlength = "10">{{ size || 'empty' }}</a>
+          </dd>
+          
+          <dt>
+            <dfn><i class="fa fa-code-fork"></i><span class="hspacer05"></span>Source Code</dfn>
+          </dt>
+          <dd class ="hspacer07">
+              <a href="#" editable-url="app.sourceUrl"  e-maxlength = "100">{{ app.sourceUrl || 'empty' }}</a>
+          </dd>
+          
+          <dt>
+            <dfn><i class="fa fa-copyright"></i><span class="hspacer05"></span>License</dfn>
+          </dt>
+          <dd class ="hspacer07">
+              <a href="#" editable-text="app.license" onbeforesave="validateInput($data)"   e-maxlength = "300">{{ app.license || 'empty' }}</a>
+          </dd>
+          
+          <dt>
+            <dfn><i class="fa fa-life-ring"></i><span class="hspacer05"></span>Support page</dfn>
+          </dt>
+          <dd class ="hspacer07">
+              <a href="#" editable-url="app.supportUrl" >{{ app.supportUrl || 'empty'  }}</a>
+          </dd>
+          
+          <dt>
+            <dfn><i class="fa fa-calendar"></i><span class="hspacer05"></span>Last update</dfn>
+          </dt>
+          <dd class ="hspacer07">
+          <a href="#" editable-date="dateModified" onbeforesave="validateInput($data)">{{ dateModified | date:"dd/MM/yyyy" || 'empty' }}</a>
+          </dd>
+          
+          </dl>
+		  </div>
+		  <br>
+		  <br>
+
+		  <div id = "MediaData" class = "col-sm-7">
+		  <div class = "title">
+		  <h4>Media</h4>
+		  </div>
+		  <dl>
+		  
+		  <dt>
+            <dfn><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Thumbnail</dfn>
+          </dt>
+          <dd class ="hspacer07">
+          		<img ng-src="{{thumbnail.url}}" class="img-thumbnail">
+          </dd>
+          <dd class ="hspacer07">          		
+          		<label>Url:</label><a href="#" editable-url="thumbnail.url" onbeforesave="validateInput($data)" e-maxlength = "300">{{ thumbnail.url || 'empty' }} </a>
+          </dd>
+		  
+		  <dt>
+            <dfn><i class="fa fa-file-video-o"></i><span class="hspacer05"></span>Video</dfn>
+          </dt>
+          <dd class ="hspacer07">
+                <div class="videoWrapper">
+       				 <iframe class="editableImg" ng-src="{{video.url}}" frameborder="0 " allowfullscreen ></iframe>
+      			</div>
+          		<label>Url:</label><a href="#" editable-url="video.url" e-maxlength = "300">{{ video.url || 'empty' }} </a>>
+          </dd>
+          <dd class ="hspacer07">
+          		<label>Description:</label><a href="#" editable-text="video.description" e-maxlength = "300">{{ video.description || 'empty' }} </a>
+          </dd>
+          <dt >
+            <dfn><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Carousel Images</dfn>
+          </dt>
+
+          <dd class ="hspacer07" >
+          		<div ng-repeat = "img in images track by $index">
+          			<img ng-src = "{{img.url}}" class = "editableImg" >
+          			<label>Url: </label><a href="#" editable-url="images[$index].url" e-maxlength = "300">{{ images[$index].url || 'empty' }} </a>
+          			<br>
+          			<label>Description: </label><a href="#" editable-text="img.description" e-maxlength = "300">{{ img.description || 'empty' }} </a>
+          		</div>
+          </dd>      
+		  </dl>
+		  <button class ="btn btn-default" type = "button" ng-click ="sendAppData()">Save</button>
+		  </div>	
+    </div>
+  </div>
+ </div>
