@@ -118,9 +118,11 @@ public class TagsResource {
     if (apps.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
+      createdTag.deleteId();
+
       App app = apps.get(0);
       createdTag.setApp(app);
-      entitiyFacade.save(createdTag);
+      createdTag = entitiyFacade.save(createdTag);
 
       try {
         ObjectMapper mapper = new ObjectMapper();
