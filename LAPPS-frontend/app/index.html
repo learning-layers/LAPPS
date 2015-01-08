@@ -1,10 +1,8 @@
-﻿﻿<!doctype html>
+﻿<!doctype html>
 <html lang="en" ng-app="lappsApp">
 <head>
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
   <title>Layers Application Store</title>
   <link rel="icon" href="assets/img/logos/favicon.ico" sizes="16x16 32x32" type="image/icon">
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
@@ -54,11 +52,12 @@
   <script src="shared/rating/ratingDirective.js"></script>
   <script src="shared/commonDirectives/backImgDirective.js"></script>
   <script src="shared/tags/tagsDirective.js"></script>
+  <script>window.iFrameVideoLoaded = function () { }</script>
+  <script src="shared/convert/convertService.js"></script>
 </head>
 <body>
   <lapps-header></lapps-header>
   <div class="container">
-
     <div ng-view class="view-frame"></div>
     <lapps-footer></lapps-footer>
   </div>

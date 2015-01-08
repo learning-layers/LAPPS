@@ -5,7 +5,7 @@
  */
 (function() {
   angular.module('lappsDirectives').directive('validateInput',
-          function($timeout) {
+          ['$timeout', function($timeout) {
             return {
               restrict: 'A',
               require: '^form',
@@ -45,5 +45,5 @@
                 });
               }
             }
-          });
+          }]);
 }).call(this);

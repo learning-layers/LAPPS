@@ -559,12 +559,12 @@ h1, h2, h3, h4, h5 {
 
   .carousel-control .glyphicon-chevron-right,
   .carousel-control .glyphicon-chevron-left {
-    opacity: 0.5;    
+    opacity: 0.5;
   }
 
 @media (min-width: 768px) {
   .carousel-control .glyphicon-chevron-right,
-  .carousel-control .glyphicon-chevron-left {    
+  .carousel-control .glyphicon-chevron-left {
     font-size: 50px;
   }
 }
@@ -784,7 +784,9 @@ h1, h2, h3, h4, h5 {
   font-size: 12px;
   white-space: nowrap;
 }
-
+#app-description #editApp{
+  
+}
 #app-description .app-detail-container {
   display: -webkit-flex;
   display: flex;
@@ -1079,44 +1081,71 @@ dd {
 /*user page end*/
 
 /*app upload page starts here*/
+#uploadForm .form-group > b {
+  padding-bottom: 5px;
+  display: block;
+}
 
 .form-group .help-block {
   display: none;
 }
- 
+
 .form-group.has-error .help-block {
   display: block;
   font-size: 14px;
 }
-
-.long-description {
-	resize: none;
+#uploadForm button{
+  min-width:100px;
+  margin-top:5px;
+  margin-bottom:5px;
+  
+}
+#uploadForm .form-group input[type=submit]{
+  
+  min-width:200px;
+}
+#uploadForm .long-description {
+ 
 }
 
-.dropdownWidth {
-	width: 200px;
+#uploadForm .dropdownWidth {
+  width: 200px;
 }
 
 /* app edit page starts here */
 
-#edit-description {
-	position: absolute;
-	float: right;
 
+#edit-description {
+  position: absolute;
+  float: right;
 }
 
 .hspacer07 {
-	margin-left: 25px;	
+  margin-left: 25px;
 }
 
-.editableImg{
-	width: 600px;
-	height: 400px;
-	
+.editableImg {
+ 
 }
 
-#longDescriptionMarkdown
-{
-	overflow: hidden;
-	
+#longDescriptionMarkdown {
+  overflow: hidden;
 }
+
+#general-data dd,
+#technical-data dd
+ {
+  -ms-word-wrap: break-word;
+  word-wrap: break-word;
+}
+
+#appEdit dd{
+  margin-top: 5px;
+  margin-bottom:3px;
+}
+
+#appEdit #saveEdit{
+  width:200px;
+
+}
+/*edit page end*/

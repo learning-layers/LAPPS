@@ -11,7 +11,9 @@
           {{app.name}} <span>
             by <a href="#/users/{{app.creator.oidcId}}">{{app.creator.username}}</a>
           </span>
+          <a href="#/apps/{{app.id}}/edit" id="editApp" class="btn btn-warning pull-right"><span class="glyphicon glyphicon-pencil"></span><span class="hspacer05"></span>Edit</a>
         </h2>
+        
       </div>
       <!--<div id="platform-links">
           <input type="image" src="./assets/img/android.png" id="android" data-ng-click="chosenVersion($event)" />
