@@ -21,19 +21,16 @@
           <div class="app-list-item">
             <a href="#/apps/{{app.id}}"></a>
             <div class="thumbnail">
-              <h3 class="single-line">{{app.app.name}}</h3>
+              <h3 class="single-line">
+                {{app.name}}
+                <i class="{{app.platformObj.icon}} pull-left"></i>
+              </h3>
               <div class="image-container">
-                <img ng-src="{{app.thumbnail}}" alt ="cats">
+                <img ng-src="{{app.thumbnail}}" alt="cats">
               </div>
               <div class="caption">
 
-                <div class="rating-stars">
-                  <span ng-repeat="n in [] | rangeFilter:app.rating"
-                        class="glyphicon glyphicon-star text-color-staryellow">
-                  </span><span ng-repeat="n in [] | rangeFilter:(5-app.rating)"
-                               class="glyphicon glyphicon-star-empty text-color-staryellow"></span>
-                  <span class="hspacer05 text-color-paleblack "></span>
-                </div>
+                <div class="text-center"><star-rating value="{{app.rating}}"></star-rating></div>
                 <p>{{app.shortDescription}}</p>
               </div>
             </div>

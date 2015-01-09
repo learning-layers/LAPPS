@@ -22,11 +22,11 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import de.rwth.dbis.layers.lapps.DataGeneratorUtils;
 import de.rwth.dbis.layers.lapps.Main;
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
-import de.rwth.dbis.layers.lapps.domain.UserFacade;
-import de.rwth.dbis.layers.lapps.entity.UserEntity;
-import de.rwth.dbis.layers.lapps.exception.OIDCException;
+import de.rwth.dbis.layers.lapps.domain.Facade;
+import de.rwth.dbis.layers.lapps.entity.User;
 
 /**
  * User Resource Test Class
@@ -37,8 +37,8 @@ public class UsersResourceTest {
   private HttpServer server;
   private WebTarget target;
   private static final Logger LOGGER = Logger.getLogger(UsersResource.class.getName());
-  private UserFacade userFacade = new UserFacade();
-  private UserEntity user = null;
+  private Facade facade = new Facade();
+  private User user = null;
 
   @Before
   public void setUp() throws Exception {
@@ -48,17 +48,16 @@ public class UsersResourceTest {
     Client c = ClientBuilder.newClient();
     target = c.target(Main.BASE_URI);
 
-    LOGGER.info("Deleting old user data...");
-    userFacade.deleteAll("oidcId", 1234567L);
-    LOGGER.info("User data deleted.");
     LOGGER.info("Creating a new user...");
-    user = new UserEntity(1234567, "test@lapps.com", "testuser");
-    user = userFacade.save(user);
+    user = facade.save(DataGeneratorUtils.getRandomDeveloperUser());
     LOGGER.info("User created: " + user);
   }
 
   @After
   public void tearDown() throws Exception {
+    LOGGER.info("Deleting old user data...");
+    facade.deleteByParam(User.class, "id", user.getId());
+    LOGGER.info("User data deleted.");
     server.shutdownNow();
   }
 
@@ -76,23 +75,23 @@ public class UsersResourceTest {
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
     String responseContent = response.readEntity(String.class);
     ObjectMapper mapper = new ObjectMapper();
-    JsonNode users;
+    JsonNode retrievedUsers;
     try {
-      users = mapper.readTree(responseContent);
-      assertTrue(!users.isNull());
-      assertTrue(users.isArray());
-      Iterator<JsonNode> userIterator = users.iterator();
+      retrievedUsers = mapper.readTree(responseContent);
+      assertTrue(!retrievedUsers.isNull());
+      assertTrue(retrievedUsers.isArray());
+      Iterator<JsonNode> userIterator = retrievedUsers.iterator();
       // check if previously created user can be found
       JsonNode retrievedUser = null;
       while (userIterator.hasNext()) {
         // go through the list until our user is found
         retrievedUser = userIterator.next();
-        if (retrievedUser.get("id").toString().equals(user.getId())) {
+        if (retrievedUser.get("oidcId").toString().equals(user.getOidcId().toString())) {
           break;
         }
       }
       // this is only false if user was not in list
-      assertEquals(user.getId().toString(), retrievedUser.get("id").toString());
+      assertEquals(user.getOidcId().toString(), retrievedUser.get("oidcId").toString());
     } catch (Exception e) {
       e.printStackTrace();
       fail("JSON parsing failed with " + e.getMessage());
@@ -110,49 +109,59 @@ public class UsersResourceTest {
     MediaType responseMediaType = response.getMediaType();
     assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
     String responseContent = response.readEntity(String.class);
-    assertEquals(new String("{\"id\":" + user.getId().toString()
-        + ",\"oidcId\":1234567,\"email\":\"test@lapps.com\",\"username\":\"testuser\"}"),
-        responseContent);
+    assertTrue(responseContent.contains("{\"oidcId\":" + user.getOidcId() + ",\"email\":\""
+        + user.getEmail() + "\",\"username\":\"" + user.getUsername() + "\",\"role\":"
+        + user.getRole() + ","));
   }
 
   /**
-   * Tries to delete the previously created user. Currently should result in a not implemented
-   * return.
+   * Tries to delete the previously created user.
    */
   @Test
   public void testDeleteUser() {
     Response response =
         target.path("users/" + user.getOidcId()).request()
             .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
-    assertEquals(HttpStatusCode.NOT_IMPLEMENTED, response.getStatus());
+    assertEquals(HttpStatusCode.OK, response.getStatus());
+
+    response = target.path("users/" + user.getOidcId()).request((MediaType.APPLICATION_JSON)).get();
+    assertEquals(HttpStatusCode.NOT_FOUND, response.getStatus());
   }
 
   /**
-   * Tries to update the previously created user. Currently should result in a not implemented
-   * return.
+   * Tries to update the previously created user.
    */
   @Test
   public void testUpdateUser() {
-    UserEntity updatedUser = user;
-    updatedUser.setEmail("new@mail.com");
+    user.setUsername("UpdatedUser");
     Response response =
         target.path("users/" + user.getOidcId()).request()
             .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
-            .put(entity(updatedUser, MediaType.APPLICATION_JSON));
-    assertEquals(HttpStatusCode.NOT_IMPLEMENTED, response.getStatus());
+            .put(entity(user, MediaType.APPLICATION_JSON));
+    assertEquals(HttpStatusCode.OK, response.getStatus());
+
+    response = target.path("users/" + user.getOidcId()).request(MediaType.APPLICATION_JSON).get();
+    assertEquals(HttpStatusCode.OK, response.getStatus());
+    MediaType responseMediaType = response.getMediaType();
+    assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
+    String responseContent = response.readEntity(String.class);
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode retrievedUser;
+    try {
+      retrievedUser = mapper.readTree(responseContent);
+      assertEquals("\"" + user.getUsername() + "\"", retrievedUser.get("username").toString());
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("JSON parsing failed with " + e.getMessage());
+    }
   }
 
   /**
-   * Test the authentication functionality.
+   * Test the authentication functionality (only test token!).
    */
   @Test
   public void testAuthentication() {
-    int returnValue = 0;
-    try {
-      returnValue = OIDCAuthentication.authenticate(OIDCAuthentication.OPEN_ID_TEST_TOKEN);
-    } catch (OIDCException e) {
-      fail("Open Id authentication did not succeed!");
-    }
-    assertEquals(OIDCAuthentication.OPEN_ID_USER_ID, returnValue); // ID of test user
+    boolean isAdmin = OIDCAuthentication.isAdmin(OIDCAuthentication.OPEN_ID_TEST_TOKEN);
+    assertTrue(isAdmin);
   }
 }

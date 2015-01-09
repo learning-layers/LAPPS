@@ -5,17 +5,10 @@
              version="2.0">
    <persistence-unit name="lappsPU" transaction-type="RESOURCE_LOCAL">
       <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-      <class>de.rwth.dbis.layers.lapps.entity.UserEntity</class>
-      <class>de.rwth.dbis.layers.lapps.entity.AppCommentEntity</class>
-      <class>de.rwth.dbis.layers.lapps.entity.AppEntity</class>
-      <class>de.rwth.dbis.layers.lapps.entity.AppTagEntity</class>
-      <class>de.rwth.dbis.layers.lapps.entity.AppInstanceEntity</class>
-      <class>de.rwth.dbis.layers.lapps.entity.AppPlatformEntity</class>
-      <class>de.rwth.dbis.layers.lapps.entity.AppArtifactEntity</class>
-      <class>de.rwth.dbis.layers.lapps.entity.ArtifactTypeEntity</class>
-      <class>de.rwth.dbis.layers.lapps.entity.AppDetailEntity</class>
-      <class>de.rwth.dbis.layers.lapps.entity.AppDetailTypeEntity</class>
-      <class>de.rwth.dbis.layers.lapps.entity.AppInstanceRightsEntity</class>
+      <class>de.rwth.dbis.layers.lapps.entity.App</class>
+      <class>de.rwth.dbis.layers.lapps.entity.Artifact</class>
+      <class>de.rwth.dbis.layers.lapps.entity.Tag</class>
+      <class>de.rwth.dbis.layers.lapps.entity.User</class>
       <properties>
         <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
         <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>

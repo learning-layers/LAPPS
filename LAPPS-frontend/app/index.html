@@ -1,14 +1,15 @@
 ﻿<!doctype html>
 <html lang="en" ng-app="lappsApp">
 <head>
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
   <title>Layers Application Store</title>
   <link rel="icon" href="assets/img/logos/favicon.ico" sizes="16x16 32x32" type="image/icon">
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="bower_components/angular-xeditable/dist/css/xeditable.css">
   <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" href="assets/css/custom-icons.css">
   <script src="api/lappsApi.js"></script>
   <script src="bower_components/jquery/dist/jquery.js"></script>
   <script src="bower_components/angular/angular.js"></script>
@@ -26,6 +27,13 @@
   <script src="components/featuredList/featuredListDirective.js"></script>
   <script src="components/featuredList/featuredListCtrl.js"></script>
   <script src="components/searchPage/searchPageCtrl.js"></script>
+  <script src="components/editAppPage/editPageCtrl.js"></script>
+  <script src="components/editAppPage/editPageDirective.js"></script>
+  <script src="components/uploadAppPage/uploadPageCtrl.js"></script>
+  <script src="components/uploadAppPage/showReviewDirective.js"></script>
+  <script src="components/uploadAppPage/uploadPageDirective.js"></script>
+  <script src="components/uploadAppPage/validatorDirective.js"></script>
+  <script src="components/uploadAppPage/tooltipDirective.js"></script>
   <script src="core/filters/rangeFilter.js"></script>
   <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
   <script src="shared/header/headerCtrl.js"></script>
@@ -36,12 +44,20 @@
   <script src="bower_components/marked/lib/marked.js"></script>
   <script src="core/filters/unsafeFilter.js"></script>
 
-
+  <script src="components/userPage/userPageCtrl.js"></script>
+  <script src="components/userPage/userPageDirective.js"></script>
+  <script src="bower_components/angular-md5/angular-md5.js"></script>
+  <script src="bower_components/angular-xeditable/dist/js/xeditable.js"></script>
+  <script src="shared/header/platformService.js"></script>
+  <script src="shared/rating/ratingDirective.js"></script>
+  <script src="shared/commonDirectives/backImgDirective.js"></script>
+  <script src="shared/tags/tagsDirective.js"></script>
+  <script>window.iFrameVideoLoaded = function () { }</script>
+  <script src="shared/convert/convertService.js"></script>
 </head>
 <body>
   <lapps-header></lapps-header>
   <div class="container">
-
     <div ng-view class="view-frame"></div>
     <lapps-footer></lapps-footer>
   </div>

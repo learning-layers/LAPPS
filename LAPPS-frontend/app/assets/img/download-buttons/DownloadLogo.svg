@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="500"
+   height="150"
+   id="svg3114">
+  <defs
+     id="defs3116" />
+  <metadata
+     id="metadata3119">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(-138.57143,-283.79074)"
+     id="layer1">
+    <rect
+       width="500"
+       height="150"
+       rx="10"
+       ry="10"
+       x="138.57143"
+       y="283.79074"
+       id="rect3122"
+       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+    <g
+       transform="translate(147.05087,410.48391)"
+       id="icomoon-ignore"
+       style="stroke:none" />
+    <text
+       x="320.71429"
+       y="358.07648"
+       id="text4311"
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Segoe WP;-inkscape-font-specification:Segoe WP"><tspan
+         x="320.71429"
+         y="358.07648"
+         id="tspan4313" /></text>
+    <text
+       x="318.57144"
+       y="314.50504"
+       id="text4315"
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Segoe WP;-inkscape-font-specification:Segoe WP"><tspan
+         x="318.57144"
+         y="314.50504"
+         id="tspan4317"></tspan></text>
+    <text
+       x="442.64011"
+       y="346.5325"
+       id="text4319"
+       xml:space="preserve"
+       style="font-size:50.50095367px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:103.99999619%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Segoe WP;-inkscape-font-specification:Segoe WP"><tspan
+         x="449.54453"
+         y="346.5325"
+         id="tspan4321"
+         style="font-weight:normal;text-align:center;line-height:103.99999619%;text-anchor:middle;-inkscape-font-specification:Segoe WP">Go to  </tspan><tspan
+         x="442.64011"
+         y="399.0535"
+         id="tspan4323"
+         style="font-weight:normal;text-align:center;line-height:103.99999619%;text-anchor:middle;-inkscape-font-specification:Segoe WP">Download Page</tspan></text>
+    <g
+       transform="matrix(0.17502329,0,0,0.17502329,161.37353,315.30677)"
+       id="g4357"
+       style="fill:#ffffff;fill-opacity:1">
+      <g
+         id="icomoon-ignore-4"
+         style="fill:#ffffff;fill-opacity:1" />
+      <path
+         d="M 448,256 H 368 L 256,368 144,256 H 64 L 0,384 v 32 H 512 V 384 L 448,256 z M 0,448 h 512 v 32 H 0 V 448 z M 288,160 V 32 H 224 V 160 H 112 L 256,304 400,160 H 288 z"
+         id="path4349"
+         style="fill:#ffffff;fill-opacity:1" />
+    </g>
+  </g>
+</svg>

@@ -49,7 +49,6 @@
                         '$location',
                         function($http, $location) {
                           return {
-
                             /**
                              * @field
                              * @type {object}
@@ -61,10 +60,29 @@
 
                             /**
                              * @field
+                             * @type string
+                             * @memberOf lapps.lappsServices.user
+                             * @description The role of a user (User, Developer,
+                             *              Admin)
+                             */
+                            role: 'user',
+
+                            /**
+                             * @field
+                             * @type number
+                             * @memberOf lapps.lappsServices.user
+                             * @description The timestamp, when the user first
+                             *              signed in.
+                             */
+
+                            memberSince: 0,
+                            /**
+                             * @field
                              * @type boolean
                              * @memberOf lapps.lappsServices.user
                              * @description True if the user is signed in.
                              */
+
                             signedIn: false,
 
                             /**
@@ -76,7 +94,22 @@
                              *              requests.
                              */
                             token: '',
-
+                            /**
+                             * @function
+                             * @memberOf lapps.lappsServices.user
+                             * @type {string}
+                             * @param {number}
+                             *          id role id
+                             * @description Converts a role id to a role string
+                             *              for representation.
+                             */
+                            roleIdToRoleName: function(id) {
+                              if (id == 1) { return 'User'; }
+                              if (id == 2) { return 'Dev. Applicant'; }
+                              if (id == 3) { return 'Developer'; }
+                              if (id == 4) { return 'Admin'; }
+                              return 'User';
+                            },
                             /**
                              * @function
                              * @memberOf lapps.lappsServices.user
@@ -115,7 +148,7 @@
                                                               self.token = window.localStorage['access_token'];// needed
                                                               // for
                                                               // requests
-
+                                                              // getDatabaseUserInfo();
                                                               self
                                                                       .loginCallback(true);
                                                             } else {
@@ -191,7 +224,38 @@
                             getAccessToken: function() {
                               return window.localStorage['access_token'];
                             },
-
+                            /**
+                             * @function
+                             * @type boolean
+                             * @memberOf lapps.lappsServices.user
+                             * @param {number}
+                             *          id role id (optional)
+                             * @description True if the user has the role of an
+                             *              administrator
+                             */
+                            isAdmin: function(id) {
+                              if (typeof id === 'undefined' || id === null) {
+                                return this.role == 4;
+                              } else {
+                                return id == 4;
+                              }
+                            },
+                            /**
+                             * @function
+                             * @type boolean
+                             * @memberOf lapps.lappsServices.user
+                             * @param {number}
+                             *          id role id (optional)
+                             * @description True if the user has the role of a
+                             *              developer
+                             */
+                            isDeveloper: function(id) {
+                              if (typeof id === 'undefined' || id === null) {
+                                return this.role == 3;
+                              } else {
+                                return id == 3;
+                              }
+                            },
                             /**
                              * @function
                              * @memberOf lapps.lappsServices.user
@@ -242,6 +306,9 @@
                               });
                             },
 
+                            getDatabaseUserInfo: function() {
+                              // TODO: fetch additional data from our database
+                            },
                             /**
                              * @function
                              * @memberOf lapps.lappsServices.user

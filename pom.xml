@@ -5,9 +5,11 @@
 
     <groupId>de.rwth.dbis.layers.lapps</groupId>
     <artifactId>LAPPS-Project</artifactId>
-    <version>0.2</version>
+    <version>0.3</version>
     <packaging>pom</packaging>
-
+    <name>LAPPS - The Layers App Store</name>
+    <url>https://github.com/learning-layers/LAPPS</url>
+    
     <!-- The repository we add our WAR files to -->
     <distributionManagement>
         <repository>
@@ -24,7 +26,7 @@
     
     <build>
         <plugins>
-            <!--  Define Tomcat goal here was well so that it can be executed from the parent pom -->
+            <!--  Define Tomcat goal here as well so that it can be executed from the parent pom -->
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
@@ -66,8 +68,23 @@
             </plugin>
             
         </plugins>
-        </build>
-    
+    </build>
+        
+    <!-- Some eye candy (project documentation) -->
+    <organization>
+        <name>LAPPS Team</name>
+        <url>https://github.com/learning-layers/LAPPS</url>
+    </organization>
+    <issueManagement>
+        <system>Jira</system>
+        <url>http://layers.dbis.rwth-aachen.de/jira/browse/LAPPS</url>
+    </issueManagement>
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>https://raw.githubusercontent.com/learning-layers/LAPPS/master/LICENSE</url>
+        </license>
+    </licenses>
     
     <modules>
         <module>LAPPS-backend</module>

@@ -1,19 +1,23 @@
 exports.config = {
-  allScriptsTimeout: 11000,
+  allScriptsTimeout: 34000,
 
   specs: ['e2e/*.js'],
 
   capabilities: {
-    'browserName': 'chrome'
+    'browserName': 'chrome',
+    'chromeOptions': {
+      args: ['--disable-web-security']
+    }
   },
-
   chromeOnly: true,
-
   baseUrl: 'http://localhost:8000/',
 
   framework: 'jasmine',
-
+  onPrepare: function() {
+    browser.driver.manage().window().maximize();
+  },
   jasmineNodeOpts: {
     defaultTimeoutInterval: 30000
   }
 };
+// "preprotractor": "npm run update-webdriver",

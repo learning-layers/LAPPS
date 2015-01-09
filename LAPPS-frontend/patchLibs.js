@@ -44,7 +44,17 @@
       var offset = match.index;
       libSource = libSource.insert(offset, "]");
     }
-    ;
+    changed = true;
+  }
+
+  // make the the method return not only the data, but the whole response,
+  // including headers
+  var regex4 = /response\.data/g;
+  match = regex4.exec(libSource);
+  if (match != null) {
+
+    libSource = libSource.replace("response.data", "response");
+
     changed = true;
   }
   if (changed) {

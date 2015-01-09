@@ -32,8 +32,9 @@
    * @memberOf lapps
    */
   var lappsApp = angular.module('lappsApp', ['ngRoute', 'ui.bootstrap',
-      'lappsControllers', 'lappsDirectives', 'lappsServices', 'swagger-client',
-      'lappsFilters', 'lappsAttibuteDirectives']);
+      'angular-md5', 'xeditable', 'lappsControllers', 'lappsDirectives',
+      'lappsServices', 'swagger-client', 'lappsFilters',
+      'lappsAttibuteDirectives']);
 
   lappsApp.config(['userProvider', function(userProvider) {
     userProvider.configOidc({
@@ -48,19 +49,42 @@
   lappsApp.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/apps', {
       templateUrl: 'components/welcomePage/welcomePageView.html',
-      controller: 'welcomePageCtrl'
+      controller: 'welcomePageCtrl',
+      reloadOnSearch: false
     }).when('/apps/:appId', {
       templateUrl: 'components/appDetail/appDetailView.html',
       controller: 'appDetailCtrl'
     }).when('/search/:query', {
       templateUrl: 'components/searchPage/searchPageView.html',
-      controller: 'searchPageCtrl'
+      controller: 'searchPageCtrl',
+      reloadOnSearch: false
     }).when('/search', {
       templateUrl: 'components/searchPage/searchPageView.html',
+      controller: 'searchPageCtrl',
+      reloadOnSearch: false,
       controller: 'searchPageCtrl'
+    }).when('/upload', {
+      templateUrl: 'components/uploadAppPage/uploadPageView.html',
+      controller: 'uploadPageCtrl'
+    }).when('/users/:userId', {
+      templateUrl: 'components/userPage/userPageView.html',
+      controller: 'userPageCtrl'
+    }).when('/apps/:appId/edit', {
+      templateUrl: 'components/editAppPage/editPageView.html',
+      controller: 'editPageCtrl'
     }).otherwise({
       redirectTo: '/apps'
     });
   }]);
 
+  lappsApp.config([
+      '$sceDelegateProvider',
+      function($sceDelegateProvider) {
+        $sceDelegateProvider.resourceUrlWhitelist(['http://www.youtube.com/**',
+            'https://www.youtube.com/**', 'self']);
+      }]);
+  lappsApp.run(['editableOptions', function(editableOptions) {
+    editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2',
+    // 'default'
+  }]);
 }).call(this);

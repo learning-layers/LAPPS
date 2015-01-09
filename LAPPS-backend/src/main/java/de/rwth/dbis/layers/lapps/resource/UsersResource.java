@@ -17,6 +17,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.dozer.DozerBeanMapper;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wordnik.swagger.annotations.Api;
@@ -26,37 +28,40 @@ import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
-import de.rwth.dbis.layers.lapps.domain.UserFacade;
-import de.rwth.dbis.layers.lapps.entity.UserEntity;
-import de.rwth.dbis.layers.lapps.exception.OIDCException;
+import de.rwth.dbis.layers.lapps.domain.Facade;
+import de.rwth.dbis.layers.lapps.entity.App;
+import de.rwth.dbis.layers.lapps.entity.User;
+import de.rwth.dbis.layers.lapps.entity.User.DateRegisteredComparator;
 
 /**
  * Users resource (exposed at "users" path).
  */
 @Path("/users")
-@Api(value = "/users", description = "User resource")
+@Api(value = "/users", description = "Users resource")
 public class UsersResource {
 
   private static final Logger LOGGER = Logger.getLogger(UsersResource.class.getName());
 
-  private static UserFacade userFacade = new UserFacade();
+  private Facade entityFacade = new Facade();
 
   /**
    * 
    * Get all users.
    * 
-   * @param accessToken
+   * @param accessToken openID connect token
    * @param search query parameter
    * @param page number
    * @param pageLength number of users by page
    * @param sortBy field
    * @param order asc or desc
+   * @param filterBy field
+   * @param filterValue
    * 
    * @return Response with all users as JSON array.
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get all users", response = UserEntity.class, responseContainer = "List")
+  @ApiOperation(value = "Get all users", response = User.class, responseContainer = "List")
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
@@ -64,27 +69,38 @@ public class UsersResource {
           message = "Internal server problems")})
   public Response getAllUsers(
       @HeaderParam("accessToken") String accessToken,
-      @ApiParam(value = "Search query parameter", required = false) @QueryParam("search") String search,
+      @ApiParam(value = "Search query parameter for username, email", required = false) @QueryParam("search") String search,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
-      @ApiParam(value = "Sort by field", required = false, allowableValues = "email") @DefaultValue("email") @QueryParam("sortBy") String sortBy,
-      @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order) {
-    try {
-      OIDCAuthentication.authenticate(accessToken);
-      // TODO: Check for admin rights (not part of the open id authentication process)
-    } catch (OIDCException e) {
-      LOGGER.warning(e.getMessage());
+      @ApiParam(value = "Sort by field", required = false,
+          allowableValues = "username,dateRegistered") @DefaultValue("username") @QueryParam("sortBy") String sortBy,
+      @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
+      @ApiParam(value = "Filter by field", required = false, allowableValues = "role") @DefaultValue("role") @QueryParam("filterBy") String filterBy,
+      @ApiParam(value = "Filter value", required = false) @QueryParam("filterValue") String filterValue) {
+    // Check, if the user has admin rights
+    if (!OIDCAuthentication.isAdmin(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
 
-    List<UserEntity> entities;
+    List<User> entities;
     if (search == null) {
-      entities = (List<UserEntity>) userFacade.findAll();
+      entities = (List<User>) entityFacade.loadAll(User.class);
     } else {
-      entities = (List<UserEntity>) userFacade.findByEmail(search);
+      entities = (List<User>) entityFacade.findByParam(User.class, "username", search);
+      List<User> additionalEntities =
+          ((List<User>) entityFacade.findByParam(User.class, "email", search));
+      for (User user : additionalEntities) {
+        if (!entities.contains(user)) {
+          entities.add(user);
+        }
+      }
     }
 
-    Collections.sort(entities);
+    if (sortBy.equalsIgnoreCase("username")) {
+      Collections.sort(entities);
+    } else if (sortBy.equalsIgnoreCase("dateRegistered")) {
+      Collections.sort(entities, new DateRegisteredComparator());
+    }
     if (order.equalsIgnoreCase("desc")) {
       Collections.reverse(entities);
     }
@@ -118,7 +134,7 @@ public class UsersResource {
    * 
    * Gets the user for a given oidcId.
    * 
-   * @param oidcId
+   * @param oidcId open ID connect id
    * 
    * @return Response with user as a JSON object.
    * 
@@ -126,17 +142,17 @@ public class UsersResource {
   @GET
   @Path("/{oidcId}")
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get user by oidcId", response = UserEntity.class)
+  @ApiOperation(value = "Get user by oidcId", response = User.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
-  public Response getUser(@PathParam("oidcId") long oidcId) {
+  public Response getUser(@PathParam("oidcId") Long oidcId) {
 
     // search for existing user
-    List<UserEntity> entities = userFacade.findByOidcId(oidcId);
-    UserEntity user = null;
+    List<User> entities = entityFacade.findByParam(User.class, "oidcId", oidcId);
+    User user = null;
     if (entities.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
@@ -155,7 +171,8 @@ public class UsersResource {
    * 
    * Delete the user with the given oidcId.
    * 
-   * @param oidcId
+   * @param accessToken openID connect token
+   * @param oidcId open ID connect id
    * 
    * @return Response
    * 
@@ -166,35 +183,31 @@ public class UsersResource {
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
-      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
-      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
-          message = "Currently, this method is not implemented")})
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found")})
   public Response deleteUser(@HeaderParam("accessToken") String accessToken,
-      @PathParam("oidcId") long oidcId) {
-    try {
-      // TODO: Check for admin or user himself rights (not part of the open id authentication
-      // process)
-      OIDCAuthentication.authenticate(accessToken);
-    } catch (OIDCException e) {
-      LOGGER.warning(e.getMessage());
+      @PathParam("oidcId") Long oidcId) {
+    // Check, if the user has admin rights
+    if (!OIDCAuthentication.isAdmin(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
     // search for existing user
-    List<UserEntity> entities = userFacade.findByOidcId(oidcId);
+    List<User> entities = entityFacade.findByParam(User.class, "oidcId", oidcId);
+    User user = null;
     if (entities.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
-      // UserEntity user = entities.get(0);
+      user = entities.get(0);
     }
-    // TODO: delete user with help of userFacade
-    return Response.status(HttpStatusCode.NOT_IMPLEMENTED).build();
+    entityFacade.deleteByParam(User.class, "id", user.getId());
+    return Response.status(HttpStatusCode.OK).build();
   }
 
   /**
    * 
    * Update the user with the given oidcId.
    * 
-   * @param oidcId
+   * @param accessToken openID connect token
+   * @param oidcId open ID connect id
    * @param updatedUser as JSON
    * 
    * @return Response with updated User
@@ -203,41 +216,72 @@ public class UsersResource {
   @Path("/{oidcId}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Update user by oidcId", response = UserEntity.class)
+  @ApiOperation(value = "Update user by oidcId", response = User.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
-          message = "Internal server problems"),
-      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
-          message = "Currently, this method is not implemented")})
+          message = "Internal server problems")})
   public Response updateUser(@HeaderParam("accessToken") String accessToken,
-      @PathParam("oidcId") long oidcId,
-      @ApiParam(value = "User entity as JSON", required = true) UserEntity updatedUser) {
-    try {
-      // TODO: Check for admin or user himself rights (not part of the open id authentication
-      // process)
-      OIDCAuthentication.authenticate(accessToken);
-    } catch (OIDCException e) {
-      LOGGER.warning(e.getMessage());
-      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+      @PathParam("oidcId") Long oidcId,
+      @ApiParam(value = "User entity as JSON", required = true) User updatedUser) {
+
+    // Check, if updating user is oneself
+    if (!OIDCAuthentication.isSameUser(oidcId, accessToken)) {
+      // If not, check, if the user has admin rights
+      if (!OIDCAuthentication.isAdmin(accessToken)) {
+        return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+      }
     }
     // search for existing user
-    List<UserEntity> entities = userFacade.findByOidcId(oidcId);
+    List<User> entities = entityFacade.findByParam(User.class, "oidcId", oidcId);
+    User user = null;
     if (entities.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
-      // UserEntity user = entities.get(0);
+      user = entities.get(0);
     }
-    // TODO: update user with help of userFacade
+    DozerBeanMapper dozerMapper = new DozerBeanMapper();
+    dozerMapper.map(updatedUser, user);
+    user = entityFacade.save(user);
     try {
-      ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.NOT_IMPLEMENTED)
-          .entity(mapper.writeValueAsBytes(updatedUser)).build();
+      ObjectMapper objectMapper = new ObjectMapper();
+      return Response.status(HttpStatusCode.OK).entity(objectMapper.writeValueAsBytes(updatedUser))
+          .build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
     }
   }
+
+  /**
+   * 
+   * Get all apps for the user with the given oidcId.
+   * 
+   * @param oidcId open ID connect id
+   * @param page number
+   * @param pageLength number of users by page
+   * 
+   * @return Response with all apps as JSON array.
+   * 
+   */
+  @GET
+  @Path("/{oidcId}/apps")
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiOperation(value = "Get all apps for an user", response = App.class,
+      responseContainer = "List")
+  @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
+      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
+          message = "Internal server problems")})
+  public Response getAppsForUser(
+      @PathParam("oidcId") long oidcId,
+      @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
+      @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength) {
+    return new ApplicationsResource().getAllApps(null, page, pageLength, null, null, "Creator",
+        String.valueOf(oidcId));
+  }
+
 }

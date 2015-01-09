@@ -11,21 +11,21 @@
                 ng-class="{'caret-reversed': !collapsed}"></span>
         </h3>
         <button class="advanced-search-btn btn btn-default btn-primary hidden-lg hidden-md hidden-xs"
-                ng-class="{'hidden': collapsed}" ng-click="search()">
+                ng-class="{'hidden': collapsed}" ng-click="newSearch()">
           <span class="glyphicon glyphicon-search"></span> Search
         </button>
       </div>
       <form role="form">
         <div class="form-group col-md-12 col-sm-6 col-lg-12">
-          <label for="has-title">In Title or Description</label>
+          <label for="has-title">In Title or Tags</label>
           <div class="input-group">
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-font"></span>
-            </span> <input ng-enter="search()" ng-model="searchQuery" type="text"
-                           class="form-control" id="has-title" placeholder="myApp" ">
+            </span> <input ng-enter="newSearch()" ng-model="searchQuery" type="text"
+                           class="form-control" id="has-title" placeholder="app name" ">
           </div>
         </div>
-        <div class="form-group col-md-12 col-sm-6 col-lg-12">
+        <!--<div class="form-group col-md-12 col-sm-6 col-lg-12">
           <label for="has-tags">Tagged as</label>
           <div class="input-group">
             <span class="input-group-addon">
@@ -34,14 +34,14 @@
                            class="form-control" id="has-tags"
                            placeholder="mobile medicine food">
           </div>
-        </div>
+        </div>-->
         <div class="form-group col-md-12 col-sm-6 col-lg-12">
           <label for="has-author">Created by</label>
           <div class="input-group">
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-user"></span>
-            </span> <input ng-enter="search()" type="text"
-                           class="form-control" id="has-author" placeholder="john doe">
+            </span> <input ng-enter="newSearch()" type="text" ng-model="searchUser"
+       class="form-control" id="has-author" placeholder="john doe">
           </div>
         </div>
         <div class="form-group col-md-12 col-sm-6 col-lg-12">
@@ -49,18 +49,18 @@
           <div class="input-group">
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-sort-by-attributes"></span>
-            </span> <select class="form-control" id="sort-by">
-              <option>Age</option>
-              <option>Rating</option>
-              <option>Comments</option>
-              <option>Author</option>
-              <option>Title</option>
-              <option>None</option>
+            </span> <select ng-model="sortBy" class="form-control" id="sort-by" ng-change="newSearch()">
+              <option>name</option>
+              <option>newest</option>
+              <option>last updated</option>
+              <option>rating</option>
+              <option>platform</option>
+              <option>random</option>
             </select>
           </div>
         </div>
         <div class="col-xs-12 visible-lg visible-md visible-xs">
-          <button ng-click="search()"
+          <button ng-click="newSearch()"
                   class="advanced-search-btn btn btn-default btn-primary btn-block">
             <span class="glyphicon glyphicon-search"></span> Search
           </button>
@@ -68,46 +68,55 @@
       </form>
     </div>
   </div>
-  <div class="col-xs-12 col-md-8 col-lg-9 no-padding">
+  <div id="search-results" class="col-xs-12 col-md-8 col-lg-9 no-padding">
     <div ng-repeat="app in apps" class="col-xs-12">
       <div class="app-list-item">
         <a href="#/apps/{{app.id}}"></a>
         <div class="thumbnail">
-          <h3 class="single-line">{{app.name}}</h3>
+          <div class="title">
+            <h3 class="single-line">
+              <i class="{{app.platformObj.icon}} pull-left"></i>
+
+              {{app.name}} <span>
+                by {{app.creator.username}}
+              </span>
+            </h3>
+          </div>
           <div class="image-container">
             <img ng-src="{{app.thumbnail}}" alt="cats">
           </div>
           <div class="caption">
-
-            <div class="rating-stars">
-              <span ng-repeat="n in [] | rangeFilter:app.rating"
-                    class="glyphicon glyphicon-star text-color-staryellow"></span><span ng-repeat="n in [] | rangeFilter:(5-app.rating)"
-                                                                                        class="glyphicon glyphicon-star-empty text-color-staryellow"></span>
-
-              <span class="hspacer05 text-color-paleblack ">({{app.commentsCount}})</span>
+            <div class="inline-block">
+              <star-rating class="pull-left" value="{{app.rating}}"></star-rating> <span class="hspacer05 pull-left"></span>   <tags class="pull-left" value="{{app.tags}}" nolink="true" min="30" max="30"></tags>
             </div>
-            <p>{{app.description}}</p>
+            <span class="vspacer03"></span>
+            <p>{{app.shortDescription}}</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="row hidden">
+    <div class="row">
       <div class="col-xs-12 text-center">
         <ul class="pagination">
-          <li class="disabled">
-            <a href="#">
+          <li ng-class="{'disabled':currentPage==1}">
+            <a href="javascript:void(0)" ng-click="changePage(1)">
               <span class="glyphicon glyphicon-step-backward"></span>
             </a>
           </li>
-          <li class="active"><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">...</a></li>
-          <li><a href="#">100</a></li>
+          <li ng-click="changePage(n+(currentPage>3?currentPage-3:1))"
+              ng-class="{'active':n+(currentPage>3?currentPage-3:1)==currentPage}" ng-repeat="n in [] | rangeFilter: currentPage>3?Math.min(maxDisplayPage,(4+maxPage-currentPage)):Math.min(maxDisplayPage,maxPage)">
+            <a href="javascript:void(0)">{{n+(currentPage>3?currentPage-3:1)}}</a>
+          </li>
+          <li ng-show="maxPage>maxDisplayPage"><a href="javascript:void(0)">...</a></li>
+          <li ng-show="maxPage>maxDisplayPage" ng-click="changePage(maxPage)"
+              ng-class="{'active':currentPage==maxPage}">
+
+            <a href="javascript:void(0)">{{maxPage}}</a>
+          </li>
           <li>
-            <a href="#">
+            <!--<a href="javascript:void(0)">
               <span class="glyphicon glyphicon-step-forward"></span>
-            </a>
+            </a>-->
           </li>
         </ul>
       </div>
