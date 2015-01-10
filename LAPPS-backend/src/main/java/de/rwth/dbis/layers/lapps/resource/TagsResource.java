@@ -107,7 +107,7 @@ public class TagsResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Create tag for an app", response = Tag.class)
   @ApiResponses(value = {
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.CREATED, message = "Tag successful created"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
@@ -126,7 +126,7 @@ public class TagsResource {
 
       try {
         ObjectMapper mapper = new ObjectMapper();
-        return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(createdTag))
+        return Response.status(HttpStatusCode.CREATED).entity(mapper.writeValueAsBytes(createdTag))
             .build();
       } catch (JsonProcessingException e) {
         LOGGER.warning(e.getMessage());
@@ -149,7 +149,7 @@ public class TagsResource {
   @Path("/{id}")
   @ApiOperation(value = "Delete tag with id from app")
   @ApiResponses(value = {
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.NO_CONTENT, message = "Tag successful deleted"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App or tag of app not found")})
   public Response deleteTag(@HeaderParam("accessToken") String accessToken,
@@ -179,7 +179,7 @@ public class TagsResource {
       } else {
       }
       entitiyFacade.deleteByParam(Tag.class, "id", tag.getId());
-      return Response.status(HttpStatusCode.OK).build();
+      return Response.status(HttpStatusCode.NO_CONTENT).build();
     }
   }
 }
