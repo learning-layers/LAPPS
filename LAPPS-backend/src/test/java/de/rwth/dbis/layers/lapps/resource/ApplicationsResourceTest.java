@@ -161,7 +161,7 @@ public class ApplicationsResourceTest {
           target.path("apps").request()
               .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
               .post(entity(newApp, MediaType.APPLICATION_JSON));
-      assertEquals(HttpStatusCode.OK, response.getStatus());
+      assertEquals(HttpStatusCode.CREATED, response.getStatus());
       MediaType responseMediaType = response.getMediaType();
       assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
       String responseContent = response.readEntity(String.class);
@@ -188,7 +188,7 @@ public class ApplicationsResourceTest {
     Response response =
         target.path("apps/" + app.getId()).request()
             .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
-    assertEquals(HttpStatusCode.OK, response.getStatus());
+    assertEquals(HttpStatusCode.NO_CONTENT, response.getStatus());
 
     response = target.path("apps/" + app.getId()).request(MediaType.APPLICATION_JSON).get();
     assertEquals(HttpStatusCode.NOT_FOUND, response.getStatus());
