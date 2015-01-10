@@ -181,7 +181,7 @@ public class UsersResource {
   @Path("/{oidcId}")
   @ApiOperation(value = "Delete user by oidcId")
   @ApiResponses(value = {
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.NO_CONTENT, message = "User successful deleted"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found")})
   public Response deleteUser(@HeaderParam("accessToken") String accessToken,
@@ -199,7 +199,7 @@ public class UsersResource {
       user = entities.get(0);
     }
     entityFacade.deleteByParam(User.class, "id", user.getId());
-    return Response.status(HttpStatusCode.OK).build();
+    return Response.status(HttpStatusCode.NO_CONTENT).build();
   }
 
   /**
@@ -218,7 +218,7 @@ public class UsersResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Update user by oidcId", response = User.class)
   @ApiResponses(value = {
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.OK, message = "User successful updated"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
