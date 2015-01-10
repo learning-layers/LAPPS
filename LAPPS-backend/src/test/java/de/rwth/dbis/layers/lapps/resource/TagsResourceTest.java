@@ -133,7 +133,7 @@ public class TagsResourceTest {
       Response response =
           target.path("apps/" + app.getId() + "/tags").request()
               .post(entity(newTag, MediaType.APPLICATION_JSON));
-      assertEquals(HttpStatusCode.OK, response.getStatus());
+      assertEquals(HttpStatusCode.CREATED, response.getStatus());
       MediaType responseMediaType = response.getMediaType();
       assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
       String responseContent = response.readEntity(String.class);
@@ -160,7 +160,7 @@ public class TagsResourceTest {
     Response response =
         target.path("apps/" + app.getId() + "/tags/" + tag.getId()).request()
             .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
-    assertEquals(HttpStatusCode.OK, response.getStatus());
+    assertEquals(HttpStatusCode.NO_CONTENT, response.getStatus());
 
     response =
         target.path("apps/" + app.getId() + "/tags").request(MediaType.APPLICATION_JSON).get();

@@ -122,7 +122,7 @@ public class UsersResourceTest {
     Response response =
         target.path("users/" + user.getOidcId()).request()
             .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
-    assertEquals(HttpStatusCode.OK, response.getStatus());
+    assertEquals(HttpStatusCode.NO_CONTENT, response.getStatus());
 
     response = target.path("users/" + user.getOidcId()).request((MediaType.APPLICATION_JSON)).get();
     assertEquals(HttpStatusCode.NOT_FOUND, response.getStatus());

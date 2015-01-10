@@ -281,7 +281,7 @@ public class ApplicationsResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Create app", response = App.class)
   @ApiResponses(value = {
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.CREATED, message = "App successful created"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
@@ -310,7 +310,7 @@ public class ApplicationsResource {
     }
     creator = creatorList.get(0);
     if (creator.getRole() != User.DEVELOPER && creator.getRole() != User.ADMIN) {
-      return Response.status(HttpStatusCode.UNAUTHORIZED).build(); // TODO error description
+      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
     createdApp.setCreator(creator);
 
@@ -327,7 +327,7 @@ public class ApplicationsResource {
 
     try {
       ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(createdApp))
+      return Response.status(HttpStatusCode.CREATED).entity(mapper.writeValueAsBytes(createdApp))
           .build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
@@ -349,7 +349,7 @@ public class ApplicationsResource {
   @Path("/{id}")
   @ApiOperation(value = "Delete app by ID")
   @ApiResponses(value = {
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.NO_CONTENT, message = "App successful deleted"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found")})
   public Response deleteApp(@HeaderParam("accessToken") String accessToken, @PathParam("id") Long id) {
@@ -371,7 +371,7 @@ public class ApplicationsResource {
 
 
     entitiyFacade.deleteByParam(App.class, "id", app.getId());
-    return Response.status(HttpStatusCode.OK).build();
+    return Response.status(HttpStatusCode.NO_CONTENT).build();
   }
 
   /**
@@ -390,7 +390,7 @@ public class ApplicationsResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Update app by ID", response = App.class)
   @ApiResponses(value = {
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.OK, message = "App successful updated"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
