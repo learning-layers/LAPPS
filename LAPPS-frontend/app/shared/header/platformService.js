@@ -20,7 +20,7 @@
                         {
                           id: 0,
                           name: 'iOS',
-                          icon: 'icon-apple-store',
+                          icon: 'icon-iOSLogo',
                           downloadBadge: 'badge-apple',
                           agentRegEx: /(iPhone|iPad|iPod)/,
                           isMobile: true
