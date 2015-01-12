@@ -194,6 +194,10 @@ public class App implements Entity, Comparable<App> {
     return artifacts;
   }
 
+  public void setArtifacts(List<Artifact> artifacts) {
+    this.artifacts = artifacts;
+  }
+
   public void addArtifact(Artifact artifact) {
     this.artifacts.add(artifact);
     if (artifact.getBelongingTo() != this) {
@@ -203,6 +207,10 @@ public class App implements Entity, Comparable<App> {
 
   public List<Tag> getTags() {
     return tags;
+  }
+
+  public void setTags(List<Tag> tags) {
+    this.tags = tags;
   }
 
   public void addTag(Tag tag) {
@@ -223,7 +231,7 @@ public class App implements Entity, Comparable<App> {
   /**
    * 
    * Override equals for an {@link App} using field id.
-   *
+   * 
    */
   @Override
   public boolean equals(Object obj) {
@@ -241,7 +249,7 @@ public class App implements Entity, Comparable<App> {
   /**
    * 
    * Override compare for an {@link App} using field name.
-   *
+   * 
    */
   @Override
   public int compareTo(App o) {
@@ -257,7 +265,7 @@ public class App implements Entity, Comparable<App> {
   /**
    * 
    * PlatformComparator for {@link App} using field platform.
-   *
+   * 
    */
   public static class PlatformComparator implements Comparator<App> {
     @Override
@@ -274,7 +282,7 @@ public class App implements Entity, Comparable<App> {
   /**
    * 
    * RatingComparator for {@link App} using field rating.
-   *
+   * 
    */
   public static class RatingComparator implements Comparator<App> {
     @Override
@@ -292,7 +300,7 @@ public class App implements Entity, Comparable<App> {
   /**
    * 
    * DateCreatedComparator for {@link App} using field dateCreated.
-   *
+   * 
    */
   public static class DateCreatedComparator implements Comparator<App> {
     @Override
@@ -310,7 +318,7 @@ public class App implements Entity, Comparable<App> {
   /**
    * 
    * DateModifiedComparator for {@link App} using field dateModified.
-   *
+   * 
    */
   public static class DateModifiedComparator implements Comparator<App> {
     @Override

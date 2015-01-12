@@ -416,7 +416,30 @@ public class ApplicationsResource {
 
     DozerBeanMapper dozerMapper = new DozerBeanMapper();
     dozerMapper.map(updatedApp, app);
+
+    app.getArtifacts().clear();
+    app.getTags().clear();
     app = entitiyFacade.save(app);
+
+    // backup child elements
+    List<Artifact> artifacts = new ArrayList<Artifact>(updatedApp.getArtifacts());
+    List<Tag> tags = new ArrayList<Tag>(updatedApp.getTags());
+
+    // delete child elements from app
+    entitiyFacade.deleteByParam(Artifact.class, "belongingTo", app);
+    entitiyFacade.deleteByParam(Tag.class, "app", app);
+
+    // save child elements
+    for (Artifact newArtifact : artifacts) {
+      newArtifact.setBelongingTo(app);
+      entitiyFacade.save(newArtifact);
+    }
+    for (Tag newTag : tags) {
+      newTag.setApp(app);
+      entitiyFacade.save(newTag);
+    }
+
+
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       return Response.status(HttpStatusCode.OK).entity(objectMapper.writeValueAsBytes(app)).build();
