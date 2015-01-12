@@ -25,16 +25,36 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-iOSLogo:before {
+  content: "\e601";
+}
+
 .icon-ms-store:before {
   content: "\e600";
 }
 
-.icon-apple-store:before {
-  content: "\e601";
+.icon-youtube3:before {
+  content: "\ea99";
+}
+
+.icon-youtube4:before {
+  content: "\ea9a";
+}
+
+.icon-github:before {
+  content: "\eab1";
+}
+
+.icon-github4:before {
+  content: "\eab4";
 }
 
 .icon-tux:before {
   content: "\eabe";
+}
+
+.icon-apple:before {
+  content: "\eabf";
 }
 
 .icon-finder:before {
@@ -45,67 +65,76 @@
   content: "\eac1";
 }
 
-.badge-apple {  
-  height:60px;
-  width:200px;
-  background:url('../img/download-buttons/Download_on_the_App_Store_Badge_US-UK_135x40.svg') no-repeat;
-  background-size:  contain;
-  background-position:center;
+.icon-windows:before {
+  content: "\eac2";
 }
 
-@media (max-width: 768px){
+.badge-apple {
+  height: 60px;
+  width: 200px;
+  background: url('../img/download-buttons/Download_on_the_App_Store_Badge_US-UK_135x40.svg') no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+@media (max-width: 768px) {
   .badge-apple {
-    height:90px;
+    height: 90px;
   }
 }
 
 .badge-android {
-  height:60px;
-  width:185px;
-  background:url('../img/download-buttons/Android-app-on-google-play.svg') no-repeat;
-  background-size:  contain;
-  background-position:center;
+  height: 60px;
+  width: 185px;
+  background: url('../img/download-buttons/Android-app-on-google-play.svg') no-repeat;
+  background-size: contain;
+  background-position: center;
 }
-@media (max-width: 768px){
+
+@media (max-width: 768px) {
   .badge-android {
-    height:100px;
+    height: 100px;
   }
 }
 
 .badge-windows {
-  height:60px;
-  width:230px;
-  background:url('../img/download-buttons/WPS_Download_Badge.svg') no-repeat;
-  background-size:  contain;
-  background-position:center;
+  height: 60px;
+  width: 230px;
+  background: url('../img/download-buttons/WPS_Download_Badge.svg') no-repeat;
+  background-size: contain;
+  background-position: center;
 }
-@media (max-width: 768px){
+
+@media (max-width: 768px) {
   .badge-windows {
-    height:80px;
+    height: 80px;
   }
 }
 
 .badge-webapp {
-  height:60px;
-  width:200px;
-  background:url('../img/download-buttons/WebAppLogo.svg') no-repeat;
-  background-size:  contain;
-  background-position:center;
+  height: 60px;
+  width: 200px;
+  background: url('../img/download-buttons/WebAppLogo.svg') no-repeat;
+  background-size: contain;
+  background-position: center;
 }
-@media (max-width: 768px){
+
+@media (max-width: 768px) {
   .badge-webapp {
-    height:90px;
+    height: 90px;
   }
 }
+
 .badge-default {
-  height:60px;
-  width:200px;
-  background:url('../img/download-buttons/DownloadLogo.svg') no-repeat;
-  background-size:  contain;
-  background-position:center;
+  height: 60px;
+  width: 200px;
+  background: url('../img/download-buttons/DownloadLogo.svg') no-repeat;
+  background-size: contain;
+  background-position: center;
 }
-@media (max-width: 768px){
+
+@media (max-width: 768px) {
   .badge-default {
-    height:90px;
+    height: 90px;
   }
 }

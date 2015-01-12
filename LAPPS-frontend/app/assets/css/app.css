@@ -46,7 +46,9 @@ h1, h2, h3, h4, h5 {
   -webkit-box-shadow: 1px 1px 3px #999;
   box-shadow: 1px 1px 3px #999;
 }
-
+.navbar-collapse{
+  max-height:none!important;
+}
 .thumbnail .title {
   text-align: center;
   margin: 3px 4px 10px 4px;
@@ -209,7 +211,10 @@ h1, h2, h3, h4, h5 {
   .search-bar .navbar-form {
     padding: 0;
   }
-
+.search-bar input,
+.search-bar-xs input {
+  height:34px!important;
+}
   .search-bar .input-group-btn:last-child > .btn,
   .search-bar .input-group-btn:last-child > .btn-group,
   .search-bar-xs .input-group-btn:last-child > .btn,
