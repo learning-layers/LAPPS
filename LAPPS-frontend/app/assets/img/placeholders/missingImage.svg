@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="500"
+   height="500"
+   viewbox="0 0 500 500"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.0 r9654"
+   sodipodi:docname="missingImage.svg">
+  <defs
+     id="defs4">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2987"
+       is_visible="true" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="89.793117"
+     inkscape:cy="218.24191"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1190"
+     inkscape:window-height="849"
+     inkscape:window-x="1750"
+     inkscape:window-y="150"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-113.5837,-190.71499)">
+    <path
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#b4b4b4;stroke-width:8.13511562000000050;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 183.36554,315.78964 278.33606,-70.0494 81.82954,325.14348 -278.33607,70.04941 z"
+       id="rect3776"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#b4b4b4;stroke-width:8.13511562000000050;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 206.44703,268.57705 285.35724,-30.80807 35.98904,333.3454 -285.35722,30.80807 z"
+       id="rect3776-1"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#b4b4b4;fill-opacity:1;fill-rule:nonzero;stroke:#b4b4b4;stroke-width:2.36862063000000010;stroke-miterlimit:4;stroke-opacity:1"
+       d="m 233.65659,292.99914 236.91173,-25.74658 30.03069,277.17382 -236.91173,25.74658 z"
+       id="rect3776-12"
+       inkscape:connector-curvature="0"
+       inkscape:transform-center-x="13.791469" />
+    <text
+       xml:space="preserve"
+       style="font-size:261.52053833px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Segoe WP;-inkscape-font-specification:Segoe WP"
+       x="251.02785"
+       y="543.39777"
+       id="text3806"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.99697742,-0.07769191,0.07769191,0.99697742,0,0)"><tspan
+         sodipodi:role="line"
+         id="tspan3808"
+         x="251.02785"
+         y="543.39777"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;fill-opacity:1;font-family:Segoe Script;-inkscape-font-specification:Segoe Script">?</tspan></text>
+  </g>
+</svg>

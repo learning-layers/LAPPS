@@ -1,10 +1,14 @@
-﻿<div class="row carousel-row" >
+﻿<div class="row carousel-row">
   <div class="col-md-9">
     <div id="featured-carousel" class="thumbnail">
       <carousel interval="interval"
                 on-carousel-change="onSlideChanged(nextSlide, direction)">
         <slide ng-repeat="app in apps" active="app.active">
-          <img ng-src="{{app.image}}" width="1000" height="560"> <a href="#/apps/{{app.id}}"></a>
+          <!--<img ng-src="{{app.image}}" width="1000" height="560"> <a href="#/apps/{{app.id}}"></a>-->
+          <div class="img-container">
+            <div class="dummy"></div>
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" back-img="{{app.image?app.image:''}}"><a href="#/apps/{{app.id}}"></a>
+          </div>
           <div class="carousel-caption">
 
             <h1 class="hidden-xs">{{app.name}}</h1>
@@ -18,18 +22,18 @@
     <div class="title">
       <h2 class="single-line"><i class="{{apps[currentSlide].platformObj.icon}} pull-left"></i>{{apps[currentSlide].name}}</h2>
     </div>
-    
-      <img ng-src="{{apps[currentSlide].thumbnail}}">
 
-      <!--<p class="description">{{apps[currentSlide].longDesccription}}</p>-->
-    
-      <span class="vspacer05 text-center">
-        <star-rating value="{{apps[currentSlide].rating}}"></star-rating>
-      </span>
-      <p>{{apps[currentSlide].shortDescription}}</p>
-    
-      <a id="details-button" class="btn btn-success btn-lg"
-         href="#/apps/{{apps[currentSlide].id}}">Details</a>
-    
+    <img ng-src="{{apps[currentSlide].thumbnail}}">
+
+    <!--<p class="description">{{apps[currentSlide].longDesccription}}</p>-->
+
+    <span class="vspacer05 text-center">
+      <star-rating value="{{apps[currentSlide].rating}}"></star-rating>
+    </span>
+    <p>{{apps[currentSlide].shortDescription}}</p>
+
+    <a id="details-button" class="btn btn-success btn-lg"
+       href="#/apps/{{apps[currentSlide].id}}">Details</a>
+
   </div>
 </div>

@@ -17,8 +17,9 @@
                       'platform',
                       '$document',
                       'convert',
+                      '$timeout',
                       function($scope, $routeParams, swaggerApi, platform,
-                              $document, convert) {
+                              $document, convert, $timeout) {
                         /**
                          * @field
                          * @type string
@@ -66,6 +67,16 @@
                          */
 
                         $scope.alternativePlatforms = [];
+
+                        /**
+                         * @field
+                         * @type boolean
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Set to true after a fixed period of
+                         *              time. Used to show 'invalid-link'
+                         *              notifications.
+                         */
+                        $scope.requestTimedOut = false;
 
                         if (marked) {
                           marked.setOptions({
@@ -158,10 +169,10 @@
                                           if (marked) {
                                             $scope.app.longDescriptionMarkdown = marked($scope.app.longDescription);
                                           } else {// since marked cannot safely
-                                                  // escape malicius html and
-                                                  // angularjs is told to accept
-                                                  // the output, escape it
-                                                  // explicitly
+                                            // escape malicius html and
+                                            // angularjs is told to accept
+                                            // the output, escape it
+                                            // explicitly
                                             $scope.app.longDescriptionMarkdown = escapeHtml($scope.app.longDescription);
                                           }
 
@@ -257,5 +268,8 @@
                           return 0;
                         }
 
+                        $timeout(function() {
+                          $scope.requestTimedOut = true
+                        }, 500);
                       }]);
 }).call(this);

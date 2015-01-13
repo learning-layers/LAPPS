@@ -72,6 +72,14 @@
     }).when('/apps/:appId/edit', {
       templateUrl: 'components/editAppPage/editPageView.html',
       controller: 'editPageCtrl'
+    }).when('/tos', {
+      templateUrl: 'components/footerPages/termsOfService.html'
+    }).when('/privacy', {
+      templateUrl: 'components/footerPages/privacyPolicy.html'
+    }).when('/contact', {
+      templateUrl: 'components/footerPages/contact.html'
+    }).when('/faq', {
+      templateUrl: 'components/footerPages/faq.html'
     }).otherwise({
       redirectTo: '/apps'
     });
