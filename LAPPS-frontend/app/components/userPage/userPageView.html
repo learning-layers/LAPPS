@@ -1,4 +1,9 @@
-<div class="row">
+<div class="row" ng-show="requestTimedOut && !user.username">
+  <invalid-link>
+
+  </invalid-link>
+</div>
+<div class="row" ng-show="user.username">
   <div class="col-md-12 thumbnail" id="user-profile">
     <div class="title">
       <!--<img ng-src="{{user.avatar}}">-->
@@ -8,7 +13,7 @@
     </div>
     <div class="container">
       <div class="col-md-3 col-sm-5 text-center avatar">
-        <a href="https://secure.gravatar.com" class="img-circle" back-img="{{user.avatar}}"></a>
+        <a href="https://secure.gravatar.com" class="img-circle" back-img="{{user.avatar?user.avatar:''}}"></a>
       </div>
       <div class="col-md-3 col-sm-7">
         <hr class="visible-xs" />

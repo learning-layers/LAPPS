@@ -18,8 +18,9 @@
                       'swaggerApi',
                       'md5',
                       'convert',
+                      '$timeout',
                       function($scope, $routeParams, user, $http, swaggerApi,
-                              md5, convert) {
+                              md5, convert, $timeout) {
                         /**
                          * @field
                          * @type string
@@ -44,7 +45,16 @@
                          */
                         $scope.avatarSize = 150;
 
-                        $scope.user.avatar = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QAJwBxAIVCQz2jAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAB3RJTUUH3gwJFTshNi7riQAAAg5JREFUOMutkr1rFGEQh595d/dub0MSv4iI1xwIBoTgR87CSo1/gIo2XqukuwiChyjaqbE8TCEIghC1kFiksxUCsoVV/Aia84JfScw3WXN3uzsW7umJBgX9NTMDM8/7e4eBf5QABOWcNPOW2FQE4BUr6wMSSBewAcgAFhADDa9YGQ/KOZPUv4AkKOcGgAvA5+S1CNAEbpL6pFesTAblnHjFirYCTF2sm5Nue1ZhwqAqEBo0FAiBKIkjQTl3JQESlHM/f+HiyPEt83a6q2/p/eUDKzN9dWM8VGxQFSTujGrVdBwtKmwGznnFymhzd3L+0YnTQD+glqqEYuifftHtaGxanKoiVkdUn0rH4YLARoVrwKgBuXPj2MM88ECN1gWVoa273ry1O61QrUxNbTdUkzKoBsbOzjluz6zjti1bqb3el8UlAei9fi/l2PXuWuie3Z0dO5pxVtIg7KzNWwdXp+x5y9V3Tnv8OrUp/pRyV9usYNoiDoyJ7kp+cLgfONO0Ciquveb0ZMd2/DiIb4uP1WhQ7wgmZno+NKJ0XYgfG+CWXyr0AlcBG4S1MNN4WjnyfHZ120KsotPL2Tm/euiVXz38cvxjb7URpYb80qn9ilwSgPzgMH6pQJLvAW4nhyMtFixgAHjilwrfZ2ygdRi/VHgG7MsPDm8H7ieQgl8qTDV7/qjfNa03KH8Labr87/oKw03euhH4vI8AAAAASUVORK5CYII=';
+                        /**
+                         * @field
+                         * @type boolean
+                         * @memberOf lapps.lappsControllers.userPageCtrl
+                         * @description Set to true after a fixed period of
+                         *              time. Used to show 'invalid-link'
+                         *              notifications.
+                         */
+                        $scope.requestTimedOut = false;
+
                         /**
                          * @function
                          * @memberOf lapps.lappsControllers.userPageCtrl
@@ -61,7 +71,6 @@
                                   })
                                   .then(
                                           function(response) {
-
                                             $scope.user = response.data;
                                             $scope.user.roleName = user
                                                     .roleIdToRoleName($scope.user.role);
@@ -76,9 +85,7 @@
                                                     + '?s='
                                                     + $scope.avatarSize
                                                     + '&d=identicon';
-
                                           });
-
                         }
                         /**
                          * @function
@@ -145,5 +152,9 @@
                         }
 
                         $scope.fetchUser();
+
+                        $timeout(function() {
+                          $scope.requestTimedOut = true
+                        }, 500);
                       }]);
 }).call(this);

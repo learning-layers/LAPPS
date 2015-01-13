@@ -17,8 +17,9 @@
                       'platform',
                       '$location',
                       'convert',
+                      '$timeout',
                       function($scope, swaggerApi, $routeParams, user,
-                              platform, $location, convert) {
+                              platform, $location, convert, $timeout) {
                         /**
                          * @field
                          * @type object
@@ -96,6 +97,15 @@
                          *              the backend.
                          */
                         $scope.apps = [];
+                        /**
+                         * @field
+                         * @type boolean
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @description Changed by a timeout. Used to display a
+                         *              'not found' message when search
+                         *              unsuccessful.
+                         */
+                        $scope.probablyNothingFound = false;
                         /**
                          * @field
                          * @type boolean
@@ -240,5 +250,9 @@
                           $scope.search();
                         }
                         $scope.search();
+                        $timeout(
+                                function() {
+                                  $scope.probablyNothingFound = $scope.apps.length <= 0;
+                                }, 500)
                       }]);
 }).call(this);

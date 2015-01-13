@@ -41,7 +41,7 @@
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-user"></span>
             </span> <input ng-enter="newSearch()" type="text" ng-model="searchUser"
-       class="form-control" id="has-author" placeholder="john doe">
+                           class="form-control" id="has-author" placeholder="john doe">
           </div>
         </div>
         <div class="form-group col-md-12 col-sm-6 col-lg-12">
@@ -68,58 +68,66 @@
       </form>
     </div>
   </div>
-  <div id="search-results" class="col-xs-12 col-md-8 col-lg-9 no-padding">
-    <div ng-repeat="app in apps" class="col-xs-12">
-      <div class="app-list-item">
-        <a href="#/apps/{{app.id}}"></a>
-        <div class="thumbnail">
-          <div class="title">
-            <h3 class="single-line">
-              <i class="{{app.platformObj.icon}} pull-left"></i>
+  <div ng-show="probablyNothingFound && apps.length<=0" class="col-xs-12 col-md-8 col-lg-9">
+    <div class="text-center">
+      <h1>No results found for:</h1>
+      <h3>{{searchQuery}}</h3>
+    </div>
+  </div>
+    <div id="search-results" class="col-xs-12 col-md-8 col-lg-9 no-padding">
+      <div ng-repeat="app in apps" class="col-xs-12">
+        <div class="app-list-item">
+          <a href="#/apps/{{app.id}}"></a>
+          <div class="thumbnail">
+            <div class="title">
+              <h3 class="single-line">
+                <i class="{{app.platformObj.icon}} pull-left"></i>
 
-              {{app.name}} <span>
-                by {{app.creator.username}}
-              </span>
-            </h3>
-          </div>
-          <div class="image-container">
-            <img ng-src="{{app.thumbnail}}" alt="cats">
-          </div>
-          <div class="caption">
-            <div class="inline-block">
-              <star-rating class="pull-left" value="{{app.rating}}"></star-rating> <span class="hspacer05 pull-left"></span>   <tags class="pull-left" value="{{app.tags}}" nolink="true" min="30" max="30"></tags>
+                {{app.name}} <span>
+                  by {{app.creator.username}}
+                </span>
+              </h3>
             </div>
-            <span class="vspacer03"></span>
-            <p>{{app.shortDescription}}</p>
+            <div class="image-container">
+              <img ng-src="{{app.thumbnail}}" alt="cats">
+            </div>
+            <div class="caption">
+              <div class="inline-block">
+                <star-rating class="pull-left" value="{{app.rating}}"></star-rating> <span class="hspacer05 pull-left"></span>   <tags class="pull-left" value="{{app.tags}}" nolink="true" min="30" max="30"></tags>
+              </div>
+              <span class="vspacer03"></span>
+              <p>{{app.shortDescription}}</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-12 text-center">
-        <ul class="pagination">
-          <li ng-class="{'disabled':currentPage==1}">
-            <a href="javascript:void(0)" ng-click="changePage(1)">
-              <span class="glyphicon glyphicon-step-backward"></span>
-            </a>
-          </li>
-          <li ng-click="changePage(n+(currentPage>3?currentPage-3:1))"
-              ng-class="{'active':n+(currentPage>3?currentPage-3:1)==currentPage}" ng-repeat="n in [] | rangeFilter: currentPage>3?Math.min(maxDisplayPage,(4+maxPage-currentPage)):Math.min(maxDisplayPage,maxPage)">
-            <a href="javascript:void(0)">{{n+(currentPage>3?currentPage-3:1)}}</a>
-          </li>
-          <li ng-show="maxPage>maxDisplayPage"><a href="javascript:void(0)">...</a></li>
-          <li ng-show="maxPage>maxDisplayPage" ng-click="changePage(maxPage)"
-              ng-class="{'active':currentPage==maxPage}">
 
-            <a href="javascript:void(0)">{{maxPage}}</a>
-          </li>
-          <li>
-            <!--<a href="javascript:void(0)">
-              <span class="glyphicon glyphicon-step-forward"></span>
-            </a>-->
-          </li>
-        </ul>
+
+      <div class="row" ng-show="maxPage>1">
+        <div class="col-xs-12 text-center">
+          <ul class="pagination">
+            <li ng-class="{'disabled':currentPage==1}">
+              <a href="javascript:void(0)" ng-click="changePage(1)">
+                <span class="glyphicon glyphicon-step-backward"></span>
+              </a>
+            </li>
+            <li ng-click="changePage(n+(currentPage>3?currentPage-3:1))"
+                ng-class="{'active':n+(currentPage>3?currentPage-3:1)==currentPage}" ng-repeat="n in [] | rangeFilter: currentPage>3?Math.min(maxDisplayPage,(4+maxPage-currentPage)):Math.min(maxDisplayPage,maxPage)">
+              <a href="javascript:void(0)">{{n+(currentPage>3?currentPage-3:1)}}</a>
+            </li>
+            <li ng-show="maxPage>maxDisplayPage"><a href="javascript:void(0)">...</a></li>
+            <li ng-show="maxPage>maxDisplayPage" ng-click="changePage(maxPage)"
+                ng-class="{'active':currentPage==maxPage}">
+
+              <a href="javascript:void(0)">{{maxPage}}</a>
+            </li>
+            <li>
+              <!--<a href="javascript:void(0)">
+                <span class="glyphicon glyphicon-step-forward"></span>
+              </a>-->
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
-</div>

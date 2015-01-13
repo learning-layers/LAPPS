@@ -27,7 +27,7 @@
                 
               </h3>
               <div class="image-container">
-                <img ng-src="{{app.thumbnail}}" alt="cats">
+                <img ng-src="{{app.thumbnail?app.thumbnail:'assets/img/placeholders/missingImage.svg'}}" error-src="assets/img/placeholders/missingImage.svg">
               </div>
               <div class="caption">
 
