@@ -18,8 +18,12 @@
                       '$document',
                       'convert',
                       '$timeout',
+                      '$location',
+                      '$modal',
+                      'user',
                       function($scope, $routeParams, swaggerApi, platform,
-                              $document, convert, $timeout) {
+                              $document, convert, $timeout, $location, $modal,
+                              user) {
                         /**
                          * @field
                          * @type string
@@ -104,7 +108,45 @@
                             $scope.collapsed = true;
                           }
                         }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @type boolean
+                         * @description True if the visitor is the developer of
+                         *              the app or an admin.
+                         */
+                        $scope.mayEdit = function() {
+                          return (user.isAdmin() || (user.isDeveloper() && user.data.sub == $scope.app.creator.oidcId));
+                        }
 
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Opens a modal confirmation dialog and
+                         *              deletes the current app.
+                         */
+                        $scope.deleteApp = function() {
+
+                          var modalInstance = $modal
+                                  .open({
+                                    templateUrl: 'components/appDetail/deleteConfirmView.html',
+                                    controller: 'deleteConfirmCtrl',
+                                    size: 'xs',
+
+                                  });
+
+                          modalInstance.result.then(function(isOk) {
+                            if (isOk) {
+                              swaggerApi.apps.deleteApp({
+                                accessToken: user.token,
+                                id: $scope.app.id
+                              }).then($location.path("/apps"));
+
+                            }
+                          }, function() {
+
+                          });
+                        }
                         /**
                          * @field
                          * @type number

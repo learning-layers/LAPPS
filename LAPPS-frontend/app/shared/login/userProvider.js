@@ -47,7 +47,8 @@
                     this.$get = [
                         '$http',
                         '$location',
-                        function($http, $location) {
+                        'swaggerApi',
+                        function($http, $location, swaggerApi) {
                           return {
                             /**
                              * @field
@@ -56,7 +57,14 @@
                              * @description Data about the user retrived from
                              *              the oidc provider.
                              */
-                            data: null,
+                            data: {
+                              email: 'johndoe@gmail.com',
+                              email_verified: true,
+                              name: 'John Doe',
+                              preferred_username: 'JohnDoe',
+                              sub: '-1556155057',
+                              updated_time: '1'
+                            },
 
                             /**
                              * @field
@@ -65,7 +73,7 @@
                              * @description The role of a user (User, Developer,
                              *              Admin)
                              */
-                            role: 'user',
+                            role: 3,
 
                             /**
                              * @field
@@ -93,7 +101,7 @@
                              *              Needed for some restricted backend
                              *              requests.
                              */
-                            token: '',
+                            token: 'test_token',
                             /**
                              * @function
                              * @memberOf lapps.lappsServices.user
@@ -148,7 +156,8 @@
                                                               self.token = window.localStorage['access_token'];// needed
                                                               // for
                                                               // requests
-                                                              // getDatabaseUserInfo();
+                                                              self
+                                                                      .getDatabaseUserInfo();
                                                               self
                                                                       .loginCallback(true);
                                                             } else {
@@ -307,7 +316,23 @@
                             },
 
                             getDatabaseUserInfo: function() {
-                              // TODO: fetch additional data from our database
+                              swaggerApi.users.updateUser({
+                                accessToken: this.token,
+                                oidcId: +this.data.sub,
+                                body: {
+                                  username: this.data.preferred_username,
+                                  email: this.data.email
+                                }
+                              }
+
+                              ).then(function(data) {
+                                // TODO: remove
+
+                              });
+                              /*
+                               * swaggerApi.users.getUser({ oidcId:
+                               * self.data.sub }).then(function (data) { });
+                               */
                             },
                             /**
                              * @function
