@@ -294,12 +294,12 @@ public class ApplicationsResource {
     }
     createdApp.deleteId();
 
-    // save child elements
+    // save (not store!) child elements
     User creator = createdApp.getCreator();
     List<Artifact> artifacts = new ArrayList<Artifact>(createdApp.getArtifacts());
     List<Tag> tags = new ArrayList<Tag>(createdApp.getTags());
 
-    // delete child elements from app
+    // delete child elements from app (persistence issues otherwise)
     createdApp.getArtifacts().clear();
     createdApp.getTags().clear();
 
@@ -313,6 +313,11 @@ public class ApplicationsResource {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
     createdApp.setCreator(creator);
+    // Initial rating of three
+    createdApp.setRating(3.0);
+    // Set dates to null (set by database)
+    createdApp.setDateCreated(null);
+    createdApp.setDateModified(null);
 
     createdApp = entitiyFacade.save(createdApp);
 
@@ -415,10 +420,22 @@ public class ApplicationsResource {
     }
 
     DozerBeanMapper dozerMapper = new DozerBeanMapper();
+
+    // Rating not allowed to change
+    updatedApp.setRating(app.getRating());
+    // Developer not allowed to change
+    updatedApp.setCreator(app.getCreator());
+    // Release date not subject to change
+    updatedApp.setDateCreated(null);
+    // Update date will be set by database
+    long time = System.currentTimeMillis();
+    java.sql.Timestamp timestamp = new java.sql.Timestamp(time);
+    updatedApp.setDateModified(timestamp);
     dozerMapper.map(updatedApp, app);
 
     app.getArtifacts().clear();
     app.getTags().clear();
+
     app = entitiyFacade.save(app);
 
     // backup child elements

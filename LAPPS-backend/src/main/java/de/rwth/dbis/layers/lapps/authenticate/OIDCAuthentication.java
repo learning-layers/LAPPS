@@ -43,10 +43,10 @@ public class OIDCAuthentication {
   private static Facade facade = new Facade();
 
   /**
-   * Returns true, if the given token belongs to a user with at least(!) "user" rights.
+   * Returns true, if the given token belongs to a user with at least(!) "user" rights (always true)
    * 
    * @param openIdToken
-   * @return
+   * @return true, if the token belongs to a user
    */
   public static boolean isUser(String openIdToken) {
     // no token provided
@@ -74,7 +74,7 @@ public class OIDCAuthentication {
    * Returns true, if the given token belongs to a user with exactly(!) "pending developer" rights.
    * 
    * @param openIdToken
-   * @return
+   * @return true, if the user is a pending developer
    */
   public static boolean isPendingDeveloper(String openIdToken) {
     // no token provided
@@ -102,7 +102,7 @@ public class OIDCAuthentication {
    * Returns true, if the given token belongs to a user with at least(!) "developer" rights.
    * 
    * @param openIdToken
-   * @return
+   * @return true, if the user is developer or admin
    */
   public static boolean isDeveloper(String openIdToken) {
     // no token provided
@@ -129,8 +129,8 @@ public class OIDCAuthentication {
   /**
    * Returns true, if the given token belongs to a user with "admin" rights.
    * 
-   * @param openIdToken
-   * @return
+   * @param openIdToken the token
+   * @return true, if the user is an administrator
    */
   public static boolean isAdmin(String openIdToken) {
     // no token provided
@@ -157,9 +157,9 @@ public class OIDCAuthentication {
   /**
    * Returns true, if the given token belongs to a user that has created the app with the given id.
    * 
-   * @param id The app id
+   * @param app The app
    * @param openIdToken
-   * @return
+   * @return true, if the user is creator of the app
    */
   public static boolean isCreatorOfApp(App app, String openIdToken) {
     // no token or no app provided
@@ -188,7 +188,7 @@ public class OIDCAuthentication {
    * 
    * @param oidcId the oidcId of the user
    * @param openIdToken
-   * @return
+   * @return true, if oidcId and openIdToken match
    */
   public static boolean isSameUser(Long oidcId, String openIdToken) {
     // no token provided

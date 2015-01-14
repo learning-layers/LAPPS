@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class User implements Entity, Comparable<User> {
 
   // User role constants
+  public static final int DELETED = -1;
   public static final int USER = 1;
   public static final int PENDING_DEVELOPER = 2;
   public static final int DEVELOPER = 3;
