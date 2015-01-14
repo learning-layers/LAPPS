@@ -428,7 +428,7 @@ public class ApplicationsResource {
     // Developer not allowed to change
     updatedApp.setCreator(app.getCreator());
     // Release date not subject to change
-    updatedApp.setDateCreated(null);
+    updatedApp.setDateCreated(app.getDateCreated());
     // Update date is set here
     long time = System.currentTimeMillis();
     java.sql.Timestamp timestamp = new java.sql.Timestamp(time);
