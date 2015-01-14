@@ -315,10 +315,12 @@ public class ApplicationsResource {
     createdApp.setCreator(creator);
     // Initial rating of three
     createdApp.setRating(3.0);
-    // Set dates to null (set by database)
+    // Set date created to null (set by database)
     createdApp.setDateCreated(null);
-    createdApp.setDateModified(null);
-
+    // Update date is set here
+    long time = System.currentTimeMillis();
+    java.sql.Timestamp timestamp = new java.sql.Timestamp(time);
+    createdApp.setDateModified(timestamp);
     createdApp = entitiyFacade.save(createdApp);
 
     for (Artifact newArtifact : artifacts) {
@@ -427,7 +429,7 @@ public class ApplicationsResource {
     updatedApp.setCreator(app.getCreator());
     // Release date not subject to change
     updatedApp.setDateCreated(null);
-    // Update date will be set by database
+    // Update date is set here
     long time = System.currentTimeMillis();
     java.sql.Timestamp timestamp = new java.sql.Timestamp(time);
     updatedApp.setDateModified(timestamp);
