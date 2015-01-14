@@ -38,8 +38,8 @@ import de.rwth.dbis.layers.lapps.resource.HttpStatusCode;
 /**
  * Comment resource (exposed at "apps/{id}/comments" path).
  */
-@Path("/apps/{id}/comments")
-@Api(value = "/apps/{id}/comments", description = "Comments resource")
+@Path("/apps/{id}/comment")
+@Api(value = "/apps/{id}/comment", description = "Comment resource")
 public class CommentResource {
 
   private static final Logger LOGGER = Logger.getLogger(CommentResource.class.getName());
@@ -56,7 +56,7 @@ public class CommentResource {
    * @return newComment as JSON
    */
   @POST
-  @Path("/apps/{id}/comments")
+  @Path("/apps/{id}/comment")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Create comment")
@@ -72,7 +72,7 @@ public class CommentResource {
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
           message = "Currently, this method is not implemented")})
   public Response createComment(@HeaderParam("accessToken") String accessToken, @ApiParam(
-      value = "AppComment entity as JSON", required = true) Comment createdComment,
+      value = "Comment entity as JSON", required = true) Comment createdComment,
       @PathParam("id") long appId) {
               
       // Check Authentication
@@ -84,31 +84,44 @@ public class CommentResource {
         return Response.status(HttpStatusCode.UNAUTHORIZED).build();
       }
       
-      try {      
-        //Check App exists
+      try {
+        
+        //Get the app
         List<App> apps = entityFacade.findByParam(App.class, "id", appId);
         App app = null;
         if (apps.isEmpty()) {
           return Response.status(HttpStatusCode.NOT_FOUND).build();
         } else {
           app = apps.get(0);
-        }
-         
+        }         
                
-        //Check User Already Commented this App
-        List<Comment> comments = entityFacade.findByParam(Comment.class, "user_id", user.getId());
+        //Get all comments for the app
+        List<Comment> comments = entityFacade.findByParam(Comment.class, "app_id", app.getId());
+        
+        //Check user already commented        
         for (Comment temp : comments) {
-          if(temp.getApp().equals(app)) {
+          if(temp.getUser().equals(user)) {
             return Response.status(HttpStatusCode.CONFLICT).build();
           }
         }
         
+        //Sum up rating of all comments
+        int ratingSum = createdComment.getRating();
+        int counter = 1;
+        for (Comment temp : comments) {
+          ratingSum += temp.getRating();
+          counter++;
+        }         
+         
+        //Update rating of of the app
+        float newRating = ratingSum / counter; 
+        app.setRating(newRating);
+        app = entitiyFacade.save(app);
+       
         //Create Comment
-        if(user.equals(createdComment.getUser()) && app.equals(createdComment.getApp())) {
-        createdComment = entityFacade.save(createdComment);
-        } else {
-          return Response.status(HttpStatusCode.BAD_REQUEST).build();
-        }
+        createdComment.setApp(app);
+        createdComment.setUser(user);
+        createdComment = entityFacade.save(createdComment);       
         
         //Return comment
         ObjectMapper mapper = new ObjectMapper();

@@ -19,17 +19,23 @@ public class Comment implements Entity {
   @Id
   @GeneratedValue
   private long id = 0;
-  @Column(name = "comment_value")
+  @Column(name = "content")
   private String text = null;
   @OneToOne
-  @JoinColumn(name = "user_id")
-  User user = null;
+  @JoinColumn(name = "authorId")
+  User author = null;
   @JsonIgnore
   @OneToOne
-  @JoinColumn(name = "app_id")
+  @JoinColumn(name = "appId")
   App app = null;
+  @Column(name = "rating")
+  private int rating = 0;
   @Temporal(TemporalType.TIMESTAMP)
-  Date date = new Date();
+  @Column(name = "releaseDate")
+  Date releaseDate = new Date();
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "lastUpdateDate")
+  Date updateDate = new Date();
 
   public Comment() {}
 
@@ -47,6 +53,14 @@ public class Comment implements Entity {
     this.text = text;
   }
 
+  public int getRating() {
+    return this.rating;
+  }
+  
+  public void setRating(int rating) {
+    this.rating = rating;
+  }
+  
   public User getUser() {
     return this.user;
   }
@@ -63,12 +77,20 @@ public class Comment implements Entity {
     this.app = app;    
   }
 
-  public Date getDate() {
-    return date;
+  public Date getReleaseDate() {
+    return releaseDate;
   }
 
-  public void setDate(Date date) {
-    this.date = date;
+  public void setReleaseDate(Date date) {
+    this.releaseDate = date;
+  }
+  
+  public Date getUpdateDate() {
+    return updateDate;
+  }
+
+  public void setUpdateDate(Date date) {
+    this.updateDate = date;
   }
 
   public long getId() {
