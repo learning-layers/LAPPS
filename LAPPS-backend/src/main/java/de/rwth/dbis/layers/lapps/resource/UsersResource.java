@@ -198,7 +198,13 @@ public class UsersResource {
     } else {
       user = entities.get(0);
     }
-    entityFacade.deleteByParam(User.class, "id", user.getId());
+    user.setDescription("deletedUser");
+    user.setEmail("deletedUser");
+    user.setOidcId(-1L);
+    user.setRole(User.DELETED);
+    user.setUsername("deletedUser");
+    user.setWebsite("deletedUser");
+    entityFacade.save(user);
     return Response.status(HttpStatusCode.NO_CONTENT).build();
   }
 
