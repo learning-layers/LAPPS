@@ -39,7 +39,7 @@
   lappsApp.config(['userProvider', function(userProvider) {
     userProvider.configOidc({
       server: 'https://api.learning-layers.eu/o/oauth2',
-      clientId: '67da4ca6-c1b3-48cf-a7e5-df61274d55f0',// 'f31522e8-3088-4ef8-9eb3-2881f39a7f78',//
+      clientId: 'f31522e8-3088-4ef8-9eb3-2881f39a7f78',// 'f31522e8-3088-4ef8-9eb3-2881f39a7f78',//
       // new one for buche
       // 67da4ca6-c1b3-48cf-a7e5-df61274d55f0
       scope: 'openid phone email address profile'
@@ -72,6 +72,9 @@
     }).when('/apps/:appId/edit', {
       templateUrl: 'components/editAppPage/editPageView.html',
       controller: 'editPageCtrl'
+    }).when('/apply', {
+      templateUrl: 'components/applyAsDevPage/applyAsDevPageView.html',
+      controller: 'applyAsDevPageCtrl'
     }).when('/tos', {
       templateUrl: 'components/footerPages/termsOfService.html'
     }).when('/privacy', {

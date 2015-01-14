@@ -15,7 +15,14 @@
           {{app.name}} <span>
             by <a href="#/users/{{app.creator.oidcId}}">{{app.creator.username}}</a>
           </span>
-          <a href="#/apps/{{app.id}}/edit" id="editApp" class="btn btn-success pull-right"><span class="glyphicon glyphicon-pencil"></span><span class="hspacer05"></span>Edit</a>
+          
+          <span class="pull-right" ng-show="mayEdit()">
+            <span class="vspacer05 visible-xs"></span>
+            <span class="hspacer05"></span>
+            <a ng-click="deleteApp()" href="javascript:void(0)" id="deleteApp" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span><span class="hspacer05"></span>Delete</a>
+            <span class="hspacer05"></span>
+            <a href="#/apps/{{app.id}}/edit" id="editApp" class="btn btn-success"><span class="glyphicon glyphicon-pencil"></span><span class="hspacer05"></span>Edit</a>
+          </span>
         </h2>
       </div>
       <!--<div id="platform-links">

@@ -172,6 +172,10 @@ h1, h2, h3, h4, h5 {
   color: #999;
 }
 
+.text-color-green {
+  color: #00a117;
+}
+
 /* colors end */
 
 /* rating start */
@@ -1118,13 +1122,13 @@ dd {
   overflow-wrap: break-word;
 }
 
-#remove-profile {
-  text-align: center;
+#user-account-controls button,
+#user-account-controls a {
+  margin:5px;
+  width: 250px;
+
 }
 
-  #remove-profile > button {
-    width: 200px;
-  }
 
 /*xeditable start*/
 .editable-wrap .editable-controls > input,

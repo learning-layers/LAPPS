@@ -19,8 +19,9 @@
                       'md5',
                       'convert',
                       '$timeout',
+                      '$modal',
                       function($scope, $routeParams, user, $http, swaggerApi,
-                              md5, convert, $timeout) {
+                              md5, convert, $timeout, $modal) {
                         /**
                          * @field
                          * @type string
@@ -90,6 +91,72 @@
                         /**
                          * @function
                          * @memberOf lapps.lappsControllers.userPageCtrl
+                         * @description Opens a modal confirmation dialog and
+                         *              downgrades the currently viewed account.
+                         */
+                        $scope.downgradeUser = function() {
+                          var modalInstance = $modal
+                                  .open({
+                                    templateUrl: 'components/userPage/downgradeConfirmView.html',
+                                    controller: 'deleteConfirmCtrl',
+                                    size: 'xs',
+                                  });
+
+                          modalInstance.result.then(function(isOk) {
+                            if (isOk) {
+                              // TODO: api calls
+                            }
+                          }, function() {
+                          });
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.userPageCtrl
+                         * @description Opens a modal confirmation dialog and
+                         *              upgrades the currently viewed account.
+                         */
+                        $scope.upgradeUser = function() {
+                          var modalInstance = $modal
+                                  .open({
+                                    templateUrl: 'components/userPage/upgradeConfirmView.html',
+                                    controller: 'deleteConfirmCtrl',
+                                    size: 'xs',
+                                  });
+
+                          modalInstance.result.then(function(isOk) {
+                            if (isOk) {
+                              // TODO: api calls
+                            }
+                          }, function() {
+                          });
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.userPageCtrl
+                         * @description Opens a modal confirmation dialog and
+                         *              deletes the currently viewed account.
+                         */
+                        $scope.deleteUser = function() {
+                          var modalInstance = $modal
+                                  .open({
+                                    templateUrl: 'components/userPage/deleteConfirmView.html',
+                                    controller: 'deleteConfirmCtrl',
+                                    size: 'xs',
+                                  });
+
+                          modalInstance.result.then(function(isOk) {
+                            if (isOk) {
+                              swaggerApi.users.deleteApp({
+                                accessToken: user.token,
+                                id: $scope.userId
+                              }).then($location.path("/apps"));
+                            }
+                          }, function() {
+                          });
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.userPageCtrl
                          * @description Requests a backend update of the user,
                          *              if the object was edited (i.e.
                          *              properties changed by the user).
@@ -145,9 +212,14 @@
                          *              admin or profile owner.
                          */
                         $scope.mayEdit = function() {
+                          // TODO: remove
+                          user.signedIn = true;
+
+                          if ($scope.visitorIsAdmin()) { return true; }
+
                           if (!user.signedIn || user.data == null
                                   || user.data.sub == null) { return false; }
-                          if ($scope.visitorIsAdmin()) { return true; }
+
                           return $scope.userId == user.data.sub;
                         }
 
