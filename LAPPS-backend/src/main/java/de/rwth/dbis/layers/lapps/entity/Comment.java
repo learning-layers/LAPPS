@@ -62,11 +62,11 @@ public class Comment implements Entity {
   }
   
   public User getUser() {
-    return this.user;
+    return this.author;
   }
 
   public void setUser(User user) {
-    this.user = user;    
+    this.author = user;    
   }
 
   public App getApp() {
@@ -102,6 +102,6 @@ public class Comment implements Entity {
     return "[" + this.getClass().getName() + "] id: " + this.getId() + ", contents: "
         + this.getText() + ", from user: " + this.getUser().getEmail() + " regarding app: "
         + this.getApp().getName() + ", on: "
-        + DateFormat.getInstance().format(this.getDate());
+        + DateFormat.getInstance().format(this.getUpdateDate());
   }
 }
