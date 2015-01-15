@@ -1134,9 +1134,11 @@ dd {
 #comments button {
   min-width: 200px;
 }
-#comments  .caption{
-  padding:10px;
+
+#comments .caption {
+  padding: 10px;
 }
+
 #comments .comment-updated {
   font-size: 10px;
   color: #999;
@@ -1216,7 +1218,42 @@ dd {
   float: left;
 }
 /*xeditable end*/
+
+#search-results .avatar > .img-circle {
+  margin: 5px;
+  -moz-box-shadow: inset 2px 2px 8px #777;
+  -webkit-box-shadow: inset 2px 2px 8px #777;
+  box-shadow: inset 2px 2px 8px #777;
+  width: 60px;
+  height: 60px;
+  display: inline-block;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: 50% 50%;
+  background-image: url('../img/placeholders/missingImage.svg');
+}
+
+#search-results dd {
+  margin-left: 25px;
+  -ms-word-wrap: break-word;
+  word-wrap: break-word;
+}
+
+#search-results .user-name strong {
+  -ms-word-wrap: break-word;
+  word-wrap: break-word;
+}
+
+#search-results .thumbnail {
+  margin-bottom: 10px;
+}
 /*user page end*/
+
+/*user search page start*/
+
+/*user search page end*/
 
 /*app upload page starts here*/
 #uploadForm .form-group > b {

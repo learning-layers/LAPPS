@@ -70,6 +70,9 @@
     }).when('/users/:userId', {
       templateUrl: 'components/userPage/userPageView.html',
       controller: 'userPageCtrl'
+    }).when('/users', {
+      templateUrl: 'components/userSearchPage/userSearchPageView.html',
+      controller: 'userSearchPageCtrl'
     }).when('/apps/:appId/edit', {
       templateUrl: 'components/editAppPage/editPageView.html',
       controller: 'editPageCtrl'
