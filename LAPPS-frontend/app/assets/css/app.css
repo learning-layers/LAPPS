@@ -578,7 +578,7 @@ h1, h2, h3, h4, h5 {
 .carousel-indicators li {
   width: 20px;
   height: 20px;
-  border-width:3px;
+  border-width: 3px;
 }
 
 .carousel-control {
@@ -1098,6 +1098,82 @@ dd {
       padding-left: 25px;
     }
 /* carousel and technical details end here*/
+
+/*comments start*/
+#comments .thumbnail {
+  margin-bottom: 10px;
+  padding-top: 10px;
+}
+
+#comments .comment-header {
+  border-bottom: 1px solid #E4E4E4;
+  margin-bottom: 5px;
+}
+
+#comments .comment-date {
+  position: absolute;
+  right: 15px;
+  top: 0;
+  color: #999;
+}
+
+#comments .comment-rating {
+  font-size: 40px;
+}
+
+#comments .comment-content {
+  margin-bottom: 15px;
+  max-height: 900px;
+  overflow: auto;
+}
+
+#comments .comment-submit {
+  text-align: right;
+}
+
+#comments button {
+  min-width: 200px;
+}
+#comments  .caption{
+  padding:10px;
+}
+#comments .comment-updated {
+  font-size: 10px;
+  color: #999;
+  position: absolute;
+  bottom: 0;
+  right: 15px;
+}
+
+#comments .comment-commenter strong {
+  -ms-word-wrap: break-word;
+  word-wrap: break-word;
+  margin-top: 5px;
+}
+
+#comments .avatar > .img-circle {
+  margin: 10px;
+  -moz-box-shadow: inset 2px 2px 8px #777;
+  -webkit-box-shadow: inset 2px 2px 8px #777;
+  box-shadow: inset 2px 2px 8px #777;
+  width: 60px;
+  height: 60px;
+  display: inline-block;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: 50% 50%;
+  background-image: url('../img/placeholders/missingImage.svg');
+}
+
+@media (max-width:768px) {
+  #comments .comment-submit {
+    text-align: center;
+  }
+}
+
+/*comments end*/
 /* detail page ends here */
 
 /*user page start*/
@@ -1124,11 +1200,9 @@ dd {
 
 #user-account-controls button,
 #user-account-controls a {
-  margin:5px;
+  margin: 5px;
   width: 250px;
-
 }
-
 
 /*xeditable start*/
 .editable-wrap .editable-controls > input,

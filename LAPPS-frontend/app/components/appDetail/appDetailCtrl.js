@@ -21,9 +21,18 @@
                       '$location',
                       '$modal',
                       'user',
+                      'md5',
                       function($scope, $routeParams, swaggerApi, platform,
                               $document, convert, $timeout, $location, $modal,
-                              user) {
+                              user, md5) {
+                        /**
+                         * @field
+                         * @type object
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Just gets the Math object into the scope
+                         *              for use in bindings
+                         */
+                        $scope.Math = window.Math;
                         /**
                          * @field
                          * @type string
@@ -126,13 +135,11 @@
                          *              deletes the current app.
                          */
                         $scope.deleteApp = function() {
-
                           var modalInstance = $modal
                                   .open({
                                     templateUrl: 'components/appDetail/deleteConfirmView.html',
                                     controller: 'deleteConfirmCtrl',
                                     size: 'xs',
-
                                   });
 
                           modalInstance.result.then(function(isOk) {
@@ -141,10 +148,8 @@
                                 accessToken: user.token,
                                 id: $scope.app.id
                               }).then($location.path("/apps"));
-
                             }
                           }, function() {
-
                           });
                         }
                         /**
@@ -284,6 +289,87 @@
                             $scope.alternativePlatforms.sort(comparePlaftorms);
                           }
                         });
+
+                        $scope.comments = [];
+                        /**
+                         * @field
+                         * @type number
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Stores the current page of comments
+                         */
+                        $scope.currentPage = 1;
+                        if ($routeParams.page) {
+                          $scope.currentPage = +$routeParams.page;
+                        }
+                        /**
+                         * @field
+                         * @type number
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Stores the amount of pages for the
+                         *              comments
+                         */
+                        $scope.maxPage = 10;
+                        /**
+                         * @field
+                         * @type number
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Max amount of pages to display in the
+                         *              page selector
+                         */
+                        $scope.maxDisplayPage = 6;
+
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Changes the current page and requests
+                         *              the comments of this page.
+                         */
+                        $scope.changePage = function(pageNumber) {
+
+                          $scope.currentPage = +pageNumber;
+                          $location.search('page', pageNumber);
+                          // TODO: api call
+                        }
+
+                        $scope.submitComment = function() {
+                          // TODO: implement api call
+                          var modalInstance = $modal
+                                  .open({
+                                    templateUrl: 'components/appDetail/submitConfirmView.html',
+                                    controller: 'submitConfirmCtrl',
+                                    size: 'xs',
+                                  });
+                        }
+                        $scope.getComments = function() {
+                          for (i = 0; i < 15; i++) {
+                            var comment = {
+                              user: {
+                                oidcId: -1556155057,
+                                email: 'kayleefrye@test.foobar',
+                                username: 'Kaylee Frye'
+                              },
+                              dateCreated: 1420888318000,
+                              dateModified: 1420888336000,
+                              dateCreatedConverted: convert
+                                      .dateTime(1420888318000),
+                              dateModifiedConverted: convert
+                                      .dateTime(1420888336000),
+                              rating: 3,
+                              content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse hendrerit turpis eu tellus vulputate iaculis. Donec non diam iaculis, eleifend justo eget, vulputate lacus. Mauris nec eros ac lectus ultrices ultrices eu ultricies purus. Suspendisse sodales efficitur purus, quis iaculis erat imperdiet id. Vivamus nisi mauris, eleifend feugiat egestas ac.'
+                            }
+                            comment.avatar = 'https://s.gravatar.com/avatar/'
+                                    + md5.createHash(comment.user.email.trim()
+                                            .toLowerCase()
+                                            || comment.user.username) + '?s='
+                                    + 60 + '&d=identicon';
+
+                            $scope.comments.push(comment);
+                          }
+
+                          $scope.currentRating = 3;
+                          $scope.currentComment = '';
+                        }
+
                         // important to get click events from iframes:
                         // when starting a video: stop carousel
                         window.iFrameVideoLoaded = function() {
@@ -313,5 +399,6 @@
                         $timeout(function() {
                           $scope.requestTimedOut = true
                         }, 500);
+                        $scope.getComments();
                       }]);
 }).call(this);
