@@ -175,7 +175,7 @@
                             apiParams.order = 'desc';
                             break;
                           case 'random':
-                            apiParams.sortBy = 'platform';
+                            apiParams.sortBy = 'random';
                             break;
                           case 'last updated':
                             apiParams.sortBy = 'dateModified';
