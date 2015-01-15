@@ -57,14 +57,7 @@
                              * @description Data about the user retrived from
                              *              the oidc provider.
                              */
-                            data: {
-                              email: 'johndoe@gmail.com',
-                              email_verified: true,
-                              name: 'John Doe',
-                              preferred_username: 'JohnDoe',
-                              sub: '-1556155057',
-                              updated_time: '1'
-                            },
+                            data: null,
 
                             /**
                              * @field
@@ -73,17 +66,8 @@
                              * @description The role of a user (User, Developer,
                              *              Admin)
                              */
-                            role: 3,
+                            role: 1,
 
-                            /**
-                             * @field
-                             * @type number
-                             * @memberOf lapps.lappsServices.user
-                             * @description The timestamp, when the user first
-                             *              signed in.
-                             */
-
-                            memberSince: 0,
                             /**
                              * @field
                              * @type boolean
@@ -101,7 +85,7 @@
                              *              Needed for some restricted backend
                              *              requests.
                              */
-                            token: 'test_token',
+                            token: '',
                             /**
                              * @function
                              * @memberOf lapps.lappsServices.user
@@ -113,10 +97,10 @@
                              */
                             roleIdToRoleName: function(id) {
                               if (id == 1) { return 'User'; }
-                              if (id == 2) { return 'Dev. Applicant'; }
+                              if (id == 2) { return 'Applicant'; }
                               if (id == 3) { return 'Developer'; }
                               if (id == 4) { return 'Admin'; }
-                              return 'User';
+                              return 'Deleted';
                             },
                             /**
                              * @function
@@ -316,19 +300,25 @@
                             },
 
                             getDatabaseUserInfo: function() {
-                              swaggerApi.users.updateUser({
-                                accessToken: this.token,
-                                oidcId: +this.data.sub,
-                                body: {
-                                  username: this.data.preferred_username,
-                                  email: this.data.email
-                                }
-                              }
 
-                              ).then(function(data) {
-                                // TODO: remove
+                              swaggerApi.users
+                                      .updateUser({
+                                        accessToken: this.token,
+                                        oidcId: +this.data.sub,
+                                        body: {
 
-                              });
+                                        }
+                                      }
+
+                                      )
+                                      .then(
+                                              function(response) {
+                                                // TODO: remove
+                                                this.data = response.data;
+                                                this.data.sub = this.data.oidcId;
+                                                this.data.preferred_username = this.data.username;
+                                                this.role = this.data.role;
+                                              });
                               /*
                                * swaggerApi.users.getUser({ oidcId:
                                * self.data.sub }).then(function (data) { });
