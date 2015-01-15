@@ -68,65 +68,64 @@ public class CommentsResource {
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
       @ApiResponse(code = HttpStatusCode.CONFLICT, message = "Already exists"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
-          message = "Internal server problems"),
-      @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
-          message = "Currently, this method is not implemented")})
+          message = "Internal server problems")})
   public Response createComment(@HeaderParam("accessToken") String accessToken, @ApiParam(
       value = "Comment entity as JSON", required = true) Comment createdComment,
       @PathParam("id") long appId) {
-              
-      // Check Authentication
-      User user;
-      try {
-        user = OIDCAuthentication.authenticate(accessToken);
-      } catch (OIDCException e) {
-        LOGGER.warning(e.getMessage());
-        return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+
+    // Check Authentication
+    User user;
+    try {
+      user = OIDCAuthentication.authenticate(accessToken);
+    } catch (OIDCException e) {
+      LOGGER.warning(e.getMessage());
+      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+    }
+
+    try {
+
+      // Get the app
+      List<App> apps = entityFacade.findByParam(App.class, "id", appId);
+      App app = null;
+      if (apps.isEmpty()) {
+        return Response.status(HttpStatusCode.NOT_FOUND).build();
+      } else {
+        app = apps.get(0);
       }
-      
-      try {
-        
-        //Get the app
-        List<App> apps = entityFacade.findByParam(App.class, "id", appId);
-        App app = null;
-        if (apps.isEmpty()) {
-          return Response.status(HttpStatusCode.NOT_FOUND).build();
-        } else {
-          app = apps.get(0);
-        }         
-               
-        //Get all comments for the app
-        List<Comment> comments = entityFacade.findByParam(Comment.class, "app_id", app.getId());
-        
-        //Check user already commented        
-        for (Comment temp : comments) {
-          if(temp.getUser().equals(user)) {
-            return Response.status(HttpStatusCode.CONFLICT).build();
-          }
+
+      // Get all comments for the app
+      List<Comment> comments = entityFacade.findByParam(Comment.class, "app_id", app.getId());
+
+      // Check user already commented
+      for (Comment temp : comments) {
+        if (temp.getUser().equals(user)) {
+          return Response.status(HttpStatusCode.CONFLICT).build();
         }
-        
-        //Sum up rating of all comments
-        int ratingSum = createdComment.getRating();
-        int counter = 1;
-        for (Comment temp : comments) {
-          ratingSum += temp.getRating();
-          counter++;
-        }         
-         
-        //Update rating of of the app
-        double newRating = ratingSum / counter; 
-        app.setRating(newRating);
-        app = entityFacade.save(app);
-       
-        //Create Comment
-        createdComment.setApp(app);
-        createdComment.setUser(user);
-        createdComment = entityFacade.save(createdComment);       
-        
-        //Return comment
-        ObjectMapper mapper = new ObjectMapper();
-        return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(createdComment)).build();
-    
+      }
+
+      // Sum up rating of all comments
+      int ratingSum = createdComment.getRating();
+      int counter = 1;
+      for (Comment temp : comments) {
+        ratingSum += temp.getRating();
+        counter++;
+      }
+
+      // Update rating of of the app
+      double newRating = ratingSum / counter;
+      app.setRating(newRating);
+      app = entityFacade.save(app);
+
+      // Create Comment
+      createdComment.setApp(app);
+      createdComment.setUser(user);
+      createdComment = entityFacade.save(createdComment);
+
+      // Return comment
+      ObjectMapper mapper = new ObjectMapper();
+      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(createdComment))
+          .build();
+
     } catch (Exception e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
@@ -225,6 +224,31 @@ public class CommentsResource {
         }
       }
 
+      // Get the app
+      List<App> apps = entityFacade.findByParam(App.class, "id", appId);
+      App app = null;
+      if (apps.isEmpty()) {
+        return Response.status(HttpStatusCode.NOT_FOUND).build();
+      } else {
+        app = apps.get(0);
+      }
+
+      // Sum up rating of all comments
+      comments = entityFacade.findByParam(Comment.class, "app_id", app.getId());
+      int ratingSum = 0;
+      int counter = 0;
+      for (Comment temp : comments) {
+        ratingSum += temp.getRating();
+        counter++;
+      }
+
+      // Update rating of of the app
+      ratingSum -= comment.getRating();
+      counter -= 1;
+      double newRating = ratingSum / counter;
+      app.setRating(newRating);
+      app = entityFacade.save(app);
+
       // Delete the comment
       entityFacade.deleteByParam(Comment.class, "id", commentId);
       return Response.status(HttpStatusCode.OK).build();
@@ -281,36 +305,37 @@ public class CommentsResource {
       } else {
         comment = comments.get(0);
       }
-      
+
       // Check, if user is creator of the comment
       if (!(comment.getUser() == user)) {
         return Response.status(HttpStatusCode.FORBIDDEN).build();
       }
-  
+
       try {
-      //Update Comment      
-      comment.setText(updatedComment.getText());
-      comment.setText(updatedComment.getText());
-      comment = entityFacade.save(comment);
+        // Update Comment
+        comment.setText(updatedComment.getText());
+        comment.setText(updatedComment.getText());
+        comment = entityFacade.save(comment);
       } catch (Exception e) {
         LOGGER.warning(e.getMessage());
         return Response.status(HttpStatusCode.BAD_REQUEST).build();
-      }           
-           
-      
+      }
+
+
       try {
         // Return updated comment
         ObjectMapper objectMapper = new ObjectMapper();
-        return Response.status(HttpStatusCode.OK).entity(objectMapper.writeValueAsBytes(comment)).build();    
+        return Response.status(HttpStatusCode.OK).entity(objectMapper.writeValueAsBytes(comment))
+            .build();
       } catch (JsonProcessingException e) {
         LOGGER.warning(e.getMessage());
         return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
       }
-      
+
     } catch (Exception e) {
       LOGGER.warning(e.getMessage());
       return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
-   }
+    }
   }
 
   /**
@@ -328,16 +353,15 @@ public class CommentsResource {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Get all comments", response = Comment.class,
-      responseContainer = "List")
+  @ApiOperation(value = "Get all comments", response = Comment.class, responseContainer = "List")
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
       @ApiResponse(code = HttpStatusCode.BAD_REQUEST, message = "Content data invalid format"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
-      message = "Internal server problems"),
+          message = "Internal server problems"),
       @ApiResponse(code = HttpStatusCode.NOT_IMPLEMENTED,
-      message = "Currently, this method is not implemented")})
+          message = "Currently, this method is not implemented")})
   public Response getAllComments(
       @ApiParam(value = "Search query parameter", required = false) @QueryParam("search") String search,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
@@ -346,11 +370,11 @@ public class CommentsResource {
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
       @PathParam("id") long appId) {
 
-    //Get All Comments
+    // Get All Comments
     List<Comment> entities;
     entities = (List<Comment>) entityFacade.loadAll(Comment.class);
 
-    //Get the page
+    // Get the page
     int numberOfPages = 1;
     if (pageLength > 0 && pageLength < entities.size()) {
       int fromIndex = page == 1 ? 0 : (page * pageLength) - pageLength;
@@ -366,7 +390,7 @@ public class CommentsResource {
       }
     }
 
-    //Return Result
+    // Return Result
     try {
       ObjectMapper mapper = new ObjectMapper();
       return Response.status(HttpStatusCode.NOT_IMPLEMENTED).header("numberOfPages", numberOfPages)

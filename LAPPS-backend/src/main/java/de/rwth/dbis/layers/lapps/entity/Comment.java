@@ -18,7 +18,7 @@ public class Comment implements Entity {
   private static final long serialVersionUID = 1L;
   @Id
   @GeneratedValue
-  private long id = 0;
+  private Long id = 0L;
   @Column(name = "content")
   private String text = null;
   @OneToOne
@@ -93,7 +93,7 @@ public class Comment implements Entity {
     this.updateDate = date;
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
