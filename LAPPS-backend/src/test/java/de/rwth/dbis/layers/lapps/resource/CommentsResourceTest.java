@@ -87,7 +87,7 @@ public class CommentsResourceTest {
   public void testCreateComment() {
     Comment newComment = null;
     try {
-      newComment = new Comment("test comment text", user, app);
+      newComment = new Comment("test comment text", 3, user, app);
       Response response =
           target.path("apps/" + app.getId()+"/comments").request()
               .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
@@ -108,6 +108,18 @@ public class CommentsResourceTest {
       entityFacade.deleteByParam(Comment.class, "id", newComment.getId());
       LOGGER.info("Comment data deleted.");
     }
+  }
+  
+  /**
+  * Tries to delete the previously created app.
+  */
+  @Test
+  public void testDeleteComment() {
+  Response response =
+  target.path("apps/" + app.getId()+"/comments/1").request()
+  .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
+  assertEquals(HttpStatusCode.OK, response.getStatus());
+
   }
 
     

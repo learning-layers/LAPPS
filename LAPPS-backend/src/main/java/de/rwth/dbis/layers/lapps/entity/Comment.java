@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Column;
 import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,10 +24,10 @@ public class Comment implements Entity {
   private String text = null;
   @OneToOne
   @JoinColumn(name = "authorId")
-  User author = null;
-  @JsonIgnore
-  @OneToOne
+  User author = null;  
+  @ManyToOne
   @JoinColumn(name = "appId")
+  @JsonIgnore
   App app = null;
   @Column(name = "rating")
   private int rating = 0;
@@ -40,9 +41,15 @@ public class Comment implements Entity {
   public Comment() {}
 
   public Comment(String text, User user, App app) {
+    this(text, 0, user, app);
+    
+  }
+  
+  public Comment(String text, int rating, User user, App app) {
     this.setText(text);
     this.setUser(user);
     this.setApp(app);
+    this.setRating(rating);
   }
 
   public String getText() {
