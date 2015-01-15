@@ -89,7 +89,7 @@ public class CommentsResourceTest {
     try {
       newComment = new Comment("test comment text", user, app);
       Response response =
-          target.path("apps/" + app.getId() + "comments").request()
+          target.path("apps/" + app.getId()+"/comments").request()
               .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
               .post(entity(newComment, MediaType.APPLICATION_JSON));
       assertEquals(HttpStatusCode.OK, response.getStatus());

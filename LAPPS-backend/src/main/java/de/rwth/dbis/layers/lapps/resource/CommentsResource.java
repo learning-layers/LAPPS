@@ -56,7 +56,6 @@ public class CommentsResource {
    * @return newComment as JSON
    */
   @POST
-  @Path("/apps/{id}/comments")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Create comment")
@@ -144,7 +143,7 @@ public class CommentsResource {
    * 
    */
   @GET
-  @Path("/apps/{id}/comments/{cid}")
+  @Path("/{cid}")
   @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Get comment by commentId", response = Comment.class)
   @ApiResponses(value = {
@@ -185,7 +184,7 @@ public class CommentsResource {
    * 
    */
   @DELETE
-  @Path("/apps/{id}/comments/{cid}")
+  @Path("/{cid}")
   @ApiOperation(value = "Delete comment by AppId")
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
@@ -269,7 +268,7 @@ public class CommentsResource {
    * @return Response with updated Comment
    */
   @PUT
-  @Path("/apps/{id}/comments/{cid}")
+  @Path("/{cid}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Update comment by AppId", response = Comment.class)
