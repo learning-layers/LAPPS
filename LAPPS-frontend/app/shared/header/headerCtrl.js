@@ -59,8 +59,7 @@
                 $scope.logout = function() {
                   user.signOut();
                   $scope.loginCallback(false);
-                  // TODO: remove
-                  $scope.isloggedIn = false;
+
                 }
                 /**
                  * @function
@@ -85,9 +84,7 @@
                    * user.role = 'Developer'; $scope.isloggedIn = true;
                    * $scope.userData = user.data; return;
                    */
-                  // TODO: remove
-                  success = true;
-                  console.log(user.data);
+
                   $scope.isloggedIn = success;
 
                   $interval($scope.adjustSearchBar, 100, 1);

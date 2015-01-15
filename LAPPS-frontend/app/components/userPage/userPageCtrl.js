@@ -64,8 +64,6 @@
                          */
 
                         $scope.fetchUser = function() {
-                          // TODO: sync with actual user
-
                           swaggerApi.users
                                   .getUser({
                                     oidcId: +$scope.userId,
@@ -162,7 +160,17 @@
                          *              properties changed by the user).
                          */
                         $scope.updateUser = function() {
-                          // TODO: implement actual update for backend
+                          // TODO: test this
+                          swaggerApi.users.updateUser({
+                            accessToken: user.token,
+                            oidcId: +$scope.userId,
+                            body: {
+                              description: $scope.user.description,
+                              website: $scope.user.website
+                            }
+                          }
+
+                          )
                         }
                         /**
                          * @function
@@ -212,8 +220,6 @@
                          *              admin or profile owner.
                          */
                         $scope.mayEdit = function() {
-                          // TODO: remove
-                          user.signedIn = true;
 
                           if ($scope.visitorIsAdmin()) { return true; }
 

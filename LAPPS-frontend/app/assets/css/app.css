@@ -720,7 +720,12 @@ h1, h2, h3, h4, h5 {
     max-height: 200px;
     white-space: pre-wrap;
   }
-
+@media (min-width: 768px) {
+  #featured-carousel {
+    min-height:500px;
+  }
+}
+ 
 @media (max-width: 991px) {
   .row.carousel-row {
     padding-right: 0;
