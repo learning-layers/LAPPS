@@ -13,6 +13,23 @@
              * @memberOf lapps.lappsServices
              * @param {number}
              *          utc timestamp.
+             * @description Converts timestamp in day time hh:mm.
+             */
+            this.time = function(utc) {
+              var d = new Date(utc);
+
+              var curr_hour = d.getHours();
+              var curr_minute = d.getMinutes();
+
+              return (('0' + curr_hour).slice(-2) + ":" + ('0' + curr_minute)
+                      .slice(-2));
+            };
+            /**
+             * @function
+             * @type string
+             * @memberOf lapps.lappsServices
+             * @param {number}
+             *          utc timestamp.
              * @description Converts timestamp in date string day-month-year.
              */
             this.date = function(utc) {
@@ -25,6 +42,18 @@
               var curr_month = d.getMonth();
               var curr_year = d.getFullYear();
               return (curr_date + "-" + m_names[curr_month] + "-" + curr_year);
+            };
+            /**
+             * @function
+             * @type string
+             * @memberOf lapps.lappsServices
+             * @param {number}
+             *          utc timestamp.
+             * @description Converts timestamp in date and time hh:mm
+             *              day-month-year.
+             */
+            this.dateTime = function(utc) {
+              return this.time(utc) + " " + this.date(utc);
             };
             /**
              * @function
@@ -70,6 +99,5 @@
               }
               return urlCopy;
             }
-
           });
 }).call(this);

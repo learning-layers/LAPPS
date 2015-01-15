@@ -53,7 +53,8 @@
       reloadOnSearch: false
     }).when('/apps/:appId', {
       templateUrl: 'components/appDetail/appDetailView.html',
-      controller: 'appDetailCtrl'
+      controller: 'appDetailCtrl',
+      reloadOnSearch: false,
     }).when('/search/:query', {
       templateUrl: 'components/searchPage/searchPageView.html',
       controller: 'searchPageCtrl',
