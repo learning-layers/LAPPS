@@ -10,8 +10,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `lapps_new`
 --
-CREATE DATABASE `lapps_new` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-USE `lapps_new`;
+CREATE DATABASE `lapps` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+USE `lapps`;
 
 -- --------------------------------------------------------
 
@@ -63,9 +63,17 @@ CREATE TABLE IF NOT EXISTS `artifact` (
 --
 
 CREATE TABLE IF NOT EXISTS `comment` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `app_id` int(11) NOT NULL,
+  `content` text COLLATE utf8_unicode_ci NOT NULL,
+  `rating` int(11) DEFAULT NULL,
+  `releaseDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `lastUpdateDate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `comment_ibfk_2` (`app_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -112,6 +120,13 @@ ALTER TABLE `app`
 --
 ALTER TABLE `artifact`
   ADD CONSTRAINT `artifact_ibfk_1` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `comment`
+--
+ALTER TABLE `comment`
+  ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`);
 
 --
 -- Constraints for table `tag`
