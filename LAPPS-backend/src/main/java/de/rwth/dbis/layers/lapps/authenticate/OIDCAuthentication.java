@@ -23,6 +23,7 @@ import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
 import de.rwth.dbis.layers.lapps.entity.User;
+import de.rwth.dbis.layers.lapps.entity.Comment;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
 /**
@@ -212,6 +213,34 @@ public class OIDCAuthentication {
     }
   }
 
+  /**
+   * Returns true, if the given token belongs to the owner of the comment.
+   * 
+   * @param openIdToken
+   * @param Comment entity
+   * @return true, if userId and comment.getUser.getId match
+   */
+  public static boolean isCommentOwner(String openIdToken, Comment comment) {
+    // no token provided
+    if (openIdToken == null) {
+      return false;
+    }
+    // default testing token returns default testing id
+    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
+      return true;
+    }
+
+    try {
+      User user = authenticate(openIdToken);
+      if (user.getId() == comment.getUser().getId()) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (OIDCException e) {
+      return false;
+    }
+  }
 
   /**
    * Tries to authenticate a user for a given OpenIdToken. If the user is not yet registered, it

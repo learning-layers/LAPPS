@@ -41,7 +41,8 @@ public class CommentsResourceTest {
   private WebTarget target;
   private static final Logger LOGGER = Logger.getLogger(CommentsResource.class.getName());
   private Facade entityFacade = new Facade();
-  private App app = null;
+  private App ucApp = null;
+  private App cApp = null;
   private User user = null;
   private Comment comment = null;
 
@@ -52,34 +53,49 @@ public class CommentsResourceTest {
     // create the client
     Client c = ClientBuilder.newClient();
     target = c.target(Main.BASE_URI);
-       
+
     LOGGER.info("Creating a new app...");
-    app = new App("TestApp", "iOS", "TestApp");
-    app = entityFacade.save(app);
-    LOGGER.info("App created: " + app);
+    ucApp = new App("TestApp", "iOS", "uncommented TestApp");
+    ucApp = entityFacade.save(ucApp);
+    LOGGER.info("App created: " + ucApp);
+
+    LOGGER.info("Creating another new app...");
+    cApp = new App("TestApp2", "iOS", "commented TestApp");
+    cApp = entityFacade.save(cApp);
+    LOGGER.info("App created: " + cApp);
 
     LOGGER.info("Creating a new user...");
     user = entityFacade.save(DataGeneratorUtils.getRandomDeveloperUser());
     LOGGER.info("User created: " + user);
+
+    LOGGER.info("Creating a new comment...");
+    comment = new Comment("TestMessage", 3, user, cApp);
+    comment = entityFacade.save(comment);
+    LOGGER.info("Comment created: " + comment);
 
 
   }
 
   @After
   public void tearDown() throws Exception {
- 
+
     LOGGER.info("Deleting old user data...");
     entityFacade.deleteByParam(User.class, "id", user.getId());
     LOGGER.info("User data deleted.");
 
     LOGGER.info("Deleting old app data...");
-    entityFacade.deleteByParam(App.class, "id", app.getId());
+    entityFacade.deleteByParam(App.class, "id", cApp.getId());
+    entityFacade.deleteByParam(App.class, "id", ucApp.getId());
     LOGGER.info("App data deleted.");
+
+    LOGGER.info("Deleting old comment data...");
+    entityFacade.deleteByParam(Comment.class, "id", comment.getId());
+    LOGGER.info("Comment data deleted.");
 
     server.shutdownNow();
   }
 
-  
+
   /**
    * Tries to create an comment.
    */
@@ -87,9 +103,9 @@ public class CommentsResourceTest {
   public void testCreateComment() {
     Comment newComment = null;
     try {
-      newComment = new Comment("test comment text", 3, user, app);
+      newComment = new Comment("test comment text", 3, user, ucApp);
       Response response =
-          target.path("apps/" + app.getId()+"/comments").request()
+          target.path("apps/" + ucApp.getId() + "/comments").request()
               .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
               .post(entity(newComment, MediaType.APPLICATION_JSON));
       assertEquals(HttpStatusCode.OK, response.getStatus());
@@ -109,18 +125,75 @@ public class CommentsResourceTest {
       LOGGER.info("Comment data deleted.");
     }
   }
-  
+
   /**
-  * Tries to delete the previously created app.
-  */
+   * Tries to delete the previously created app.
+   */
   @Test
   public void testDeleteComment() {
-  Response response =
-  target.path("apps/" + app.getId()+"/comments/1").request()
-  .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
-  assertEquals(HttpStatusCode.OK, response.getStatus());
+    Response response =
+        target.path("apps/" + cApp.getId() + "/comments/" + comment.getId()).request()
+            .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
+    assertEquals(HttpStatusCode.OK, response.getStatus());
 
   }
 
-    
+  @Test
+  public void testUpdateComment() {
+    comment.setContent("New comment text");
+    comment = entityFacade.save(comment);
+    Response response =
+        target.path("apps/" + cApp.getId() + "/comments/" + comment.getId()).request()
+            .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
+            .put(entity(comment, MediaType.APPLICATION_JSON));
+    assertEquals(HttpStatusCode.OK, response.getStatus());
+    MediaType responseMediaType = response.getMediaType();
+    assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
+    String responseContent = response.readEntity(String.class);
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode retrievedComment;
+    try {
+      retrievedComment = mapper.readTree(responseContent);
+      assertEquals(comment.getId().toString(), retrievedComment.get("id").toString());
+      assertEquals("\"" + comment.getContent() + "\"", retrievedComment.get("content").toString());
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("JSON parsing failed with " + e.getMessage());
+    }
+  }
+
+  /**
+   * Test to get the created comment.
+   */
+  @Test
+  public void testGetComment() {
+    Response response =
+        target.path("apps/" + cApp.getId() + "/comments/" + comment.getId())
+            .request(MediaType.APPLICATION_JSON).get();
+    assertEquals(HttpStatusCode.OK, response.getStatus());
+    MediaType responseMediaType = response.getMediaType();
+    assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
+    String responseContent = response.readEntity(String.class);
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode retrievedComment;
+    try {
+      retrievedComment = mapper.readTree(responseContent);
+      assertEquals(comment.getId().toString(), retrievedComment.get("id").toString());
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("JSON parsing failed with " + e.getMessage());
+    }
+  }
+
+  /**
+   * Test to get a list of comments
+   */
+  @Test
+  public void testGetAllComments() {
+    Response response =
+        target.path("apps/" + ucApp.getId() + "/comments").request(MediaType.APPLICATION_JSON)
+            .get();
+    assertEquals(HttpStatusCode.OK, response.getStatus());
+
+  }
 }

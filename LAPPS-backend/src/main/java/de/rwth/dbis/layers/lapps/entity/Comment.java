@@ -20,19 +20,16 @@ public class Comment implements Entity {
   @Id
   @GeneratedValue
   private Long id = 0L;
-  @Column(name = "content")
-  private String text = null;
-  @OneToOne
-  @JoinColumn(name = "authorId")
-  User author = null;  
+  private String content = null;
   @ManyToOne
-  @JoinColumn(name = "appId")
+  @JoinColumn(name = "user_id")
+  User user = null;  
+  @ManyToOne
+  @JoinColumn(name = "app_id")
   @JsonIgnore
   App app = null;
-  @Column(name = "rating")
   private int rating = 0;
   @Temporal(TemporalType.TIMESTAMP)
-  @Column(name = "releaseDate")
   Date releaseDate = new Date();
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "lastUpdateDate")
@@ -46,18 +43,18 @@ public class Comment implements Entity {
   }
   
   public Comment(String text, int rating, User user, App app) {
-    this.setText(text);
+    this.setContent(text);
     this.setUser(user);
     this.setApp(app);
     this.setRating(rating);
   }
 
-  public String getText() {
-    return text;
+  public String getContent() {
+    return content;
   }
 
-  public void setText(String text) {
-    this.text = text;
+  public void setContent(String text) {
+    this.content = text;
   }
 
   public int getRating() {
@@ -69,11 +66,11 @@ public class Comment implements Entity {
   }
   
   public User getUser() {
-    return this.author;
+    return this.user;
   }
 
   public void setUser(User user) {
-    this.author = user;    
+    this.user = user;    
   }
 
   public App getApp() {
@@ -107,7 +104,7 @@ public class Comment implements Entity {
   @Override
   public String toString() {
     return "[" + this.getClass().getName() + "] id: " + this.getId() + ", contents: "
-        + this.getText() + ", from user: " + this.getUser().getEmail() + " regarding app: "
+        + this.getContent() + ", from user: " + this.getUser().getEmail() + " regarding app: "
         + this.getApp().getName() + ", on: "
         + DateFormat.getInstance().format(this.getUpdateDate());
   }

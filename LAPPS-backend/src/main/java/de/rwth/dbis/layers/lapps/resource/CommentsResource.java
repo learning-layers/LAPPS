@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.dozer.DozerBeanMapper;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -90,32 +92,32 @@ public class CommentsResource {
       }
 
       // Get all comments for the app
-      List<Comment> comments = entityFacade.findByParam(Comment.class, "appId", appId);
+      List<Comment> comments = entityFacade.findByParam(Comment.class, "app", app);
 
       // Check user already commented
-      //for (Comment temp : comments) {
-        //if (temp.getUser().equals(user)) {
-         // return Response.status(HttpStatusCode.CONFLICT).build();
-        //}
-     // }
+      for (Comment temp : comments) {
+        if (temp.getUser().equals(user)) {
+          return Response.status(HttpStatusCode.CONFLICT).build();
+        }
+      }
 
       // Sum up rating of all comments
-    //  int ratingSum = createdComment.getRating();
-     // int counter = 1;
-     // for (Comment temp : comments) {
-     //   ratingSum += temp.getRating();
-      //  counter++;
-     // }
+      int ratingSum = createdComment.getRating();
+      int counter = 1;
+      for (Comment temp : comments) {
+        ratingSum += temp.getRating();
+        counter++;
+      }
 
       // Update rating of of the app
-     // double newRating = ratingSum / counter;
-     // app.setRating(newRating);
-     // app = entityFacade.save(app);
+      double newRating = ratingSum / counter;
+      app.setRating(newRating);
+      app = entityFacade.save(app);
 
       // Create Comment
-     // createdComment.setApp(app);
-     // createdComment.setUser(user);
-     // createdComment = entityFacade.save(createdComment);
+      createdComment.setApp(app);
+      createdComment.setUser(user);
+      createdComment = entityFacade.save(createdComment);
 
       // Return comment
       ObjectMapper mapper = new ObjectMapper();
@@ -169,7 +171,6 @@ public class CommentsResource {
     }
   }
 
-
   /**
    * 
    * Delete the comment with the given AppId.
@@ -193,18 +194,13 @@ public class CommentsResource {
   public Response deleteUser(@HeaderParam("accessToken") String accessToken,
       @PathParam("id") long appId, @PathParam("cid") long commentId) {
 
-    // Check authentication
-    //User user = null;
-    //try {
-     // user = OIDCAuthentication.authenticate(accessToken);
-    //} catch (OIDCException e) {
-    //  LOGGER.warning(e.getMessage());
-     // return Response.status(HttpStatusCode.UNAUTHORIZED).build();
-    //}
+    // Check Authentication
+    if (!OIDCAuthentication.isUser(accessToken)) {
+      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+    }
 
-  
-    //try {
-      /*
+    try {
+
       // Get the comment
       List<Comment> comments = entityFacade.findByParam(Comment.class, "id", commentId);
       Comment comment = null;
@@ -213,10 +209,9 @@ public class CommentsResource {
       } else {
         comment = comments.get(0);
       }
-      user = comment.getUser();
-      
+
       // Check, if user is creator of the comment
-      if (!(comment.getUser() == user)) {
+      if (!(OIDCAuthentication.isCommentOwner(accessToken, comment))) {
         // If not, check, if the user has admin rights
         if (!OIDCAuthentication.isAdmin(accessToken)) {
           return Response.status(HttpStatusCode.FORBIDDEN).build();
@@ -251,17 +246,11 @@ public class CommentsResource {
       // Delete the comment
       entityFacade.deleteByParam(Comment.class, "id", commentId);
       return Response.status(HttpStatusCode.OK).build();
-*/
-  
-  //Delete the comment
-  long coId = 1;
-  entityFacade.deleteByParam(Comment.class, "id", coId);
-  return Response.status(HttpStatusCode.OK).build();
-  
-    //} catch (Exception e) {
-      //LOGGER.warning(e.getMessage());
-     // return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
-   // }
+
+    } catch (Exception e) {
+      LOGGER.warning(e.getMessage());
+      return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
+    }
   }
 
   /**
@@ -292,12 +281,8 @@ public class CommentsResource {
       @PathParam("id") long appId, @PathParam("cid") long commentId, @ApiParam(
           value = "Comment entity as JSON", required = true) Comment updatedComment) {
 
-    // Check authentication
-    User user;
-    try {
-      user = OIDCAuthentication.authenticate(accessToken);
-    } catch (OIDCException e) {
-      LOGGER.warning(e.getMessage());
+    // Check Authentication
+    if (!OIDCAuthentication.isUser(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
 
@@ -312,20 +297,47 @@ public class CommentsResource {
       }
 
       // Check, if user is creator of the comment
-      if (!(comment.getUser() == user)) {
-        return Response.status(HttpStatusCode.FORBIDDEN).build();
+      if (!(OIDCAuthentication.isCommentOwner(accessToken, comment))) {
+        // If not, check, if the user has admin rights
+        if (!OIDCAuthentication.isAdmin(accessToken)) {
+          return Response.status(HttpStatusCode.FORBIDDEN).build();
+        }
       }
+
+     // Get the app
+      List<App> apps = entityFacade.findByParam(App.class, "id", appId);
+      App app = null;
+      if (apps.isEmpty()) {
+        return Response.status(HttpStatusCode.NOT_FOUND).build();
+      } else {
+        app = apps.get(0);
+      }
+      
+      // Sum up rating of all comments
+      comments = entityFacade.findByParam(Comment.class, "app_id", app.getId());
+      int ratingSum = 0;
+      int counter = 0;
+      for (Comment temp : comments) {
+        ratingSum += temp.getRating();
+        counter++;
+      }
+
+      // Update rating of of the app
+      ratingSum -= comment.getRating();
+      ratingSum += updatedComment.getRating();
+      double newRating = ratingSum / counter;
+      app.setRating(newRating);
+      app = entityFacade.save(app);
 
       try {
         // Update Comment
-        comment.setText(updatedComment.getText());
-        comment.setText(updatedComment.getText());
+        DozerBeanMapper dozerMapper = new DozerBeanMapper();
+        dozerMapper.map(updatedComment, comment);
         comment = entityFacade.save(comment);
       } catch (Exception e) {
         LOGGER.warning(e.getMessage());
         return Response.status(HttpStatusCode.BAD_REQUEST).build();
       }
-
 
       try {
         // Return updated comment
