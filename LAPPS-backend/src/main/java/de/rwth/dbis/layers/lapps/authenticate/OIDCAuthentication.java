@@ -153,7 +153,7 @@ public class OIDCAuthentication {
   public static boolean isSameUser(Long oidcId, String openIdToken) {
     try {
       User user = authenticate(openIdToken);
-      if (user.getId() == oidcId) {
+      if (user.getOidcId().equals(oidcId)) {
         return true;
       } else {
         return false;

@@ -33,6 +33,7 @@ import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
 import de.rwth.dbis.layers.lapps.entity.User;
 import de.rwth.dbis.layers.lapps.entity.User.DateRegisteredComparator;
+import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
 /**
  * Users resource (exposed at "users" path).
@@ -307,4 +308,104 @@ public class UsersResource {
         String.valueOf(oidcId));
   }
 
+  /**
+   * 
+   * Can be called by an user to grant him "pendingDeveloper" rights.
+   * 
+   * @param accessToken openID connect token
+   * @param oidcId open ID connect id
+   * @param applyMessage message that will be send to an administrator via mail
+   * 
+   * @return Response with updated User
+   * 
+   */
+  @PUT
+  @Path("/{oidcId}/apply")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ApiOperation(value = "Upgrades a user to 'pending developer' status", response = User.class)
+  @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.NOT_MODIFIED, message = "User role was not changed"),
+      @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
+      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
+          message = "Internal server problems")})
+  public Response apply(@HeaderParam("accessToken") String accessToken,
+      @PathParam("oidcId") Long oidcId,
+      @ApiParam(value = "Apply Message as JSON", required = true) String applyMessage) {
+
+    // First check, if the user is currently only a "user"
+    User user;
+    try {
+      user = OIDCAuthentication.authenticate(accessToken);
+    } catch (OIDCException e) {
+      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+    }
+    if (user.getRole() == User.USER) {
+      user.setRole(User.PENDING_DEVELOPER);
+      user = entityFacade.save(user);
+    } else {
+      return Response.status(HttpStatusCode.NOT_MODIFIED).build();
+    }
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      return Response.status(HttpStatusCode.OK).entity(objectMapper.writeValueAsBytes(user))
+          .build();
+    } catch (JsonProcessingException e) {
+      LOGGER.warning(e.getMessage());
+      return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+  /**
+   * 
+   * Can be called by an administrator to grant a user "developer" rights.
+   * 
+   * @param accessToken openID connect token
+   * @param oidcId open ID connect id of the user that will get developer rights
+   * 
+   * @return Response with updated User
+   * 
+   */
+  @PUT
+  @Path("/{oidcId}/grantDeveloperRights")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ApiOperation(value = "Upgrades a user to 'developer' status", response = User.class)
+  @ApiResponses(value = {
+      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.NOT_MODIFIED, message = "User role was not changed"),
+      @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found"),
+      @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
+      @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
+          message = "Internal server problems")})
+  public Response grantDeveloperRights(@HeaderParam("accessToken") String accessToken,
+      @PathParam("oidcId") Long oidcId) {
+
+    // Method is admin-only
+    if (!OIDCAuthentication.isAdmin(accessToken)) {
+      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+    }
+
+    User user = null;
+    List<User> entities = entityFacade.findByParam(User.class, "oidcId", oidcId);
+    if (entities.isEmpty()) {
+      return Response.status(HttpStatusCode.NOT_FOUND).build();
+    } else {
+      user = entities.get(0);
+    }
+
+    if (user.getRole() == User.PENDING_DEVELOPER) {
+      user.setRole(User.DEVELOPER);
+      user = entityFacade.save(user);
+    } else {
+      return Response.status(HttpStatusCode.NOT_MODIFIED).build();
+    }
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      return Response.status(HttpStatusCode.OK).entity(objectMapper.writeValueAsBytes(user))
+          .build();
+    } catch (JsonProcessingException e) {
+      LOGGER.warning(e.getMessage());
+      return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
+    }
+  }
 }
