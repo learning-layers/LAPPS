@@ -50,7 +50,9 @@ public class TagsResourceTest {
     target = c.target(Main.BASE_URI);
 
     LOGGER.info("Creating a new app...");
-    app = new App("TestApp", "iOS", "TestApp");
+    app =
+        new App("TestApp", "iOS", "TestApp Short Description", "0.2",
+            "This is a not so long Description", "www.here-123.itis");
     app = entityFacade.save(app);
     LOGGER.info("App created: " + app);
 
