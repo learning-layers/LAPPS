@@ -3,6 +3,7 @@ package de.rwth.dbis.layers.lapps;
 import java.util.ArrayList;
 import java.util.Random;
 
+import de.rwth.dbis.layers.lapps.entity.App;
 import de.rwth.dbis.layers.lapps.entity.User;
 
 public class DataGeneratorUtils {
@@ -77,8 +78,7 @@ public class DataGeneratorUtils {
       "//www.youtube.com/embed/6lC2lbeY_rU", "//www.youtube.com/embed/tHwntRpLobU",
       "//www.youtube.com/embed/f4wsJ0joBxg", "//www.youtube.com/embed/OpLU__bhu2w"};
 
-  private static String[] platforms = new String[] {"iOS", "Android", "Windows Phone", "Web Apps",
-      "Windows", "Linux", "Mac OS X"};
+  private static String[] platforms = App.PLATFORMS;
 
   /**
    * Generates a shuffled lorem ipsum textblock.

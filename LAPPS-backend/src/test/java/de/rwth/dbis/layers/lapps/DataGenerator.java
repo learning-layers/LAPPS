@@ -61,21 +61,18 @@ public class DataGenerator {
     }
 
     for (int i = 0; i < howMany; i++) {
-      // init the app
 
+      // initialize the app
       App currentApp =
           new App(DataGeneratorUtils.getRandomName(), DataGeneratorUtils.getRandomPlatform(),
-              DataGeneratorUtils.getRandomShortDescription());
-      // TODO: add the other 3 additional fields
-      currentApp.setDownloadUrl(DataGeneratorUtils.getRandomUrl());
+              DataGeneratorUtils.getRandomShortDescription(),
+              DataGeneratorUtils.getRandomMinPlatform(),
+              DataGeneratorUtils.getRandomLongDescription(), DataGeneratorUtils.getRandomUrl());
       currentApp.setLicense("Copyright 2014");// check here for DB restrictions?
-      currentApp.setLongDescription(DataGeneratorUtils.getRandomLongDescription());
-      currentApp.setMinPlatformRequired(DataGeneratorUtils.getRandomMinPlatform());
       currentApp.setRating(DataGeneratorUtils.getRandomRating());
       currentApp.setSize(DataGeneratorUtils.getRandomSize());
       currentApp.setSourceUrl(DataGeneratorUtils.getRandomUrl());
       currentApp.setSupportUrl(DataGeneratorUtils.getRandomUrl());
-      currentApp.setVersion(DataGeneratorUtils.getRandomVersion());
 
       User currentUser = users[RandomNumberGenerator.getRandomInt(0, users.length - 1)];
       currentApp.setCreator(currentUser);

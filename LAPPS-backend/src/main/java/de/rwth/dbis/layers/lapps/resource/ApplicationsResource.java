@@ -40,6 +40,7 @@ import de.rwth.dbis.layers.lapps.entity.App.RatingComparator;
 import de.rwth.dbis.layers.lapps.entity.Artifact;
 import de.rwth.dbis.layers.lapps.entity.Tag;
 import de.rwth.dbis.layers.lapps.entity.User;
+import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
 /**
  * Applications resource (exposed at "apps" path).
@@ -282,36 +283,27 @@ public class ApplicationsResource {
   @ApiOperation(value = "Create app", response = App.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.CREATED, message = "App successful created"),
+      @ApiResponse(code = HttpStatusCode.BAD_REQUEST,
+          message = "Missing or incorrect fields in provided app entity"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
   public Response createApp(@HeaderParam("accessToken") String accessToken, @ApiParam(
       value = "App entity as JSON", required = true) App createdApp) {
 
-    // Check, if the user has developer rights
-    if (!OIDCAuthentication.isDeveloper(accessToken)) {
+    // Authenticate user and set as the application creator
+    User creator;
+    try {
+      creator = OIDCAuthentication.authenticate(accessToken);
+      if (creator.getRole() < User.DEVELOPER) {
+        throw new OIDCException();
+      }
+    } catch (OIDCException e) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
+
+    // Delete / overwrite not wanted stuff
     createdApp.deleteId();
-
-    // save (not store!) child elements
-    User creator = createdApp.getCreator();
-    List<Artifact> artifacts = new ArrayList<Artifact>(createdApp.getArtifacts());
-    List<Tag> tags = new ArrayList<Tag>(createdApp.getTags());
-
-    // delete child elements from app (persistence issues otherwise)
-    createdApp.getArtifacts().clear();
-    createdApp.getTags().clear();
-
-    // validate the existence of the creator
-    List<User> creatorList = entitiyFacade.findByParam(User.class, "oidcId", creator.getOidcId());
-    if (creatorList.size() != 1) {
-      return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
-    }
-    creator = creatorList.get(0);
-    if (creator.getRole() != User.DEVELOPER && creator.getRole() != User.ADMIN) {
-      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
-    }
     createdApp.setCreator(creator);
     // Initial rating of three
     createdApp.setRating(3.0);
@@ -321,8 +313,52 @@ public class ApplicationsResource {
     long time = System.currentTimeMillis();
     java.sql.Timestamp timestamp = new java.sql.Timestamp(time);
     createdApp.setDateModified(timestamp);
+
+    // Sanity checks
+    if (createdApp.getPlatform() == null || createdApp.getName() == null
+        || createdApp.getDownloadUrl() == null || createdApp.getVersion() == null
+        || createdApp.getLongDescription() == null || createdApp.getShortDescription() == null) {
+      return Response.status(HttpStatusCode.BAD_REQUEST).build();
+    }
+
+    // Check for correct platform entry
+    boolean correctEntry = false;
+    String platform = createdApp.getPlatform();
+    for (int i = 0; i < App.PLATFORMS.length; i++) {
+      if (platform.equals(App.PLATFORMS[i])) {
+        correctEntry = true;
+        break;
+      }
+    }
+    if (!correctEntry) {
+      return Response.status(HttpStatusCode.BAD_REQUEST).build();
+    }
+
+    // Check for existing thumbnail
+    correctEntry = false;
+    Iterator<Artifact> artifactIterator = createdApp.getArtifacts().iterator();
+    while (artifactIterator.hasNext()) {
+      if (artifactIterator.next().getType().equals("thumbnail")) {
+        correctEntry = true;
+        break;
+      }
+    }
+    if (!correctEntry) {
+      return Response.status(HttpStatusCode.BAD_REQUEST).build();
+    }
+
+    // Interim storage of artifacts and tags
+    List<Artifact> artifacts = new ArrayList<Artifact>(createdApp.getArtifacts());
+    List<Tag> tags = new ArrayList<Tag>(createdApp.getTags());
+
+    // Delete child elements from application (persistence issues otherwise)
+    createdApp.getArtifacts().clear();
+    createdApp.getTags().clear();
+
+    // Save the application
     createdApp = entitiyFacade.save(createdApp);
 
+    // Store the artifacts and tags separately
     for (Artifact newArtifact : artifacts) {
       newArtifact.setBelongingTo(createdApp);
       entitiyFacade.save(newArtifact);

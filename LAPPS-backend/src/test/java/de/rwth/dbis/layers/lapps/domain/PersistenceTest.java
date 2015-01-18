@@ -24,7 +24,9 @@ public class PersistenceTest {
   public void initData() {
     // generate and save data:
     this.user = facade.save(DataGeneratorUtils.getRandomDeveloperUser());
-    App app = new App("Test App", "platform", "Lorem ipsum...");
+    App app =
+        new App("Test App", "platform", "Lorem ipsum...", "0.3", "long descr..", "myurl.com123");
+
     app.setCreator(this.user);
     app.addArtifact(new Artifact("image", RandomNumberGenerator.getRandomInt(0, 3000)
         + "@image.com"));

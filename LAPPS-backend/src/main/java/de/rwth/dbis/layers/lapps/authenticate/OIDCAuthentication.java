@@ -49,15 +49,6 @@ public class OIDCAuthentication {
    * @return true, if the token belongs to a user
    */
   public static boolean isUser(String openIdToken) {
-    // no token provided
-    if (openIdToken == null) {
-      return false;
-    }
-    // default testing token returns default testing id
-    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
-      return true;
-    }
-
     try {
       User user = authenticate(openIdToken);
       if (user.getRole() >= User.USER) {
@@ -77,15 +68,6 @@ public class OIDCAuthentication {
    * @return true, if the user is a pending developer
    */
   public static boolean isPendingDeveloper(String openIdToken) {
-    // no token provided
-    if (openIdToken == null) {
-      return false;
-    }
-    // default testing token returns default testing id
-    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
-      return true;
-    }
-
     try {
       User user = authenticate(openIdToken);
       if (user.getRole() == User.PENDING_DEVELOPER) {
@@ -105,15 +87,6 @@ public class OIDCAuthentication {
    * @return true, if the user is developer or admin
    */
   public static boolean isDeveloper(String openIdToken) {
-    // no token provided
-    if (openIdToken == null) {
-      return false;
-    }
-    // default testing token returns default testing id
-    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
-      return true;
-    }
-
     try {
       User user = authenticate(openIdToken);
       if (user.getRole() >= User.DEVELOPER) {
@@ -133,15 +106,6 @@ public class OIDCAuthentication {
    * @return true, if the user is an administrator
    */
   public static boolean isAdmin(String openIdToken) {
-    // no token provided
-    if (openIdToken == null) {
-      return false;
-    }
-    // default testing token returns default testing id
-    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
-      return true;
-    }
-
     try {
       User user = authenticate(openIdToken);
       if (user.getRole() == User.ADMIN) {
@@ -162,13 +126,9 @@ public class OIDCAuthentication {
    * @return true, if the user is creator of the app
    */
   public static boolean isCreatorOfApp(App app, String openIdToken) {
-    // no token or no app provided
-    if (openIdToken == null || app == null) {
+    // no app provided
+    if (app == null) {
       return false;
-    }
-    // default testing token returns default testing id
-    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
-      return true;
     }
 
     try {
@@ -191,15 +151,6 @@ public class OIDCAuthentication {
    * @return true, if oidcId and openIdToken match
    */
   public static boolean isSameUser(Long oidcId, String openIdToken) {
-    // no token provided
-    if (openIdToken == null) {
-      return false;
-    }
-    // default testing token returns default testing id
-    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
-      return true;
-    }
-
     try {
       User user = authenticate(openIdToken);
       if (user.getId() == oidcId) {
@@ -228,6 +179,21 @@ public class OIDCAuthentication {
     // no token provided
     if (openIdToken == null) {
       throw new OIDCException("No token was provided");
+    }
+    // Return default OIDC user for test token
+    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
+      User superUser;
+      List<User> entities = facade.findByParam(User.class, "oidcId", OPEN_ID_USER_ID);
+      if (entities.isEmpty()) {
+        // Generate user that maps to open id test user
+        superUser =
+            new User(OIDCAuthentication.OPEN_ID_USER_ID, "OpenId Test User", "test@mail.com",
+                "persDescr", "someWeb.com", User.ADMIN);
+        superUser = facade.save(superUser);
+      } else {
+        superUser = entities.get(0);
+      }
+      return superUser;
     }
 
     // JSON initialization stuff

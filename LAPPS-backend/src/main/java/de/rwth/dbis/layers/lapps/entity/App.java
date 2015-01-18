@@ -22,6 +22,9 @@ import org.hibernate.annotations.FetchMode;
 @Table(name = "app")
 public class App implements Entity, Comparable<App> {
   private static final long serialVersionUID = -5148238127147716369L;
+  public static final String[] PLATFORMS = new String[] {"iOS", "Android", "Windows Phone",
+      "Web Apps", "Windows", "Linux", "Mac OS X"};
+
   @Id
   @GeneratedValue
   private Long id = 0L;
@@ -64,10 +67,14 @@ public class App implements Entity, Comparable<App> {
    */
   public App() {}
 
-  public App(String name, String platform, String shortDescription) {
+  public App(String name, String platform, String shortDescription, String version,
+      String longDescription, String downloadUrl) {
     this.setName(name);
     this.setPlatform(platform);
     this.setShortDescription(shortDescription);
+    this.setVersion(version);
+    this.setLongDescription(longDescription);
+    this.setDownloadUrl(downloadUrl);
   }
 
   public String getName() {
