@@ -249,6 +249,7 @@ public class UsersResource {
     }
     // Prevent users to give themselves new rights, usernames or mail (latter two are managed by
     // OIDC server)
+    updatedUser.setOidcId(user.getOidcId());
     updatedUser.setRole(user.getRole());
     updatedUser.setEmail(user.getEmail());
     updatedUser.setUsername(user.getUsername());
@@ -258,7 +259,7 @@ public class UsersResource {
     user = entityFacade.save(user);
     try {
       ObjectMapper objectMapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.OK).entity(objectMapper.writeValueAsBytes(updatedUser))
+      return Response.status(HttpStatusCode.OK).entity(objectMapper.writeValueAsBytes(user))
           .build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
