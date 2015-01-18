@@ -74,7 +74,9 @@ public class ApplicationsResource {
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
   public Response getAllApps(
-      @ApiParam(value = "Search query parameter for name and tag", required = false) @QueryParam("search") String search,
+      @ApiParam(
+          value = "Search query parameter for name and tag. Multiple keywords use ; as separator.",
+          required = false) @QueryParam("search") String search,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of apps by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
       @ApiParam(value = "Sort by field", required = false,
@@ -89,12 +91,22 @@ public class ApplicationsResource {
     if (search == null) {
       entities = (List<App>) entitiyFacade.loadAll(App.class);
     } else {
-      entities = (List<App>) entitiyFacade.findByParam(App.class, "name", search);
-      List<Tag> tagEntities = (List<Tag>) entitiyFacade.findByParam(Tag.class, "value", search);
-      for (Tag tag : tagEntities) {
-        App app = tag.getApp();
-        if (!entities.contains(app)) {
-          entities.add(app);
+      entities = new ArrayList<App>();
+      String[] searchStrings = search.split(";");
+      for (String searchString : searchStrings) {
+        searchString = searchString.trim();
+        for (App app : (List<App>) entitiyFacade.findByParam(App.class, "name", searchString)) {
+          if (!entities.contains(app)) {
+            entities.add(app);
+          }
+        }
+        List<Tag> tagEntities =
+            (List<Tag>) entitiyFacade.findByParam(Tag.class, "value", searchString);
+        for (Tag tag : tagEntities) {
+          App app = tag.getApp();
+          if (!entities.contains(app)) {
+            entities.add(app);
+          }
         }
       }
     }
