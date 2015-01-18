@@ -1,5 +1,6 @@
 package de.rwth.dbis.layers.lapps.resource;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
@@ -69,7 +70,9 @@ public class UsersResource {
           message = "Internal server problems")})
   public Response getAllUsers(
       @HeaderParam("accessToken") String accessToken,
-      @ApiParam(value = "Search query parameter for username, email", required = false) @QueryParam("search") String search,
+      @ApiParam(
+          value = "Search query parameter for username, email.  Multiple keywords use ; as separator.",
+          required = false) @QueryParam("search") String search,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
       @ApiParam(value = "Sort by field", required = false,
@@ -86,12 +89,20 @@ public class UsersResource {
     if (search == null) {
       entities = (List<User>) entityFacade.loadAll(User.class);
     } else {
-      entities = (List<User>) entityFacade.findByParam(User.class, "username", search);
-      List<User> additionalEntities =
-          ((List<User>) entityFacade.findByParam(User.class, "email", search));
-      for (User user : additionalEntities) {
-        if (!entities.contains(user)) {
-          entities.add(user);
+      entities = new ArrayList<User>();
+      String[] searchStrings = search.split(";");
+      for (String searchString : searchStrings) {
+        searchString = searchString.trim();
+        for (User user : entityFacade.findByParam(User.class, "username", searchString)) {
+          if (!entities.contains(user)) {
+            entities.add(user);
+          }
+        }
+        List<User> additionalEntities = entityFacade.findByParam(User.class, "email", searchString);
+        for (User user : additionalEntities) {
+          if (!entities.contains(user)) {
+            entities.add(user);
+          }
         }
       }
     }
