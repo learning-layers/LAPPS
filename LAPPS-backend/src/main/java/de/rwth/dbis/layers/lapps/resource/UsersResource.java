@@ -149,7 +149,6 @@ public class UsersResource {
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
   public Response getUser(@PathParam("oidcId") Long oidcId) {
-
     // search for existing user
     List<User> entities = entityFacade.findByParam(User.class, "oidcId", oidcId);
     User user = null;
@@ -248,6 +247,12 @@ public class UsersResource {
     } else {
       user = entities.get(0);
     }
+    // Prevent users to give themselves new rights, usernames or mail (latter two are managed by
+    // OIDC server)
+    updatedUser.setRole(user.getRole());
+    updatedUser.setEmail(user.getEmail());
+    updatedUser.setUsername(user.getUsername());
+
     DozerBeanMapper dozerMapper = new DozerBeanMapper();
     dozerMapper.map(updatedUser, user);
     user = entityFacade.save(user);
