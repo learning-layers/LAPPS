@@ -90,7 +90,7 @@ public class ApplicationsResource {
           value = "Filter value. When using multiple filters, values can be separated by ; ",
           required = false) @QueryParam("filterValue") String filterValue) {
     List<App> entities;
-    if (search == null) {
+    if (search == null || search.isEmpty()) {
       entities = (List<App>) entitiyFacade.loadAll(App.class);
     } else {
       entities = new ArrayList<App>();
@@ -161,8 +161,8 @@ public class ApplicationsResource {
             for (Iterator<App> iterator = entities.iterator(); iterator.hasNext();) {
               App app = iterator.next();
               if (!isLong
-                  && (app.getCreator() == null || !app.getCreator().getUsername()
-                      .equalsIgnoreCase(values[i]))) {
+                  && (app.getCreator() == null || !app.getCreator().getUsername().toLowerCase()
+                      .contains(values[i].toLowerCase()))) {
                 // if user asks for name and name does not match
                 iterator.remove();
               } else if (isLong

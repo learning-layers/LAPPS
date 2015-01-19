@@ -89,7 +89,7 @@ public class UsersResource {
     }
 
     List<User> entities;
-    if (search == null) {
+    if (search == null || search.isEmpty()) {
       entities = (List<User>) entityFacade.loadAll(User.class);
     } else {
       entities = new ArrayList<User>();
