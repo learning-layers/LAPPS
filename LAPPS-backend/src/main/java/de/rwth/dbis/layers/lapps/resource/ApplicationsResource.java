@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -75,7 +77,7 @@ public class ApplicationsResource {
           message = "Internal server problems")})
   public Response getAllApps(
       @ApiParam(
-          value = "Search query parameter for name and tag. Multiple keywords use ; as separator.",
+          value = "Search query parameter for name and tag. Multiple keywords use whitespace as separator. Quotation marks indentify exact search strings.",
           required = false) @QueryParam("search") String search,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of apps by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
@@ -92,7 +94,13 @@ public class ApplicationsResource {
       entities = (List<App>) entitiyFacade.loadAll(App.class);
     } else {
       entities = new ArrayList<App>();
-      String[] searchStrings = search.split(";");
+
+      List<String> searchStrings = new ArrayList<String>();
+      Matcher matcher = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(search);
+      while (matcher.find()) {
+        searchStrings.add(matcher.group(1).replace("\"", ""));
+      }
+
       for (String searchString : searchStrings) {
         searchString = searchString.trim();
         for (App app : (List<App>) entitiyFacade.findByParam(App.class, "name", searchString)) {

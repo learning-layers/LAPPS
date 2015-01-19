@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -72,7 +74,7 @@ public class UsersResource {
   public Response getAllUsers(
       @HeaderParam("accessToken") String accessToken,
       @ApiParam(
-          value = "Search query parameter for username, email.  Multiple keywords use ; as separator.",
+          value = "Search query parameter for username, email. Multiple keywords use whitespace as separator. Quotation marks indentify exact search strings.",
           required = false) @QueryParam("search") String search,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of users by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
@@ -91,7 +93,13 @@ public class UsersResource {
       entities = (List<User>) entityFacade.loadAll(User.class);
     } else {
       entities = new ArrayList<User>();
-      String[] searchStrings = search.split(";");
+
+      List<String> searchStrings = new ArrayList<String>();
+      Matcher matcher = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(search);
+      while (matcher.find()) {
+        searchStrings.add(matcher.group(1).replace("\"", ""));
+      }
+
       for (String searchString : searchStrings) {
         searchString = searchString.trim();
         for (User user : entityFacade.findByParam(User.class, "username", searchString)) {
