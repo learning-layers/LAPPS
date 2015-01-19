@@ -1,7 +1,7 @@
 CREATE TABLE `comment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `authorId` int(11) NOT NULL,
-  `appId` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `app_id` int(11) NOT NULL,
   `content` varchar(1400) COLLATE utf8_unicode_ci NOT NULL,
   `rating` int(11) DEFAULT NULL,
   `releaseDate` timestamp NULL DEFAULT NULL,

@@ -2,15 +2,16 @@ package de.rwth.dbis.layers.lapps.entity;
 
 import java.text.DateFormat;
 import java.util.Date;
+
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Column;
-import javax.persistence.OneToOne;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @javax.persistence.Entity
@@ -23,7 +24,7 @@ public class Comment implements Entity {
   private String content = null;
   @ManyToOne
   @JoinColumn(name = "user_id")
-  User user = null;  
+  User user = null;
   @ManyToOne
   @JoinColumn(name = "app_id")
   @JsonIgnore
@@ -39,9 +40,9 @@ public class Comment implements Entity {
 
   public Comment(String text, User user, App app) {
     this(text, 0, user, app);
-    
+
   }
-  
+
   public Comment(String text, int rating, User user, App app) {
     this.setContent(text);
     this.setUser(user);
@@ -60,17 +61,17 @@ public class Comment implements Entity {
   public int getRating() {
     return this.rating;
   }
-  
+
   public void setRating(int rating) {
     this.rating = rating;
   }
-  
+
   public User getUser() {
     return this.user;
   }
 
   public void setUser(User user) {
-    this.user = user;    
+    this.user = user;
   }
 
   public App getApp() {
@@ -78,7 +79,7 @@ public class Comment implements Entity {
   }
 
   public void setApp(App app) {
-    this.app = app;    
+    this.app = app;
   }
 
   public Date getReleaseDate() {
@@ -88,7 +89,7 @@ public class Comment implements Entity {
   public void setReleaseDate(Date date) {
     this.releaseDate = date;
   }
-  
+
   public Date getUpdateDate() {
     return updateDate;
   }
