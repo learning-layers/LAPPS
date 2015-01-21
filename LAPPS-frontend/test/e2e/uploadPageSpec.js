@@ -45,6 +45,4 @@ describe('upload app page', function() {
                     .isDisplayed()).toBeTruthy();
   });
 
-  it()
-
-})
+});

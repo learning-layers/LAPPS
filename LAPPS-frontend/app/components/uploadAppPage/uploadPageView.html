@@ -1,7 +1,6 @@
-
-  <div class="row">
-    
-      <form id="uploadForm" name="uploadForm" ng-submit="createNewApp();" novalidate>
+  
+      <form id="uploadForm" role= "form" name="uploadForm" ng-submit="createNewApp();" novalidate>
+      <div class="row">
         <div class="thumbnail col-md-12">
           <div class="title">
             <h2>General Information</h2>
@@ -14,11 +13,12 @@
             </div>
             <div class="form-group" validate-input>
               <b><i class="fa fa-puzzle-piece"></i><span class="hspacer05"></span>Platform</b>
-              <select class="form-control btn btn-default dropdown-toggle dropdownWidth" name="platform-name" data-toggle="dropdown" ng-model="newapp.platform">
+              <select class="form-control btn btn-default dropdown-toggle dropdownWidth" name="platform-name" data-toggle="dropdown" ng-model="newapp.platform" required>
                 <option ng-repeat="platform in platforms" value="{{platform.name}}">
                   {{platform.name}}
                 </option>
               </select>
+              <p class="help-block" ng-show="uploadForm.platform-name.$error.required">The App's platform is required.</p>
             </div>
             <div class="form-group" validate-input>
               <b><i class="fa fa-cogs"></i><span class="hspacer05"></span>Supported Platform Version</b>
@@ -36,14 +36,14 @@
               <input type="text" class="form-control" ng-model="newapp.shortDescription" name="shortDescription" maxlength="200" data-toggle="tooltip" title="Short description about the app." tooltip required>
               <p class="help-block" ng-show="uploadForm.shortDescription.$error.required">Short description is required.</p>
             </div>
-            <div class="form-group" validate-input>
+            <div class="form-group">
               <b><i class="fa fa-pencil"></i><span class="hspacer05"></span>Long Description</b>
-              <textarea class="form-control custom-control long-description" rows="10" nd-model="newapp.longDescription" name="longDescription" data-toggle="tooltip" title="Markdown is supported for Long Description" tooltip required></textarea>
+              <textarea class="form-control custom-control long-description" rows="10" nd-model="newapp.longDescription" name="longDesc" data-toggle="tooltip" title="Markdown is supported for Long Description" maxlength="10000" tooltip required></textarea>
               <p class="help-block" ng-show="uploadForm.longDescription.$error.required">Long description is required.</p>
             </div>
             <div class="form-group" validate-input>
               <b><i class="fa fa-tags"></i><span class="hspacer05"></span>Tags</b>
-              <input type="text" class="form-control" ng-model="tags.value" name="tags" maxlength="300" data-toggle="tooltip" title="Tags should be separated by comma. i.e tag1, tag2 etc" tooltip required>
+              <input type="text" class="form-control" ng-model="tags.value" name="tags" maxlength="300" ng-pattern="/^[a-zA-Z ,]*$/" data-toggle="tooltip" title="Tags should be separated by comma. i.e tag1, tag2 etc" tooltip required>
               <p class="help-block" ng-show="uploadForm.tags.$error.required">Tags are required.</p>
               <p class="help-block" ng-messages="uploadForm.tags.$error.pattern">Only a-z , allowed.</p>
             </div>
@@ -61,7 +61,7 @@
             </div>
             <div class="form-group" validate-input>
               <b><i class="fa fa-arrows-h"></i><span class="hspacer05"></span>Size</b>
-              <input type="text" class="form-control" ng-model="size.value" name="size" maxlength="10" data-toggle="tooltip" title="Size of the app in KB. Only integer should be entered" tooltip required>
+              <input type="text" class="form-control" ng-model="newapp.size" ng-pattern = "/^\d+$/" name="size" maxlength="10" data-toggle="tooltip" title="Size of the app in KB. Only integer should be entered" tooltip required>
               <p class="help-block" ng-show="uploadForm.size.$error.required">Size of app in KB is required.</p>
               <p class="help-block" ng-messages="uploadForm.size.$error.pattern">Please enter only integer.</p>
             </div>
@@ -102,6 +102,7 @@
             </div>
             <div class="form-group" validate-input>
               <b><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Thumbnail URL</b>
+              <img ng-src="{{thumbnail.url}}" ng-show = "thumbnail.url" class="img-thumbnail">
               <input type="text" class="form-control" ng-model="thumbnail.url" name="thumbnail" data-toggle="tooltip" title="Thumbnail for the app." tooltip required>
               <span class="help-block" ng-show="uploadForm.thumbnail.$error.required">Thumbnail is required</span>
             </div>
@@ -111,15 +112,15 @@
               <span class="vspacer05"></span>
               <ng-form name="urlForm">
                 <div class="form-group" ng-class="{ 'has-error': urlForm.imgUrl.$invalid && urlForm.imgUrl.$dirty }">
-                  <img ng-src="{{images[$index].url}}" ng-show="showImg==true" class="editableImg">
-                  <span class="vspacer05">Url</span><input type="url" class="form-control" name="imgUrl" ng-model="images[$index].url" maxlength="300" data-toggle="tooltip" title="Url of the Image of Carousel." ng-change="update()" tooltip show-review>
+                  <img ng-src="{{images[$index].url}}" ng-show="images[$index].url" class="editableImg img-thumbnail">
+                  <span class="vspacer05">Url</span><input type="url" class="form-control" name="imgUrl" ng-model="images[$index].url" maxlength="300" data-toggle="tooltip" title="Url of the Image of Carousel." tooltip>
                   <span class="help-block" ng-show="urlForm.imgUrl.$error.url">Invalid Url!</span>
                 </div>
               </ng-form>
 
               <span class="vspacer05">Description</span><input type="text" class="form-control" ng-model="images[$index].description" maxlength="100" data-toggle="tooltip" title="Description that will be displayed below the Image in Carousel." tooltip>
               <span class="vspacer1"></span>
-              <button type="button" id="{{newFields.id}}" class="btn btn-primary" name="{{newField.buttonName}}" ng-click="addAnotherField($event)">{{newField.buttonTitle}}</button>
+              <button type="button" id="{{newField.id}}" class="btn btn-primary" name="{{newField.buttonName}}" ng-click="addAnotherField($event)">{{newField.buttonTitle}}</button>
             </div>
             
           </div>
@@ -127,8 +128,9 @@
         </div>
         <br>
         <div class="form-group text-center">
-          <input type="submit" class="btn btn-success btn-lg" value="Submit" />
+          <input type="submit" id="createApp" class="btn btn-success btn-lg" value="Submit" />
         </div>
-      </form>
-    
+            
   </div>
+      </form>
+
