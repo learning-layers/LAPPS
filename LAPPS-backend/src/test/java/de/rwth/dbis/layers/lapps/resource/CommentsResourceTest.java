@@ -2,7 +2,7 @@ package de.rwth.dbis.layers.lapps.resource;
 
 import static javax.ws.rs.client.Entity.entity;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.util.logging.Logger;
@@ -131,6 +131,7 @@ public class CommentsResourceTest {
   @Test
   public void testCreateComment() {
     Comment newComment = null;
+    long commentId = 0;
     try {
       newComment = new Comment("test comment text", 3, user, ucApp);
       Response response =
@@ -144,13 +145,14 @@ public class CommentsResourceTest {
       ObjectMapper mapper = new ObjectMapper();
       JsonNode retrievedComment;
       retrievedComment = mapper.readTree(responseContent);
-      assertTrue(!retrievedComment.isNull());
+      commentId = Long.valueOf(retrievedComment.get("id").toString());
+      assertFalse(retrievedComment.isNull());
     } catch (Exception e) {
       e.printStackTrace();
       fail("JSON parsing failed with " + e.getMessage());
     } finally {
       LOGGER.info("Deleting created comment data...");
-      entityFacade.deleteByParam(Comment.class, "id", newComment.getId());
+      entityFacade.deleteByParam(Comment.class, "id", commentId);
       LOGGER.info("Comment data deleted.");
     }
   }
