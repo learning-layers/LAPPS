@@ -31,7 +31,6 @@ import de.rwth.dbis.layers.lapps.entity.User;
 
 /**
  * Comments Resource Test Class
- * 
  */
 public class CommentsResourceTest {
 
@@ -70,94 +69,37 @@ public class CommentsResourceTest {
     comment = new Comment("TestMessage", 3, user, cApp);
     comment = entityFacade.save(comment);
     LOGGER.info("Comment created: " + comment);
-
-
   }
 
   @After
   public void tearDown() throws Exception {
 
-    LOGGER.info("Deleting old user data...");
-    entityFacade.deleteByParam(User.class, "id", user.getId());
-    LOGGER.info("User data deleted.");
+    LOGGER.info("Deleting old comment data...");
+    entityFacade.deleteByParam(Comment.class, "id", comment.getId());
+    LOGGER.info("Comment data deleted.");
 
     LOGGER.info("Deleting old app data...");
     entityFacade.deleteByParam(App.class, "id", cApp.getId());
     entityFacade.deleteByParam(App.class, "id", ucApp.getId());
     LOGGER.info("App data deleted.");
 
-    LOGGER.info("Deleting old comment data...");
-    entityFacade.deleteByParam(Comment.class, "id", comment.getId());
-    LOGGER.info("Comment data deleted.");
+    LOGGER.info("Deleting old user data...");
+    entityFacade.deleteByParam(User.class, "id", user.getId());
+    LOGGER.info("User data deleted.");
 
     server.shutdownNow();
   }
 
-
   /**
-   * Tries to create an comment.
+   * Test to get all comments for an app
    */
   @Test
-  public void testCreateComment() {
-    Comment newComment = null;
-    try {
-      newComment = new Comment("test comment text", 3, user, ucApp);
-      Response response =
-          target.path("apps/" + ucApp.getId() + "/comments").request()
-              .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
-              .post(entity(newComment, MediaType.APPLICATION_JSON));
-      assertEquals(HttpStatusCode.OK, response.getStatus());
-      MediaType responseMediaType = response.getMediaType();
-      assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
-      String responseContent = response.readEntity(String.class);
-      ObjectMapper mapper = new ObjectMapper();
-      JsonNode retrievedComment;
-      retrievedComment = mapper.readTree(responseContent);
-      assertTrue(!retrievedComment.isNull());
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail("JSON parsing failed with " + e.getMessage());
-    } finally {
-      LOGGER.info("Deleting created comment data...");
-      entityFacade.deleteByParam(Comment.class, "id", newComment.getId());
-      LOGGER.info("Comment data deleted.");
-    }
-  }
-
-  /**
-   * Tries to delete the previously created app.
-   */
-  @Test
-  public void testDeleteComment() {
+  public void testGetAllComments() {
     Response response =
-        target.path("apps/" + cApp.getId() + "/comments/" + comment.getId()).request()
-            .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
+        target.path("apps/" + ucApp.getId() + "/comments").request(MediaType.APPLICATION_JSON)
+            .get();
     assertEquals(HttpStatusCode.OK, response.getStatus());
 
-  }
-
-  @Test
-  public void testUpdateComment() {
-    comment.setContent("New comment text");
-    comment = entityFacade.save(comment);
-    Response response =
-        target.path("apps/" + cApp.getId() + "/comments/" + comment.getId()).request()
-            .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
-            .put(entity(comment, MediaType.APPLICATION_JSON));
-    assertEquals(HttpStatusCode.OK, response.getStatus());
-    MediaType responseMediaType = response.getMediaType();
-    assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
-    String responseContent = response.readEntity(String.class);
-    ObjectMapper mapper = new ObjectMapper();
-    JsonNode retrievedComment;
-    try {
-      retrievedComment = mapper.readTree(responseContent);
-      assertEquals(comment.getId().toString(), retrievedComment.get("id").toString());
-      assertEquals("\"" + comment.getContent() + "\"", retrievedComment.get("content").toString());
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail("JSON parsing failed with " + e.getMessage());
-    }
   }
 
   /**
@@ -184,14 +126,72 @@ public class CommentsResourceTest {
   }
 
   /**
-   * Test to get a list of comments
+   * Tries to create an comment.
    */
   @Test
-  public void testGetAllComments() {
+  public void testCreateComment() {
+    Comment newComment = null;
+    try {
+      newComment = new Comment("test comment text", 3, user, ucApp);
+      Response response =
+          target.path("apps/" + ucApp.getId() + "/comments").request()
+              .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
+              .post(entity(newComment, MediaType.APPLICATION_JSON));
+      assertEquals(HttpStatusCode.CREATED, response.getStatus());
+      MediaType responseMediaType = response.getMediaType();
+      assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
+      String responseContent = response.readEntity(String.class);
+      ObjectMapper mapper = new ObjectMapper();
+      JsonNode retrievedComment;
+      retrievedComment = mapper.readTree(responseContent);
+      assertTrue(!retrievedComment.isNull());
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("JSON parsing failed with " + e.getMessage());
+    } finally {
+      LOGGER.info("Deleting created comment data...");
+      entityFacade.deleteByParam(Comment.class, "id", newComment.getId());
+      LOGGER.info("Comment data deleted.");
+    }
+  }
+
+  /**
+   * Tries to delete the previously created comment.
+   */
+  @Test
+  public void testDeleteComment() {
     Response response =
-        target.path("apps/" + ucApp.getId() + "/comments").request(MediaType.APPLICATION_JSON)
-            .get();
-    assertEquals(HttpStatusCode.OK, response.getStatus());
+        target.path("apps/" + cApp.getId() + "/comments/" + comment.getId()).request()
+            .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
+    assertEquals(HttpStatusCode.NO_CONTENT, response.getStatus());
 
   }
+
+  /**
+   * Tries to update the previously created comment.
+   */
+  @Test
+  public void testUpdateComment() {
+    comment.setContent("New comment text");
+    comment = entityFacade.save(comment);
+    Response response =
+        target.path("apps/" + cApp.getId() + "/comments/" + comment.getId()).request()
+            .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
+            .put(entity(comment, MediaType.APPLICATION_JSON));
+    assertEquals(HttpStatusCode.OK, response.getStatus());
+    MediaType responseMediaType = response.getMediaType();
+    assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
+    String responseContent = response.readEntity(String.class);
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode retrievedComment;
+    try {
+      retrievedComment = mapper.readTree(responseContent);
+      assertEquals(comment.getId().toString(), retrievedComment.get("id").toString());
+      assertEquals("\"" + comment.getContent() + "\"", retrievedComment.get("content").toString());
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("JSON parsing failed with " + e.getMessage());
+    }
+  }
+
 }
