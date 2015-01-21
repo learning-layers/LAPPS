@@ -570,4 +570,16 @@ public class ApplicationsResource {
     return new TagsResource();
   }
 
+  /**
+   * 
+   * Comment subresource. Leads to {@link CommentsResource}.
+   * 
+   * @return CommentsResource
+   * 
+   */
+  @Path("/{appId}/comments")
+  public CommentsResource getCommentsResource() {
+    return new CommentsResource();
+  }
+
 }
