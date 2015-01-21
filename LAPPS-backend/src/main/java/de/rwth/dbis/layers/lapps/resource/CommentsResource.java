@@ -1,5 +1,6 @@
 package de.rwth.dbis.layers.lapps.resource;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -67,41 +68,51 @@ public class CommentsResource {
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
   public Response getAllComments(
-      @ApiParam(value = "Search query parameter", required = false) @QueryParam("search") String search,
+      @PathParam("appId") long appId,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of comments by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
       @ApiParam(value = "Sort by field", required = false, allowableValues = "date") @DefaultValue("date") @QueryParam("sortBy") String sortBy,
-      @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
-      @PathParam("id") long appId) {
+      @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order) {
 
-    // Get All Comments
-    List<Comment> entities;
-    entities = (List<Comment>) entityFacade.loadAll(Comment.class);
+    List<App> apps = entityFacade.findByParam(App.class, "id", appId);
+    if (apps.size() != 1) {
+      return Response.status(HttpStatusCode.NOT_FOUND).build();
+    } else {
+      App app = apps.get(0);
+      List<Comment> commentEntities = entityFacade.findByParam(Comment.class, "app", app);
 
-    // Get the page
-    int numberOfPages = 1;
-    if (pageLength > 0 && pageLength < entities.size()) {
-      int fromIndex = page == 1 ? 0 : (page * pageLength) - pageLength;
-      int toIndex = page == 1 ? pageLength : page * pageLength;
-      numberOfPages = (int) Math.ceil((double) entities.size() / pageLength);
-      if (entities.size() < fromIndex + 1) {
-        entities.clear();
-      } else {
-        if (entities.size() < toIndex + 1) {
-          toIndex = entities.size();
-        }
-        entities = entities.subList(fromIndex, toIndex);
+      if (sortBy.equalsIgnoreCase("date")) {
+        Collections.sort(commentEntities);
       }
-    }
+      if (order.equalsIgnoreCase("desc")) {
+        Collections.reverse(commentEntities);
+      }
 
-    // Return Result
-    try {
-      ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.OK).header("numberOfPages", numberOfPages)
-          .entity(mapper.writeValueAsBytes(entities)).build();
-    } catch (JsonProcessingException e) {
-      LOGGER.warning(e.getMessage());
-      return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
+      // Get the page
+      int numberOfPages = 1;
+      if (pageLength > 0 && pageLength < commentEntities.size()) {
+        int fromIndex = page == 1 ? 0 : (page * pageLength) - pageLength;
+        int toIndex = page == 1 ? pageLength : page * pageLength;
+        numberOfPages = (int) Math.ceil((double) commentEntities.size() / pageLength);
+        if (commentEntities.size() < fromIndex + 1) {
+          commentEntities.clear();
+        } else {
+          if (commentEntities.size() < toIndex + 1) {
+            toIndex = commentEntities.size();
+          }
+          commentEntities = commentEntities.subList(fromIndex, toIndex);
+        }
+      }
+
+      // Return Result
+      try {
+        ObjectMapper mapper = new ObjectMapper();
+        return Response.status(HttpStatusCode.OK).header("numberOfPages", numberOfPages)
+            .entity(mapper.writeValueAsBytes(commentEntities)).build();
+      } catch (JsonProcessingException e) {
+        LOGGER.warning(e.getMessage());
+        return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
+      }
     }
   }
 
@@ -134,6 +145,9 @@ public class CommentsResource {
         return Response.status(HttpStatusCode.NOT_FOUND).build();
       } else {
         comment = comments.get(0);
+        if (comment.getApp().getId() != appId) {
+          return Response.status(HttpStatusCode.NOT_FOUND).build();
+        }
       }
 
       // Return the comment
@@ -174,14 +188,21 @@ public class CommentsResource {
     if (!OIDCAuthentication.isUser(accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
-    User user = createdComment.getUser();
 
     try {
+      List<User> users =
+          entityFacade.findByParam(User.class, "oidcId", createdComment.getUser().getOidcId());
+      User user = null;
+      if (users.size() != 1) {
+        return Response.status(HttpStatusCode.NOT_FOUND).build();
+      } else {
+        user = users.get(0);
+      }
 
       // Get the app
       List<App> apps = entityFacade.findByParam(App.class, "id", appId);
       App app = null;
-      if (apps.isEmpty()) {
+      if (users.size() != 1) {
         return Response.status(HttpStatusCode.NOT_FOUND).build();
       } else {
         app = apps.get(0);
@@ -206,13 +227,20 @@ public class CommentsResource {
       }
 
       // Update rating of of the app
-      double newRating = ratingSum / counter;
+      double newRating = 0;
+      if (counter != 0) {
+        newRating = ratingSum / counter;
+      }
       app.setRating(newRating);
       app = entityFacade.save(app);
 
       // Create Comment
       createdComment.setApp(app);
       createdComment.setUser(user);
+      long time = System.currentTimeMillis();
+      java.sql.Timestamp timestamp = new java.sql.Timestamp(time);
+      createdComment.setReleaseDate(timestamp);
+      createdComment.setUpdateDate(timestamp);
       createdComment = entityFacade.save(createdComment);
 
       // Return comment
@@ -283,7 +311,7 @@ public class CommentsResource {
       }
 
       // Sum up rating of all comments
-      comments = entityFacade.findByParam(Comment.class, "app_id", app.getId());
+      comments = entityFacade.findByParam(Comment.class, "app", app);
       int ratingSum = 0;
       int counter = 0;
       for (Comment temp : comments) {
@@ -294,7 +322,10 @@ public class CommentsResource {
       // Update rating of of the app
       ratingSum -= comment.getRating();
       counter -= 1;
-      double newRating = ratingSum / counter;
+      double newRating = 0;
+      if (counter != 0) {
+        newRating = ratingSum / counter;
+      }
       app.setRating(newRating);
       app = entityFacade.save(app);
 
@@ -331,7 +362,7 @@ public class CommentsResource {
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
   public Response updateComment(@HeaderParam("accessToken") String accessToken,
-      @PathParam("id") long appId, @PathParam("id") long commentId, @ApiParam(
+      @PathParam("appId") long appId, @PathParam("id") long commentId, @ApiParam(
           value = "Comment entity as JSON", required = true) Comment updatedComment) {
 
     // Check Authentication
@@ -367,7 +398,7 @@ public class CommentsResource {
       }
 
       // Sum up rating of all comments
-      comments = entityFacade.findByParam(Comment.class, "app_id", app.getId());
+      comments = entityFacade.findByParam(Comment.class, "app", app);
       int ratingSum = 0;
       int counter = 0;
       for (Comment temp : comments) {
@@ -378,13 +409,24 @@ public class CommentsResource {
       // Update rating of of the app
       ratingSum -= comment.getRating();
       ratingSum += updatedComment.getRating();
-      double newRating = ratingSum / counter;
+      double newRating = 0;
+      if (counter != 0) {
+        newRating = ratingSum / counter;
+      }
       app.setRating(newRating);
       app = entityFacade.save(app);
 
       try {
         // Update Comment
         DozerBeanMapper dozerMapper = new DozerBeanMapper();
+        updatedComment.setApp(app);
+        updatedComment.setUser(comment.getUser());
+        // Release date not subject to change
+        updatedComment.setReleaseDate(comment.getReleaseDate());
+        // Update date is set here
+        long time = System.currentTimeMillis();
+        java.sql.Timestamp timestamp = new java.sql.Timestamp(time);
+        updatedComment.setUpdateDate(timestamp);
         dozerMapper.map(updatedComment, comment);
         comment = entityFacade.save(comment);
       } catch (Exception e) {
