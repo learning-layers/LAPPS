@@ -2,11 +2,9 @@ package de.rwth.dbis.layers.lapps.resource;
 
 import static javax.ws.rs.client.Entity.entity;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Iterator;
 import java.util.logging.Logger;
 
 import javax.ws.rs.client.Client;
@@ -27,8 +25,8 @@ import de.rwth.dbis.layers.lapps.DataGeneratorUtils;
 import de.rwth.dbis.layers.lapps.Main;
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.Facade;
-import de.rwth.dbis.layers.lapps.entity.Comment;
 import de.rwth.dbis.layers.lapps.entity.App;
+import de.rwth.dbis.layers.lapps.entity.Comment;
 import de.rwth.dbis.layers.lapps.entity.User;
 
 /**
@@ -55,12 +53,12 @@ public class CommentsResourceTest {
     target = c.target(Main.BASE_URI);
 
     LOGGER.info("Creating a new app...");
-    ucApp = new App("TestApp", "iOS", "uncommented TestApp");
+    ucApp = new App("TestApp", "iOS", "uncommented TestApp", "1.0", "long descr", "myUrl.com");
     ucApp = entityFacade.save(ucApp);
     LOGGER.info("App created: " + ucApp);
 
     LOGGER.info("Creating another new app...");
-    cApp = new App("TestApp2", "iOS", "commented TestApp");
+    cApp = new App("TestApp2", "iOS", "commented TestApp", "1.0", "long descr", "myUrl.com");
     cApp = entityFacade.save(cApp);
     LOGGER.info("App created: " + cApp);
 
