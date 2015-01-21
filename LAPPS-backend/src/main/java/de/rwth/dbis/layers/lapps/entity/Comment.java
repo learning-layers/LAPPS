@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @javax.persistence.Entity
 @Table(name = "comment")
-public class Comment implements Entity {
+public class Comment implements Entity, Comparable<Comment> {
   private static final long serialVersionUID = 1L;
   @Id
   @GeneratedValue
@@ -108,5 +108,39 @@ public class Comment implements Entity {
         + this.getContent() + ", from user: " + this.getUser().getEmail() + " regarding app: "
         + this.getApp().getName() + ", on: "
         + DateFormat.getInstance().format(this.getUpdateDate());
+  }
+
+  /**
+   * 
+   * Override equals for an {@link Comment} using field id.
+   * 
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    } else if (obj == this) {
+      return true;
+    } else if (obj instanceof Comment) {
+      return ((Comment) obj).getId().equals(this.getId());
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * 
+   * Override compare for an {@link Comment} using field updateDate.
+   * 
+   */
+  @Override
+  public int compareTo(Comment o) {
+    if (this.getUpdateDate() == null) {
+      return -1;
+    } else if (o.getUpdateDate() == null) {
+      return 1;
+    } else {
+      return this.getUpdateDate().compareTo(o.getUpdateDate());
+    }
   }
 }
