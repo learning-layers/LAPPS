@@ -19,14 +19,16 @@
                 var inputName = inputAngularElement.attr('name');
                 // only apply the has-error class after the user leaves the text
                 // box
+
                 var blurred = false;
                 inputAngularElement.bind('blur', function() {
                   blurred = true;
-                  el.toggleClass('has-error', uploadForm[inputName].$invalid);
+                  el.toggleClass('has-error', formCtrl[inputName].$invalid);
                 });
 
                 scope.$watch(function() {
-                  return uploadForm[inputName].$invalid
+
+                  return formCtrl[inputName].$invalid
                 }, function(invalid) {
                   // toggle the has-error class after the blur
                   // event or if the control becomes valid
@@ -35,7 +37,7 @@
                 });
 
                 scope.$on('show-errors-check-validity', function() {
-                  el.toggleClass('has-error', uploadForm[inputName].$invalid);
+                  el.toggleClass('has-error', formCtrl[inputName].$invalid);
                 });
 
                 scope.$on('show-errors-reset', function() {

@@ -1,8 +1,7 @@
 /**
- * @class userPageCtrl
+ * @class editPageCtrl
  * @memberOf lapps.lappsControllers
- * @description This controller is responsible for displaying the profile of
- *              users.
+ * @description This controller is for editing the app
  */
 (function() {
   angular
@@ -16,66 +15,58 @@
                       'user',
                       '$http',
                       'swaggerApi',
-                      'md5',
+                      'platform',
                       function($scope, $filter, $routeParams, user, $http,
-                              swaggerApi, md5) {
+                              swaggerApi, platform) {
 
+                        /**
+                         * @field
+                         * @type string
+                         * @memberOf lapps.lappsControllers.editPageCtrl
+                         * @description gets appid through routeParam and sets
+                         *              it to appId
+                         */
                         $scope.appId = $routeParams.appId;
 
+                        /**
+                         * @field
+                         * @type array of strings
+                         * @memberOf lapps.lappsControllers.editPageCtrl
+                         * @description will store tags temporary
+                         */
                         $scope.appTags = [];
+                        /**
+                         * @field
+                         * @type object
+                         * @memberOf lapps.lappsControllers.editPageCtrl
+                         * @description will store app object
+                         */
 
                         $scope.app = {};
 
+                        /**
+                         * @field
+                         * @type string
+                         * @memberOf lapps.lappsControllers.editPageCtrl
+                         * @description will store size of an app
+                         */
                         $scope.size = '';
 
-                        $scope.markdownLongDescription = '';
+                        /**
+                         * @field
+                         * @type array of objects
+                         * @memberOf lapps.lappsControllers.editPageCtrl
+                         * @description gets the list of platforms from platform
+                         *              object
+                         */
+                        this.platforms = platform.platforms;
 
-                        $scope.creator = {};
-
-                        this.platforms = [
-                            {
-                              id: 0,
-                              name: 'iOS',
-                              icon: 'fa-apple',
-                              agentRegEx: /(iPhone|iPad|iPod)/
-                            },
-                            {
-                              id: 1,
-                              name: 'Android',
-                              icon: 'fa-android',
-                              agentRegEx: /Android/
-                            },
-                            {
-                              id: 2,
-                              name: 'Windows Phone',
-                              icon: 'fa-windows',
-                              agentRegEx: /Windows Phone/
-                            },
-                            {
-                              id: 3,
-                              name: 'Web Apps',
-                              icon: 'fa-globe',
-                            },
-                            {
-                              id: 4,
-                              name: 'Windows',
-                              icon: 'fa-windows',
-                              agentRegEx: /(Windows NT|Windows 2000|Windows XP|Windows 7|Windows 8|Windows 10)/
-                            }, {
-                              id: 5,
-                              name: 'Linux',
-                              icon: 'fa-linux',
-                              agentRegEx: /(Linux|X11)/
-                            }, {
-                              id: 6,
-                              name: 'Mac OS X',
-                              icon: 'fa-apple',
-                              agentRegEx: /Mac OS X/
-                            }, {
-                              id: 7,
-                              name: 'All Platforms',
-                              icon: 'fa-circle-o',
-                            }];
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.editPageCtrl
+                         * @description convert date from milliseconds to
+                         *              standard date
+                         */
 
                         $scope.convertDate = function(utc) {
                           var d = new Date(utc);
@@ -90,16 +81,13 @@
                           return (curr_date + "-" + m_names[curr_month] + "-" + curr_year);
                         }
 
-                        $scope.expandCollapseDescription = function() {
-                          if ($scope.collapsed) {
-                            $scope.collapsed = false;
-                          } else {
-                            $scope.collapsed = true;
-                          }
-                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.editPageCtrl
+                         * @description fetch app data for appid
+                         */
 
                         $scope.fetchApp = function() {
-                          // TODO: sync with actual user
 
                           swaggerApi.apps
                                   .getApp({
@@ -129,36 +117,45 @@
                                             };
                                             for (var j = 0; j < $scope.app.artifacts.length; j++) {
                                               if ($scope.app.artifacts[j].type
-                                                      .indexOf('thumb') >= 0) {
+                                                      .indexOf('thumb') >= 0
+                                                      || $scope.app.artifacts[j].type
+                                                              .indexOf('thumbnail') >= 0) {
                                                 thumbnail.url = $scope.app.artifacts[j].url;
                                                 thumbnail.description = $scope.app.artifacts[j].description;
-                                                thumbnail.type = 'thumb';
+                                                thumbnail.type = 'thumbnail';
                                               } else if ($scope.app.artifacts[j].type
-                                                      .indexOf('image') >= 0) {
+                                                      .indexOf('image') >= 0
+                                                      || $scope.app.artifacts[j].type
+                                                              .indexOf('image/png') >= 0) {
                                                 images
                                                         .push({
                                                           url: $scope.app.artifacts[j].url,
                                                           description: $scope.app.artifacts[j].description,
-                                                          type: 'image'
+                                                          type: 'image/png'
                                                         });
                                               } else if ($scope.app.artifacts[j].type
-                                                      .indexOf('video') >= 0) {
+                                                      .indexOf('video') >= 0
+                                                      || $scope.app.artifacts[j].type
+                                                              .indexOf('video/youtube') >= 0) {
                                                 video.url = $scope.app.artifacts[j].url;
                                                 video.description = $scope.app.artifacts[j].description;
-                                                video.type = 'video';
+                                                video.type = 'video/youtube';
                                               }
                                               ;
                                             }
 
                                             $scope.size = $scope.app.size;
-
                                             $scope.thumbnail = thumbnail;
                                             $scope.images = images;
                                             $scope.video = video;
-
-                                            $scope.creator = $scope.app.creator;
                                           });
                         }
+
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.editPageCtrl
+                         * @description shows chosen platform on dropdown
+                         */
 
                         $scope.showPlatform = function() {
 
@@ -171,20 +168,77 @@
 
                         };
 
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.editPageCtrl
+                         * @description checks whether input in form is empty or
+                         *              not
+                         */
+
                         $scope.validateInput = function(data) {
-                          if (!data) { return 'Input required'; }
+                          if (!data || data == 'empty') { return 'Input required'; }
                         }
 
-                        $scope.sendAppData = function() {
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.editPageCtrl
+                         * @param {object}
+                         *          index of the object in array to be removed
+                         * @description remove image from array of images
+                         */
+                        $scope.removeImage = function($index) {
 
+                          $scope.images.splice($index, 1);
+
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.editPageCtrl
+                         * @description add more image into image fields
+                         */
+
+                        $scope.addMoreField = function() {
+                          $scope.images.push({
+                            url: '',
+                            description: '',
+                            type: ''
+                          });
+                        }
+
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.editPageCtrl
+                         * @description sends the edited app data back
+                         */
+
+                        $scope.sendAppData = function() {
+                          // push images to artifacts
                           $scope.app.artifacts = [];
                           for (var i = 0; i < $scope.images.length; i++) {
-                            $scope.app.artifacts.push($scope.images[i]);
+                            if ($scope.images[i].url) {
+                              $scope.app.artifacts.push($scope.images[i]);
+                            }
                           }
-                          $scope.platform = $scope.chosenPlatform;
+                          // check if minPlatformRequired is empty
+                          if (!$scope.app.minPlatformRequired) {
+                            $scope.app.minPlatformRequired = "not defined";
+                          }
+                          // check if sourceUrl is empty
+                          if (!$scope.app.sourceUrl) {
+                            $scope.app.sourceUrl = "not defined";
+                          }
+                          // check if license is empty
+                          if (!scope.app.license) {
+                            $scope.app.license = "not defined";
+                          }
+                          // set platform
+                          $scope.app.platform = $scope.chosenPlatform;
+                          // push video to artifacts
                           $scope.app.artifacts.push($scope.video);
+                          // push thumbnail to artifacts
                           $scope.app.artifacts.push($scope.thumbnail);
 
+                          // split tags, ignore white spaces
                           var tempTags = [];
                           $scope.app.tags = [];
                           tempTags = $scope.appTags
@@ -201,11 +255,9 @@
                           ;
 
                           $scope.app.size = parseInt($scope.size);
-
                           $scope.app.creator.dateRegistered = $scope.app.creator.dateRegistered
                                   .toString();
 
-                          // console.log($scope.app);
                           swaggerApi.apps.updateApp({
                             accessToken: 'test_token',
                             id: +$scope.appId,
@@ -213,9 +265,8 @@
                           }).then(function(response) {
                             alert('Success');
                           });
-
                         }
-
+                        // calling fetchapp function
                         $scope.fetchApp();
                       }]);
 
