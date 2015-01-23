@@ -18,8 +18,8 @@
           <div class="input-group">
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-user"></span>
-            </span> <input ng-enter="newSearch()" ng-model="searchQuery" type="text"
-                           class="form-control" id="has-title" placeholder="john doe">
+            </span> <input ng-focus="probablyNothingFound=false"  ng-enter="newSearch()" ng-model="searchQuery" type="text"
+       class="form-control" id="has-title" placeholder="john doe">
           </div>
         </div>
 
@@ -37,16 +37,7 @@
             </select>
           </div>
         </div>
-
-        <div class="form-group col-md-12 col-sm-6 col-lg-12">
-          <label for="has-email">Email contains</label>
-          <div class="input-group">
-            <span class="input-group-addon">
-              <span class="glyphicon glyphicon-envelope"></span>
-            </span> <input ng-enter="newSearch()" ng-model="email" type="text"
-                           class="form-control" id="has-email" placeholder="@foo.bar">
-          </div>
-        </div>
+       
         <div class="form-group col-md-12 col-sm-6 col-lg-12">
           <label for="sort-by">Sort by</label>
           <div class="input-group">
@@ -67,10 +58,13 @@
       </form>
     </div>
   </div>
-  <div ng-show="probablyNothingFound && apps.length<=0" class="col-xs-12 col-md-8 col-lg-9">
+  <div ng-show="probablyNothingFound && users.length<=0" class="col-xs-12 col-md-8 col-lg-9">
     <div class="text-center">
       <h1>No results found for:</h1>
-      <h3>{{searchQuery}}</h3>
+      <h3>"{{searchQuery}}"</h3>
+      <h2>Filtered by:</h2>
+      <h4>Role: {{role}}</h4>
+      
     </div>
   </div>
   <div id="search-results" class="col-xs-12 col-md-8 col-lg-9 no-padding">

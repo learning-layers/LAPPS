@@ -6,9 +6,9 @@
       </h2>
     </div>
     <div class="container">
-      <div id="general-data" class="col-md-3 col-sm-7">
+      <div id="general-data" class="col-md-3 col-sm-12">
         <div class="title">
-          <h4>General Information</h4>
+          <h3>General Information</h3>
         </div>
         <dl>
           <dt>
@@ -16,7 +16,7 @@
           </dt>
           <dd class="hspacer07">
             <a href="#" editable-select="app.platform" e-ng-options="p.name as p.name for p in platforms">
-              {{ showPlatform() }}
+              {{ displayedPlatform }}
             </a>
           </dd>
 
@@ -56,14 +56,14 @@
         </dl>
       </div>
 
-      <div class="col-md-6">
+      <div class="col-md-6 col-sm-12">
         <dl>
 
           <dt>
             <dfn><i class="fa fa-pencil"></i><span class="hspacer05"></span>Long Description</dfn>
           </dt>
           <dd class="hspacer07">
-            <span editable-textarea="app.longDescription" e-form="longDescForm" e-rows="20" e-style="width:180%" onbeforesave="validateInput($data)" e-maxlength="10000">{{ app.longDescription || 'empty' }}</span>
+            <span class="long-description" editable-textarea ="app.longDescription" e-form="longDescForm" e-rows="20" e-style="width:180%" onbeforesave="validateInput($data)" e-maxlength="10000">{{ app.longDescription || 'empty' }}</span>
           </dd>
           <dd class="hspacer07">
             <span class="vspacer1"></span>
@@ -74,9 +74,9 @@
         </dl>
       </div>
 
-      <div id="technical-data" class="col-md-3 col-sm-7">
+      <div id="technical-data" class="col-md-3 col-sm-12">
         <div class="title">
-          <h4>Technical Details</h4>
+          <h3>Technical Details</h3>
         </div>
         <dl>
 
@@ -88,10 +88,10 @@
           </dd>
 
           <dt>
-            <dfn><i class="fa fa-arrows-h"></i><span class="hspacer05"></span>Size(KB)</dfn>
+            <dfn><i class="fa fa-arrows-h"></i><span class="hspacer05"></span>Size (KB)</dfn>
           </dt>
           <dd class="hspacer07">
-            <a href="#" editable-text="size" onbeforesave="validateInput($data)" e-maxlength="10">{{ size || 'empty' }}</a>
+            <a href="#" editable-text="size" onbeforesave="validateNumericalInput($data)" e-maxlength="10">{{ size || 'empty' }}</a>
           </dd>
 
           <dt>
@@ -126,10 +126,15 @@
       <span class="vspacer1"></span>
       <span class="vspacer1"></span>
       <span class="vspacer1"></span>
-      <div id="media-data" class="col-md-12">
+      <div id="media-data" class="col-md-12 col-sm-12">
         <div class="title">
-          <h4>Media</h4>
+          <h3>Media</h3>
         </div>
+        <span class="vspacer1"></span>
+        <h4>
+          For best results use 300x300px for thumbnails and 1000x560px for large images or at least the respective aspect ratios.
+        </h4>
+        <span class="vspacer1"></span>
         <dl>
 
           <dt>
@@ -150,7 +155,7 @@
               <iframe class="editableImg" ng-src="{{video.url}}" frameborder="0 " allowfullscreen></iframe>
             </div>
             <span class="vspacer05"></span>
-            <label>Url: </label><span class="hspacer05"></span><a href="#" editable-url="video.url" e-maxlength="300">{{ video.url || 'empty' }} </a>>
+            <label>Url: </label><span class="hspacer05"></span><a href="#" editable-url="video.url" onbeforesave="validateVideoInput($data)" e-maxlength="300">{{ video.url || 'empty' }} </a>
           </dd>
           <dd class="hspacer07">
             <label>Description: </label><span class="hspacer05"></span><a href="#" editable-text="video.description" e-maxlength="300">{{ video.description || 'empty' }} </a>
@@ -162,13 +167,14 @@
 
           <dd class="hspacer07">
             <div ng-repeat="img in images track by $index">
-              <img ng-src="{{images[$index].url}}" ng-show="images[$index].url" class="editableImg img-thumbnail">
+              <img ng-src="{{images[$index].url}}" ng-show="images[$index].url" class="editable-img img-thumbnail">
               <span class="vspacer05"></span>
               <label>Url: </label><span class="hspacer05"></span><a href="#" editable-url="images[$index].url" e-required e-maxlength="300">{{ images[$index].url || 'empty' }} </a>
               <br>
               <label>Description: </label><span class="hspacer05"></span><a href="#" editable-text="img.description" e-maxlength="300">{{ img.description || 'empty' }} </a>
               <br>
-              <button id="removeImg" class="btn btn-warning" type="button" ng-click="removeImage($index)">Remove</button>
+              <span class="vspacer05"></span>
+              <button class="btn btn-danger" type="button" ng-click="removeImage($index)">Remove</button>
               <span class="vspacer1"></span>
             </div>
             <button id="addMoreField" class="btn btn-primary" type="button" ng-click="addMoreField()">Add Image</button>

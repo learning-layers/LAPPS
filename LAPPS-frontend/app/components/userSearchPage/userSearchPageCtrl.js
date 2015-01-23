@@ -56,16 +56,6 @@
                          * @field
                          * @type boolean
                          * @memberOf lapps.lappsControllers.userSearchPageCtrl
-                         * @description Results are filtered by email.
-                         */
-                        $scope.email = '';
-                        if ($routeParams.email) {
-                          $scope.email = $routeParams.email;
-                        }
-                        /**
-                         * @field
-                         * @type boolean
-                         * @memberOf lapps.lappsControllers.userSearchPageCtrl
                          * @description Results are filtered by role.
                          */
                         $scope.role = 'developer';
@@ -125,10 +115,15 @@
                          *              results. Sets currentPage to 1.
                          */
                         $scope.newSearch = function() {
+                          document.activeElement.blur();// unfocus elements,
+                                                        // important for the
+                                                        // "not found"
+                                                        // notification to be
+                                                        // static
                           $scope.currentPage = 1;
-                          $location.path('/users/' + $scope.searchQuery);
+                          $location.search('query', $scope.searchQuery);
                           $location.search('page', 1);
-                          $location.search('email', $scope.email);
+
                           $location.search('role', $scope.role.toLowerCase());
                           $location.search('sortBy', $scope.sortBy
                                   .toLowerCase());
@@ -147,7 +142,7 @@
                         $scope.search = function() {
                           // swaggerApi.users.getAllUsers({'accessToken':user.token}).then(function(data2){
                           var apiParams = {
-                            // search: '',
+                            search: $scope.searchQuery,
                             page: $scope.currentPage,
                             pageLength: 10,
                             accessToken: user.token
@@ -190,6 +185,9 @@
                                   .then(
                                           function(response) {
                                             $scope.users = response.data;
+                                            $scope.maxPage = +response
+                                                    .headers('numberOfPages');
+
                                             for (var i = 0; i < $scope.users.length; i++) {
                                               $scope.users[i].roleName = user
                                                       .roleIdToRoleName($scope.users[i].role);
@@ -205,7 +203,11 @@
                                                       + 60
                                                       + '&d=identicon';
                                             }
-                                          })
+                                          });
+                          $timeout(
+                                  function() {
+                                    $scope.probablyNothingFound = $scope.users.length <= 0;
+                                  }, 500);
                         }
                         /**
                          * @function
@@ -222,9 +224,5 @@
 
                         $scope.search();
 
-                        $timeout(
-                                function() {
-                                  $scope.probablyNothingFound = $scope.users.length <= 0;
-                                }, 500)
                       }]);
 }).call(this);

@@ -720,12 +720,13 @@ h1, h2, h3, h4, h5 {
     max-height: 200px;
     white-space: pre-wrap;
   }
+
 @media (min-width: 768px) {
   #featured-carousel {
-    min-height:500px;
+    min-height: 450px;
   }
 }
- 
+
 @media (max-width: 991px) {
   .row.carousel-row {
     padding-right: 0;
@@ -1303,8 +1304,6 @@ dd {
   margin-left: 25px;
 }
 
-.editableImg {
-}
 
 #longDescriptionMarkdown {
   overflow: hidden;
@@ -1321,8 +1320,20 @@ dd {
   margin-bottom: 3px;
 }
 
-#appEdit #saveEdit {
-  width: 200px;
+#appEdit .long-description {
+  white-space:pre-wrap;
+}
+#appEdit .editable-buttons button{
+  min-width: 0 !important;
+}
+
+#appEdit .editable-error {
+  position: absolute;
+  margin-top: 31px;
+}
+
+#appEdit button{
+  min-width:200px;
 }
 /*edit page end*/
 

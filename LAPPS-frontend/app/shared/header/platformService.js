@@ -181,7 +181,7 @@
                                 .getPlatformById(window.localStorage['platform']);
                         // nothing found/error
 
-                        if (p < 0) {
+                        if (p == null) {
                           this.currentPlatform = this.detectPlatform();
                           window.localStorage['platform'] = this.currentPlatform.id;
                         } else {

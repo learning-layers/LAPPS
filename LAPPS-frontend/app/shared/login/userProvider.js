@@ -57,7 +57,9 @@
                              * @description Data about the user retrived from
                              *              the oidc provider.
                              */
-                            data: null,
+                            data: {
+                              oidcId: 0
+                            },
 
                             /**
                              * @field

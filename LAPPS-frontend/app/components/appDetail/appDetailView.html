@@ -136,10 +136,10 @@
   </div>
 </div>
 
-<div class="row" id="comments">
+<div class="row" id="comments" ng-hide="!app.name">
   <div class="col-md-12">
     <h1>Comments</h1>
-    <div class="col-md-12 thumbnail">
+    <div class="col-md-12 thumbnail" ng-show="mayComment()">
       <div class="title">
         <h3>Rate the App</h3>
       </div>

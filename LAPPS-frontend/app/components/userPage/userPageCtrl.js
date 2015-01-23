@@ -123,7 +123,13 @@
 
                           modalInstance.result.then(function(isOk) {
                             if (isOk) {
-                              // TODO: api calls
+                              swaggerApi.users.grantDeveloperRights({
+                                accessToken: user.token,
+                                id: $scope.userId
+                              }).then(function(response) {
+
+                                $scope.fetchUser(); // update user data on page
+                              });
                             }
                           }, function() {
                           });
@@ -144,7 +150,7 @@
 
                           modalInstance.result.then(function(isOk) {
                             if (isOk) {
-                              swaggerApi.users.deleteApp({
+                              swaggerApi.users.deleteUser({
                                 accessToken: user.token,
                                 id: $scope.userId
                               }).then($location.path("/apps"));
@@ -160,17 +166,20 @@
                          *              properties changed by the user).
                          */
                         $scope.updateUser = function() {
-                          // TODO: test this
+
                           swaggerApi.users.updateUser({
                             accessToken: user.token,
                             oidcId: +$scope.userId,
                             body: {
-                              description: $scope.user.description,
-                              website: $scope.user.website
+                              "oidcId": 0,
+                              "email": "",
+                              "username": "",
+                              "role": 0,
+                              "dateRegistered": "",
+                              "description": $scope.user.description,
+                              "website": $scope.user.website
                             }
-                          }
-
-                          )
+                          })
                         }
                         /**
                          * @function
