@@ -53,7 +53,8 @@
   match = regex4.exec(libSource);
   if (match != null) {
 
-    libSource = libSource.replace("response.data", "response");
+    libSource = libSource.replace("response.data",
+            "response;  },  function (response) {    return response");
 
     changed = true;
   }

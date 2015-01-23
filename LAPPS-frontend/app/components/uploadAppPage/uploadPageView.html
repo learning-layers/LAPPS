@@ -1,136 +1,144 @@
-  
-      <form id="uploadForm" role= "form" name="uploadForm" ng-submit="createNewApp();" novalidate>
-      <div class="row">
-        <div class="thumbnail col-md-12">
-          <div class="title">
-            <h2>General Information</h2>
-          </div>
-          <div class="caption">
-            <div class="form-group" validate-input>
-              <b><i class="fa fa-plus"></i><span class="hspacer06"></span>Name</b>
-              <input type="text" class="form-control" name="appname" maxlength="100" ng-model="newapp.name" data-toggle="tooltip" title="Name of the application!" tooltip required>
-              <p class="help-block" ng-show="uploadForm.appname.$error.required">The App's name is required.</p>
-            </div>
-            <div class="form-group" validate-input>
-              <b><i class="fa fa-puzzle-piece"></i><span class="hspacer05"></span>Platform</b>
-              <select class="form-control btn btn-default dropdown-toggle dropdownWidth" name="platform-name" data-toggle="dropdown" ng-model="newapp.platform" required>
-                <option ng-repeat="platform in platforms" value="{{platform.name}}">
-                  {{platform.name}}
-                </option>
-              </select>
-              <p class="help-block" ng-show="uploadForm.platform-name.$error.required">The App's platform is required.</p>
-            </div>
-            <div class="form-group" validate-input>
-              <b><i class="fa fa-cogs"></i><span class="hspacer05"></span>Supported Platform Version</b>
-              <input type="text" class="form-control" ng-model="newapp.minPlatformRequired" maxlength="100" name="minPlatformRequired" data-toggle="tooltip" title="Minimum version of the platform on which app will be supported." tooltip required>
-              <p class="help-block" ng-show="uploadForm.minPlatformRequired.$error.required">Minimum supported platform version required.</p>
-            </div>
-            <div class="form-group" validate-input ng-class="{ 'has-error': uploadForm.downloadUrl.$invalid && uploadForm.downloadUrl.$dirty }">
-              <b><i class="fa fa-download"></i><span class="hspacer05"></span>Download URL</b>
-              <input type="url" class="form-control" ng-model="newapp.downloadUrl" name="downloadUrl" maxlength="300" data-toggle="tooltip" title="Url to the download page on corresponding app store" tooltip required>
-              <p class="help-block" ng-show="uploadForm.downloadUrl.$error.required">Download URL is required.</p>
-              <p class="help-block" ng-show="uploadForm.downloadUrl.$error.url">Invalid URL.</p>
-            </div>
-            <div class="form-group" validate-input>
-              <b><i class="fa fa-pencil"></i><span class="hspacer05"></span>Short Description</b>
-              <input type="text" class="form-control" ng-model="newapp.shortDescription" name="shortDescription" maxlength="200" data-toggle="tooltip" title="Short description about the app." tooltip required>
-              <p class="help-block" ng-show="uploadForm.shortDescription.$error.required">Short description is required.</p>
-            </div>
-            <div class="form-group">
-              <b><i class="fa fa-pencil"></i><span class="hspacer05"></span>Long Description</b>
-              <textarea class="form-control custom-control long-description" rows="10" nd-model="newapp.longDescription" name="longDesc" data-toggle="tooltip" title="Markdown is supported for Long Description" maxlength="10000" tooltip required></textarea>
-              <p class="help-block" ng-show="uploadForm.longDescription.$error.required">Long description is required.</p>
-            </div>
-            <div class="form-group" validate-input>
-              <b><i class="fa fa-tags"></i><span class="hspacer05"></span>Tags</b>
-              <input type="text" class="form-control" ng-model="tags.value" name="tags" maxlength="300" ng-pattern="/^[a-zA-Z ,]*$/" data-toggle="tooltip" title="Tags should be separated by comma. i.e tag1, tag2 etc" tooltip required>
-              <p class="help-block" ng-show="uploadForm.tags.$error.required">Tags are required.</p>
-              <p class="help-block" ng-messages="uploadForm.tags.$error.pattern">Only a-z , allowed.</p>
-            </div>
-          </div>
+<form id="uploadForm" role="form" name="uploadForm" ng-submit="createNewApp();" novalidate>
+  <div class="row">
+    <div class="col-lg-6 col-md-12">
+      <div class="thumbnail">
+        <div class="title">
+          <h2>General Information</h2>
         </div>
-        <div class="thumbnail col-md-12">
-          <div class="title">
-            <h2>Technical Details</h2>
+        <div class="caption">
+          <div class="form-group" validate-input>
+            <b><i class="fa fa-plus"></i><span class="hspacer06"></span>Name</b>
+            <input type="text" class="form-control" name="appname" maxlength="100" ng-model="newapp.name" data-toggle="tooltip" placeholder="My App" title="The name of your application." tooltip required>
+            <p class="help-block" ng-show="uploadForm.appname.$error.required">The App's name is required.</p>
           </div>
-          <div class="caption">
-            <div class="form-group" validate-input>
-              <b><i class="fa fa-level-up"></i><span class="hspacer05"></span>Version</b>
-              <input type="text" class="form-control" ng-model="newapp.version" name="version" maxlength="10" data-toggle="tooltip" title="Current version of the app." tooltip required>
-              <p class="help-block" ng-show="uploadForm.version.$error.required">Versions are required.</p>
-            </div>
-            <div class="form-group" validate-input>
-              <b><i class="fa fa-arrows-h"></i><span class="hspacer05"></span>Size</b>
-              <input type="text" class="form-control" ng-model="newapp.size" ng-pattern = "/^\d+$/" name="size" maxlength="10" data-toggle="tooltip" title="Size of the app in KB. Only integer should be entered" tooltip required>
-              <p class="help-block" ng-show="uploadForm.size.$error.required">Size of app in KB is required.</p>
-              <p class="help-block" ng-messages="uploadForm.size.$error.pattern">Please enter only integer.</p>
-            </div>
-            <div class="form-group" ng-class="{ 'has-error': uploadForm.sourceUrl.$invalid && uploadForm.sourceUrl.$dirty }">
-              <b><i class="fa fa-code-fork"></i><span class="hspacer05"></span>Source Code</b>
-              <input type="url" class="form-control" ng-model="newapp.sourceUrl" name="sourceUrl" maxlength="300" data-toggle="tooltip" title="Url of the repository on source code management system" tooltip>
-              <p class="help-block" ng-show="uploadForm.sourceUrl.$error.url">Invalid URL!</p>
-            </div>
-            <div class="form-group" validate-input ng-class="{ 'has-error': uploadForm.supportUrl.$invalid && uploadForm.supportUrl.$dirty }">
-              <b><i class="fa fa-life-ring"></i><span class="hspacer05"></span>Support page</b>
-              <input type="url" class="form-control" ng-model="newapp.supportUrl" name="supportUrl" maxlength="300" data-toggle="tooltip" title="Support page of the app." tooltip required>
-              <p class="help-block" ng-show="uploadForm.supportUrl.$error.required">Support Page information is required</p>
-              <p class="help-block" ng-show="uploadForm.supportUrl.$error.url">Invalid URL!</p>
-            </div>
-            <div class="form-group " validate-input>
-              <b><i class="fa fa-copyright"></i><span class="hspacer05"></span>License</b>
-              <input type="text" class="form-control" ng-model="newapp.license" name="license" maxlength="30" required>
-              <p class="help-block" ng-show="uploadForm.license.$error.required">License information is required</p>
-            </div>
-            <!--<div class="form-group">
-          <b><i class="fa fa-calendar"></i><span class="hspacer05"></span>Last update</b>
-          <input type="date" class="form-control" ng-model="dateModified" name="dateModified">
-          <p class="help-block" ng-show="uploadForm.dateModified.$error.required">Please choose valid date</p>
-        </div>-->
+          <div class="form-group" validate-input>
+            <b><i class="fa fa-puzzle-piece"></i><span class="hspacer05"></span>Platform</b>
+            <select class="form-control btn btn-default dropdown-toggle dropdownWidth" name="platform-name" data-toggle="dropdown" title="The platform your app runs on." tooltip ng-model="newapp.platform" required>
+              <option ng-repeat="platform in platforms" value="{{platform.name}}">
+                {{platform.name}}
+              </option>
+            </select>
+            <p class="help-block" ng-show="uploadForm.platform-name.$error.required">The App's platform is required.</p>
           </div>
-        </div>
-        <div class="thumbnail col-md-12">
-          <div class="title">
-            <h2>Media</h2>
+          <div class="form-group" validate-input>
+            <b><i class="fa fa-cogs"></i><span class="hspacer05"></span>Supported Platform Version</b>
+            <input type="text" class="form-control" ng-model="newapp.minPlatformRequired" maxlength="100" name="minPlatformRequired" data-toggle="tooltip" placeholder="> 10.2" title="Minimum version of the platform on which the app will be supported. You can write a string here." tooltip required>
+            <p class="help-block" ng-show="uploadForm.minPlatformRequired.$error.required">Minimum supported platform version required.</p>
           </div>
-          <div class="caption">
-            <div class="form-group" ng-class="{ 'has-error': uploadForm.video.$invalid && uploadForm.video.$dirty }">
-              <b><i class="fa fa-file-video-o"></i><span class="hspacer05"></span>Video URL</b>
-              <input class="form-control" type="url" ng-model="video.url" name="video" maxlength="300" data-toggle="tooltip" title="Url of app related video on Youtube." tooltip>
-              <span class="help-block" ng-show="uploadForm.video.$error.url">Invalid URL!</span>
+          <div class="form-group" validate-input ng-class="{ 'has-error': uploadForm.downloadUrl.$invalid && uploadForm.downloadUrl.$dirty }">
+            <b><i class="fa fa-download"></i><span class="hspacer05"></span>Download URL</b>
+            <input type="url" class="form-control" ng-model="newapp.downloadUrl" name="downloadUrl" maxlength="300" data-toggle="tooltip" placeholder="http://www.download.foobar" title="When the user clicks on the download button, he/she will be redirected to the URL you provide here." tooltip required>
+            <p class="help-block" ng-show="uploadForm.downloadUrl.$error.required">Download URL is required.</p>
+            <p class="help-block" ng-show="uploadForm.downloadUrl.$error.url">Invalid URL.</p>
+          </div>
+          <div class="form-group" validate-input>
+            <b><i class="fa fa-pencil"></i><span class="hspacer05"></span>Short Description</b>
+            <input type="text" class="form-control" ng-model="newapp.shortDescription" name="shortDescription" maxlength="200" data-toggle="tooltip" placeholder="This app can do this and that." title="Please write a short (1-2 sentences) description of your app. This description will be directly shown on the front page and in search results." tooltip required>
+            <p class="help-block" ng-show="uploadForm.shortDescription.$error.required">Short description is required.</p>
+          </div>
+          <div class="form-group">
+            <b><i class="fa fa-pencil"></i><span class="hspacer05"></span>Long Description</b>
+            <textarea type="text" class="form-control custom-control long-description" rows="21" ng-model="newapp.longDescription" name="longDescription" data-toggle="tooltip" placeholder="Features: fast, pretty, modern, ..." title="Write a long description of your app here. You can list available features in detail and give instructions on installation or additional requirements. Markdown formatting is supported." maxlength="10000" tooltip required></textarea>
+            <p class="help-block" ng-show="uploadForm.longDescription.$error.required">Long description is required.</p>
+          </div>
+          <div class="form-group" validate-input>
+            <b><i class="fa fa-tags"></i><span class="hspacer05"></span>Tags</b>
+            <input type="text" class="form-control" ng-model="tags.value" name="tags" maxlength="300" ng-pattern="/^[a-zA-Z ,]*$/" data-toggle="tooltip" placeholder="tagA, tagB" title="Give your app meaningful tags. Tags should be separated by comma, i.e tagA, tagB etc." tooltip required>
+            <p class="help-block" ng-show="uploadForm.tags.$error.required">Tags are required.</p>
+            <p class="help-block" ng-messages="uploadForm.tags.$error.pattern">Only a-z , allowed.</p>
+          </div>
 
-              <span class="vspacer05">Video Description</span><input type="text" class="form-control" ng-model="video.description" maxlength="100" data-toggle="tooltip" title="Description that will be displayed below the Video in Carousel." tooltip>
-            </div>
-            <div class="form-group" validate-input>
-              <b><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Thumbnail URL</b>
-              <img ng-src="{{thumbnail.url}}" ng-show = "thumbnail.url" class="img-thumbnail">
-              <input type="text" class="form-control" ng-model="thumbnail.url" name="thumbnail" data-toggle="tooltip" title="Thumbnail for the app." tooltip required>
-              <span class="help-block" ng-show="uploadForm.thumbnail.$error.required">Thumbnail is required</span>
-            </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-12">
+      <div class="thumbnail">
+        <div class="title">
+          <h2>Technical Details</h2>
+        </div>
+        <div class="caption">
+          <div class="form-group" validate-input>
+            <b><i class="fa fa-level-up"></i><span class="hspacer05"></span>Version</b>
+            <input type="text" class="form-control" ng-model="newapp.version" name="version" maxlength="10" data-toggle="tooltip" placeholder="1.0.2" title="Current version number of the app." tooltip required>
+            <p class="help-block" ng-show="uploadForm.version.$error.required">Versions are required.</p>
+          </div>
+          <div class="form-group" validate-input>
+            <b><i class="fa fa-arrows-h"></i><span class="hspacer05"></span>Size</b>
+            <input type="text" class="form-control" ng-model="newapp.size" ng-pattern="/^\d+$/" name="size" maxlength="10" data-toggle="tooltip" title="Size of the app in KB. Only integer values can be entered." tooltip required>
+            <p class="help-block" ng-show="uploadForm.size.$error.required">Size of app in KB is required.</p>
+            <p class="help-block" ng-messages="uploadForm.size.$error.pattern">Please enter only integer.</p>
+          </div>
+          <div class="form-group" ng-class="{ 'has-error': uploadForm.sourceUrl.$invalid && uploadForm.sourceUrl.$dirty }">
+            <b><i class="fa fa-code-fork"></i><span class="hspacer05"></span>Source Code</b>
+            <input type="url" class="form-control" ng-model="newapp.sourceUrl" name="sourceUrl" maxlength="300" data-toggle="tooltip" placeholder="http://www.sourcecode.foobar" title="You can provide a link to the source code of your app, if available." tooltip>
+            <p class="help-block" ng-show="uploadForm.sourceUrl.$error.url">Invalid URL!</p>
+          </div>
+          <div class="form-group" validate-input ng-class="{ 'has-error': uploadForm.supportUrl.$invalid && uploadForm.supportUrl.$dirty }">
+            <b><i class="fa fa-life-ring"></i><span class="hspacer05"></span>Support Page</b>
+            <input type="url" class="form-control" ng-model="newapp.supportUrl" name="supportUrl" maxlength="300" data-toggle="tooltip" placeholder="http://www.support.foobar" title="You should provide a link to the support page of your app." tooltip required>
+            <p class="help-block" ng-show="uploadForm.supportUrl.$error.required">Support Page information is required.</p>
+            <p class="help-block" ng-show="uploadForm.supportUrl.$error.url">Invalid URL!</p>
+          </div>
+          <div class="form-group " validate-input>
+            <b><i class="fa fa-copyright"></i><span class="hspacer05"></span>License</b>
+            <input type="text" class="form-control" ng-model="newapp.license" name="license" maxlength="30" data-toggle="tooltip" placeholder="The MIT License (MIT)" title="You should mention your license." tooltip required>
+            <p class="help-block" ng-show="uploadForm.license.$error.required">License information is required.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-12">
+      <div class="thumbnail ">
+        <div class="title">
+          <h2>Media</h2>
+        </div>
+        <div class="caption">
+
+          <div class="form-group" ng-class="{ 'has-error': uploadForm.thumbnail.$invalid && uploadForm.thumbnail.$dirty }" validate-input>
+            <b>
+              <i class=" fa fa-file-image-o">
+              </i><span class="hspacer05"></span>Thumbnail URL
+            </b>
+            <img ng-src="{{thumbnail.url}}" ng-show="thumbnail.url" class="img-thumbnail">
+            <span class="vspacer05"></span>
+            <input type="url" class="form-control" ng-model="thumbnail.url" name="thumbnail" data-toggle="tooltip" placeholder="http://www.image.foobar" title="Thumbnail URL for the app. This image will be shown on the front page and in the search results. It should be 300x300px." tooltip required>
+            <span class="help-block" ng-show="uploadForm.thumbnail.$error.required">Thumbnail is required</span>
+            <span class="help-block" ng-show="uploadForm.thumbnail.$error.url">Invalid Url!</span>
+          </div>
+
+          <div class="form-group" ng-class="{ 'has-error': (uploadForm.video.$invalid && uploadForm.video.$dirty)||video.url.indexOf('www.youtube.com/embed/')<0 }">
+            <b><i class="fa icon-youtube4"></i><span class="hspacer05"></span>Video URL</b>
+            <input class="form-control" type="url" ng-model="video.url" name="video" maxlength="300" data-toggle="tooltip" placeholder="http://www.youtube.com/embed/" title="You can provide a Youtube embedded-URL. This video can demonstrate your app." tooltip>
+            <span class="help-block" ng-show="uploadForm.video.$error.url">Invalid URL!</span>
+
+
+          </div>
+
+          <span class="vspacer05">Video Description</span><input type="text" class="form-control" ng-model="video.description" maxlength="100" data-toggle="tooltip" placeholder="Demonstration of all features." title="Describe the content of the video in a short sentence." tooltip>
+          <span class="vspacer05">
             <b><i class="fa fa-file-image-o"></i><span class="hspacer05"></span>Images</b>
-            
+
             <div id="newImgField" ng-repeat="newField in newFields track by $index">
               <span class="vspacer05"></span>
               <ng-form name="urlForm">
                 <div class="form-group" ng-class="{ 'has-error': urlForm.imgUrl.$invalid && urlForm.imgUrl.$dirty }">
                   <img ng-src="{{images[$index].url}}" ng-show="images[$index].url" class="editableImg img-thumbnail">
-                  <span class="vspacer05">Url</span><input type="url" class="form-control" name="imgUrl" ng-model="images[$index].url" maxlength="300" data-toggle="tooltip" title="Url of the Image of Carousel." tooltip>
+                  <span class="vspacer05">Url</span><input type="url" class="form-control" name="imgUrl" ng-model="images[$index].url" maxlength="300" data-toggle="tooltip" placeholder="http://www.image.foobar" title="Image URL for the app. This image will be shown in the detailed view of the app. It should be 1000x560px." tooltip>
                   <span class="help-block" ng-show="urlForm.imgUrl.$error.url">Invalid Url!</span>
                 </div>
               </ng-form>
 
-              <span class="vspacer05">Description</span><input type="text" class="form-control" ng-model="images[$index].description" maxlength="100" data-toggle="tooltip" title="Description that will be displayed below the Image in Carousel." tooltip>
+              <span class="vspacer05">Description</span><input type="text" class="form-control" ng-model="images[$index].description" maxlength="100" data-toggle="tooltip" placeholder="Main menu of the app." title="Describe what is shown in the image." tooltip>
               <span class="vspacer1"></span>
-              <button type="button" id="{{newField.id}}" class="btn btn-primary" name="{{newField.buttonName}}" ng-click="addAnotherField($event)">{{newField.buttonTitle}}</button>
+              <button type="button" data-id="{{newField.id}}" class="btn btn-primary" name="{{newField.buttonName}}" ng-click="addAnotherField($event)">{{newField.buttonTitle}}</button>
             </div>
-            
-          </div>
-          
         </div>
-        <br>
-        <div class="form-group text-center">
-          <input type="submit" id="createApp" class="btn btn-success btn-lg" value="Submit" />
-        </div>
-            
+      </div>
+    </div>
   </div>
-      </form>
-
+  <div class="row">
+    <div class="form-group text-center">
+      <input type="submit" id="createApp" class="btn btn-success btn-lg" value="Submit" />
+    </div>
+  </div>
+</form>

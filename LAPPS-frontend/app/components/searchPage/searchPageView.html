@@ -21,8 +21,8 @@
           <div class="input-group">
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-font"></span>
-            </span> <input ng-enter="newSearch()" ng-model="searchQuery" type="text"
-                           class="form-control" id="has-title" placeholder="app name" ">
+            </span> <input ng-focus="probablyNothingFound=false"  ng-enter="newSearch()" ng-model="searchQuery" type="text"
+       class="form-control" id="has-title" placeholder="app name" ">
           </div>
         </div>
         <!--<div class="form-group col-md-12 col-sm-6 col-lg-12">
@@ -40,8 +40,8 @@
           <div class="input-group">
             <span class="input-group-addon">
               <span class="glyphicon glyphicon-user"></span>
-            </span> <input ng-enter="newSearch()" type="text" ng-model="searchUser"
-                           class="form-control" id="has-author" placeholder="john doe">
+            </span> <input ng-focus="probablyNothingFound=false" ng-enter="newSearch()" type="text" ng-model="searchUser"
+       class="form-control" id="has-author" placeholder="john doe">
           </div>
         </div>
         <div class="form-group col-md-12 col-sm-6 col-lg-12">
@@ -71,7 +71,12 @@
   <div ng-show="probablyNothingFound && apps.length<=0" class="col-xs-12 col-md-8 col-lg-9">
     <div class="text-center">
       <h1>No results found for:</h1>
-      <h3>{{searchQuery}}</h3>
+      <h3>"{{searchQuery}}"</h3>
+      <h2>Filtered by:</h2>
+      
+      <h4 ng-show="searchUser.trim().length>0">User: "{{searchUser}}"</h4>
+        <h4>Platform: {{platform.currentPlatform.name}}</h4>
+      
     </div>
   </div>
     <div id="search-results" class="col-xs-12 col-md-8 col-lg-9 no-padding">

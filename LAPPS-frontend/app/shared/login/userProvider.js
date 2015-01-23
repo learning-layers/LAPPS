@@ -57,7 +57,9 @@
                              * @description Data about the user retrived from
                              *              the oidc provider.
                              */
-                            data: null,
+                            data: {
+                              oidcId: 0
+                            },
 
                             /**
                              * @field
@@ -85,7 +87,7 @@
                              *              Needed for some restricted backend
                              *              requests.
                              */
-                            token: '',
+                            token: 'test_token',
                             /**
                              * @function
                              * @memberOf lapps.lappsServices.user

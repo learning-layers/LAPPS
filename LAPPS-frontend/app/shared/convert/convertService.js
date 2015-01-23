@@ -92,11 +92,12 @@
               var wwwPos = urlCopy.indexOf('www.');
               if (wwwPos >= 0) {
                 urlCopy = urlCopy.substring(wwwPos + 4);
+                var slashPos = urlCopy.indexOf('/');
+                if (slashPos >= 0) {
+                  urlCopy = urlCopy.substring(0, slashPos);
+                }
               }
-              var slashPos = urlCopy.indexOf('/');
-              if (slashPos >= 0) {
-                urlCopy = urlCopy.substring(0, slashPos);
-              }
+
               return urlCopy;
             }
           });

@@ -28,6 +28,15 @@
                          *              for use in bindings
                          */
                         $scope.Math = window.Math;
+
+                        /**
+                         * @field
+                         * @type object
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @description Makes the platform object available in
+                         *              the HTML template.
+                         */
+                        $scope.platform = platform;
                         /**
                          * @field
                          * @type string
@@ -119,7 +128,7 @@
                          * @memberOf lapps.lappsControllers.searchPageCtrl
                          * @param {object}
                          *          usr user
-                         * @description Shows only app results of user ust
+                         * @description Shows only app results of user usr.
                          */
                         $scope.listAppsByUser = function(usr) {
                           $scope.searchUser = usr;
@@ -134,6 +143,11 @@
                          *              results. Sets currentPage to 1.
                          */
                         $scope.newSearch = function() {
+                          document.activeElement.blur();// unfocus elements,
+                                                        // important for the
+                                                        // "not found"
+                                                        // notification to be
+                                                        // static
                           $scope.currentPage = 1;
                           $location.path('/search/' + $scope.searchQuery);
                           $location.search('page', 1);
@@ -227,6 +241,10 @@
                                                       .date($scope.apps[i].dateModified);
                                             }
                                           });
+                          $timeout(
+                                  function() {
+                                    $scope.probablyNothingFound = $scope.apps.length <= 0;
+                                  }, 500);
                         }
 
                         /**
@@ -250,9 +268,6 @@
                           $scope.search();
                         }
                         $scope.search();
-                        $timeout(
-                                function() {
-                                  $scope.probablyNothingFound = $scope.apps.length <= 0;
-                                }, 500)
+
                       }]);
 }).call(this);

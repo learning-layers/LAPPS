@@ -13,7 +13,9 @@
                       '$scope',
                       'user',
                       '$modal',
-                      function($scope, user, $modal) {
+                      '$location',
+                      'swaggerApi',
+                      function($scope, user, $modal, $location, swaggerApi) {
                         /**
                          * @field
                          * @type string
@@ -33,19 +35,44 @@
                          *              an email to the administrator.
                          */
                         $scope.submit = function() {
-
-                          // TODO actual API call
                           if ($scope.applicationMessage.trim().length > 0) {
-                            alert($scope.applicationMessage);
-                            var modalInstance = $modal
-                                    .open({
-                                      templateUrl: 'components/applyAsDevPage/submitConfirmView.html',
-                                      controller: 'submitConfirmCtrl',
-                                      size: 'xs',
 
-                                    });
+                            swaggerApi.users
+                                    .apply({
+                                      accessToken: user.token,
+                                      oidcId: user.data.oidcId,
+                                      body: $scope.applicationMessage
+                                    })
+                                    .then(
+                                            function(response) {
 
+                                              if (response.status == 200) {
+                                                var modalInstance = $modal
+                                                        .open({
+                                                          templateUrl: 'components/applyAsDevPage/submitConfirmView.html',
+                                                          controller: 'submitConfirmCtrl',
+                                                          size: 'xs',
+                                                        });
+                                                modalInstance.result
+                                                        .then(
+                                                                function(isOk) {
+                                                                  $location
+                                                                          .path('/apps');
+                                                                }, function() {
+                                                                });
+
+                                              } else {
+                                                var modalInstance = $modal
+                                                        .open({
+                                                          templateUrl: 'components/applyAsDevPage/errorNotificationView.html',
+                                                          controller: 'submitConfirmCtrl',
+                                                          size: 'xs',
+                                                        });
+                                              }
+
+                                            });
                           }
+
                         }
                       }]);
 }).call(this);

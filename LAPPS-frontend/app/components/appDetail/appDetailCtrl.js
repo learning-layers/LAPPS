@@ -22,9 +22,10 @@
                       '$modal',
                       'user',
                       'md5',
+                      '$sce',
                       function($scope, $routeParams, swaggerApi, platform,
                               $document, convert, $timeout, $location, $modal,
-                              user, md5) {
+                              user, md5, $sce) {
                         /**
                          * @field
                          * @type object
@@ -131,6 +132,16 @@
                         /**
                          * @function
                          * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @type boolean
+                         * @description True if the visitor is logged in
+                         */
+                        $scope.mayComment = function() {
+                          return user.signedIn;
+                        }
+
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
                          * @description Opens a modal confirmation dialog and
                          *              deletes the current app.
                          */
@@ -147,7 +158,7 @@
                               swaggerApi.apps.deleteApp({
                                 accessToken: user.token,
                                 id: $scope.app.id
-                              }).then($location.path("/apps"));
+                              }).then($location.path('/apps'));
                             }
                           }, function() {
                           });
@@ -171,6 +182,7 @@
                          * @description Keeps track of the current slide index.
                          */
                         $scope.onSlideChanged = function(nextSlide, direction) {
+                          $scope.stopVideo();
                           if (direction == 'next') {
                             $scope.currentSlide = ($scope.currentSlide + 1)
                                     % ($scope.app.images.length + $scope.app.videos.length);
@@ -191,13 +203,30 @@
                           $scope.interval = -1;
                         }
 
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Stops currently playing video
+                         */
+                        $scope.stopVideo = function() {
+
+                          var iframe = document.getElementsByTagName("iframe")[0];
+                          if (iframe) {
+                            iframe = iframe.contentWindow;
+                          }
+                          if (iframe) {
+
+                            iframe.postMessage('{"event":"command","func":"'
+                                    + 'pauseVideo' + '","args":""}', '*');
+                          }
+                        }
                         var entityMap = {
-                          "&": "&amp;",
-                          "<": "&lt;",
-                          ">": "&gt;",
+                          '&': '&amp;',
+                          '<': '&lt;',
+                          '>': '&gt;',
                           '"': '&quot;',
                           "'": '&#39;',
-                          "/": '&#x2F;'
+                          '/': '&#x2F;'
                         };
 
                         function escapeHtml(string) {
@@ -244,10 +273,24 @@
                                                     .indexOf('video') >= 0) {
                                               videos
                                                       .push({
-                                                        url: $scope.app.artifacts[j].url,
+                                                        url: $scope.app.artifacts[j].url
+                                                                + ($scope.app.artifacts[j].url
+                                                                        .indexOf('?') > 0
+                                                                        ? '&'
+                                                                        : '?')
+                                                                + 'enablejsapi=1',
                                                         description: $scope.app.artifacts[j].description
                                                       });
                                             }
+                                          }
+
+                                          if (images.length <= 0) { // to
+                                                                    // display
+                                                                    // placeholder
+                                                                    // image if
+                                                                    // no images
+                                                                    // available
+                                            images.push(null);
                                           }
 
                                           $scope.app.thumbnail = thumbnail;
@@ -267,7 +310,13 @@
                                                   .date($scope.app.dateCreated);
                                           $scope.dateModified = convert
                                                   .date($scope.app.dateModified);
+
                                         });
+
+                        $timeout(function() {
+                          $scope.requestTimedOut = true
+                        }, 500);
+
                         swaggerApi.apps.getAllPlatformsForApp({
                           appId: +$scope.appId
                         }).then(function(response) {
@@ -289,13 +338,34 @@
                             $scope.alternativePlatforms.sort(comparePlaftorms);
                           }
                         });
-
+                        /**
+                         * @field
+                         * @type number
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Stores the current rating the user wants
+                         *              to give an app.
+                         */
+                        $scope.currentRating = 3;
+                        /**
+                         * @field
+                         * @type string
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Stores the current comment text the user
+                         *              wants to give an app.
+                         */
+                        $scope.currentComment = '';
+                        /**
+                         * @field
+                         * @type comment[]
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Stores the currently displayed comments.
+                         */
                         $scope.comments = [];
                         /**
                          * @field
                          * @type number
                          * @memberOf lapps.lappsControllers.appDetailCtrl
-                         * @description Stores the current page of comments
+                         * @description Stores the current page of comments.
                          */
                         $scope.currentPage = 1;
                         if ($routeParams.page) {
@@ -306,15 +376,15 @@
                          * @type number
                          * @memberOf lapps.lappsControllers.appDetailCtrl
                          * @description Stores the amount of pages for the
-                         *              comments
+                         *              comments.
                          */
-                        $scope.maxPage = 10;
+                        $scope.maxPage = 5;
                         /**
                          * @field
                          * @type number
                          * @memberOf lapps.lappsControllers.appDetailCtrl
                          * @description Max amount of pages to display in the
-                         *              page selector
+                         *              page selector.
                          */
                         $scope.maxDisplayPage = 6;
 
@@ -328,7 +398,7 @@
 
                           $scope.currentPage = +pageNumber;
                           $location.search('page', pageNumber);
-                          // TODO: api call
+                          $scope.getComments();
                         }
 
                         $scope.submitComment = function() {
@@ -340,7 +410,10 @@
                                     size: 'xs',
                                   });
                         }
+
                         $scope.getComments = function() {
+                          $scope.comments = [];
+                          // TODO: implement api call
                           for (i = 0; i < 15; i++) {
                             var comment = {
                               user: {
@@ -355,7 +428,8 @@
                               dateModifiedConverted: convert
                                       .dateTime(1420888336000),
                               rating: 3,
-                              content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse hendrerit turpis eu tellus vulputate iaculis. Donec non diam iaculis, eleifend justo eget, vulputate lacus. Mauris nec eros ac lectus ultrices ultrices eu ultricies purus. Suspendisse sodales efficitur purus, quis iaculis erat imperdiet id. Vivamus nisi mauris, eleifend feugiat egestas ac.'
+                              content: $scope.currentPage
+                                      + 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse hendrerit turpis eu tellus vulputate iaculis. Donec non diam iaculis, eleifend justo eget, vulputate lacus. Mauris nec eros ac lectus ultrices ultrices eu ultricies purus. Suspendisse sodales efficitur purus, quis iaculis erat imperdiet id. Vivamus nisi mauris, eleifend feugiat egestas ac.'
                             }
                             comment.avatar = 'https://s.gravatar.com/avatar/'
                                     + md5.createHash(comment.user.email.trim()
@@ -366,8 +440,6 @@
                             $scope.comments.push(comment);
                           }
 
-                          $scope.currentRating = 3;
-                          $scope.currentComment = '';
                         }
 
                         // important to get click events from iframes:
@@ -396,9 +468,6 @@
                           return 0;
                         }
 
-                        $timeout(function() {
-                          $scope.requestTimedOut = true
-                        }, 500);
                         $scope.getComments();
                       }]);
 }).call(this);

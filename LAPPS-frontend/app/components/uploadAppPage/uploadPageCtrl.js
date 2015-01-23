@@ -4,325 +4,295 @@
  * @description This controller is responsible for uploading apps
  */
 (function() {
-  angular.module('lappsControllers').controller(
-          'uploadPageCtrl',
-          [
-              '$scope',
-              '$http',
-              'swaggerApi',
-              'user',
-              'platform',
-              function($scope, $http, swaggerApi, user, platform) {
+  angular
+          .module('lappsControllers')
+          .controller(
+                  'uploadPageCtrl',
+                  [
+                      '$scope',
+                      '$http',
+                      'swaggerApi',
+                      'user',
+                      'platform',
+                      '$modal',
+                      '$location',
+                      function($scope, $http, swaggerApi, user, platform,
+                              $modal, $location) {
 
-                // dummy userId
-                $scope.userId = 390532463;
+                        // dummy userId
+                        $scope.userId = 390532463;
 
-                /**
-                 * @field
-                 * @type object
-                 * @memberOf lapps.lappsControllers.uploadPageCtrl
-                 * @description new app object
-                 */
+                        /**
+                         * @field
+                         * @type object
+                         * @memberOf lapps.lappsControllers.uploadPageCtrl
+                         * @description New app object.
+                         */
 
-                $scope.newapp = {
-                  id: 0,
-                  name: '',
-                  platform: '',
-                  minPlatformRequired: '',
-                  downloadUrl: '',
-                  version: '',
-                  size: 0,
-                  sourceUrl: '',
-                  supportUrl: '',
-                  rating: 0,
-                  dateCreated: '',
-                  dateModified: '',
-                  license: '',
-                  shortDescription: '',
-                  longDescription: '',
-                  creator: {
-                    oidcId: 0,
-                    email: '',
-                    username: '',
-                    role: 0,
-                    dateRegistered: '',
-                    description: '',
-                    website: ''
-                  },
-                  artifacts: [],
-                  tags: []
-                }
+                        $scope.newapp = {};
+                        /**
+                         * @field
+                         * @type object
+                         * @memberOf lapps.lappsControllers.uploadPageCtrl
+                         * @description Temporary tags object.
+                         */
 
-                /**
-                 * @field
-                 * @type object
-                 * @memberOf lapps.lappsControllers.uploadPageCtrl
-                 * @description temporary tags object
-                 */
+                        $scope.tags = {};
 
-                $scope.tags = {};
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.uploadPageCtrl
+                         * @description Resets valus of newapp object.
+                         */
+                        $scope.reset = function() {
 
-                var counter = 0;
+                          $scope.$broadcast('show-errors-reset');
 
-                var currentIndex = 0;
+                          $scope.newapp = {
+                            id: 0,
+                            name: '',
+                            platform: '',
+                            minPlatformRequired: '',
+                            downloadUrl: '',
+                            version: '',
+                            size: 0,
+                            sourceUrl: '',
+                            supportUrl: '',
+                            rating: 0,
+                            dateCreated: '',
+                            dateModified: '',
+                            license: '',
+                            shortDescription: '',
+                            longDescription: '',
+                            creator: {
+                              oidcId: 0,
+                              email: '',
+                              username: '',
+                              role: 0,
+                              dateRegistered: '',
+                              description: '',
+                              website: ''
+                            },
+                            artifacts: [],
+                            tags: []
+                          }
 
-                /**
-                 * @field
-                 * @type string
-                 * @memberOf lapps.lappsControllers.uploadPageCtrl
-                 * @description modified date of app
-                 */
-                $scope.dateModified = '';
+                          $scope.tags.value = '';
+                          $scope.video = {};
+                          $scope.thumbnail = {};
+                          $scope.images = [];
+                          $scope.dateModified = '';
 
-                /**
-                 * @field
-                 * @type array of objects
-                 * @memberOf lapps.lappsControllers.uploadPageCtrl
-                 * @description fields to be generated for image in images
-                 */
+                        }
 
-                $scope.newFields = [{
-                  id: 0,
-                  buttonName: 'add',
-                  buttonTitle: 'Add'
-                }];
+                        $scope.reset();
 
-                /**
-                 * @field
-                 * @type object
-                 * @memberOf lapps.lappsControllers.uploadPageCtrl
-                 * @description object for video
-                 */
-                $scope.video = {};
+                        var counter = 0;
 
-                /**
-                 * @field
-                 * @type object
-                 * @memberOf lapps.lappsControllers.uploadPageCtrl
-                 * @description object for thumbnail
-                 */
-                $scope.thumbnail = {};
+                        /**
+                         * @field
+                         * @type object[]
+                         * @memberOf lapps.lappsControllers.uploadPageCtrl
+                         * @description Fields to be generated for image in
+                         *              images.
+                         */
 
-                /**
-                 * @field
-                 * @type array
-                 * @memberOf lapps.lappsControllers.uploadPageCtrl
-                 * @description array of images for carousel
-                 */
+                        $scope.newFields = [{
+                          id: 0,
+                          buttonName: 'add',
+                          buttonTitle: 'Add Image'
+                        }];
 
-                $scope.images = [];
+                        /**
+                         * @field
+                         * @type object
+                         * @memberOf lapps.lappsControllers.uploadPageCtrl
+                         * @description Object for video.
+                         */
+                        $scope.video = {};
 
-                /**
-                 * @field
-                 * @type array
-                 * @memberOf lapps.lappsControllers.uploadPageCtrl
-                 * @description gets list of platforms from platform object
-                 */
-                this.platforms = platform.platforms;
+                        /**
+                         * @field
+                         * @type object
+                         * @memberOf lapps.lappsControllers.uploadPageCtrl
+                         * @description Object for thumbnail.
+                         */
+                        $scope.thumbnail = {};
 
-                /**
-                 * @function
-                 * @memberOf lapps.lappsControllers.uploadPageCtrl
-                 * @description if form is valid creates new app object inputs
-                 *              in form and sends the object through swaggerApi
-                 */
-                $scope.createNewApp = function() {
+                        /**
+                         * @field
+                         * @type object[]
+                         * @memberOf lapps.lappsControllers.uploadPageCtrl
+                         * @description array of images for carousel
+                         */
 
-                  $scope.$broadcast('show-errors-check-validity');
-                  // check if form is valid
+                        $scope.images = [];
 
-                  if ($scope.uploadForm.$valid) {
-                    $scope.newapp.creator.oidcId = $scope.userId;
+                        /**
+                         * @field
+                         * @type object[]
+                         * @memberOf lapps.lappsControllers.uploadPageCtrl
+                         * @description Gets list of platforms from platform
+                         *              object, neded for dropdown.
+                         */
+                        this.platforms = platform.platforms;
 
-                    // split tags and delete white spaces
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.uploadPageCtrl
+                         * @description If form is valid creates new app object
+                         *              inputs in form and sends the object
+                         *              through swaggerApi.
+                         */
+                        $scope.createNewApp = function() {
 
-                    if ($scope.tags.value) {
-                      var tempTags = [];
-                      tempTags = $scope.tags.value
-                              .match(/(?=\S)[^,]+?(?=\s*(,|$))/g);
+                          $scope.$broadcast('show-errors-check-validity');
+                          // check if form is valid
 
-                      for (var i = 0; i < tempTags.length; i++) {
-                        $scope.newapp.tags.push({
-                          value: tempTags[i]
-                        });
-                      }
-                    }
+                          if ($scope.uploadForm.$valid) {
+                            $scope.newapp.creator.oidcId = $scope.userId;
 
-                    // create new artifacts from each image url
+                            // split tags and delete white spaces
 
-                    for (var i = 0; i < $scope.images.length; i++) {
-                      if ($scope.images[i].url) {
-                        $scope.newapp.artifacts.push({
-                          url: $scope.images[i].url,
-                          description: $scope.images[i].description,
-                          type: 'image/png'
-                        })
-                      }
-                    }
-                    // create another artifact for video
-                    if ($scope.video.url) {
-                      $scope.newapp.artifacts.push({
-                        url: $scope.video.url,
-                        description: $scope.video.description,
-                        type: 'video/youtube'
-                      })
-                    }
-                    // create another artifact for thumbnail
-                    $scope.newapp.artifacts.push({
-                      url: $scope.thumbnail.url,
-                      description: '',
-                      type: 'thumbnail'
-                    })
-                    if ($scope.dateModified) {
-                      $scope.newapp.dateModified = Date.parse(
-                              $scope.dateModified).toString();
-                    }
+                            if ($scope.tags.value) {
+                              var tempTags = [];
+                              tempTags = $scope.tags.value.split(',');
 
-                    $scope.newapp.size = parseInt($scope.newapp.size);
+                              for (var i = 0; i < tempTags.length; i++) {
+                                $scope.newapp.tags.push({
+                                  value: tempTags[i].trim()
+                                });
+                              }
+                            }
 
-                    // send app object through swaggerApi
-                    swaggerApi.apps.createApp({
-                      accessToken: 'test_token',
-                      body: $scope.newapp
-                    }).then(function() {
-                      alert('Success!');
-                      // reset values of newapp
-                      $scope.reset();
-                    });
-                  }
-                };
+                            // create new artifacts from each image url
 
-                /**
-                 * @function
-                 * @memberOf lapps.lappsControllers.uploadPageCtrl
-                 * @param {object}
-                 *          event
-                 * @description for current event checks the name of the
-                 *              currentTarget and if it is 'add' then adds
-                 *              object to newFields array, else calls function
-                 *              to find object at index then delete the object
-                 */
+                            for (var i = 0; i < $scope.images.length; i++) {
+                              if ($scope.images[i].url) {
+                                $scope.newapp.artifacts.push({
+                                  url: $scope.images[i].url,
+                                  description: $scope.images[i].description,
+                                  type: 'image/png'
+                                })
+                              }
+                            }
+                            // create another artifact for video
+                            if ($scope.video.url) {
+                              $scope.newapp.artifacts.push({
+                                url: $scope.video.url,
+                                description: $scope.video.description,
+                                type: 'video/youtube'
+                              })
+                            }
+                            // create another artifact for thumbnail
+                            $scope.newapp.artifacts.push({
+                              url: $scope.thumbnail.url,
+                              description: '',
+                              type: 'thumbnail'
+                            })
+                            if ($scope.dateModified) {
+                              $scope.newapp.dateModified = Date.parse(
+                                      $scope.dateModified).toString();
+                            }
 
-                $scope.addAnotherField = function($event) {
-                  if ($event.currentTarget.name == 'add') {
-                    counter++;
-                    $scope.newFields.push({
-                      id: counter,
-                      buttonName: 'remove' + counter,
-                      buttonTitle: 'Remove'
-                    });
-                  } else {
-                    $scope.findElementInArray($event.currentTarget.id);
-                    $scope.newFields.splice(currentIndex, 1);
-                  }
-                  $event.preventDefault();
-                };
+                            $scope.newapp.size = parseInt($scope.newapp.size);
 
-                /**
-                 * @function
-                 * @memberOf lapps.lappsControllers.uploadPageCtrl
-                 * @param {object}
-                 *          index of array
-                 * @description finds element in array for given index
-                 */
+                            // send app object through swaggerApi
+                            swaggerApi.apps
+                                    .createApp({
+                                      accessToken: 'test_token',
+                                      body: $scope.newapp
+                                    })
+                                    .then(
+                                            function(response) {
+                                              var modalInstance = $modal
+                                                      .open({
+                                                        templateUrl: 'components/uploadAppPage/submitConfirmView.html',
+                                                        controller: 'submitConfirmCtrl',
+                                                        size: 'xs',
+                                                      });
+                                              modalInstance.result
+                                                      .then(
+                                                              function(isOk) {
+                                                                if (isOk) {
+                                                                  $location
+                                                                          .path('/apps/'
+                                                                                  + response.data.id);
+                                                                }
+                                                              }, function() {
+                                                              });
 
-                $scope.findElementInArray = function(index) {
-                  for (var i = 0; i < $scope.newFields.length; i++) {
-                    if ($scope.newFields[i].id == index) {
-                      currentIndex = $scope.newFields
-                              .indexOf($scope.newFields[i]);
-                    }
-                  }
-                };
+                                            });
+                          }
+                        };
 
-                /**
-                 * @function
-                 * @memberOf lapps.lappsControllers.uploadPageCtrl
-                 * @description resets valus of newapp object
-                 */
-                $scope.reset = function() {
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.uploadPageCtrl
+                         * @param {object}
+                         *          event
+                         * @description For current event checks the name of the
+                         *              currentTarget and if it is 'add' then
+                         *              adds object to newFields array, else
+                         *              calls function to find object at index
+                         *              then delete the object.
+                         */
 
-                  $scope.$broadcast('show-errors-reset');
+                        $scope.addAnotherField = function($event) {
+                          if ($event.currentTarget.name == 'add') {
+                            counter++;
+                            $scope.newFields.push({
+                              id: counter,
+                              buttonName: 'remove' + counter,
+                              buttonTitle: 'Remove'
+                            });
+                          } else {
+                            var currentIndex = $scope
+                                    .findElementInArray($event.currentTarget['data-id']);
 
-                  $scope.newapp = {
-                    id: 0,
-                    name: '',
-                    platform: '',
-                    minPlatformRequired: '',
-                    downloadUrl: '',
-                    version: '',
-                    size: 0,
-                    sourceUrl: '',
-                    supportUrl: '',
-                    rating: 0,
-                    dateCreated: '',
-                    dateModified: '',
-                    license: '',
-                    shortDescription: '',
-                    longDescription: '',
-                    creator: {
-                      oidcId: 0,
-                      email: '',
-                      username: '',
-                      role: 0,
-                      dateRegistered: '',
-                      description: '',
-                      website: ''
-                    },
-                    artifacts: [],
-                    tags: []
-                  }
+                            $scope.newFields.splice(currentIndex, 1);
 
-                  $scope.tags.value = ' ';
-                  $scope.video = {};
-                  $scope.thumbnail = {};
-                  $scope.images = [];
-                  $scope.dateModified = '';
+                          }
+                          $event.preventDefault();
+                        };
 
-                }
+                        /**
+                         * @function
+                         * @type number
+                         * @memberOf lapps.lappsControllers.uploadPageCtrl
+                         * @param {object}
+                         *          index index of array
+                         * @description Finds element in array for given index.
+                         */
 
-                /*
-                 * $scope.test = function() {
-                 * 
-                 * $scope.newapp = { id: 0, name: 'Test App', platform:
-                 * 'Windows', minPlatformRequired: 'XP', downloadUrl:
-                 * "http://google.com", version: '1.1', size: 3000, sourceUrl:
-                 * 'http://google.com', supportUrl: 'http://google.com', rating:
-                 * 3.5, dateCreated: '1421617299101', dateModified:
-                 * '1421617299101', license: 'Copyright 2014', shortDescription:
-                 * 'Consequat. Tempor ut cupidatat quis anim amet, irure ad ea
-                 * cillum do exercitation culpa in et eiusmod magna duis
-                 * consectetur dolore aute.', longDescription: "##Consectetur
-                 * dolore ## Ut velit sed in in nulla ex dolor non cillum dolore
-                 * est ut tempor consectetur id anim veniam, enim eiusmod do
-                 * labore minim irure cupidatat lorem officia ad aute amet,
-                 * adipiscing reprehenderit qui ipsum pariatur. Excepteur sit
-                 * nisi sint eu proident, nostrud ea aliqua. Quis exercitation
-                 * occaecat laborum. Voluptate deserunt fugiat commodo esse
-                 * dolore dolor ullamco ut mollit culpa consequat. Sunt et duis
-                 * aliquip in elit, laboris magna incididunt. Ut laboris mollit
-                 * ullamco nulla sit dolor sed excepteur et voluptate fugiat
-                 * aliqua. Aliquip adipiscing id non culpa est deserunt dolore
-                 * officia in eu minim veniam, dolor do enim. ##Dolor esse ## Ut
-                 * cupidatat mollit irure dolor tempor dolore consequat. Ipsum
-                 * aute est id ut voluptate sunt minim incididunt velit
-                 * consectetur ullamco ad laborum. Nulla in et eiusmod ea sint
-                 * aliquip labore enim eu lorem aliqua. Do nostrud cillum duis
-                 * proident, adipiscing anim magna ut quis sit elit, officia
-                 * occaecat non reprehenderit culpa veniam, esse pariatur. Sed
-                 * exercitation deserunt amet, fugiat in qui laboris dolor nisi
-                 * excepteur dolore in commodo ex. Dolor laboris dolore do
-                 * dolore minim labore eu reprehenderit id cupidatat officia
-                 * deserunt ipsum occaecat dolor sint velit incididunt pariatur.
-                 * Mollit nostrud esse veniam, consequat. Enim quis in in aute
-                 * duis fugiat ad exercitation sit ullamco nisi sunt.", creator: {
-                 * oidcId: 390532463, email: '', username: '', role: 0,
-                 * dateRegistered: '', description: '', website: '' },
-                 * artifacts: [], tags: [] }
-                 * 
-                 * $scope.tags.value = 'windowsapp,windows'; }
-                 * 
-                 * $scope.test();
-                 */
-              }]);
+                        $scope.findElementInArray = function(index) {
+                          for (var i = 0; i < $scope.newFields.length; i++) {
+                            if ($scope.newFields[i].id == index) { return $scope.newFields
+                                    .indexOf($scope.newFields[i]); }
+                          }
+                          return -1;
+                        };
+
+                        /*
+                         * $scope.test = function() {
+                         * 
+                         * $scope.newapp = { id: 0, name: 'Test App', platform:
+                         * 'Windows', minPlatformRequired: 'XP', downloadUrl:
+                         * "http://google.com", version: '1.1', size: 3000,
+                         * sourceUrl: 'http://google.com', supportUrl:
+                         * 'http://google.com', rating: 3.5, dateCreated:
+                         * '1421617299101', dateModified: '1421617299101',
+                         * license: 'Copyright 2014', shortDescription:
+                         * 'Consequat. Tempor ut cupidatat quis anim amet, irure
+                         * ad ea' , longDescription: "##Consectetur ## \n
+                         * adasdasdasd", creator: { oidcId: 390532463, email:
+                         * '', username: '', role: 0, dateRegistered: '',
+                         * description: '', website: '' }, artifacts: [], tags: [] }
+                         * 
+                         * $scope.tags.value = 'windowsapp,windows'; }
+                         * 
+                         * $scope.test();
+                         */
+
+                      }]);
 }).call(this);
