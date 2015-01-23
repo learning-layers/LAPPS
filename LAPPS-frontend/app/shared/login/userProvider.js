@@ -87,7 +87,7 @@
                              *              Needed for some restricted backend
                              *              requests.
                              */
-                            token: 'test_token',
+                            token: '',
                             /**
                              * @function
                              * @memberOf lapps.lappsServices.user
