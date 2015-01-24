@@ -3,8 +3,10 @@ package de.rwth.dbis.layers.lapps.resource;
 import static javax.ws.rs.client.Entity.entity;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 import javax.ws.rs.client.Client;
@@ -96,10 +98,33 @@ public class CommentsResourceTest {
   @Test
   public void testGetAllComments() {
     Response response =
-        target.path("apps/" + ucApp.getId() + "/comments").request(MediaType.APPLICATION_JSON)
-            .get();
+        target.path("apps/" + cApp.getId() + "/comments").request(MediaType.APPLICATION_JSON).get();
     assertEquals(HttpStatusCode.OK, response.getStatus());
-
+    MediaType responseMediaType = response.getMediaType();
+    assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
+    String responseContent = response.readEntity(String.class);
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode comments;
+    try {
+      comments = mapper.readTree(responseContent);
+      assertFalse(comments.isNull());
+      assertTrue(comments.isArray());
+      Iterator<JsonNode> commentIterator = comments.iterator();
+      // check if previously created comment can be found
+      JsonNode retrievedComments = null;
+      while (commentIterator.hasNext()) {
+        // go through the list until our comment is found
+        retrievedComments = commentIterator.next();
+        if (retrievedComments.get("id").toString().equals(comment.getId().toString())) {
+          break;
+        }
+      }
+      // this is only false if comment was not in list
+      assertEquals(comment.getId().toString(), retrievedComments.get("id").toString());
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("JSON parsing failed with " + e.getMessage());
+    }
   }
 
   /**
@@ -167,6 +192,24 @@ public class CommentsResourceTest {
             .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
     assertEquals(HttpStatusCode.NO_CONTENT, response.getStatus());
 
+    response =
+        target.path("apps/" + cApp.getId() + "/comments").request(MediaType.APPLICATION_JSON).get();
+    assertEquals(HttpStatusCode.OK, response.getStatus());
+    MediaType responseMediaType = response.getMediaType();
+    assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
+    String responseContent = response.readEntity(String.class);
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode retrievedComments;
+    try {
+      retrievedComments = mapper.readTree(responseContent);
+      assertFalse(retrievedComments.isNull());
+      assertTrue(retrievedComments.isArray());
+      Iterator<JsonNode> commentIterator = retrievedComments.iterator();
+      assertFalse(commentIterator.hasNext());
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("JSON parsing failed with " + e.getMessage());
+    }
   }
 
   /**
