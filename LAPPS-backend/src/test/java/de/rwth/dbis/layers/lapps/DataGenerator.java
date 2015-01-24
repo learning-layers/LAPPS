@@ -11,6 +11,7 @@ import de.rwth.dbis.layers.lapps.DataGeneratorUtils.RandomNumberGenerator;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
 import de.rwth.dbis.layers.lapps.entity.Artifact;
+import de.rwth.dbis.layers.lapps.entity.Comment;
 import de.rwth.dbis.layers.lapps.entity.Tag;
 import de.rwth.dbis.layers.lapps.entity.User;
 
@@ -106,12 +107,20 @@ public class DataGenerator {
       }
 
       currentApp = facade.save(currentApp);
+
+      Comment[] comments = DataGeneratorUtils.getRandomComments(0, 22, currentApp, users);
+
+      for (int j = 0; j < comments.length; j++) {
+        facade.save(comments[j]);
+      }
+
       apps.add(currentApp);
     }
     return apps;
   }
 
   private static void dropExistingData() {
+    facade.deleteAll(Comment.class);
     facade.deleteAll(User.class);
     facade.deleteAll(App.class);
   }

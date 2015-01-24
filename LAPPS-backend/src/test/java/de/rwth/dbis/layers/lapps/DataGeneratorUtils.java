@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import de.rwth.dbis.layers.lapps.entity.App;
+import de.rwth.dbis.layers.lapps.entity.Comment;
 import de.rwth.dbis.layers.lapps.entity.User;
 
 public class DataGeneratorUtils {
@@ -315,6 +316,26 @@ public class DataGeneratorUtils {
       tags[i] = names[RandomNumberGenerator.getRandomInt(0, names.length - 1)];
     }
     return tags;
+  }
+
+  /**
+   * Generates an array of random comments for an app
+   * 
+   * @param min minimum amount of comments
+   * @param max maximum amount of comments
+   * @param app app for the comments
+   * @param users user array for the comments
+   * @return array of random comments
+   */
+  public static Comment[] getRandomComments(int min, int max, App app, User[] users) {
+    int amount = RandomNumberGenerator.getRandomInt(min, max);
+    Comment[] comments = new Comment[amount];
+    for (int i = 0; i < comments.length; i++) {
+      User currentUser = users[RandomNumberGenerator.getRandomInt(0, users.length - 1)];
+
+      comments[i] = new Comment(getRandomText(15, 0), (int) getRandomRating(), currentUser, app);
+    }
+    return comments;
   }
 
   /**
