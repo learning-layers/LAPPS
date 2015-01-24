@@ -9,6 +9,7 @@
       <class>de.rwth.dbis.layers.lapps.entity.Artifact</class>
       <class>de.rwth.dbis.layers.lapps.entity.Tag</class>
       <class>de.rwth.dbis.layers.lapps.entity.User</class>
+      <class>de.rwth.dbis.layers.lapps.entity.Comment</class>
       <properties>
         <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
         <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
