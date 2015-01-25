@@ -1,6 +1,7 @@
 package de.rwth.dbis.layers.lapps.resource;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -54,6 +55,8 @@ public class CommentsResource {
    * @param pageLength number of comments by page
    * @param sortBy field
    * @param order asc or desc
+   * @param filterBy field
+   * @param filterValue
    * 
    * @return Response with all comments for an {@link App} as JSON array.
    */
@@ -72,7 +75,9 @@ public class CommentsResource {
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of comments by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
       @ApiParam(value = "Sort by field", required = false, allowableValues = "date") @DefaultValue("date") @QueryParam("sortBy") String sortBy,
-      @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order) {
+      @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
+      @ApiParam(value = "Filter by field", required = false, allowableValues = "creator") @DefaultValue("creator") @QueryParam("filterBy") String filterBy,
+      @ApiParam(value = "Filter value", required = false) @QueryParam("filterValue") String filterValue) {
 
     List<App> apps = entityFacade.findByParam(App.class, "id", appId);
     if (apps.size() != 1) {
@@ -80,6 +85,35 @@ public class CommentsResource {
     } else {
       App app = apps.get(0);
       List<Comment> commentEntities = entityFacade.findByParam(Comment.class, "app", app);
+
+      // filter before sorting
+      if (filterBy != null && filterValue != null) {
+        boolean isLong = false;
+        long longVal = 0;
+        try {
+          longVal = Long.parseLong(filterValue);
+          isLong = true;
+        } catch (NumberFormatException e) {
+          isLong = false;
+        }
+
+        switch (filterBy) {
+          case "creator":
+            for (Iterator<Comment> iterator = commentEntities.iterator(); iterator.hasNext();) {
+              Comment comment = iterator.next();
+              if (!isLong
+                  && (comment.getUser() == null || !comment.getUser().getUsername().toLowerCase()
+                      .contains(filterValue.toLowerCase()))) {
+                // if user asks for name and name does not match
+                iterator.remove();
+              } else if (isLong
+                  && (comment.getUser() == null || comment.getUser().getOidcId() != longVal)) {
+                // if user asks for id
+                iterator.remove();
+              }
+            }
+        }
+      }
 
       if (sortBy.equalsIgnoreCase("date")) {
         Collections.sort(commentEntities);
