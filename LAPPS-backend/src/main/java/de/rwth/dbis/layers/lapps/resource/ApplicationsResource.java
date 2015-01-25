@@ -85,7 +85,7 @@ public class ApplicationsResource {
           allowableValues = "name,platform,rating,dateCreated,dateModified,random") @DefaultValue("name") @QueryParam("sortBy") String sortBy,
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
       @ApiParam(
-          value = "Filter by field : platform, creator, minRating, minDateCreated ,minDateModified. Multiple fields can be used with ; as separator.",
+          value = "Filter by field : platform, creator, minRating, minDateCreated, minDateModified. Multiple fields can be used with ; as separator.",
           required = false) @QueryParam("filterBy") String filterBy, @ApiParam(
           value = "Filter value. When using multiple filters, values can be separated by ; ",
           required = false) @QueryParam("filterValue") String filterValue) {
