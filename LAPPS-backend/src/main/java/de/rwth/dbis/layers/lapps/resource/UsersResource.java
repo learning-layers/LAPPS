@@ -2,6 +2,7 @@ package de.rwth.dbis.layers.lapps.resource;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -113,6 +114,20 @@ public class UsersResource {
             entities.add(user);
           }
         }
+      }
+    }
+
+    // filter before sorting
+    if (filterBy != null && filterValue != null) {
+      switch (filterBy) {
+        case "role":
+          for (Iterator<User> iterator = entities.iterator(); iterator.hasNext();) {
+            User user = iterator.next();
+            if (!user.getRole().toString().equalsIgnoreCase(filterValue)) {
+              iterator.remove();
+            }
+          }
+          break;
       }
     }
 
