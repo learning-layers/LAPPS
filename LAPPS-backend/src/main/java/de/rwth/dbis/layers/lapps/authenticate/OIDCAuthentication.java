@@ -176,10 +176,6 @@ public class OIDCAuthentication {
     if (openIdToken == null) {
       return false;
     }
-    // default testing token returns default testing id
-    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
-      return true;
-    }
 
     try {
       User user = authenticate(openIdToken);
