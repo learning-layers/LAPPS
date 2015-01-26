@@ -5,7 +5,7 @@ describe(
         function() {
           beforeEach(module('lappsApp'));
 
-          var scope, $httpBackend, swagger, mockApps, platform;
+          var scope, $httpBackend, swagger, mockApps, mockComments, platform;
 
           beforeEach(inject(function($rootScope, $controller, _$httpBackend_,
                   swagger2HttpBackend, _karmaHelper_, _platform_) {
@@ -19,6 +19,7 @@ describe(
             });
             swagger = swagger2HttpBackend;
             mockApps = _karmaHelper_.getMockApps();
+            mockComments = _karmaHelper_.getMockComments();
             platform = _platform_;
           }));
 
@@ -31,6 +32,7 @@ describe(
           });
 
           it('should make a request to show some apps', function() {
+
             var apiRequest = swagger.getRequest('apps.getApp', {
               id: 0
             });
@@ -42,8 +44,30 @@ describe(
                     });
             $httpBackend.expectGET(apiRequest2.url).respond([]);
 
+            var apiRequest_comments = swagger.getRequest('apps.getAllComments',
+                    {
+                      appId: 0,
+                      page: 1,
+                      pageLength: 10,
+                      order: 'desc'
+                    });
+            $httpBackend.expectGET(apiRequest_comments.url).respond(
+                    mockComments);
+
+            var apiRequest_comments2 = swagger.getRequest(
+                    'apps.getAllComments', {
+                      appId: 0,
+                      page: 1,
+                      pageLength: 10,
+                      filterBy: 'creator',
+                      filterValue: '42'
+                    });
+            $httpBackend.expectGET(apiRequest_comments2.url).respond(
+                    mockComments[0]);
+
             expect(scope.app.thumbnail).not.toBeDefined();
             $httpBackend.flush();
+            expect(mockComments.length).toBe(2);
             expect(scope.alternativePlatforms[0].platform).toBe('-');
 
             expect(scope.app.thumbnail).toContain('.');
@@ -70,6 +94,25 @@ describe(
                             });
                     $httpBackend.expectGET(apiRequest2.url).respond(
                             [mockApps[0], mockApps[1]]);
+                    var apiRequest_comments = swagger.getRequest(
+                            'apps.getAllComments', {
+                              appId: 0,
+                              page: 1,
+                              pageLength: 10,
+                              order: 'desc'
+                            });
+                    $httpBackend.expectGET(apiRequest_comments.url).respond(
+                            mockComments);
+                    var apiRequest_comments2 = swagger.getRequest(
+                            'apps.getAllComments', {
+                              appId: 0,
+                              page: 1,
+                              pageLength: 10,
+                              filterBy: 'creator',
+                              filterValue: '42'
+                            });
+                    $httpBackend.expectGET(apiRequest_comments2.url).respond(
+                            mockComments[0]);
 
                     $httpBackend.flush();
                     expect(scope.alternativePlatforms.length).toBe(2);

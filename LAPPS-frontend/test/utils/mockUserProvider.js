@@ -22,7 +22,8 @@
           name: 'John Doe',
           preferred_username: 'JohnDoe',
           sub: '42',
-          updated_time: '1'
+          updated_time: '1',
+          oidcId: '42'
         },
         signedIn: true,
         token: 'asdasd',

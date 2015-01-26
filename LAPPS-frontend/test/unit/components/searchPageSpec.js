@@ -35,6 +35,15 @@ describe(
           it(
                   'should make a http request and receive 2 apps, then switch to page 3 and perform search',
                   function() {
+
+                    spyOn($.fn, 'offset').andCallFake(function() {
+                      return {
+                        left: 0,
+                        top: 0,
+                        right: 0,
+                        bottom: 0
+                      }
+                    });
                     var apiRequest = swagger.getRequest('apps.getAllApps', {
                       search: 'a',
                       page: 2,

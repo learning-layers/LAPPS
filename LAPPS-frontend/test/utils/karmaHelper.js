@@ -10,6 +10,39 @@
 
                   function() {
                     return {
+                      getMockComments: function() {
+                        return [{
+                          "id": 0,
+                          "content": "test1",
+                          "rating": 0,
+                          "updateDate": "123",
+                          "releaseDate": "23",
+                          "user": {
+                            "oidcId": 0,
+                            "email": "",
+                            "username": "",
+                            "role": 0,
+                            "dateRegistered": "",
+                            "description": "",
+                            "website": ""
+                          }
+                        }, {
+                          "id": 1,
+                          "content": "test2",
+                          "rating": 3,
+                          "updateDate": "123",
+                          "releaseDate": "12",
+                          "user": {
+                            "oidcId": 1,
+                            "email": "",
+                            "username": "",
+                            "role": 0,
+                            "dateRegistered": "",
+                            "description": "",
+                            "website": ""
+                          }
+                        }]
+                      },
                       getMockUsers: function() {
                         return [{
                           "oidcId": 0,

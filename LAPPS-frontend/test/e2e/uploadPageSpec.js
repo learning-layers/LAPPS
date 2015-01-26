@@ -28,11 +28,6 @@ describe('upload app page', function() {
     expect(hasClass(name, 'ng-invalid')).toBe(true);
   });
 
-  it('validation for tag should work', function() {
-    tags.sendKeys('11111111');
-    expect(hasClass(tags, 'ng-invalid')).toBe(true);
-  });
-
   it('validation for size should work', function() {
     size.sendKeys('aaa');
     expect(hasClass(size, 'ng-invalid')).toBe(true);

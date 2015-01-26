@@ -428,7 +428,7 @@
                           }).then(function(response) {
 
                             if (response.data.length == 1) {// has already a
-                                                            // comment
+                              // comment
                               $scope.currentComment = response.data[0].content;
                               $scope.currentRating = response.data[0].rating;
                             }
@@ -465,8 +465,8 @@
                           }).then(function(response) {
 
                             if (response.data.length == 0)// empty = first
-                                                          // comment for this
-                                                          // app
+                            // comment for this
+                            // app
                             {
                               swaggerApi.apps.createComment({
                                 accessToken: user.token,
@@ -579,7 +579,7 @@
                                                               .createHash($scope.comments[i].user.email
                                                                       .trim()
                                                                       .toLowerCase()
-                                                                      || comment.user.username)
+                                                                      || $scope.comments[i].user.username)
                                                       + '?s='
                                                       + 60
                                                       + '&d=identicon';
