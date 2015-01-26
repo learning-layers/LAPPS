@@ -179,8 +179,8 @@ ADD CONSTRAINT `artifact_ibfk_1` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) 
 -- Constraints for table `comment`
 --
 ALTER TABLE `comment`
-ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`);
+ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tag`
