@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `artifact` (
 
 CREATE TABLE IF NOT EXISTS `comment` (
 `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `app_id` int(11) NOT NULL,
   `content` text COLLATE utf8_unicode_ci NOT NULL,
   `rating` int(11) DEFAULT NULL,
