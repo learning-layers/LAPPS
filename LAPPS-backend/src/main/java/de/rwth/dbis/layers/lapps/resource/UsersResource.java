@@ -221,7 +221,8 @@ public class UsersResource {
   public Response deleteUser(@HeaderParam("accessToken") String accessToken,
       @PathParam("oidcId") Long oidcId) {
     // Check, if the user has admin rights
-    if (!OIDCAuthentication.isAdmin(accessToken)) {
+    if (!OIDCAuthentication.isAdmin(accessToken)
+        && !OIDCAuthentication.isSameUser(oidcId, accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
     // search for existing user
@@ -234,10 +235,11 @@ public class UsersResource {
     }
     user.setDescription("deletedUser");
     user.setEmail("deletedUser");
-    user.setOidcId(-1L);
+    // user.setUsername("deletedUser");
+    // user.setOidcId(-1L);
     user.setRole(User.DELETED);
-    user.setUsername("deletedUser");
     user.setWebsite("deletedUser");
+
     entityFacade.save(user);
     return Response.status(HttpStatusCode.NO_CONTENT).build();
   }

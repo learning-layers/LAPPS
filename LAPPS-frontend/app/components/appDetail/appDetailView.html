@@ -158,11 +158,12 @@
     </div>
 
     <div ng-repeat="comment in comments" class="col-md-12 thumbnail pos-rel">
-      <div class="col-md-2">
+      <div class="col-md-2 text-center">
         <a class="comment-commenter" href="#/users/{{comment.user.oidcId}}"><strong>{{comment.user.username}}</strong></a>
         <div class="avatar">
           <a href="#/users/{{comment.user.oidcId}}" class="img-circle" back-img="{{comment.avatar?comment.avatar:''}}"></a>
         </div>
+        <button class="btn btn-danger" ng-show="isAdmin()" ng-click="deleteComment(comments[$index].id)">Delete Comment</button>
       </div>
       <div class="col-md-10">
         <div class="comment-header">
@@ -176,6 +177,7 @@
       <div ng-show="comment.dateCreated<comment.dateModified" class="comment-updated"><span class="glyphicon glyphicon-pencil"></span> Edited: {{comment.dateModifiedConverted}}</div>
     </div>
   </div>
+
   <div class="row" ng-show="maxPage>1">
     <div class="col-xs-12 text-center">
       <ul class="pagination">

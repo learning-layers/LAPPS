@@ -18,8 +18,9 @@
                       'convert',
                       '$timeout',
                       'md5',
+                      '$timeout',
                       function($scope, swaggerApi, $routeParams, user,
-                              $location, convert, $timeout, md5) {
+                              $location, convert, $timeout, md5, $timeout) {
                         /**
                          * @field
                          * @type object
@@ -116,10 +117,10 @@
                          */
                         $scope.newSearch = function() {
                           document.activeElement.blur();// unfocus elements,
-                                                        // important for the
-                                                        // "not found"
-                                                        // notification to be
-                                                        // static
+                          // important for the
+                          // "not found"
+                          // notification to be
+                          // static
                           $scope.currentPage = 1;
                           $location.search('query', $scope.searchQuery);
                           $location.search('page', 1);
@@ -140,6 +141,7 @@
                          */
 
                         $scope.search = function() {
+
                           // swaggerApi.users.getAllUsers({'accessToken':user.token}).then(function(data2){
                           var apiParams = {
                             search: $scope.searchQuery,
@@ -220,9 +222,21 @@
                           $scope.currentPage = +pageNumber;
                           $location.search('page', pageNumber);
                           $scope.search();
+                          $('html, body').animate(
+                                  {
+                                    scrollTop: ($('#search-results').first()
+                                            .offset().top)
+                                  }, 100);
                         }
 
                         $scope.search();
+                        if (!user.token) {// token not yet set
 
+                          $timeout(function() {
+                            $scope.search();
+                          }, 450);
+                        } else {
+                          $scope.search();
+                        }
                       }]);
 }).call(this);

@@ -117,6 +117,15 @@
                  * @function
                  * @memberOf lapps.lappsControllers.headerCtrl
                  * @type boolean
+                 * @description True if the visitor is a normal user.
+                 */
+                $scope.isUser = function() {
+                  return user.isUser();
+                }
+                /**
+                 * @function
+                 * @memberOf lapps.lappsControllers.headerCtrl
+                 * @type boolean
                  * @description True if the visitor is an admin. Note: Actual
                  *              security checks are performed on the backend
                  *              side. Here it is only used to show/hide

@@ -137,6 +137,8 @@
                                                                   user) {
                                                             if (user['sub']) {
                                                               self.data = user;
+                                                              self.data.oidcId = self.data.sub;
+                                                              self.data.username = self.data.preferred_username;
 
                                                               self.signedIn = true;
                                                               self.token = window.localStorage['access_token'];// needed
@@ -241,6 +243,51 @@
                              * @memberOf lapps.lappsServices.user
                              * @param {number}
                              *          id role id (optional)
+                             * @description True if the user is a deleted user
+                             */
+                            isDeleted: function(id) {
+                              if (typeof id === 'undefined' || id === null) {
+                                return this.role == -1;
+                              } else {
+                                return id == -1;
+                              }
+                            },
+                            /**
+                             * @function
+                             * @type boolean
+                             * @memberOf lapps.lappsServices.user
+                             * @param {number}
+                             *          id role id (optional)
+                             * @description True if the user is an applicant
+                             */
+                            isApplicant: function(id) {
+                              if (typeof id === 'undefined' || id === null) {
+                                return this.role == 2;
+                              } else {
+                                return id == 2;
+                              }
+                            },
+                            /**
+                             * @function
+                             * @type boolean
+                             * @memberOf lapps.lappsServices.user
+                             * @param {number}
+                             *          id role id (optional)
+                             * @description True if the user isa a normal user.
+                             */
+                            isUser: function(id) {
+                              if (typeof id === 'undefined' || id === null) {
+                                return this.role == 1;
+                              } else {
+                                return id == 1;
+                              }
+                            },
+                            /**
+                             * @function
+                             * @type boolean
+                             * @memberOf lapps.lappsServices.user
+                             * @param {number}
+                             *          id role id (optional)
                              * @description True if the user has the role of a
                              *              developer
                              */
@@ -302,29 +349,33 @@
                             },
 
                             getDatabaseUserInfo: function() {
+                              var self = this;
+                              swaggerApi.users.getUser({
+                                oidcId: +self.data.sub
+                              }).then(function(response) {
+                                if (response.status == 200) {
+                                  self.role = response.data.role;
+                                } else if (response.status == 404) {
+                                  swaggerApi.users.updateUser({
+                                    accessToken: self.token,
+                                    oidcId: +self.data.sub,
+                                    body: {
+                                      "oidcId": 0,
+                                      "email": "",
+                                      "username": "",
+                                      "role": 0,
+                                      "dateRegistered": "",
+                                      "description": "none",
+                                      "website": "none"
+                                    }
+                                  }
 
-                              swaggerApi.users
-                                      .updateUser({
-                                        accessToken: this.token,
-                                        oidcId: +this.data.sub,
-                                        body: {
+                                  ).then(function(response) {
+                                    self.role = response.data.role;
+                                  });
+                                }
+                              });
 
-                                        }
-                                      }
-
-                                      )
-                                      .then(
-                                              function(response) {
-                                                // TODO: remove
-                                                this.data = response.data;
-                                                this.data.sub = this.data.oidcId;
-                                                this.data.preferred_username = this.data.username;
-                                                this.role = this.data.role;
-                                              });
-                              /*
-                               * swaggerApi.users.getUser({ oidcId:
-                               * self.data.sub }).then(function (data) { });
-                               */
                             },
                             /**
                              * @function

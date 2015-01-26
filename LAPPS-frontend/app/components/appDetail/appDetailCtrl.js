@@ -23,9 +23,10 @@
                       'user',
                       'md5',
                       '$sce',
+                      '$timeout',
                       function($scope, $routeParams, swaggerApi, platform,
                               $document, convert, $timeout, $location, $modal,
-                              user, md5, $sce) {
+                              user, md5, $sce, $timeout) {
                         /**
                          * @field
                          * @type object
@@ -127,6 +128,15 @@
                          */
                         $scope.mayEdit = function() {
                           return (user.isAdmin() || (user.isDeveloper() && user.data.sub == $scope.app.creator.oidcId));
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @type boolean
+                         * @description True if the visitor is an admin.
+                         */
+                        $scope.isAdmin = function() {
+                          return user.isAdmin();
                         }
 
                         /**
@@ -285,11 +295,11 @@
                                           }
 
                                           if (images.length <= 0) { // to
-                                                                    // display
-                                                                    // placeholder
-                                                                    // image if
-                                                                    // no images
-                                                                    // available
+                                            // display
+                                            // placeholder
+                                            // image if
+                                            // no images
+                                            // available
                                             images.push(null);
                                           }
 
@@ -399,47 +409,183 @@
                           $scope.currentPage = +pageNumber;
                           $location.search('page', pageNumber);
                           $scope.getComments();
+                          $('html, body').animate({
+                            scrollTop: ($('#comments').first().offset().top)
+                          }, 500);
+
                         }
 
-                        $scope.submitComment = function() {
-                          // TODO: implement api call
+                        $scope.loadOwnComment = function() {
+                          if (!user.signedIn) { return; }
+
+                          swaggerApi.apps.getAllComments({
+                            appId: +$scope.appId,
+                            page: $scope.currentPage,
+                            pageLength: 10,
+                            filterBy: 'creator',
+                            filterValue: user.data.oidcId
+
+                          }).then(function(response) {
+
+                            if (response.data.length == 1) {// has already a
+                                                            // comment
+                              $scope.currentComment = response.data[0].content;
+                              $scope.currentRating = response.data[0].rating;
+                            }
+                          });
+                        }
+                        var showCommentSubmitConfirmation = function() {
                           var modalInstance = $modal
                                   .open({
                                     templateUrl: 'components/appDetail/submitConfirmView.html',
                                     controller: 'submitConfirmCtrl',
                                     size: 'xs',
                                   });
+                          modalInstance.result.then(function(isOk) {
+                            if (isOk) {
+                              $scope.changePage(1);
+                            }
+                          }, function() {
+                          });
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Submits a comment to the backend.
+                         */
+                        $scope.submitComment = function() {
+                          if (!user.signedIn) { return; }
+                          swaggerApi.apps.getAllComments({
+                            appId: +$scope.appId,
+                            page: $scope.currentPage,
+                            pageLength: 1,
+                            filterBy: 'creator',
+                            filterValue: user.data.oidcId
+
+                          }).then(function(response) {
+
+                            if (response.data.length == 0)// empty = first
+                                                          // comment for this
+                                                          // app
+                            {
+                              swaggerApi.apps.createComment({
+                                accessToken: user.token,
+                                appId: +$scope.appId,
+                                body: {
+                                  "id": 0,
+                                  "content": $scope.currentComment,
+                                  "rating": $scope.currentRating,
+                                  "updateDate": "",
+                                  "releaseDate": "",
+                                  "user": {
+                                    "oidcId": +user.data.oidcId,
+                                    "email": "",
+                                    "username": "",
+                                    "role": 0,
+                                    "dateRegistered": "",
+                                    "description": "",
+                                    "website": ""
+                                  }
+                                }
+                              }).then(function(response) {
+                                showCommentSubmitConfirmation();
+                              });
+                            } else { // update existing comment
+                              swaggerApi.apps.updateComment({
+                                accessToken: user.token,
+                                appId: +$scope.appId,
+                                id: +response.data[0].id,
+                                body: {
+                                  "id": 0,
+                                  "content": $scope.currentComment,
+                                  "rating": $scope.currentRating,
+                                  "updateDate": "",
+                                  "releaseDate": "",
+                                  "user": {
+                                    "oidcId": +user.data.oidcId,
+                                    "email": "",
+                                    "username": "",
+                                    "role": 0,
+                                    "dateRegistered": "",
+                                    "description": "",
+                                    "website": ""
+                                  }
+                                }
+                              }).then(function(response) {
+                                showCommentSubmitConfirmation();
+                              });
+                            }
+
+                          });
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @param {string}
+                         *          id comment id
+                         * @description Deletes a a selected comment.
+                         */
+                        $scope.deleteComment = function(id) {
+                          if (!user.signedIn) { return; }
+                          var modalInstance = $modal
+                                  .open({
+                                    templateUrl: 'components/appDetail/deleteCommentConfirmView.html',
+                                    controller: 'deleteConfirmCtrl',
+                                    size: 'xs',
+                                  });
+                          modalInstance.result.then(function(isOk) {
+                            if (isOk) {
+                              swaggerApi.apps.deleteComment({
+                                accessToken: user.token,
+                                appId: +$scope.appId,
+                                id: +id,
+                              }).then(function(response) {
+                                $scope.getComments();
+                              });
+                            }
+                          }, function() {
+                          });
+
                         }
 
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.appDetailCtrl
+                         * @description Fetches all comments for the respective
+                         *              app.
+                         */
                         $scope.getComments = function() {
                           $scope.comments = [];
-                          // TODO: implement api call
-                          for (i = 0; i < 15; i++) {
-                            var comment = {
-                              user: {
-                                oidcId: -1556155057,
-                                email: 'kayleefrye@test.foobar',
-                                username: 'Kaylee Frye'
-                              },
-                              dateCreated: 1420888318000,
-                              dateModified: 1420888336000,
-                              dateCreatedConverted: convert
-                                      .dateTime(1420888318000),
-                              dateModifiedConverted: convert
-                                      .dateTime(1420888336000),
-                              rating: 3,
-                              content: $scope.currentPage
-                                      + 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse hendrerit turpis eu tellus vulputate iaculis. Donec non diam iaculis, eleifend justo eget, vulputate lacus. Mauris nec eros ac lectus ultrices ultrices eu ultricies purus. Suspendisse sodales efficitur purus, quis iaculis erat imperdiet id. Vivamus nisi mauris, eleifend feugiat egestas ac.'
-                            }
-                            comment.avatar = 'https://s.gravatar.com/avatar/'
-                                    + md5.createHash(comment.user.email.trim()
-                                            .toLowerCase()
-                                            || comment.user.username) + '?s='
-                                    + 60 + '&d=identicon';
 
-                            $scope.comments.push(comment);
-                          }
+                          swaggerApi.apps
+                                  .getAllComments({
+                                    appId: +$scope.appId,
+                                    page: $scope.currentPage,
+                                    pageLength: 10,
+                                    order: 'desc'
+                                  })
+                                  .then(
+                                          function(response) {
+                                            $scope.comments = response.data;
+                                            $scope.maxPage = +response
+                                                    .headers('numberOfPages');
+                                            for (var i = 0; i < $scope.comments.length; i++) {
+                                              $scope.comments[i].dateCreatedConverted = convert
+                                                      .dateTime($scope.comments[i].releaseDate);
+                                              $scope.comments[i].dateModifiedConverted = convert
+                                                      .dateTime($scope.comments[i].updateDate);
+                                              $scope.comments[i].avatar = 'https://s.gravatar.com/avatar/'
+                                                      + md5
+                                                              .createHash($scope.comments[i].user.email
+                                                                      .trim()
+                                                                      .toLowerCase()
+                                                                      || comment.user.username)
+                                                      + '?s='
+                                                      + 60
+                                                      + '&d=identicon';
+                                            }
 
+                                          });
                         }
 
                         // important to get click events from iframes:
@@ -469,5 +615,14 @@
                         }
 
                         $scope.getComments();
+
+                        if (!user.token) {// token not yet set
+
+                          $timeout(function() {
+                            $scope.loadOwnComment();
+                          }, 450);
+                        } else {
+                          $scope.loadOwnComment();
+                        }
                       }]);
 }).call(this);

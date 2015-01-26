@@ -20,8 +20,9 @@
                       'convert',
                       '$timeout',
                       '$modal',
+                      '$location',
                       function($scope, $routeParams, user, $http, swaggerApi,
-                              md5, convert, $timeout, $modal) {
+                              md5, convert, $timeout, $modal, $location) {
                         /**
                          * @field
                          * @type string
@@ -78,9 +79,10 @@
                                             $scope.user.avatar = 'https://s.gravatar.com/avatar/'
                                                     + md5
                                                             .createHash($scope.user.email
-                                                                    .trim()
-                                                                    .toLowerCase()
-                                                                    || $scope.user.username)
+                                                                    ? $scope.user.email
+                                                                            .trim()
+                                                                            .toLowerCase()
+                                                                    : $scope.user.username)
                                                     + '?s='
                                                     + $scope.avatarSize
                                                     + '&d=identicon';
@@ -125,7 +127,7 @@
                             if (isOk) {
                               swaggerApi.users.grantDeveloperRights({
                                 accessToken: user.token,
-                                id: $scope.userId
+                                oidcId: +$scope.userId
                               }).then(function(response) {
 
                                 $scope.fetchUser(); // update user data on page
@@ -152,7 +154,7 @@
                             if (isOk) {
                               swaggerApi.users.deleteUser({
                                 accessToken: user.token,
-                                id: $scope.userId
+                                oidcId: +$scope.userId
                               }).then($location.path("/apps"));
                             }
                           }, function() {
@@ -211,6 +213,36 @@
                          */
                         $scope.isDeveloper = function() {
                           return user.isDeveloper($scope.user.role);
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.userPageCtrl
+                         * @type boolean
+                         * @description True if the profile belongs to a deleted
+                         *              user.
+                         */
+                        $scope.isDeleted = function() {
+                          return user.isDeleted($scope.user.role);
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.userPageCtrl
+                         * @type boolean
+                         * @description True if the profile belongs to an
+                         *              apllicant.
+                         */
+                        $scope.isApplicant = function() {
+                          return user.isApplicant($scope.user.role);
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.userPageCtrl
+                         * @type boolean
+                         * @description True if the profile belongs to a normal
+                         *              user.
+                         */
+                        $scope.isUser = function() {
+                          return user.isUser($scope.user.role);
                         }
                         /**
                          * @function

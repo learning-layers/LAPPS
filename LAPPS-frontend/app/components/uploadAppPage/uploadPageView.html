@@ -43,9 +43,8 @@
           </div>
           <div class="form-group" validate-input>
             <b><i class="fa fa-tags"></i><span class="hspacer05"></span>Tags</b>
-            <input type="text" class="form-control" ng-model="tags.value" name="tags" maxlength="300" ng-pattern="/^[a-zA-Z ,]*$/" data-toggle="tooltip" placeholder="tagA, tagB" title="Give your app meaningful tags. Tags should be separated by comma, i.e tagA, tagB etc." tooltip required>
+            <input type="text" class="form-control" ng-model="tags.value" name="tags" maxlength="300"  data-toggle="tooltip" placeholder="tagA, tagB" title="Give your app meaningful tags. Tags should be separated by comma, i.e tagA, tagB etc." tooltip required>
             <p class="help-block" ng-show="uploadForm.tags.$error.required">Tags are required.</p>
-            <p class="help-block" ng-messages="uploadForm.tags.$error.pattern">Only a-z , allowed.</p>
           </div>
 
         </div>
@@ -67,6 +66,11 @@
             <input type="text" class="form-control" ng-model="newapp.size" ng-pattern="/^\d+$/" name="size" maxlength="10" data-toggle="tooltip" title="Size of the app in KB. Only integer values can be entered." tooltip required>
             <p class="help-block" ng-show="uploadForm.size.$error.required">Size of app in KB is required.</p>
             <p class="help-block" ng-messages="uploadForm.size.$error.pattern">Please enter only integer.</p>
+          </div>
+          <div class="form-group" validate-input>
+            <b><i class="fa fa-barcode"></i><span class="hspacer05"></span>App Id in Device App Store</b>
+            <input type="text" class="form-control" ng-model="newapp.uniqueAppId" name="size" maxlength="30" data-toggle="tooltip" title="Here you should enter the app id in the device specific app store (like Google's Play Store) if applicable." tooltip>
+         
           </div>
           <div class="form-group" ng-class="{ 'has-error': uploadForm.sourceUrl.$invalid && uploadForm.sourceUrl.$dirty }">
             <b><i class="fa fa-code-fork"></i><span class="hspacer05"></span>Source Code</b>
