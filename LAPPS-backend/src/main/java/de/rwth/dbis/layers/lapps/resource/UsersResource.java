@@ -2,12 +2,21 @@ package de.rwth.dbis.layers.lapps.resource;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.MimeMessage;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -380,6 +389,38 @@ public class UsersResource {
     } else {
       return Response.status(HttpStatusCode.NOT_MODIFIED).build();
     }
+
+//    String to = "PLACEHERE";
+//    String from = "PLACEHERE";
+//    final String passphrase = "PLACEHERE";
+//    final String username = "PLACEHERE";
+//
+//    Properties props = new Properties();
+//    props.put("mail.smtp.host", "smtp.gmail.com");
+//    props.put("mail.from", from);
+//    props.put("mail.smtp.starttls.enable", "true");
+//    props.put("mail.smtp.auth", "true");
+//
+//    Session session = Session.getInstance(props, new Authenticator() {
+//      @Override
+//      protected PasswordAuthentication getPasswordAuthentication() {
+//        return new PasswordAuthentication(username, passphrase);
+//      }
+//    });
+//    try {
+//      MimeMessage msg = new MimeMessage(session);
+//      msg.setFrom();
+//      msg.setRecipients(Message.RecipientType.TO, to);
+//      msg.setSubject("A user has applied for developer rights");
+//      msg.setSentDate(new Date());
+//      msg.setContent("<h1>User with mail" + user.getEmail()
+//          + " has applied for Developer Rights</h1><br><h2>Message:</h2><br><br>" + applyMessage,
+//          "text/html");
+//      Transport.send(msg);
+//    } catch (MessagingException mex) {
+//      System.out.println("send failed, exception: " + mex);
+//    }
+
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       return Response.status(HttpStatusCode.OK).entity(objectMapper.writeValueAsBytes(user))
