@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `artifact` (
 
 CREATE TABLE IF NOT EXISTS `comment` (
 `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `app_id` int(11) NOT NULL,
   `content` text COLLATE utf8_unicode_ci NOT NULL,
   `rating` int(11) DEFAULT NULL,
@@ -179,8 +179,8 @@ ADD CONSTRAINT `artifact_ibfk_1` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) 
 -- Constraints for table `comment`
 --
 ALTER TABLE `comment`
-ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`);
+ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tag`
