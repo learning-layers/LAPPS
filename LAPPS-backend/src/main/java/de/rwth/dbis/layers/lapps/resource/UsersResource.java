@@ -154,6 +154,13 @@ public class UsersResource {
         entities = entities.subList(fromIndex, toIndex);
       }
     }
+    // remove deleted users from list
+    for (Iterator<User> iterator = entities.iterator(); iterator.hasNext();) {
+      User user = iterator.next();
+      if (user.getRole() == User.DELETED) {
+        iterator.remove();
+      }
+    }
 
     try {
       ObjectMapper mapper = new ObjectMapper();
@@ -191,6 +198,9 @@ public class UsersResource {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
       user = entities.get(0);
+      if (user.getRole() == User.DELETED) {
+        return Response.status(HttpStatusCode.NOT_FOUND).build();
+      }
     }
     try {
       ObjectMapper mapper = new ObjectMapper();
@@ -220,7 +230,7 @@ public class UsersResource {
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "User not found")})
   public Response deleteUser(@HeaderParam("accessToken") String accessToken,
       @PathParam("oidcId") Long oidcId) {
-    // Check, if the user has admin rights
+    // Check, if the user has admin rights and if not, if he is the same user
     if (!OIDCAuthentication.isAdmin(accessToken)
         && !OIDCAuthentication.isSameUser(oidcId, accessToken)) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
@@ -235,8 +245,7 @@ public class UsersResource {
     }
     user.setDescription("deletedUser");
     user.setEmail("deletedUser");
-    // user.setUsername("deletedUser");
-    // user.setOidcId(-1L);
+    user.setUsername("deletedUser");
     user.setRole(User.DELETED);
     user.setWebsite("deletedUser");
 
