@@ -79,6 +79,7 @@
                                           function(response) {
 
                                             $scope.app = response.data;
+                                            $scope.app.uniqueAppId = ($scope.app.uniqueAppId || '');
                                             $scope.dateCreated = convert
                                                     .date($scope.app.dateCreated);
                                             $scope.app.dateModified = ''
@@ -252,6 +253,7 @@
                           var tempTags = [];
                           $scope.app.tags = [];
                           tempTags = $scope.appTags.split(',');
+
                           for (var i = 0; i < tempTags.length; i++) {
                             $scope.app.tags.push({
                               value: tempTags[i].trim()

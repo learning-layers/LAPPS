@@ -88,7 +88,8 @@ public class User implements Entity, Comparable<User> {
 
   public void setRole(Integer role) {
     // make sure only valid role entries are set
-    if (role == USER || role == PENDING_DEVELOPER || role == DEVELOPER || role == ADMIN) {
+    if (role == USER || role == PENDING_DEVELOPER || role == DEVELOPER || role == ADMIN
+        || role == DELETED) {
       this.role = role;
     }
   }

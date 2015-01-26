@@ -200,7 +200,7 @@
                             // send app object through swaggerApi
                             swaggerApi.apps
                                     .createApp({
-                                      accessToken: 'test_token',
+                                      accessToken: user.token,
                                       body: $scope.newapp
                                     })
                                     .then(
@@ -274,7 +274,8 @@
                         };
 
                         /*
-                         * $scope.test = function() {
+                         * $scope.test = function() { $scope.thumbnail.url =
+                         * 'http://i.imgur.com/GHqgU71.jpg';
                          * 
                          * $scope.newapp = { id: 0, name: 'Test App', platform:
                          * 'Windows', minPlatformRequired: 'XP', downloadUrl:
@@ -283,9 +284,9 @@
                          * 'http://google.com', rating: 3.5, dateCreated:
                          * '1421617299101', dateModified: '1421617299101',
                          * license: 'Copyright 2014', shortDescription:
-                         * 'Consequat. Tempor ut cupidatat quis anim amet, irure
-                         * ad ea' , longDescription: "##Consectetur ## \n
-                         * adasdasdasd", creator: { oidcId: 390532463, email:
+                         * 'Consequat. Tempor ut cupidatat quis anim amet,
+                         * iruread ea' , longDescription: "##Consectetur ##
+                         * \nadasdasdasd", creator: { oidcId: 390532463, email:
                          * '', username: '', role: 0, dateRegistered: '',
                          * description: '', website: '' }, artifacts: [], tags: [] }
                          * 

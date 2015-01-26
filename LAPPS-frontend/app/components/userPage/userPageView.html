@@ -72,10 +72,10 @@
       </div>
       <div class="col-md-12" id="user-account-controls" ng-show="mayEdit()">
         <div class="pull-left">
-          <a href="#/apply" ng-show="!isDeveloper()" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Apply as Developer</a>
-          <button ng-show="!isDeveloper() && visitorIsAdmin()" class="btn btn-primary" ng-click="upgradeUser()"><span class="glyphicon glyphicon-arrow-up"></span> Upgrade to Developer</button>
+          <a href="#/apply" ng-show="isUser()" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Apply as Developer</a>
+          <button ng-show="isApplicant() && visitorIsAdmin()" class="btn btn-primary" ng-click="upgradeUser()"><span class="glyphicon glyphicon-arrow-up"></span> Upgrade to Developer</button>
           <!--<button ng-show="isDeveloper() && visitorIsAdmin()" class="btn btn-warning" ng-click="downgradeUser()"><span class="glyphicon glyphicon-arrow-down"></span> Downgrade to User</button>-->
-          <button class="btn btn-danger" ng-click="deleteUser()"><span class="glyphicon glyphicon-remove"></span> Delete Account</button>
+          <button class="btn btn-danger" ng-hide="isAdmin()" ng-click="deleteUser()"><span class="glyphicon glyphicon-remove"></span> Delete Account</button>
 
         </div>
         

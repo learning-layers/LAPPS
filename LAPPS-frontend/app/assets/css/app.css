@@ -616,19 +616,20 @@ h1, h2, h3, h4, h5 {
 }
 
 .carousel-caption {
-  text-shadow: 0 4px 3px rgba(0, 0, 0, 0.4), 0 8px 13px rgba(0, 0, 0, 0.1), 0 18px 23px rgba(0, 0, 0, 0.1);
-  font-size: large;
-  background-color: rgba(0, 0, 0, 0.5);
-  -moz-border-radius: 15px;
-  -webkit-border-radius: 15px;
-  border-radius: 15px;
+  text-shadow: -1px 0 2px black, 0 1px 2px black, 1px 0 2px black, 0 -1px 2px black;
+  
+  
+ 
   padding-left: 10px;
   padding-right: 10px;
 }
 
   .carousel-caption h1 {
     margin: 0 0 25px 0;
+    line-height:40px;
   }
+
+ 
 
 #featured-carousel .carousel-caption .btn {
   margin-bottom: 10px;
@@ -645,6 +646,13 @@ h1, h2, h3, h4, h5 {
   display: inline-block;
   position: relative;
   width: 100%;
+}
+
+#featured-carousel .carousel-indicators{
+  display:none;
+}
+#app-images #featured-carousel .carousel-indicators{
+  display:block;
 }
 
 #featured-carousel .dummy {
@@ -739,11 +747,9 @@ h1, h2, h3, h4, h5 {
   }
 
     .carousel-caption h1, .carousel-caption h3 {
-      background-color: rgba(0, 0, 0, 0.5);
+      
       padding: 5px;
-      -moz-border-radius: 15px;
-      -webkit-border-radius: 15px;
-      border-radius: 15px;
+      
     }
 }
 /*smartphone size end*/
@@ -1137,7 +1143,7 @@ dd {
   text-align: right;
 }
 
-#comments button {
+#comments .comment-submit button{
   min-width: 200px;
 }
 

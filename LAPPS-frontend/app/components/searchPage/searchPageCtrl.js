@@ -144,10 +144,10 @@
                          */
                         $scope.newSearch = function() {
                           document.activeElement.blur();// unfocus elements,
-                                                        // important for the
-                                                        // "not found"
-                                                        // notification to be
-                                                        // static
+                          // important for the
+                          // "not found"
+                          // notification to be
+                          // static
                           $scope.currentPage = 1;
                           $location.path('/search/' + $scope.searchQuery);
                           $location.search('page', 1);
@@ -266,6 +266,11 @@
                           $scope.currentPage = +pageNumber;
                           $location.search('page', pageNumber);
                           $scope.search();
+                          $('html, body').animate(
+                                  {
+                                    scrollTop: ($('#search-results').first()
+                                            .offset().top)
+                                  }, 100);
                         }
                         $scope.search();
 

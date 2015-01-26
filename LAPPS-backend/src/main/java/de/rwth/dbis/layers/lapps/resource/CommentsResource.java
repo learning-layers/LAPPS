@@ -76,7 +76,7 @@ public class CommentsResource {
       @ApiParam(value = "Number of comments by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
       @ApiParam(value = "Sort by field", required = false, allowableValues = "date") @DefaultValue("date") @QueryParam("sortBy") String sortBy,
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
-      @ApiParam(value = "Filter by field", required = false, allowableValues = "creator") @DefaultValue("creator") @QueryParam("filterBy") String filterBy,
+      @ApiParam(value = "Filter by field", required = false, allowableValues = "creator") @QueryParam("filterBy") String filterBy,
       @ApiParam(value = "Filter value", required = false) @QueryParam("filterValue") String filterValue) {
 
     List<App> apps = entityFacade.findByParam(App.class, "id", appId);
@@ -97,21 +97,21 @@ public class CommentsResource {
           isLong = false;
         }
 
-        switch (filterBy) {
-          case "creator":
-            for (Iterator<Comment> iterator = commentEntities.iterator(); iterator.hasNext();) {
-              Comment comment = iterator.next();
-              if (!isLong
-                  && (comment.getUser() == null || !comment.getUser().getUsername().toLowerCase()
-                      .contains(filterValue.toLowerCase()))) {
-                // if user asks for name and name does not match
-                iterator.remove();
-              } else if (isLong
-                  && (comment.getUser() == null || comment.getUser().getOidcId() != longVal)) {
-                // if user asks for id
-                iterator.remove();
-              }
+        if (filterBy.equals("creator")) {
+          for (Iterator<Comment> iterator = commentEntities.iterator(); iterator.hasNext();) {
+            Comment comment = iterator.next();
+            if (!isLong
+                && (comment.getUser() == null || !comment.getUser().getUsername().toLowerCase()
+                    .contains(filterValue.toLowerCase()))) {
+              // if user asks for name and name does not match
+              iterator.remove();
+            } else if (isLong
+                && (comment.getUser() == null || comment.getUser().getOidcId() != longVal)) {
+              // if user asks for id
+              iterator.remove();
             }
+          }
+
         }
       }
 
@@ -356,7 +356,7 @@ public class CommentsResource {
       // Update rating of of the app
       ratingSum -= comment.getRating();
       counter -= 1;
-      double newRating = 0;
+      double newRating = 3;// defailt rating of 3
       if (counter != 0) {
         newRating = ratingSum / counter;
       }

@@ -22,8 +22,8 @@ import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
-import de.rwth.dbis.layers.lapps.entity.User;
 import de.rwth.dbis.layers.lapps.entity.Comment;
+import de.rwth.dbis.layers.lapps.entity.User;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
 /**
@@ -134,7 +134,7 @@ public class OIDCAuthentication {
 
     try {
       User user = authenticate(openIdToken);
-      if (app.getCreator() == user) {
+      if (app.getCreator().getOidcId().equals(user.getOidcId())) {
         return true;
       } else {
         return false;
@@ -183,7 +183,7 @@ public class OIDCAuthentication {
 
     try {
       User user = authenticate(openIdToken);
-      if (user.getId() == comment.getUser().getId()) {
+      if (comment.getUser().getOidcId().equals(user.getOidcId())) {
         return true;
       } else {
         return false;
