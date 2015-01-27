@@ -38,13 +38,13 @@
             <a href="mailto:{{user.email}}">{{user.email}}</a>
           </dd>
 
-          <dt ng-if="isDeveloper()">
+          <dt ng-if="!isDeleted()">
             <dfn>
               <span class=" glyphicon glyphicon-home">
               </span><span class="hspacer05"></span>Homepage
             </dfn>
           </dt>
-          <dd ng-if="isDeveloper()">
+          <dd ng-if="!isDeleted()">
             <a ng-show="mayEdit()" editable-url="user.website" onaftersave="updateUser()" href="{{user.website||'about:blank'}}">{{user.website||'about:blank'}}</a>
             <a ng-hide="mayEdit()" href="{{user.website||'about:blank'}}">{{user.website||'about:blank'}}</a>
           </dd>
@@ -57,7 +57,7 @@
           </dd>
         </dl>
       </div>
-      <div class="col-md-6 col-sm-12" ng-if="isDeveloper()">
+      <div class="col-md-6 col-sm-12" ng-if="!isDeleted()">
         <dl>
           <dt>
             <dfn><span class="glyphicon glyphicon-pencil"></span><span class="hspacer05"></span>Description</dfn>
