@@ -134,6 +134,7 @@ public class TagsResourceTest {
       newTag = new Tag("NewTag");
       Response response =
           target.path("apps/" + app.getId() + "/tags").request()
+              .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
               .post(entity(newTag, MediaType.APPLICATION_JSON));
       assertEquals(HttpStatusCode.CREATED, response.getStatus());
       MediaType responseMediaType = response.getMediaType();

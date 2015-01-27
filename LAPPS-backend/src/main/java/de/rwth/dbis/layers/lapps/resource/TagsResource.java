@@ -97,6 +97,7 @@ public class TagsResource {
   /**
    * Create a tag for an {@link App}.
    * 
+   * @param accessToken openID connect token
    * @param appId app id
    * @param createdTag tag to create as JSON
    * 
@@ -108,11 +109,18 @@ public class TagsResource {
   @ApiOperation(value = "Create tag for an app", response = Tag.class)
   @ApiResponses(value = {
       @ApiResponse(code = HttpStatusCode.CREATED, message = "Tag successful created"),
+      @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
-  public Response createTag(@PathParam("appId") long appId, @ApiParam(value = "Tag entity as JSON",
-      required = true) Tag createdTag) {
+  public Response createTag(@HeaderParam("accessToken") String accessToken,
+      @PathParam("appId") long appId,
+      @ApiParam(value = "Tag entity as JSON", required = true) Tag createdTag) {
+
+    // Check for user status
+    if (!OIDCAuthentication.isUser(accessToken)) {
+      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+    }
 
     List<App> apps = entitiyFacade.findByParam(App.class, "id", appId);
     if (apps.isEmpty()) {
@@ -155,16 +163,21 @@ public class TagsResource {
   public Response deleteTag(@HeaderParam("accessToken") String accessToken,
       @PathParam("appId") long appId, @PathParam("id") long id) {
 
-    // Check for admin status
-    if (!OIDCAuthentication.isAdmin(accessToken)) {
-      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
-    }
+
 
     List<App> apps = entitiyFacade.findByParam(App.class, "id", appId);
+
+
     if (apps.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
       App app = apps.get(0);
+      // Check for admin status or is dev of app
+      if (!OIDCAuthentication.isAdmin(accessToken)
+          && !OIDCAuthentication.isCreatorOfApp(app, accessToken)) {
+        return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+      }
+
       List<Tag> tagEntities = app.getTags();
       Tag tag = null;
       for (Tag tagTmp : tagEntities) {

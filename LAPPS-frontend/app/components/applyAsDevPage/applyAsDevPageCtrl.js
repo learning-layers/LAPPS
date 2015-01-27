@@ -40,7 +40,7 @@
                             swaggerApi.users
                                     .apply({
                                       accessToken: user.token,
-                                      oidcId: user.data.oidcId,
+                                      oidcId: +user.data.oidcId,
                                       body: $scope.applicationMessage
                                     })
                                     .then(
