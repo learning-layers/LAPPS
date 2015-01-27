@@ -4,12 +4,12 @@
  * @description This provider manages users: (Automatic) login of users and
  *              information about the current user
  */
-(function() {
+(function () {
   angular
           .module('lappsServices')
           .provider(
                   'user',
-                  function() {
+                  function () {
                     /**
                      * @field
                      * @type oidcConfig
@@ -41,14 +41,14 @@
                      * @description Initial configuration on startup for
                      *              contacting the oidc provider.
                      */
-                    this.configOidc = function(data) {
+                    this.configOidc = function (data) {
                       oidcData = data;
                     }
                     this.$get = [
                         '$http',
                         '$location',
                         'swaggerApi',
-                        function($http, $location, swaggerApi) {
+                        function ($http, $location, swaggerApi) {
                           return {
                             /**
                              * @field
@@ -60,7 +60,19 @@
                             data: {
                               oidcId: 0
                             },
-
+                            /**
+                            * @field
+                            * @type {object}
+                            * @memberOf lapps.lappsServices.user
+                            * @description Stores the number constants for the roles.
+                            */
+                            roles: {
+                              DELETED: -1,
+                              USER: 1,
+                              APPLICANT: 2,
+                              DEVELOPER: 3,
+                              ADMIN: 4
+                            },
                             /**
                              * @field
                              * @type string
@@ -97,11 +109,11 @@
                              * @description Converts a role id to a role string
                              *              for representation.
                              */
-                            roleIdToRoleName: function(id) {
-                              if (id == 1) { return 'User'; }
-                              if (id == 2) { return 'Applicant'; }
-                              if (id == 3) { return 'Developer'; }
-                              if (id == 4) { return 'Admin'; }
+                            roleIdToRoleName: function (id) {
+                              if (id == this.roles.USER) { return 'User'; }
+                              if (id == this.roles.APPLICANT) { return 'Applicant'; }
+                              if (id == this.roles.DEVELOPER) { return 'Developer'; }
+                              if (id == this.roles.ADMIN) { return 'Admin'; }
                               return 'Deleted';
                             },
                             /**
@@ -116,14 +128,14 @@
                              *              user. Retrieves token and user data
                              *              if successful.
                              */
-                            init: function(loginCallback) {
+                            init: function (loginCallback) {
                               var self = this;
 
                               self.loginCallback = loginCallback;
                               this
                                       .getProviderConfig(
                                               oidcData.server,
-                                              function(config) {
+                                              function (config) {
                                                 oidcProviderConfig = config;
 
                                                 // after successful retrieval of
@@ -133,7 +145,7 @@
                                                   // use access token and
                                                   // retrieve user info
                                                   self
-                                                          .getUserInfo(function(
+                                                          .getUserInfo(function (
                                                                   user) {
                                                             if (user['sub']) {
                                                               self.data = user;
@@ -160,7 +172,7 @@
                                                   self.loginCallback(false);
                                                 }
                                               },
-                                              function(d, s) {
+                                              function (d, s) {
                                                 console
                                                         .log('Warning: could not retrieve OpenID Connect server configuration!');
                                                 console.log(d);
@@ -177,7 +189,7 @@
                              *              login page given by the oidc
                              *              provider.
                              */
-                            signIn: function() {
+                            signIn: function () {
                               var pair = window.location.href.split('?');
                               window.localStorage.oldSearch = pair[1] || '';
 
@@ -202,7 +214,7 @@
                              *              local storage (no auto login
                              *              anymore).
                              */
-                            signOut: function() {
+                            signOut: function () {
                               var url = oidcData.server;
                               // window.location.href = url;
                               this.signedIn = false;
@@ -218,7 +230,7 @@
                              *              current user stored in the local
                              *              storage.
                              */
-                            getAccessToken: function() {
+                            getAccessToken: function () {
                               return window.localStorage['access_token'];
                             },
                             /**
@@ -230,11 +242,11 @@
                              * @description True if the user has the role of an
                              *              administrator
                              */
-                            isAdmin: function(id) {
+                            isAdmin: function (id) {
                               if (typeof id === 'undefined' || id === null) {
-                                return this.role == 4;
+                                return this.role == this.roles.ADMIN;
                               } else {
-                                return id == 4;
+                                return id == this.roles.ADMIN;
                               }
                             },
                             /**
@@ -245,11 +257,11 @@
                              *          id role id (optional)
                              * @description True if the user is a deleted user
                              */
-                            isDeleted: function(id) {
+                            isDeleted: function (id) {
                               if (typeof id === 'undefined' || id === null) {
-                                return this.role == -1;
+                                return this.role == this.roles.DELETED;
                               } else {
-                                return id == -1;
+                                return id == this.roles.DELETED;
                               }
                             },
                             /**
@@ -260,11 +272,11 @@
                              *          id role id (optional)
                              * @description True if the user is an applicant
                              */
-                            isApplicant: function(id) {
+                            isApplicant: function (id) {
                               if (typeof id === 'undefined' || id === null) {
-                                return this.role == 2;
+                                return this.role == this.roles.APPLICANT;
                               } else {
-                                return id == 2;
+                                return id == this.roles.APPLICANT;
                               }
                             },
                             /**
@@ -275,11 +287,11 @@
                              *          id role id (optional)
                              * @description True if the user isa a normal user.
                              */
-                            isUser: function(id) {
+                            isUser: function (id) {
                               if (typeof id === 'undefined' || id === null) {
-                                return this.role == 1;
+                                return this.role == this.roles.USER;
                               } else {
-                                return id == 1;
+                                return id == this.roles.USER;
                               }
                             },
                             /**
@@ -291,11 +303,11 @@
                              * @description True if the user has the role of a
                              *              developer
                              */
-                            isDeveloper: function(id) {
+                            isDeveloper: function (id) {
                               if (typeof id === 'undefined' || id === null) {
-                                return this.role == 3;
+                                return this.role == this.roles.DEVELOPER;
                               } else {
-                                return id == 3;
+                                return id == this.roles.DEVELOPER;
                               }
                             },
                             /**
@@ -310,7 +322,7 @@
                              * @description Fetches the oidc provider
                              *              configuration.
                              */
-                            getProviderConfig: function(provider, callback,
+                            getProviderConfig: function (provider, callback,
                                     errorCallback) {
                               var req = {
                                 method: 'GET',
@@ -318,9 +330,9 @@
                                         + '/.well-known/openid-configuration'
                               };
 
-                              $http(req).success(function(data, status) {
+                              $http(req).success(function (data, status) {
                                 callback(data)
-                              }).error(function(data, status) {
+                              }).error(function (data, status) {
                                 errorCallback(data, status)
                               });
                             },
@@ -332,7 +344,7 @@
                              * @description Fetches the user information from
                              *              the oidc provider.
                              */
-                            getUserInfo: function(callback) {
+                            getUserInfo: function (callback) {
                               var req = {
                                 method: 'GET',
                                 url: oidcProviderConfig.userinfo_endpoint,
@@ -341,18 +353,18 @@
                                           + this.getAccessToken()
                                 }
                               };
-                              $http(req).success(function(data, status) {
+                              $http(req).success(function (data, status) {
                                 callback(data)
-                              }).error(function(data, status) {
+                              }).error(function (data, status) {
                                 callback(status)
                               });
                             },
 
-                            getDatabaseUserInfo: function() {
+                            getDatabaseUserInfo: function () {
                               var self = this;
                               swaggerApi.users.getUser({
                                 oidcId: +self.data.sub
-                              }).then(function(response) {
+                              }).then(function (response) {
                                 if (response.status == 200) {
                                   self.role = response.data.role;
                                 } else if (response.status == 404) {
@@ -370,7 +382,7 @@
                                     }
                                   }
 
-                                  ).then(function(response) {
+                                  ).then(function (response) {
                                     self.role = response.data.role;
                                   });
                                 }
@@ -386,7 +398,7 @@
                              *              the local storage variables
                              *              access_token and id_token.
                              */
-                            checkAuth: function() {
+                            checkAuth: function () {
                               var fragment = this.parseFragment();
 
                               if (fragment != {} && fragment.access_token
@@ -408,7 +420,7 @@
                              * @description Reads the token information from the
                              *              address bar.
                              */
-                            parseFragment: function() {
+                            parseFragment: function () {
                               var params = {}, queryString = location.hash
                                       .substring(1), regex = /([^&=]+)=([^&]*)/g, m;
                               while (m = regex.exec(queryString)) {
@@ -423,8 +435,8 @@
                              *              address bar to avoid clutter and
                              *              accidental sharing.
                              */
-                            removeTokenFromUrl: function() {
-                              var parseLocation = function(location) {
+                            removeTokenFromUrl: function () {
+                              var parseLocation = function (location) {
                                 var pairs = location.split("&");
                                 var obj = {};
                                 var pair;

@@ -4,7 +4,7 @@
  * @description This controller is responsible for the application form for
  *              users, who want to become developers.
  */
-(function() {
+(function () {
   angular
           .module('lappsControllers')
           .controller(
@@ -15,7 +15,7 @@
                       '$modal',
                       '$location',
                       'swaggerApi',
-                      function($scope, user, $modal, $location, swaggerApi) {
+                      function ($scope, user, $modal, $location, swaggerApi) {
                         /**
                          * @field
                          * @type string
@@ -34,7 +34,7 @@
                          *              backend, so that it can be forwarded as
                          *              an email to the administrator.
                          */
-                        $scope.submit = function() {
+                        $scope.submit = function () {
                           if ($scope.applicationMessage.trim().length > 0) {
 
                             swaggerApi.users
@@ -44,7 +44,7 @@
                                       body: $scope.applicationMessage
                                     })
                                     .then(
-                                            function(response) {
+                                            function (response) {
 
                                               if (response.status == 200) {
                                                 var modalInstance = $modal
@@ -53,12 +53,15 @@
                                                           controller: 'submitConfirmCtrl',
                                                           size: 'xs',
                                                         });
+                                                if (user.isUser()) {
+                                                  user.role = user.roles.APPLICANT;
+                                                }
                                                 modalInstance.result
                                                         .then(
-                                                                function(isOk) {
+                                                                function (isOk) {
                                                                   $location
                                                                           .path('/apps');
-                                                                }, function() {
+                                                                }, function () {
                                                                 });
 
                                               } else {
