@@ -136,7 +136,7 @@
   </div>
 </div>
 
-<div class="row" id="comments" ng-hide="!app.name">
+<div class="row" id="comments" ng-hide="!app.name||(!mayComment()&&comments.length<1)">
   <div class="col-md-12">
     <h1>Comments</h1>
     <div class="col-md-12 thumbnail" ng-show="mayComment()">
