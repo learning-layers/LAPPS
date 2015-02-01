@@ -74,6 +74,7 @@ public class DataGenerator {
       currentApp.setSize(DataGeneratorUtils.getRandomSize());
       currentApp.setSourceUrl(DataGeneratorUtils.getRandomUrl());
       currentApp.setSupportUrl(DataGeneratorUtils.getRandomUrl());
+      currentApp.setMinPlatformRequired(DataGeneratorUtils.getRandomMinPlatform());
 
       User currentUser = users[RandomNumberGenerator.getRandomInt(0, users.length - 1)];
       currentApp.setCreator(currentUser);
