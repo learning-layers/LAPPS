@@ -1,6 +1,7 @@
 package de.rwth.dbis.layers.lapps;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -74,6 +75,7 @@ public class DataGenerator {
       currentApp.setSize(DataGeneratorUtils.getRandomSize());
       currentApp.setSourceUrl(DataGeneratorUtils.getRandomUrl());
       currentApp.setSupportUrl(DataGeneratorUtils.getRandomUrl());
+      currentApp.setMinPlatformRequired(DataGeneratorUtils.getRandomMinPlatform());
 
       User currentUser = users[RandomNumberGenerator.getRandomInt(0, users.length - 1)];
       currentApp.setCreator(currentUser);
@@ -108,10 +110,12 @@ public class DataGenerator {
 
       currentApp = facade.save(currentApp);
 
-      Comment[] comments = DataGeneratorUtils.getRandomComments(0, 22, currentApp, users);
+      List<Comment> comments =
+          DataGeneratorUtils.getRandomComments(0, 22, currentApp,
+              new ArrayList<User>(Arrays.asList(users)));
 
-      for (int j = 0; j < comments.length; j++) {
-        facade.save(comments[j]);
+      for (Comment comment : comments) {
+        facade.save(comment);
       }
 
       apps.add(currentApp);
