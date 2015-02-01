@@ -1,6 +1,8 @@
 package de.rwth.dbis.layers.lapps;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import de.rwth.dbis.layers.lapps.entity.App;
@@ -319,21 +321,27 @@ public class DataGeneratorUtils {
   }
 
   /**
-   * Generates an array of random comments for an app
+   * Generates a List of random comments for an app
    * 
    * @param min minimum amount of comments
    * @param max maximum amount of comments
    * @param app app for the comments
-   * @param users user array for the comments
-   * @return array of random comments
+   * @param users user list for the comments
+   * @return list of random comments
    */
-  public static Comment[] getRandomComments(int min, int max, App app, User[] users) {
+  public static List<Comment> getRandomComments(int min, int max, App app, ArrayList<User> users) {
     int amount = RandomNumberGenerator.getRandomInt(min, max);
-    Comment[] comments = new Comment[amount];
-    for (int i = 0; i < comments.length; i++) {
-      User currentUser = users[RandomNumberGenerator.getRandomInt(0, users.length - 1)];
+    List<Comment> comments = new ArrayList<Comment>();
+    Collections.shuffle(users);
+    for (int i = 0; i < amount; i++) {
+      // use every user only for one comment, if no user is left break comment creating
+      if (users.isEmpty()) {
+        break;
+      }
+      User currentUser = users.get(0);
+      users.remove(0);
 
-      comments[i] = new Comment(getRandomText(15, 0), (int) getRandomRating(), currentUser, app);
+      comments.add(new Comment(getRandomText(15, 0), (int) getRandomRating(), currentUser, app));
     }
     return comments;
   }
