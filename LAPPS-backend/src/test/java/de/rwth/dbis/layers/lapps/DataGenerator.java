@@ -68,8 +68,8 @@ public class DataGenerator {
       App currentApp =
           new App(DataGeneratorUtils.getRandomName(), DataGeneratorUtils.getRandomPlatform(),
               DataGeneratorUtils.getRandomShortDescription(),
-              DataGeneratorUtils.getRandomMinPlatform(),
-              DataGeneratorUtils.getRandomLongDescription(), DataGeneratorUtils.getRandomUrl());
+              DataGeneratorUtils.getRandomVersion(), DataGeneratorUtils.getRandomLongDescription(),
+              DataGeneratorUtils.getRandomUrl());
       currentApp.setLicense("Copyright 2014");// check here for DB restrictions?
       currentApp.setRating(DataGeneratorUtils.getRandomRating());
       currentApp.setSize(DataGeneratorUtils.getRandomSize());
