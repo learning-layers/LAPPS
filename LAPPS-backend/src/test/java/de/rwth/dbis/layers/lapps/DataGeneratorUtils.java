@@ -321,7 +321,8 @@ public class DataGeneratorUtils {
   }
 
   /**
-   * Generates a List of random comments for an app
+   * Generates a List of random comments for an app. Can only generate as much as users are known in
+   * this dummy generator.
    * 
    * @param min minimum amount of comments
    * @param max maximum amount of comments
@@ -333,6 +334,7 @@ public class DataGeneratorUtils {
     int amount = RandomNumberGenerator.getRandomInt(min, max);
     List<Comment> comments = new ArrayList<Comment>();
     Collections.shuffle(users);
+
     for (int i = 0; i < amount; i++) {
       // use every user only for one comment, if no user is left break comment creating
       if (users.isEmpty()) {

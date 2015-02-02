@@ -71,7 +71,7 @@ public class DataGenerator {
               DataGeneratorUtils.getRandomVersion(), DataGeneratorUtils.getRandomLongDescription(),
               DataGeneratorUtils.getRandomUrl());
       currentApp.setLicense("Copyright 2014");// check here for DB restrictions?
-      currentApp.setRating(DataGeneratorUtils.getRandomRating());
+      currentApp.setRating(3D); // All apps have an initial rating of 3
       currentApp.setSize(DataGeneratorUtils.getRandomSize());
       currentApp.setSourceUrl(DataGeneratorUtils.getRandomUrl());
       currentApp.setSupportUrl(DataGeneratorUtils.getRandomUrl());
@@ -114,21 +114,26 @@ public class DataGenerator {
       List<Comment> comments =
           DataGeneratorUtils.getRandomComments(0, 22, currentApp,
               new ArrayList<User>(Arrays.asList(users)));
-      double appRating = 3; // Initial rating of 3 (if something with the comments fails..)
+      double appRating = 0;
       int commentSize = comments.size();
-      for (Comment comment : comments) {
-        appRating += comment.getRating();
-        facade.save(comment);
+      if (commentSize != 0) {
+        for (Comment comment : comments) {
+          appRating += comment.getRating();
+          facade.save(comment);
+        }
+
+        appRating = appRating / commentSize;
+        currentApp.setRating(appRating);
+        currentApp = facade.save(currentApp);
       }
-      appRating = appRating / commentSize;
-      currentApp.setRating(appRating);
+
+
       apps.add(currentApp);
     }
     return apps;
   }
 
   private static void dropExistingData() {
-    facade.deleteAll(Comment.class);
     facade.deleteAll(User.class);
     facade.deleteAll(App.class);
   }
