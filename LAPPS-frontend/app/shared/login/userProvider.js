@@ -4,12 +4,12 @@
  * @description This provider manages users: (Automatic) login of users and
  *              information about the current user
  */
-(function() {
+(function () {
   angular
           .module('lappsServices')
           .provider(
                   'user',
-                  function() {
+                  function () {
                     /**
                      * @field
                      * @type oidcConfig
@@ -41,13 +41,14 @@
                      * @description Initial configuration on startup for
                      *              contacting the oidc provider.
                      */
-                    this.configOidc = function(data) {
+                    this.configOidc = function (data) {
                       oidcData = data;
                     }
                     this.$get = [
                         '$http',
                         '$location',
-                        function($http, $location) {
+                        'swaggerApi',
+                        function ($http, $location, swaggerApi) {
                           return {
                             /**
                              * @field
@@ -56,8 +57,22 @@
                              * @description Data about the user retrived from
                              *              the oidc provider.
                              */
-                            data: null,
-
+                            data: {
+                              oidcId: 0
+                            },
+                            /**
+                            * @field
+                            * @type {object}
+                            * @memberOf lapps.lappsServices.user
+                            * @description Stores the number constants for the roles.
+                            */
+                            roles: {
+                              DELETED: -1,
+                              USER: 1,
+                              APPLICANT: 2,
+                              DEVELOPER: 3,
+                              ADMIN: 4
+                            },
                             /**
                              * @field
                              * @type string
@@ -65,17 +80,8 @@
                              * @description The role of a user (User, Developer,
                              *              Admin)
                              */
-                            role: 'user',
+                            role: 1,
 
-                            /**
-                             * @field
-                             * @type number
-                             * @memberOf lapps.lappsServices.user
-                             * @description The timestamp, when the user first
-                             *              signed in.
-                             */
-
-                            memberSince: 0,
                             /**
                              * @field
                              * @type boolean
@@ -103,12 +109,12 @@
                              * @description Converts a role id to a role string
                              *              for representation.
                              */
-                            roleIdToRoleName: function(id) {
-                              if (id == 1) { return 'User'; }
-                              if (id == 2) { return 'Dev. Applicant'; }
-                              if (id == 3) { return 'Developer'; }
-                              if (id == 4) { return 'Admin'; }
-                              return 'User';
+                            roleIdToRoleName: function (id) {
+                              if (id == this.roles.USER) { return 'User'; }
+                              if (id == this.roles.APPLICANT) { return 'Applicant'; }
+                              if (id == this.roles.DEVELOPER) { return 'Developer'; }
+                              if (id == this.roles.ADMIN) { return 'Admin'; }
+                              return 'Deleted';
                             },
                             /**
                              * @function
@@ -122,14 +128,14 @@
                              *              user. Retrieves token and user data
                              *              if successful.
                              */
-                            init: function(loginCallback) {
+                            init: function (loginCallback) {
                               var self = this;
 
                               self.loginCallback = loginCallback;
                               this
                                       .getProviderConfig(
                                               oidcData.server,
-                                              function(config) {
+                                              function (config) {
                                                 oidcProviderConfig = config;
 
                                                 // after successful retrieval of
@@ -139,16 +145,19 @@
                                                   // use access token and
                                                   // retrieve user info
                                                   self
-                                                          .getUserInfo(function(
+                                                          .getUserInfo(function (
                                                                   user) {
                                                             if (user['sub']) {
                                                               self.data = user;
+                                                              self.data.oidcId = self.data.sub;
+                                                              self.data.username = self.data.preferred_username;
 
                                                               self.signedIn = true;
                                                               self.token = window.localStorage['access_token'];// needed
                                                               // for
                                                               // requests
-                                                              // getDatabaseUserInfo();
+                                                              self
+                                                                      .getDatabaseUserInfo();
                                                               self
                                                                       .loginCallback(true);
                                                             } else {
@@ -163,7 +172,7 @@
                                                   self.loginCallback(false);
                                                 }
                                               },
-                                              function(d, s) {
+                                              function (d, s) {
                                                 console
                                                         .log('Warning: could not retrieve OpenID Connect server configuration!');
                                                 console.log(d);
@@ -180,7 +189,7 @@
                              *              login page given by the oidc
                              *              provider.
                              */
-                            signIn: function() {
+                            signIn: function () {
                               var pair = window.location.href.split('?');
                               window.localStorage.oldSearch = pair[1] || '';
 
@@ -205,7 +214,7 @@
                              *              local storage (no auto login
                              *              anymore).
                              */
-                            signOut: function() {
+                            signOut: function () {
                               var url = oidcData.server;
                               // window.location.href = url;
                               this.signedIn = false;
@@ -221,7 +230,7 @@
                              *              current user stored in the local
                              *              storage.
                              */
-                            getAccessToken: function() {
+                            getAccessToken: function () {
                               return window.localStorage['access_token'];
                             },
                             /**
@@ -233,11 +242,56 @@
                              * @description True if the user has the role of an
                              *              administrator
                              */
-                            isAdmin: function(id) {
+                            isAdmin: function (id) {
                               if (typeof id === 'undefined' || id === null) {
-                                return this.role == 4;
+                                return this.role == this.roles.ADMIN;
                               } else {
-                                return id == 4;
+                                return id == this.roles.ADMIN;
+                              }
+                            },
+                            /**
+                             * @function
+                             * @type boolean
+                             * @memberOf lapps.lappsServices.user
+                             * @param {number}
+                             *          id role id (optional)
+                             * @description True if the user is a deleted user
+                             */
+                            isDeleted: function (id) {
+                              if (typeof id === 'undefined' || id === null) {
+                                return this.role == this.roles.DELETED;
+                              } else {
+                                return id == this.roles.DELETED;
+                              }
+                            },
+                            /**
+                             * @function
+                             * @type boolean
+                             * @memberOf lapps.lappsServices.user
+                             * @param {number}
+                             *          id role id (optional)
+                             * @description True if the user is an applicant
+                             */
+                            isApplicant: function (id) {
+                              if (typeof id === 'undefined' || id === null) {
+                                return this.role == this.roles.APPLICANT;
+                              } else {
+                                return id == this.roles.APPLICANT;
+                              }
+                            },
+                            /**
+                             * @function
+                             * @type boolean
+                             * @memberOf lapps.lappsServices.user
+                             * @param {number}
+                             *          id role id (optional)
+                             * @description True if the user isa a normal user.
+                             */
+                            isUser: function (id) {
+                              if (typeof id === 'undefined' || id === null) {
+                                return this.role == this.roles.USER;
+                              } else {
+                                return id == this.roles.USER;
                               }
                             },
                             /**
@@ -249,11 +303,11 @@
                              * @description True if the user has the role of a
                              *              developer
                              */
-                            isDeveloper: function(id) {
+                            isDeveloper: function (id) {
                               if (typeof id === 'undefined' || id === null) {
-                                return this.role == 3;
+                                return this.role == this.roles.DEVELOPER;
                               } else {
-                                return id == 3;
+                                return id == this.roles.DEVELOPER;
                               }
                             },
                             /**
@@ -268,7 +322,7 @@
                              * @description Fetches the oidc provider
                              *              configuration.
                              */
-                            getProviderConfig: function(provider, callback,
+                            getProviderConfig: function (provider, callback,
                                     errorCallback) {
                               var req = {
                                 method: 'GET',
@@ -276,9 +330,9 @@
                                         + '/.well-known/openid-configuration'
                               };
 
-                              $http(req).success(function(data, status) {
+                              $http(req).success(function (data, status) {
                                 callback(data)
-                              }).error(function(data, status) {
+                              }).error(function (data, status) {
                                 errorCallback(data, status)
                               });
                             },
@@ -290,7 +344,7 @@
                              * @description Fetches the user information from
                              *              the oidc provider.
                              */
-                            getUserInfo: function(callback) {
+                            getUserInfo: function (callback) {
                               var req = {
                                 method: 'GET',
                                 url: oidcProviderConfig.userinfo_endpoint,
@@ -299,15 +353,41 @@
                                           + this.getAccessToken()
                                 }
                               };
-                              $http(req).success(function(data, status) {
+                              $http(req).success(function (data, status) {
                                 callback(data)
-                              }).error(function(data, status) {
+                              }).error(function (data, status) {
                                 callback(status)
                               });
                             },
 
-                            getDatabaseUserInfo: function() {
-                              // TODO: fetch additional data from our database
+                            getDatabaseUserInfo: function () {
+                              var self = this;
+                              swaggerApi.users.getUser({
+                                oidcId: +self.data.sub
+                              }).then(function (response) {
+                                if (response.status == 200) {
+                                  self.role = response.data.role;
+                                } else if (response.status == 404) {
+                                  swaggerApi.users.updateUser({
+                                    accessToken: self.token,
+                                    oidcId: +self.data.sub,
+                                    body: {
+                                      "oidcId": 0,
+                                      "email": "",
+                                      "username": "",
+                                      "role": 0,
+                                      "dateRegistered": "",
+                                      "description": "none",
+                                      "website": "none"
+                                    }
+                                  }
+
+                                  ).then(function (response) {
+                                    self.role = response.data.role;
+                                  });
+                                }
+                              });
+
                             },
                             /**
                              * @function
@@ -318,7 +398,7 @@
                              *              the local storage variables
                              *              access_token and id_token.
                              */
-                            checkAuth: function() {
+                            checkAuth: function () {
                               var fragment = this.parseFragment();
 
                               if (fragment != {} && fragment.access_token
@@ -340,7 +420,7 @@
                              * @description Reads the token information from the
                              *              address bar.
                              */
-                            parseFragment: function() {
+                            parseFragment: function () {
                               var params = {}, queryString = location.hash
                                       .substring(1), regex = /([^&=]+)=([^&]*)/g, m;
                               while (m = regex.exec(queryString)) {
@@ -355,8 +435,8 @@
                              *              address bar to avoid clutter and
                              *              accidental sharing.
                              */
-                            removeTokenFromUrl: function() {
-                              var parseLocation = function(location) {
+                            removeTokenFromUrl: function () {
+                              var parseLocation = function (location) {
                                 var pairs = location.split("&");
                                 var obj = {};
                                 var pair;

@@ -93,7 +93,7 @@ public class Facade {
    * @param clazz
    * @param paramName
    * @param paramValue
-   * @return
+   * @return the entity list
    */
   @SuppressWarnings("unchecked")
   public <E extends Entity> List<E> findByParam(Class<E> clazz, String paramName, Object paramValue) {

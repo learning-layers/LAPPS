@@ -53,7 +53,8 @@
       reloadOnSearch: false
     }).when('/apps/:appId', {
       templateUrl: 'components/appDetail/appDetailView.html',
-      controller: 'appDetailCtrl'
+      controller: 'appDetailCtrl',
+      reloadOnSearch: false,
     }).when('/search/:query', {
       templateUrl: 'components/searchPage/searchPageView.html',
       controller: 'searchPageCtrl',
@@ -69,9 +70,23 @@
     }).when('/users/:userId', {
       templateUrl: 'components/userPage/userPageView.html',
       controller: 'userPageCtrl'
+    }).when('/users', {
+      templateUrl: 'components/userSearchPage/userSearchPageView.html',
+      controller: 'userSearchPageCtrl'
     }).when('/apps/:appId/edit', {
       templateUrl: 'components/editAppPage/editPageView.html',
       controller: 'editPageCtrl'
+    }).when('/apply', {
+      templateUrl: 'components/applyAsDevPage/applyAsDevPageView.html',
+      controller: 'applyAsDevPageCtrl'
+    }).when('/tos', {
+      templateUrl: 'components/footerPages/termsOfService.html'
+    }).when('/privacy', {
+      templateUrl: 'components/footerPages/privacyPolicy.html'
+    }).when('/contact', {
+      templateUrl: 'components/footerPages/contact.html'
+    }).when('/faq', {
+      templateUrl: 'components/footerPages/faq.html'
     }).otherwise({
       redirectTo: '/apps'
     });

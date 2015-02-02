@@ -1,6 +1,7 @@
 package de.rwth.dbis.layers.lapps;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,6 +12,7 @@ import de.rwth.dbis.layers.lapps.DataGeneratorUtils.RandomNumberGenerator;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
 import de.rwth.dbis.layers.lapps.entity.Artifact;
+import de.rwth.dbis.layers.lapps.entity.Comment;
 import de.rwth.dbis.layers.lapps.entity.Tag;
 import de.rwth.dbis.layers.lapps.entity.User;
 
@@ -61,21 +63,19 @@ public class DataGenerator {
     }
 
     for (int i = 0; i < howMany; i++) {
-      // init the app
 
+      // initialize the app
       App currentApp =
           new App(DataGeneratorUtils.getRandomName(), DataGeneratorUtils.getRandomPlatform(),
-              DataGeneratorUtils.getRandomShortDescription());
-      // TODO: add the other 3 additional fields
-      currentApp.setDownloadUrl(DataGeneratorUtils.getRandomUrl());
+              DataGeneratorUtils.getRandomShortDescription(),
+              DataGeneratorUtils.getRandomVersion(), DataGeneratorUtils.getRandomLongDescription(),
+              DataGeneratorUtils.getRandomUrl());
       currentApp.setLicense("Copyright 2014");// check here for DB restrictions?
-      currentApp.setLongDescription(DataGeneratorUtils.getRandomLongDescription());
-      currentApp.setMinPlatformRequired(DataGeneratorUtils.getRandomMinPlatform());
-      currentApp.setRating(DataGeneratorUtils.getRandomRating());
+      currentApp.setRating(3D); // All apps have an initial rating of 3
       currentApp.setSize(DataGeneratorUtils.getRandomSize());
       currentApp.setSourceUrl(DataGeneratorUtils.getRandomUrl());
       currentApp.setSupportUrl(DataGeneratorUtils.getRandomUrl());
-      currentApp.setVersion(DataGeneratorUtils.getRandomVersion());
+      currentApp.setMinPlatformRequired(DataGeneratorUtils.getRandomMinPlatform());
 
       User currentUser = users[RandomNumberGenerator.getRandomInt(0, users.length - 1)];
       currentApp.setCreator(currentUser);
@@ -109,6 +109,25 @@ public class DataGenerator {
       }
 
       currentApp = facade.save(currentApp);
+
+      // Generate a maximum of 22 comments for this app (randomly chosen number)
+      List<Comment> comments =
+          DataGeneratorUtils.getRandomComments(0, 22, currentApp,
+              new ArrayList<User>(Arrays.asList(users)));
+      double appRating = 0;
+      int commentSize = comments.size();
+      if (commentSize != 0) {
+        for (Comment comment : comments) {
+          appRating += comment.getRating();
+          facade.save(comment);
+        }
+
+        appRating = appRating / commentSize;
+        currentApp.setRating(appRating);
+        currentApp = facade.save(currentApp);
+      }
+
+
       apps.add(currentApp);
     }
     return apps;

@@ -1,8 +1,9 @@
-﻿<div class="row">
+﻿<div class="row" ng-show="requestTimedOut && !app.name">
+  <invalid-link>
+  </invalid-link>
+</div>
+<div class="row" ng-show="app.name">
 
-  <button ng-click="expandCollapseDescription()" ng-class="{'collapsed': collapsed}" class="visible-xs description-expander btn btn-primary">
-    <span class="caret" ng-class="{'caret-reversed-white': !collapsed}"></span><span class="hspacer05"></span>{{collapsed?'Show more':'Show less'}}<span class="hspacer05"></span><span class="caret" ng-class="{'caret-reversed-white': !collapsed}"></span>
-  </button>
   <div class="col-md-12">
     <div class="col-md-12 thumbnail" id="app-description">
       <div class="title">
@@ -11,18 +12,19 @@
           {{app.name}} <span>
             by <a href="#/users/{{app.creator.oidcId}}">{{app.creator.username}}</a>
           </span>
-          <a href="#/apps/{{app.id}}/edit" id="editApp" class="btn btn-warning pull-right"><span class="glyphicon glyphicon-pencil"></span><span class="hspacer05"></span>Edit</a>
+
+          <span class="pull-right" ng-show="mayEdit()">
+            <span class="vspacer05 visible-xs"></span>
+            <span class="hspacer05"></span>
+            <a ng-click="deleteApp()" href="javascript:void(0)" id="deleteApp" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span><span class="hspacer05"></span>Delete</a>
+            <span class="hspacer05"></span>
+            <a href="#/apps/{{app.id}}/edit" id="editApp" class="btn btn-success"><span class="glyphicon glyphicon-pencil"></span><span class="hspacer05"></span>Edit</a>
+          </span>
         </h2>
-        
       </div>
-      <!--<div id="platform-links">
-          <input type="image" src="./assets/img/android.png" id="android" data-ng-click="chosenVersion($event)" />
-          <input type="image" src="./assets/img/windows.png" id="windows" data-ng-click="chosenVersion($event)" />
-          <input type="image" src="./assets/img/apple.png" id="ios" data-ng-click="chosenVersion($event)" />
-        </div>-->
       <div class="app-detail-container">
 
-        <img ng-src="{{app.thumbnail}}" class="img-detail">
+        <img ng-src="{{app.thumbnail?app.thumbnail:'assets/img/placeholders/missingImage.svg'}}" error-src="assets/img/placeholders/missingImage.svg" class="img-detail">
         <div class="caption">
           <a href="{{app.downloadUrl}}" id="download-button" class="{{app.platformObj.downloadBadge}}"></a>
           <div class="app-meta-data  text-color-paleblack">
@@ -49,7 +51,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row" ng-show="app.name">
   <div class="col-md-12">
 
     <div class="col-md-9" id="app-images">
@@ -61,17 +63,20 @@
             </div>
           </slide>
           <slide ng-repeat=" image in app.images">
-            <img ng-src="{{image.url}}" width="1000" height="560">
+            <div class="img-container">
+              <div class="dummy"></div>
+              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" back-img="{{image.url}}">
+            </div>
           </slide>
         </carousel>
-        
+
         <p>{{(currentSlide< app.videos.length)?app.videos[currentSlide].description:app.images[currentSlide-app.videos.length].description}}</p>
       </div>
     </div>
 
     <div class=" thumbnail col-md-3" id="app-technical-detail">
       <div class="title">
-        <h3>Technical details</h3>
+        <h3>Technical Details</h3>
       </div>
 
       <dl>
@@ -127,6 +132,76 @@
           <a href="{{app.supportUrl}}">{{app.supportUrlShort}}</a>
         </dd>
       </dl>
+    </div>
+  </div>
+</div>
+
+<div class="row" id="comments" ng-hide="!app.name||(!mayComment()&&comments.length<1)">
+  <div class="col-md-12">
+    <h1>Comments</h1>
+    <div class="col-md-12 thumbnail" ng-show="mayComment()">
+      <div class="title">
+        <h3>Rate the App</h3>
+      </div>
+      <div class="caption">
+
+        <div class="comment-rating text-center">
+          <rating class="text-color-staryellow" ng-model="currentRating" max="5"></rating><span class="hspacer05"></span>{{currentRating}}/5
+        </div>
+        <h4>Tell others your opinion:</h4>
+        <textarea ng-model="currentComment" class="form-control custom-control" rows="5" placeholder="I like/dislike this app because..."></textarea>
+        <span class="vspacer05"></span>
+        <div class="comment-submit">
+          <button ng-click="submitComment()" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span><span class="hspacer05"></span>Submit</button>
+        </div>
+      </div>
+    </div>
+
+    <div ng-repeat="comment in comments" class="col-md-12 thumbnail pos-rel">
+      <div class="col-md-2 text-center">
+        <a class="comment-commenter" href="#/users/{{comment.user.oidcId}}"><strong>{{comment.user.username}}</strong></a>
+        <div class="avatar">
+          <a href="#/users/{{comment.user.oidcId}}" class="img-circle" back-img="{{comment.avatar?comment.avatar:''}}"></a>
+        </div>
+        <button class="btn btn-danger" ng-show="isAdmin()" ng-click="deleteComment(comments[$index].id)">Delete Comment</button>
+      </div>
+      <div class="col-md-10">
+        <div class="comment-header">
+          <star-rating value="{{comment.rating}}"></star-rating>
+          <div class="comment-date">{{comment.dateCreatedConverted}}</div>
+        </div>
+        <div class="comment-content">
+          {{comment.content}}
+        </div>
+      </div>
+      <div ng-show="comment.dateCreated<comment.dateModified" class="comment-updated"><span class="glyphicon glyphicon-pencil"></span> Edited: {{comment.dateModifiedConverted}}</div>
+    </div>
+  </div>
+
+  <div class="row" ng-show="maxPage>1">
+    <div class="col-xs-12 text-center">
+      <ul class="pagination">
+        <li ng-class="{'disabled':currentPage==1}">
+          <a href="javascript:void(0)" ng-click="changePage(1)">
+            <span class="glyphicon glyphicon-step-backward"></span>
+          </a>
+        </li>
+        <li ng-click="changePage(n+(currentPage>3?currentPage-3:1))"
+            ng-class="{'active':n+(currentPage>3?currentPage-3:1)==currentPage}" ng-repeat="n in [] | rangeFilter: currentPage>3?Math.min(maxDisplayPage,(4+maxPage-currentPage)):Math.min(maxDisplayPage,maxPage)">
+          <a href="javascript:void(0)">{{n+(currentPage>3?currentPage-3:1)}}</a>
+        </li>
+        <li ng-show="maxPage>maxDisplayPage"><a href="javascript:void(0)">...</a></li>
+        <li ng-show="maxPage>maxDisplayPage" ng-click="changePage(maxPage)"
+            ng-class="{'active':currentPage==maxPage}">
+
+          <a href="javascript:void(0)">{{maxPage}}</a>
+        </li>
+        <li>
+          <!--<a href="javascript:void(0)">
+            <span class="glyphicon glyphicon-step-forward"></span>
+          </a>-->
+        </li>
+      </ul>
     </div>
   </div>
 </div>

@@ -50,7 +50,9 @@ public class TagsResourceTest {
     target = c.target(Main.BASE_URI);
 
     LOGGER.info("Creating a new app...");
-    app = new App("TestApp", "iOS", "TestApp");
+    app =
+        new App("TestApp", "iOS", "TestApp Short Description", "0.2",
+            "This is a not so long Description", "www.here-123.itis");
     app = entityFacade.save(app);
     LOGGER.info("App created: " + app);
 
@@ -132,8 +134,9 @@ public class TagsResourceTest {
       newTag = new Tag("NewTag");
       Response response =
           target.path("apps/" + app.getId() + "/tags").request()
+              .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
               .post(entity(newTag, MediaType.APPLICATION_JSON));
-      assertEquals(HttpStatusCode.OK, response.getStatus());
+      assertEquals(HttpStatusCode.CREATED, response.getStatus());
       MediaType responseMediaType = response.getMediaType();
       assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
       String responseContent = response.readEntity(String.class);
@@ -160,7 +163,7 @@ public class TagsResourceTest {
     Response response =
         target.path("apps/" + app.getId() + "/tags/" + tag.getId()).request()
             .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
-    assertEquals(HttpStatusCode.OK, response.getStatus());
+    assertEquals(HttpStatusCode.NO_CONTENT, response.getStatus());
 
     response =
         target.path("apps/" + app.getId() + "/tags").request(MediaType.APPLICATION_JSON).get();

@@ -1,4 +1,8 @@
-<div class="row">
+<div class="row" ng-show="requestTimedOut && !user.username">
+  <invalid-link>
+  </invalid-link>
+</div>
+<div class="row" ng-show="user.username">
   <div class="col-md-12 thumbnail" id="user-profile">
     <div class="title">
       <!--<img ng-src="{{user.avatar}}">-->
@@ -8,7 +12,7 @@
     </div>
     <div class="container">
       <div class="col-md-3 col-sm-5 text-center avatar">
-        <a href="https://secure.gravatar.com" class="img-circle" back-img="{{user.avatar}}"></a>
+        <a href="https://secure.gravatar.com" class="img-circle" back-img="{{user.avatar?user.avatar:''}}"></a>
       </div>
       <div class="col-md-3 col-sm-7">
         <hr class="visible-xs" />
@@ -17,7 +21,7 @@
             <dfn><span class="glyphicon glyphicon-user"></span><span class="hspacer05"></span>Role</dfn>
           </dt>
           <dd>
-            {{user.roleName}} m {{user.isDeveloper}}
+            {{user.roleName}}
           </dd>
 
           <dt>
@@ -33,17 +37,18 @@
           <dd>
             <a href="mailto:{{user.email}}">{{user.email}}</a>
           </dd>
-          
-          
-          <dt ng-if="isDeveloper()">
-              <dfn><span class=" glyphicon glyphicon-home">
-            </span><span class="hspacer05"></span>Homepage</dfn>
+
+          <dt ng-if="!isDeleted()">
+            <dfn>
+              <span class=" glyphicon glyphicon-home">
+              </span><span class="hspacer05"></span>Homepage
+            </dfn>
           </dt>
-          <dd ng-if="isDeveloper()">
+          <dd ng-if="!isDeleted()">
             <a ng-show="mayEdit()" editable-url="user.website" onaftersave="updateUser()" href="{{user.website||'about:blank'}}">{{user.website||'about:blank'}}</a>
             <a ng-hide="mayEdit()" href="{{user.website||'about:blank'}}">{{user.website||'about:blank'}}</a>
           </dd>
-          
+
           <dt ng-if="isDeveloper()">
             <dfn><span class="glyphicon glyphicon-upload"></span><span class="hspacer05"></span>Apps uploaded</dfn>
           </dt>
@@ -52,7 +57,7 @@
           </dd>
         </dl>
       </div>
-      <div class="col-md-6 col-sm-12" ng-if="isDeveloper()">
+      <div class="col-md-6 col-sm-12" ng-if="!isDeleted()">
         <dl>
           <dt>
             <dfn><span class="glyphicon glyphicon-pencil"></span><span class="hspacer05"></span>Description</dfn>
@@ -65,10 +70,20 @@
           </dd>
         </dl>
       </div>
-      <!--<div id="remove-profile" class="col-md-3 col-sm-12" ng-show="(mayEdit()||visitorIsAdmin())&&!isAdmin()">
-        <button ng-hide="{{visitorIsAdmin()}}" class="btn btn-danger">Delete Me</button>
-        <button ng-show="{{visitorIsAdmin()&&!mayEdit()}}" class="btn btn-danger">Ban User</button>
-      </div>-->
+      <div class="col-md-12" id="user-account-controls" ng-show="mayEdit()">
+        <div class="pull-left">
+          <a href="#/apply" ng-show="isUser()" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Apply as Developer</a>
+          <button ng-show="isApplicant() && visitorIsAdmin()" class="btn btn-primary" ng-click="upgradeUser()"><span class="glyphicon glyphicon-arrow-up"></span> Upgrade to Developer</button>
+          <!--<button ng-show="isDeveloper() && visitorIsAdmin()" class="btn btn-warning" ng-click="downgradeUser()"><span class="glyphicon glyphicon-arrow-down"></span> Downgrade to User</button>-->
+          <button class="btn btn-danger" ng-hide="isAdmin()" ng-click="deleteUser()"><span class="glyphicon glyphicon-remove"></span> Delete Account</button>
+
+        </div>
+        
+        <!--<div class="pull-left" ng-show="(mayEdit()||visitorIsAdmin())&&!isAdmin()">
+          <button class="btn btn-danger" ng-click="deleteUser()"><span class="glyphicon glyphicon-remove"></span> Delete Account</button>
+          
+        </div>-->
+      </div>
     </div>
   </div>
 </div>

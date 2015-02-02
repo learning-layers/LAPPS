@@ -22,6 +22,7 @@ import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
+import de.rwth.dbis.layers.lapps.entity.Comment;
 import de.rwth.dbis.layers.lapps.entity.User;
 import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
@@ -43,21 +44,12 @@ public class OIDCAuthentication {
   private static Facade facade = new Facade();
 
   /**
-   * Returns true, if the given token belongs to a user with at least(!) "user" rights.
+   * Returns true, if the given token belongs to a user with at least(!) "user" rights (always true)
    * 
    * @param openIdToken
-   * @return
+   * @return true, if the token belongs to a user
    */
   public static boolean isUser(String openIdToken) {
-    // no token provided
-    if (openIdToken == null) {
-      return false;
-    }
-    // default testing token returns default testing id
-    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
-      return true;
-    }
-
     try {
       User user = authenticate(openIdToken);
       if (user.getRole() >= User.USER) {
@@ -74,18 +66,9 @@ public class OIDCAuthentication {
    * Returns true, if the given token belongs to a user with exactly(!) "pending developer" rights.
    * 
    * @param openIdToken
-   * @return
+   * @return true, if the user is a pending developer
    */
   public static boolean isPendingDeveloper(String openIdToken) {
-    // no token provided
-    if (openIdToken == null) {
-      return false;
-    }
-    // default testing token returns default testing id
-    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
-      return true;
-    }
-
     try {
       User user = authenticate(openIdToken);
       if (user.getRole() == User.PENDING_DEVELOPER) {
@@ -102,18 +85,9 @@ public class OIDCAuthentication {
    * Returns true, if the given token belongs to a user with at least(!) "developer" rights.
    * 
    * @param openIdToken
-   * @return
+   * @return true, if the user is developer or admin
    */
   public static boolean isDeveloper(String openIdToken) {
-    // no token provided
-    if (openIdToken == null) {
-      return false;
-    }
-    // default testing token returns default testing id
-    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
-      return true;
-    }
-
     try {
       User user = authenticate(openIdToken);
       if (user.getRole() >= User.DEVELOPER) {
@@ -129,19 +103,10 @@ public class OIDCAuthentication {
   /**
    * Returns true, if the given token belongs to a user with "admin" rights.
    * 
-   * @param openIdToken
-   * @return
+   * @param openIdToken the token
+   * @return true, if the user is an administrator
    */
   public static boolean isAdmin(String openIdToken) {
-    // no token provided
-    if (openIdToken == null) {
-      return false;
-    }
-    // default testing token returns default testing id
-    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
-      return true;
-    }
-
     try {
       User user = authenticate(openIdToken);
       if (user.getRole() == User.ADMIN) {
@@ -157,23 +122,19 @@ public class OIDCAuthentication {
   /**
    * Returns true, if the given token belongs to a user that has created the app with the given id.
    * 
-   * @param id The app id
+   * @param app The app
    * @param openIdToken
-   * @return
+   * @return true, if the user is creator of the app
    */
   public static boolean isCreatorOfApp(App app, String openIdToken) {
-    // no token or no app provided
-    if (openIdToken == null || app == null) {
+    // no app provided
+    if (app == null) {
       return false;
-    }
-    // default testing token returns default testing id
-    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
-      return true;
     }
 
     try {
       User user = authenticate(openIdToken);
-      if (app.getCreator() == user) {
+      if (app.getCreator().getOidcId().equals(user.getOidcId())) {
         return true;
       } else {
         return false;
@@ -188,21 +149,12 @@ public class OIDCAuthentication {
    * 
    * @param oidcId the oidcId of the user
    * @param openIdToken
-   * @return
+   * @return true, if oidcId and openIdToken match
    */
   public static boolean isSameUser(Long oidcId, String openIdToken) {
-    // no token provided
-    if (openIdToken == null) {
-      return false;
-    }
-    // default testing token returns default testing id
-    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
-      return true;
-    }
-
     try {
       User user = authenticate(openIdToken);
-      if (user.getId() == oidcId) {
+      if (user.getOidcId().equals(oidcId)) {
         return true;
       } else {
         return false;
@@ -212,6 +164,30 @@ public class OIDCAuthentication {
     }
   }
 
+  /**
+   * Returns true, if the given token belongs to the owner of the comment.
+   * 
+   * @param openIdToken
+   * @param Comment entity
+   * @return true, if userId and comment.getUser.getId match
+   */
+  public static boolean isCommentOwner(String openIdToken, Comment comment) {
+    // no token provided
+    if (openIdToken == null) {
+      return false;
+    }
+
+    try {
+      User user = authenticate(openIdToken);
+      if (comment.getUser().getOidcId().equals(user.getOidcId())) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (OIDCException e) {
+      return false;
+    }
+  }
 
   /**
    * Tries to authenticate a user for a given OpenIdToken. If the user is not yet registered, it
@@ -228,6 +204,21 @@ public class OIDCAuthentication {
     // no token provided
     if (openIdToken == null) {
       throw new OIDCException("No token was provided");
+    }
+    // Return default OIDC user for test token
+    if (openIdToken.equals(OPEN_ID_TEST_TOKEN)) {
+      User superUser;
+      List<User> entities = facade.findByParam(User.class, "oidcId", OPEN_ID_USER_ID);
+      if (entities.isEmpty()) {
+        // Generate user that maps to open id test user
+        superUser =
+            new User(OIDCAuthentication.OPEN_ID_USER_ID, "OpenId Test User", "test@mail.com",
+                "persDescr", "someWeb.com", User.ADMIN);
+        superUser = facade.save(superUser);
+      } else {
+        superUser = entities.get(0);
+      }
+      return superUser;
     }
 
     // JSON initialization stuff

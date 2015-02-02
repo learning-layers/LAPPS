@@ -28,6 +28,7 @@ import de.rwth.dbis.layers.lapps.Main;
 import de.rwth.dbis.layers.lapps.authenticate.OIDCAuthentication;
 import de.rwth.dbis.layers.lapps.domain.Facade;
 import de.rwth.dbis.layers.lapps.entity.App;
+import de.rwth.dbis.layers.lapps.entity.Artifact;
 import de.rwth.dbis.layers.lapps.entity.Tag;
 import de.rwth.dbis.layers.lapps.entity.User;
 
@@ -54,7 +55,8 @@ public class ApplicationsResourceTest {
     target = c.target(Main.BASE_URI);
 
     LOGGER.info("Creating a new app...");
-    app = new App("TestApp", "iOS", "TestApp");
+    app = new App("TestApp", "iOS", "TestApp", "1.0", "long descr", "myUrl.com");
+
     app = entityFacade.save(app);
     LOGGER.info("App created: " + app);
 
@@ -149,19 +151,22 @@ public class ApplicationsResourceTest {
   }
 
   /**
-   * Tries to create an app.
+   * Tries to create an app. Owner is the default open id test user.
    */
   @Test
   public void testCreateApp() {
     App newApp = null;
     try {
-      newApp = new App("NewAppCreateTest", "iOS", "NewApp");
-      newApp.setCreator(user);
+      newApp =
+          new App("NewAppCreateTest", "iOS", "NewApp Short Description", "0.1",
+              "This is a long Description", "www.here.itis");
+      Artifact thumbnail = new Artifact("thumbnail", "some.picture.url");
+      newApp.addArtifact(thumbnail);
       Response response =
           target.path("apps").request()
               .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
               .post(entity(newApp, MediaType.APPLICATION_JSON));
-      assertEquals(HttpStatusCode.OK, response.getStatus());
+      assertEquals(HttpStatusCode.CREATED, response.getStatus());
       MediaType responseMediaType = response.getMediaType();
       assertEquals(MediaType.APPLICATION_JSON, responseMediaType.toString());
       String responseContent = response.readEntity(String.class);
@@ -169,7 +174,7 @@ public class ApplicationsResourceTest {
       JsonNode retrievedApp;
       retrievedApp = mapper.readTree(responseContent);
       assertTrue(!retrievedApp.isNull());
-      assertEquals("\"" + newApp.getName() + "\"", retrievedApp.get("name").toString());
+      assertEquals(newApp.getName(), retrievedApp.get("name").asText());
     } catch (Exception e) {
       e.printStackTrace();
       fail("JSON parsing failed with " + e.getMessage());
@@ -188,7 +193,7 @@ public class ApplicationsResourceTest {
     Response response =
         target.path("apps/" + app.getId()).request()
             .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
-    assertEquals(HttpStatusCode.OK, response.getStatus());
+    assertEquals(HttpStatusCode.NO_CONTENT, response.getStatus());
 
     response = target.path("apps/" + app.getId()).request(MediaType.APPLICATION_JSON).get();
     assertEquals(HttpStatusCode.NOT_FOUND, response.getStatus());

@@ -122,7 +122,7 @@ public class UsersResourceTest {
     Response response =
         target.path("users/" + user.getOidcId()).request()
             .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN).delete();
-    assertEquals(HttpStatusCode.OK, response.getStatus());
+    assertEquals(HttpStatusCode.NO_CONTENT, response.getStatus());
 
     response = target.path("users/" + user.getOidcId()).request((MediaType.APPLICATION_JSON)).get();
     assertEquals(HttpStatusCode.NOT_FOUND, response.getStatus());
@@ -133,7 +133,7 @@ public class UsersResourceTest {
    */
   @Test
   public void testUpdateUser() {
-    user.setUsername("UpdatedUser");
+    user.setWebsite("MyNewWebsite.com");;
     Response response =
         target.path("users/" + user.getOidcId()).request()
             .header("accessToken", OIDCAuthentication.OPEN_ID_TEST_TOKEN)
@@ -149,7 +149,7 @@ public class UsersResourceTest {
     JsonNode retrievedUser;
     try {
       retrievedUser = mapper.readTree(responseContent);
-      assertEquals("\"" + user.getUsername() + "\"", retrievedUser.get("username").toString());
+      assertEquals("\"" + user.getWebsite() + "\"", retrievedUser.get("website").toString());
     } catch (Exception e) {
       e.printStackTrace();
       fail("JSON parsing failed with " + e.getMessage());

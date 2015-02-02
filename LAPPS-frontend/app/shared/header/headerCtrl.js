@@ -59,6 +59,7 @@
                 $scope.logout = function() {
                   user.signOut();
                   $scope.loginCallback(false);
+
                 }
                 /**
                  * @function
@@ -67,9 +68,7 @@
                  *              search parameters.
                  */
                 $scope.search = function() {
-
                   $location.path('/search/' + $scope.searchQuery);
-
                 }
                 /**
                  * @function
@@ -94,6 +93,46 @@
                     $scope.userData = user.data;
                   }
                   // console.log(user);
+                }
+                /**
+                 * @function
+                 * @memberOf lapps.lappsControllers.headerCtrl
+                 * @description Test method: upgrades current user to an admin.
+                 */
+                $scope.activateGodMode = function() {
+                  user.role = 4;
+                  user.token = 'test_token';
+                  alert("You are now a mighty Admin!")
+                }
+                /**
+                 * @function
+                 * @memberOf lapps.lappsControllers.headerCtrl
+                 * @type boolean
+                 * @description True if the visitor is a developer.
+                 */
+                $scope.isDeveloper = function() {
+                  return user.isDeveloper();
+                }
+                /**
+                 * @function
+                 * @memberOf lapps.lappsControllers.headerCtrl
+                 * @type boolean
+                 * @description True if the visitor is a normal user.
+                 */
+                $scope.isUser = function() {
+                  return user.isUser();
+                }
+                /**
+                 * @function
+                 * @memberOf lapps.lappsControllers.headerCtrl
+                 * @type boolean
+                 * @description True if the visitor is an admin. Note: Actual
+                 *              security checks are performed on the backend
+                 *              side. Here it is only used to show/hide
+                 *              elements.
+                 */
+                $scope.isAdmin = function() {
+                  return user.isAdmin();
                 }
                 /**
                  * @field
@@ -146,7 +185,6 @@
                 $scope.displayPlatformHelper = function() {
                   if (!window.localStorage['firstVisit']
                           || window.localStorage['firstVisit'] == 'false') {
-
                     $scope.helperTextVisible = true;
                     window.localStorage['firstVisit'] = true;
                     $interval(function() {

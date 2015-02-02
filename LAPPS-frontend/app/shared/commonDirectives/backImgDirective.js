@@ -8,10 +8,12 @@
   angular.module('lappsDirectives').directive('backImg', function() {
     return function(scope, element, attrs) {
       attrs.$observe('backImg', function(value) {
-        element.css({
-          'background-image': 'url(' + value + ')',
-          'background-size': 'cover'
-        });
+        if (value) {
+          element.css({
+            'background-image': 'url(' + value + ')',
+            'background-size': 'cover'
+          });
+        }
       });
     };
   });

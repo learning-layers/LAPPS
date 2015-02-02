@@ -97,6 +97,7 @@ public class TagsResource {
   /**
    * Create a tag for an {@link App}.
    * 
+   * @param accessToken openID connect token
    * @param appId app id
    * @param createdTag tag to create as JSON
    * 
@@ -107,12 +108,19 @@ public class TagsResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Create tag for an app", response = Tag.class)
   @ApiResponses(value = {
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.CREATED, message = "Tag successful created"),
+      @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
-  public Response createTag(@PathParam("appId") long appId, @ApiParam(value = "Tag entity as JSON",
-      required = true) Tag createdTag) {
+  public Response createTag(@HeaderParam("accessToken") String accessToken,
+      @PathParam("appId") long appId,
+      @ApiParam(value = "Tag entity as JSON", required = true) Tag createdTag) {
+
+    // Check for user status
+    if (!OIDCAuthentication.isUser(accessToken)) {
+      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+    }
 
     List<App> apps = entitiyFacade.findByParam(App.class, "id", appId);
     if (apps.isEmpty()) {
@@ -126,7 +134,7 @@ public class TagsResource {
 
       try {
         ObjectMapper mapper = new ObjectMapper();
-        return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(createdTag))
+        return Response.status(HttpStatusCode.CREATED).entity(mapper.writeValueAsBytes(createdTag))
             .build();
       } catch (JsonProcessingException e) {
         LOGGER.warning(e.getMessage());
@@ -149,22 +157,27 @@ public class TagsResource {
   @Path("/{id}")
   @ApiOperation(value = "Delete tag with id from app")
   @ApiResponses(value = {
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.NO_CONTENT, message = "Tag successful deleted"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App or tag of app not found")})
   public Response deleteTag(@HeaderParam("accessToken") String accessToken,
       @PathParam("appId") long appId, @PathParam("id") long id) {
 
-    // Check for admin status
-    if (!OIDCAuthentication.isAdmin(accessToken)) {
-      return Response.status(HttpStatusCode.UNAUTHORIZED).build();
-    }
+
 
     List<App> apps = entitiyFacade.findByParam(App.class, "id", appId);
+
+
     if (apps.isEmpty()) {
       return Response.status(HttpStatusCode.NOT_FOUND).build();
     } else {
       App app = apps.get(0);
+      // Check for admin status or is dev of app
+      if (!OIDCAuthentication.isAdmin(accessToken)
+          && !OIDCAuthentication.isCreatorOfApp(app, accessToken)) {
+        return Response.status(HttpStatusCode.UNAUTHORIZED).build();
+      }
+
       List<Tag> tagEntities = app.getTags();
       Tag tag = null;
       for (Tag tagTmp : tagEntities) {
@@ -179,7 +192,7 @@ public class TagsResource {
       } else {
       }
       entitiyFacade.deleteByParam(Tag.class, "id", tag.getId());
-      return Response.status(HttpStatusCode.OK).build();
+      return Response.status(HttpStatusCode.NO_CONTENT).build();
     }
   }
 }

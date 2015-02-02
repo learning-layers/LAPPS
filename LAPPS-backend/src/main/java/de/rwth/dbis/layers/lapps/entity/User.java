@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class User implements Entity, Comparable<User> {
 
   // User role constants
+  public static final int DELETED = -1;
   public static final int USER = 1;
   public static final int PENDING_DEVELOPER = 2;
   public static final int DEVELOPER = 3;
@@ -87,7 +88,8 @@ public class User implements Entity, Comparable<User> {
 
   public void setRole(Integer role) {
     // make sure only valid role entries are set
-    if (role == USER || role == PENDING_DEVELOPER || role == DEVELOPER || role == ADMIN) {
+    if (role == USER || role == PENDING_DEVELOPER || role == DEVELOPER || role == ADMIN
+        || role == DELETED) {
       this.role = role;
     }
   }

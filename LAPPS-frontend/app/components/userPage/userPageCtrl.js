@@ -18,8 +18,11 @@
                       'swaggerApi',
                       'md5',
                       'convert',
+                      '$timeout',
+                      '$modal',
+                      '$location',
                       function($scope, $routeParams, user, $http, swaggerApi,
-                              md5, convert) {
+                              md5, convert, $timeout, $modal, $location) {
                         /**
                          * @field
                          * @type string
@@ -44,7 +47,16 @@
                          */
                         $scope.avatarSize = 150;
 
-                        $scope.user.avatar = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QAJwBxAIVCQz2jAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAB3RJTUUH3gwJFTshNi7riQAAAg5JREFUOMutkr1rFGEQh595d/dub0MSv4iI1xwIBoTgR87CSo1/gIo2XqukuwiChyjaqbE8TCEIghC1kFiksxUCsoVV/Aia84JfScw3WXN3uzsW7umJBgX9NTMDM8/7e4eBf5QABOWcNPOW2FQE4BUr6wMSSBewAcgAFhADDa9YGQ/KOZPUv4AkKOcGgAvA5+S1CNAEbpL6pFesTAblnHjFirYCTF2sm5Nue1ZhwqAqEBo0FAiBKIkjQTl3JQESlHM/f+HiyPEt83a6q2/p/eUDKzN9dWM8VGxQFSTujGrVdBwtKmwGznnFymhzd3L+0YnTQD+glqqEYuifftHtaGxanKoiVkdUn0rH4YLARoVrwKgBuXPj2MM88ECN1gWVoa273ry1O61QrUxNbTdUkzKoBsbOzjluz6zjti1bqb3el8UlAei9fi/l2PXuWuie3Z0dO5pxVtIg7KzNWwdXp+x5y9V3Tnv8OrUp/pRyV9usYNoiDoyJ7kp+cLgfONO0Ciquveb0ZMd2/DiIb4uP1WhQ7wgmZno+NKJ0XYgfG+CWXyr0AlcBG4S1MNN4WjnyfHZ120KsotPL2Tm/euiVXz38cvxjb7URpYb80qn9ilwSgPzgMH6pQJLvAW4nhyMtFixgAHjilwrfZ2ygdRi/VHgG7MsPDm8H7ieQgl8qTDV7/qjfNa03KH8Labr87/oKw03euhH4vI8AAAAASUVORK5CYII=';
+                        /**
+                         * @field
+                         * @type boolean
+                         * @memberOf lapps.lappsControllers.userPageCtrl
+                         * @description Set to true after a fixed period of
+                         *              time. Used to show 'invalid-link'
+                         *              notifications.
+                         */
+                        $scope.requestTimedOut = false;
+
                         /**
                          * @function
                          * @memberOf lapps.lappsControllers.userPageCtrl
@@ -53,15 +65,12 @@
                          */
 
                         $scope.fetchUser = function() {
-                          // TODO: sync with actual user
-
                           swaggerApi.users
                                   .getUser({
                                     oidcId: +$scope.userId,
                                   })
                                   .then(
                                           function(response) {
-
                                             $scope.user = response.data;
                                             $scope.user.roleName = user
                                                     .roleIdToRoleName($scope.user.role);
@@ -70,15 +79,86 @@
                                             $scope.user.avatar = 'https://s.gravatar.com/avatar/'
                                                     + md5
                                                             .createHash($scope.user.email
-                                                                    .trim()
-                                                                    .toLowerCase()
-                                                                    || $scope.user.username)
+                                                                    ? $scope.user.email
+                                                                            .trim()
+                                                                            .toLowerCase()
+                                                                    : $scope.user.username)
                                                     + '?s='
                                                     + $scope.avatarSize
                                                     + '&d=identicon';
-
                                           });
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.userPageCtrl
+                         * @description Opens a modal confirmation dialog and
+                         *              downgrades the currently viewed account.
+                         */
+                        $scope.downgradeUser = function() {
+                          var modalInstance = $modal
+                                  .open({
+                                    templateUrl: 'components/userPage/downgradeConfirmView.html',
+                                    controller: 'deleteConfirmCtrl',
+                                    size: 'xs',
+                                  });
 
+                          modalInstance.result.then(function(isOk) {
+                            if (isOk) {
+                              // TODO: api calls
+                            }
+                          }, function() {
+                          });
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.userPageCtrl
+                         * @description Opens a modal confirmation dialog and
+                         *              upgrades the currently viewed account.
+                         */
+                        $scope.upgradeUser = function() {
+                          var modalInstance = $modal
+                                  .open({
+                                    templateUrl: 'components/userPage/upgradeConfirmView.html',
+                                    controller: 'deleteConfirmCtrl',
+                                    size: 'xs',
+                                  });
+
+                          modalInstance.result.then(function(isOk) {
+                            if (isOk) {
+                              swaggerApi.users.grantDeveloperRights({
+                                accessToken: user.token,
+                                oidcId: +$scope.userId
+                              }).then(function(response) {
+
+                                $scope.fetchUser(); // update user data on page
+                              });
+                            }
+                          }, function() {
+                          });
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.userPageCtrl
+                         * @description Opens a modal confirmation dialog and
+                         *              deletes the currently viewed account.
+                         */
+                        $scope.deleteUser = function() {
+                          var modalInstance = $modal
+                                  .open({
+                                    templateUrl: 'components/userPage/deleteConfirmView.html',
+                                    controller: 'deleteConfirmCtrl',
+                                    size: 'xs',
+                                  });
+
+                          modalInstance.result.then(function(isOk) {
+                            if (isOk) {
+                              swaggerApi.users.deleteUser({
+                                accessToken: user.token,
+                                oidcId: +$scope.userId
+                              }).then($location.path("/apps"));
+                            }
+                          }, function() {
+                          });
                         }
                         /**
                          * @function
@@ -88,7 +168,20 @@
                          *              properties changed by the user).
                          */
                         $scope.updateUser = function() {
-                          // TODO: implement actual update for backend
+
+                          swaggerApi.users.updateUser({
+                            accessToken: user.token,
+                            oidcId: +$scope.userId,
+                            body: {
+                              "oidcId": 0,
+                              "email": "",
+                              "username": "",
+                              "role": 0,
+                              "dateRegistered": "",
+                              "description": $scope.user.description,
+                              "website": $scope.user.website
+                            }
+                          })
                         }
                         /**
                          * @function
@@ -125,6 +218,36 @@
                          * @function
                          * @memberOf lapps.lappsControllers.userPageCtrl
                          * @type boolean
+                         * @description True if the profile belongs to a deleted
+                         *              user.
+                         */
+                        $scope.isDeleted = function() {
+                          return user.isDeleted($scope.user.role);
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.userPageCtrl
+                         * @type boolean
+                         * @description True if the profile belongs to an
+                         *              apllicant.
+                         */
+                        $scope.isApplicant = function() {
+                          return user.isApplicant($scope.user.role);
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.userPageCtrl
+                         * @type boolean
+                         * @description True if the profile belongs to a normal
+                         *              user.
+                         */
+                        $scope.isUser = function() {
+                          return user.isUser($scope.user.role);
+                        }
+                        /**
+                         * @function
+                         * @memberOf lapps.lappsControllers.userPageCtrl
+                         * @type boolean
                          * @description True if the profile belongs to an admin.
                          */
                         $scope.isAdmin = function() {
@@ -138,12 +261,19 @@
                          *              admin or profile owner.
                          */
                         $scope.mayEdit = function() {
+
+                          if ($scope.visitorIsAdmin()) { return true; }
+
                           if (!user.signedIn || user.data == null
                                   || user.data.sub == null) { return false; }
-                          if ($scope.visitorIsAdmin()) { return true; }
+
                           return $scope.userId == user.data.sub;
                         }
 
                         $scope.fetchUser();
+
+                        $timeout(function() {
+                          $scope.requestTimedOut = true
+                        }, 500);
                       }]);
 }).call(this);

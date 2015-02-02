@@ -22,6 +22,9 @@ import org.hibernate.annotations.FetchMode;
 @Table(name = "app")
 public class App implements Entity, Comparable<App> {
   private static final long serialVersionUID = -5148238127147716369L;
+  public static final String[] PLATFORMS = new String[] {"iOS", "Android", "Windows Phone",
+      "Web Apps", "Windows", "Linux", "Mac OS X"};
+
   @Id
   @GeneratedValue
   private Long id = 0L;
@@ -47,6 +50,8 @@ public class App implements Entity, Comparable<App> {
   private String shortDescription = null;
   @Column(name = "long_description")
   private String longDescription = null;
+  @Column(name = "unique_app_id")
+  private String uniqueAppId = null;
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User creator = null;
@@ -64,10 +69,14 @@ public class App implements Entity, Comparable<App> {
    */
   public App() {}
 
-  public App(String name, String platform, String shortDescription) {
+  public App(String name, String platform, String shortDescription, String version,
+      String longDescription, String downloadUrl) {
     this.setName(name);
     this.setPlatform(platform);
     this.setShortDescription(shortDescription);
+    this.setVersion(version);
+    this.setLongDescription(longDescription);
+    this.setDownloadUrl(downloadUrl);
   }
 
   public String getName() {
@@ -182,6 +191,14 @@ public class App implements Entity, Comparable<App> {
     this.longDescription = longDescription;
   }
 
+  public String getUniqueAppId() {
+    return uniqueAppId;
+  }
+
+  public void setUniqueAppId(String uniqueAppId) {
+    this.uniqueAppId = uniqueAppId;
+  }
+
   public User getCreator() {
     return creator;
   }
@@ -194,6 +211,10 @@ public class App implements Entity, Comparable<App> {
     return artifacts;
   }
 
+  public void setArtifacts(List<Artifact> artifacts) {
+    this.artifacts = artifacts;
+  }
+
   public void addArtifact(Artifact artifact) {
     this.artifacts.add(artifact);
     if (artifact.getBelongingTo() != this) {
@@ -203,6 +224,10 @@ public class App implements Entity, Comparable<App> {
 
   public List<Tag> getTags() {
     return tags;
+  }
+
+  public void setTags(List<Tag> tags) {
+    this.tags = tags;
   }
 
   public void addTag(Tag tag) {
@@ -223,7 +248,7 @@ public class App implements Entity, Comparable<App> {
   /**
    * 
    * Override equals for an {@link App} using field id.
-   *
+   * 
    */
   @Override
   public boolean equals(Object obj) {
@@ -241,7 +266,7 @@ public class App implements Entity, Comparable<App> {
   /**
    * 
    * Override compare for an {@link App} using field name.
-   *
+   * 
    */
   @Override
   public int compareTo(App o) {
@@ -257,7 +282,7 @@ public class App implements Entity, Comparable<App> {
   /**
    * 
    * PlatformComparator for {@link App} using field platform.
-   *
+   * 
    */
   public static class PlatformComparator implements Comparator<App> {
     @Override
@@ -274,7 +299,7 @@ public class App implements Entity, Comparable<App> {
   /**
    * 
    * RatingComparator for {@link App} using field rating.
-   *
+   * 
    */
   public static class RatingComparator implements Comparator<App> {
     @Override
@@ -292,7 +317,7 @@ public class App implements Entity, Comparable<App> {
   /**
    * 
    * DateCreatedComparator for {@link App} using field dateCreated.
-   *
+   * 
    */
   public static class DateCreatedComparator implements Comparator<App> {
     @Override
@@ -310,7 +335,7 @@ public class App implements Entity, Comparable<App> {
   /**
    * 
    * DateModifiedComparator for {@link App} using field dateModified.
-   *
+   * 
    */
   public static class DateModifiedComparator implements Comparator<App> {
     @Override

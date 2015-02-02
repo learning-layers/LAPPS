@@ -17,8 +17,9 @@
                       'platform',
                       '$location',
                       'convert',
+                      '$timeout',
                       function($scope, swaggerApi, $routeParams, user,
-                              platform, $location, convert) {
+                              platform, $location, convert, $timeout) {
                         /**
                          * @field
                          * @type object
@@ -27,6 +28,15 @@
                          *              for use in bindings
                          */
                         $scope.Math = window.Math;
+
+                        /**
+                         * @field
+                         * @type object
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @description Makes the platform object available in
+                         *              the HTML template.
+                         */
+                        $scope.platform = platform;
                         /**
                          * @field
                          * @type string
@@ -100,6 +110,15 @@
                          * @field
                          * @type boolean
                          * @memberOf lapps.lappsControllers.searchPageCtrl
+                         * @description Changed by a timeout. Used to display a
+                         *              'not found' message when search
+                         *              unsuccessful.
+                         */
+                        $scope.probablyNothingFound = false;
+                        /**
+                         * @field
+                         * @type boolean
+                         * @memberOf lapps.lappsControllers.searchPageCtrl
                          * @description The state of the advanced search area.
                          */
                         $scope.collapsed = true;
@@ -109,7 +128,7 @@
                          * @memberOf lapps.lappsControllers.searchPageCtrl
                          * @param {object}
                          *          usr user
-                         * @description Shows only app results of user ust
+                         * @description Shows only app results of user usr.
                          */
                         $scope.listAppsByUser = function(usr) {
                           $scope.searchUser = usr;
@@ -124,6 +143,11 @@
                          *              results. Sets currentPage to 1.
                          */
                         $scope.newSearch = function() {
+                          document.activeElement.blur();// unfocus elements,
+                          // important for the
+                          // "not found"
+                          // notification to be
+                          // static
                           $scope.currentPage = 1;
                           $location.path('/search/' + $scope.searchQuery);
                           $location.search('page', 1);
@@ -165,7 +189,7 @@
                             apiParams.order = 'desc';
                             break;
                           case 'random':
-                            apiParams.sortBy = 'platform';
+                            apiParams.sortBy = 'random';
                             break;
                           case 'last updated':
                             apiParams.sortBy = 'dateModified';
@@ -217,6 +241,10 @@
                                                       .date($scope.apps[i].dateModified);
                                             }
                                           });
+                          $timeout(
+                                  function() {
+                                    $scope.probablyNothingFound = $scope.apps.length <= 0;
+                                  }, 500);
                         }
 
                         /**
@@ -238,7 +266,13 @@
                           $scope.currentPage = +pageNumber;
                           $location.search('page', pageNumber);
                           $scope.search();
+                          $('html, body').animate(
+                                  {
+                                    scrollTop: ($('#search-results').first()
+                                            .offset().top)
+                                  }, 100);
                         }
                         $scope.search();
+
                       }]);
 }).call(this);

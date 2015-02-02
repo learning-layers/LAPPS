@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -40,6 +42,7 @@ import de.rwth.dbis.layers.lapps.entity.App.RatingComparator;
 import de.rwth.dbis.layers.lapps.entity.Artifact;
 import de.rwth.dbis.layers.lapps.entity.Tag;
 import de.rwth.dbis.layers.lapps.entity.User;
+import de.rwth.dbis.layers.lapps.exception.OIDCException;
 
 /**
  * Applications resource (exposed at "apps" path).
@@ -73,27 +76,45 @@ public class ApplicationsResource {
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
   public Response getAllApps(
-      @ApiParam(value = "Search query parameter for name and tag", required = false) @QueryParam("search") String search,
+      @ApiParam(
+          value = "Search query parameter for name and tag. Multiple keywords use whitespace as separator. Quotation marks indentify exact search strings.",
+          required = false) @QueryParam("search") String search,
       @ApiParam(value = "Page number", required = false) @DefaultValue("1") @QueryParam("page") int page,
       @ApiParam(value = "Number of apps by page", required = false) @DefaultValue("-1") @HeaderParam("pageLength") int pageLength,
       @ApiParam(value = "Sort by field", required = false,
           allowableValues = "name,platform,rating,dateCreated,dateModified,random") @DefaultValue("name") @QueryParam("sortBy") String sortBy,
       @ApiParam(value = "Order asc or desc", required = false, allowableValues = "asc,desc") @DefaultValue("asc") @QueryParam("order") String order,
       @ApiParam(
-          value = "Filter by field : platform, creator, minRating, minDateCreated ,minDateModified. Multiple fields can be used with ; as separator.",
+          value = "Filter by field : platform, creator, minRating, minDateCreated, minDateModified. Multiple fields can be used with ; as separator.",
           required = false) @QueryParam("filterBy") String filterBy, @ApiParam(
           value = "Filter value. When using multiple filters, values can be separated by ; ",
           required = false) @QueryParam("filterValue") String filterValue) {
     List<App> entities;
-    if (search == null) {
+    if (search == null || search.isEmpty()) {
       entities = (List<App>) entitiyFacade.loadAll(App.class);
     } else {
-      entities = (List<App>) entitiyFacade.findByParam(App.class, "name", search);
-      List<Tag> tagEntities = (List<Tag>) entitiyFacade.findByParam(Tag.class, "value", search);
-      for (Tag tag : tagEntities) {
-        App app = tag.getApp();
-        if (!entities.contains(app)) {
-          entities.add(app);
+      entities = new ArrayList<App>();
+
+      List<String> searchStrings = new ArrayList<String>();
+      Matcher matcher = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(search);
+      while (matcher.find()) {
+        searchStrings.add(matcher.group(1).replace("\"", ""));
+      }
+
+      for (String searchString : searchStrings) {
+        searchString = searchString.trim();
+        for (App app : (List<App>) entitiyFacade.findByParam(App.class, "name", searchString)) {
+          if (!entities.contains(app)) {
+            entities.add(app);
+          }
+        }
+        List<Tag> tagEntities =
+            (List<Tag>) entitiyFacade.findByParam(Tag.class, "value", searchString);
+        for (Tag tag : tagEntities) {
+          App app = tag.getApp();
+          if (!entities.contains(app)) {
+            entities.add(app);
+          }
         }
       }
     }
@@ -140,8 +161,8 @@ public class ApplicationsResource {
             for (Iterator<App> iterator = entities.iterator(); iterator.hasNext();) {
               App app = iterator.next();
               if (!isLong
-                  && (app.getCreator() == null || !app.getCreator().getUsername()
-                      .equalsIgnoreCase(values[i]))) {
+                  && (app.getCreator() == null || !app.getCreator().getUsername().toLowerCase()
+                      .contains(values[i].toLowerCase()))) {
                 // if user asks for name and name does not match
                 iterator.remove();
               } else if (isLong
@@ -281,41 +302,83 @@ public class ApplicationsResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Create app", response = App.class)
   @ApiResponses(value = {
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.CREATED, message = "App successful created"),
+      @ApiResponse(code = HttpStatusCode.BAD_REQUEST,
+          message = "Missing or incorrect fields in provided app entity"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
           message = "Internal server problems")})
   public Response createApp(@HeaderParam("accessToken") String accessToken, @ApiParam(
       value = "App entity as JSON", required = true) App createdApp) {
 
-    // Check, if the user has developer rights
-    if (!OIDCAuthentication.isDeveloper(accessToken)) {
+    // Authenticate user and set as the application creator
+    User creator;
+    try {
+      creator = OIDCAuthentication.authenticate(accessToken);
+      if (creator.getRole() < User.DEVELOPER) {
+        throw new OIDCException();
+      }
+    } catch (OIDCException e) {
       return Response.status(HttpStatusCode.UNAUTHORIZED).build();
     }
-    createdApp.deleteId();
 
-    // save child elements
-    User creator = createdApp.getCreator();
+    // Delete / overwrite not wanted stuff
+    createdApp.deleteId();
+    createdApp.setCreator(creator);
+    // Initial rating of three
+    createdApp.setRating(3.0);
+    // Set date created to null (set by database)
+    createdApp.setDateCreated(null);
+    // Update date is set here
+    long time = System.currentTimeMillis();
+    java.sql.Timestamp timestamp = new java.sql.Timestamp(time);
+    createdApp.setDateModified(timestamp);
+
+    // Sanity checks
+    if (createdApp.getPlatform() == null || createdApp.getName() == null
+        || createdApp.getDownloadUrl() == null || createdApp.getVersion() == null
+        || createdApp.getLongDescription() == null || createdApp.getShortDescription() == null) {
+      return Response.status(HttpStatusCode.BAD_REQUEST).build();
+    }
+
+    // Check for correct platform entry
+    boolean correctEntry = false;
+    String platform = createdApp.getPlatform();
+    for (int i = 0; i < App.PLATFORMS.length; i++) {
+      if (platform.equals(App.PLATFORMS[i])) {
+        correctEntry = true;
+        break;
+      }
+    }
+    if (!correctEntry) {
+      return Response.status(HttpStatusCode.BAD_REQUEST).build();
+    }
+
+    // Check for existing thumbnail
+    correctEntry = false;
+    Iterator<Artifact> artifactIterator = createdApp.getArtifacts().iterator();
+    while (artifactIterator.hasNext()) {
+      if (artifactIterator.next().getType().equals("thumbnail")) {
+        correctEntry = true;
+        break;
+      }
+    }
+    if (!correctEntry) {
+      return Response.status(HttpStatusCode.BAD_REQUEST).build();
+    }
+
+    // Interim storage of artifacts and tags
     List<Artifact> artifacts = new ArrayList<Artifact>(createdApp.getArtifacts());
     List<Tag> tags = new ArrayList<Tag>(createdApp.getTags());
 
-    // delete child elements from app
+    // Delete child elements from application (persistence issues otherwise)
     createdApp.getArtifacts().clear();
     createdApp.getTags().clear();
 
-    // validate the existence of the creator
-    List<User> creatorList = entitiyFacade.findByParam(User.class, "oidcId", creator.getOidcId());
-    if (creatorList.size() != 1) {
-      return Response.status(HttpStatusCode.INTERNAL_SERVER_ERROR).build();
-    }
-    creator = creatorList.get(0);
-    if (creator.getRole() != User.DEVELOPER && creator.getRole() != User.ADMIN) {
-      return Response.status(HttpStatusCode.UNAUTHORIZED).build(); // TODO error description
-    }
-    createdApp.setCreator(creator);
-
+    // Save the application
     createdApp = entitiyFacade.save(createdApp);
 
+    // Store the artifacts and tags separately
     for (Artifact newArtifact : artifacts) {
       newArtifact.setBelongingTo(createdApp);
       entitiyFacade.save(newArtifact);
@@ -327,7 +390,7 @@ public class ApplicationsResource {
 
     try {
       ObjectMapper mapper = new ObjectMapper();
-      return Response.status(HttpStatusCode.OK).entity(mapper.writeValueAsBytes(createdApp))
+      return Response.status(HttpStatusCode.CREATED).entity(mapper.writeValueAsBytes(createdApp))
           .build();
     } catch (JsonProcessingException e) {
       LOGGER.warning(e.getMessage());
@@ -349,7 +412,7 @@ public class ApplicationsResource {
   @Path("/{id}")
   @ApiOperation(value = "Delete app by ID")
   @ApiResponses(value = {
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.NO_CONTENT, message = "App successful deleted"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found")})
   public Response deleteApp(@HeaderParam("accessToken") String accessToken, @PathParam("id") Long id) {
@@ -371,7 +434,7 @@ public class ApplicationsResource {
 
 
     entitiyFacade.deleteByParam(App.class, "id", app.getId());
-    return Response.status(HttpStatusCode.OK).build();
+    return Response.status(HttpStatusCode.NO_CONTENT).build();
   }
 
   /**
@@ -390,7 +453,7 @@ public class ApplicationsResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Update app by ID", response = App.class)
   @ApiResponses(value = {
-      @ApiResponse(code = HttpStatusCode.OK, message = "Default return message"),
+      @ApiResponse(code = HttpStatusCode.OK, message = "App successful updated"),
       @ApiResponse(code = HttpStatusCode.UNAUTHORIZED, message = "Invalid authentication"),
       @ApiResponse(code = HttpStatusCode.NOT_FOUND, message = "App not found"),
       @ApiResponse(code = HttpStatusCode.INTERNAL_SERVER_ERROR,
@@ -415,8 +478,43 @@ public class ApplicationsResource {
     }
 
     DozerBeanMapper dozerMapper = new DozerBeanMapper();
+
+    // Rating not allowed to change
+    updatedApp.setRating(app.getRating());
+    // Developer not allowed to change
+    updatedApp.setCreator(app.getCreator());
+    // Release date not subject to change
+    updatedApp.setDateCreated(app.getDateCreated());
+    // Update date is set here
+    long time = System.currentTimeMillis();
+    java.sql.Timestamp timestamp = new java.sql.Timestamp(time);
+    updatedApp.setDateModified(timestamp);
     dozerMapper.map(updatedApp, app);
+
+    app.getArtifacts().clear();
+    app.getTags().clear();
+
     app = entitiyFacade.save(app);
+
+    // backup child elements
+    List<Artifact> artifacts = new ArrayList<Artifact>(updatedApp.getArtifacts());
+    List<Tag> tags = new ArrayList<Tag>(updatedApp.getTags());
+
+    // delete child elements from app
+    entitiyFacade.deleteByParam(Artifact.class, "belongingTo", app);
+    entitiyFacade.deleteByParam(Tag.class, "app", app);
+
+    // save child elements
+    for (Artifact newArtifact : artifacts) {
+      newArtifact.setBelongingTo(app);
+      entitiyFacade.save(newArtifact);
+    }
+    for (Tag newTag : tags) {
+      newTag.setApp(app);
+      entitiyFacade.save(newTag);
+    }
+
+
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       return Response.status(HttpStatusCode.OK).entity(objectMapper.writeValueAsBytes(app)).build();
@@ -478,6 +576,18 @@ public class ApplicationsResource {
   @Path("/{appId}/tags")
   public TagsResource getTagsResource() {
     return new TagsResource();
+  }
+
+  /**
+   * 
+   * Comment subresource. Leads to {@link CommentsResource}.
+   * 
+   * @return CommentsResource
+   * 
+   */
+  @Path("/{appId}/comments")
+  public CommentsResource getCommentsResource() {
+    return new CommentsResource();
   }
 
 }

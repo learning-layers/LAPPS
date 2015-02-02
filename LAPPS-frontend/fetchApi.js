@@ -4,22 +4,23 @@
  * be used as lappsApi inside the frontend code. expected parameters: local use
  * locally running backend version, instead of the buche-server version.
  */
-(function(args) {
+(function (args) {
   // config
   var FILE_ENCODING = 'utf-8';
   var localAddress = 'http://localhost:8080/lapps/v1/api-docs';
-  var deployAddress = 'http://buche.informatik.rwth-aachen.de:9080/lapps-0.3/lapps/v1/api-docs';
+  var deployAddress = 'http://buche.informatik.rwth-aachen.de:9080/lapps-1.0/lapps/v1/api-docs';
   var address = deployAddress;
   var apiFile = 'app/api/lappsApi.js';
 
-  if (args[0] == 'local') {// use local or deploy server?
+  if (process.argv[2] == 'local') {// use local or deploy server?
     address = localAddress;
+    
   }
-
+  console.log(address);
   var fs = require('fs-extra');
   var fetchSchema = require('fetch-swagger-schema');
 
-  fetchSchema(address, function(error, schema) {
+  fetchSchema(address, function (error, schema) {
     if (error) return console.error(error);
     // create directory
     path = apiFile;
@@ -33,5 +34,4 @@
     // create file
     fs.writeFileSync(apiFile, schema, FILE_ENCODING);
   });
-
 })(Array.prototype.slice.call(arguments, 0));
