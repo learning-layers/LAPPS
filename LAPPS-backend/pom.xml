@@ -6,7 +6,7 @@
 	<parent>
 	    <groupId>de.rwth.dbis.layers.lapps</groupId>
 	    <artifactId>LAPPS-Project</artifactId>
-	    <version>1.0-SNAPSHOT</version>
+	    <version>1.0</version>
 	    <relativePath>../pom.xml</relativePath>
 	</parent>
 

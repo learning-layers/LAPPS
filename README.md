@@ -56,8 +56,8 @@ LAPPS Frontend (run these commands from your project folder):
 ##Links##
 Nightly Builds:
 * [![Build Status](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/badge/icon)](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/)
-* [Current Version of "develop" Branch](http://buche.informatik.rwth-aachen.de:9080/lapps-1.0-SNAPSHOT/)
-* [Swagger API Documentation](http://buche.informatik.rwth-aachen.de:9080/lapps-1.0-SNAPSHOT/swagger-documentation/)
+* [Current Version of "develop" Branch](http://buche.informatik.rwth-aachen.de:9080/lapps-1.1-SNAPSHOT/)
+* [Swagger API Documentation](http://buche.informatik.rwth-aachen.de:9080/lapps-1.1-SNAPSHOT/swagger-documentation/)
 * [Jenkins Home Directory](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/)
 * [Backend Documentation](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/de.rwth.dbis.layers.lapps$LAPPS-backend/javadoc/)
 * [Frontend Documentation](http://layers.dbis.rwth-aachen.de/jenkins/job/LAPPS/JavaScript_Documentation/)
