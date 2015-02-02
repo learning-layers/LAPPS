@@ -110,14 +110,18 @@ public class DataGenerator {
 
       currentApp = facade.save(currentApp);
 
+      // Generate a maximum of 22 comments for this app (randomly chosen number)
       List<Comment> comments =
           DataGeneratorUtils.getRandomComments(0, 22, currentApp,
               new ArrayList<User>(Arrays.asList(users)));
-
+      double appRating = 3; // Initial rating of 3 (if something with the comments fails..)
+      int commentSize = comments.size();
       for (Comment comment : comments) {
+        appRating += comment.getRating();
         facade.save(comment);
       }
-
+      appRating = appRating / commentSize;
+      currentApp.setRating(appRating);
       apps.add(currentApp);
     }
     return apps;
